@@ -215,6 +215,7 @@ export function LoggerFactory(
   }
 
   function Logger(name: string = ""): LoggerInterface {
+    // console.log("Logger with name", name, Logger._factory)
     return Logger._factory(name)
   }
 
@@ -310,4 +311,5 @@ export function LoggerFactory(
 
 export const Logger = LoggerFactory()
 
+// console.log("Logger", Logger)
 // export function LogMemoryHandler(msg: LogMessage) {}

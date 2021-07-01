@@ -24,10 +24,12 @@ export function LoggerBrowserHandler(
     colors: boolean
     levelHelper: boolean
     nameBrackets: boolean
+    padding: number
   } = {
     colors: true,
     levelHelper: false,
     nameBrackets: true,
+    padding: 16,
   }
 ): LogHandler {
   return (msg: LogMessage) => {
@@ -46,15 +48,20 @@ export function LoggerBrowserHandler(
     const diff = formatMilliseconds(timeNow - time)
     let styles: string[] = []
     let args: string[]
+
+    if (opt.padding > 0) {
+      name = name.padEnd(16, " ")
+    }
+
     if (opt.colors && useColors) {
-      // args = opt.nameBrackets ? [`%c[${name}]%c`] : [`%c${name}%c`]
-      args = [`%c${name}%c`]
+      args = [`%c${name}%c \t%s`]
       styles.push(`color:${ninfo.color}; ${styleBold}`)
       styles.push(styleDefault)
       args.push(...msg.messages)
     } else {
       args = [name, ...msg.messages]
     }
+
     if (opt.colors && useColors) {
       args.push(`%c+${diff}`)
       styles.push(`color:${ninfo.color};`)
@@ -105,7 +112,7 @@ function LoggerBrowserDebugFactory(name: string = ""): LoggerInterface {
     fixedArgs.push(`color:${color}; ${styleBold}`)
     fixedArgs.push(styleDefault)
   } else {
-    fixedArgs.push(`[${name}] %s`)
+    fixedArgs.push(`[${name}] \t%s`)
   }
   let log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
   log.info = console.info.bind(console, ...fixedArgs)
@@ -115,6 +122,7 @@ function LoggerBrowserDebugFactory(name: string = ""): LoggerInterface {
 }
 
 export function activateConsoleDebug() {
+  Logger.setHandlers([LoggerBrowserHandler()]) // Fallback for previously registered Loggers
   Logger.setFactory(LoggerBrowserDebugFactory)
 }
 

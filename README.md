@@ -1,0 +1,144 @@
+# 🌱 Zeed Library
+
+> Plant the "zeed" of your next Typescript project and let it grow with this useful lib, providing basic functionalities handy in most projects.
+
+- Strict TypeScript
+- Covered by tests
+- Universal for node.js and browsers
+- No dependencies and lightweight
+- Tree shaking ready via ESM
+- Unified logging; various handlers
+- Typed events
+
+### log
+
+Powerful logging.
+
+```js
+const log = Logger("app")
+log("Debug")
+log.info("Log this info")
+```
+
+Filter via `localStorage = "*"` patterns.
+
+Use multiple handlers:
+
+- `LoggerConsoleHandler(level)`: Plain basic output via `console` (default)
+- `LoggerBrowserHandler(level)`: Colorful log entries
+- `LoggerNodeHandler(path, level)`: Colorful logging for node.js
+- `LoggerFileHandler(path, level)`: Write to file
+
+Write custom ones e.g. for breadcrumb tracking in [Sentry.io](https://sentry.io) or showing notifications to users on errors in a UI.
+
+In the browser try calling `activateConsoleDebug()`, this will set only one logger which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
+
+<img src=".assets/safari-console.png" style="max-width:100%">
+
+Alternatives:
+
+- [debug](https://github.com/visionmedia/debug)
+- [winston](https://github.com/winstonjs/winston)
+
+### promise
+
+Wait for an event via `on` or `addEventListener`, useful in unit tests.
+
+```js
+await on(emitter, "action", 1000) // 1000 is optional timeout in ms
+```
+
+Wait for milliseconds.
+
+```js
+await sleep(1000) // wait 1s
+```
+
+Throw an error after timeout of 1 second.
+
+```js
+await timeout(asynFn, 1000)
+```
+
+If a value is not yet a Promise, wrap it to become one.
+
+```js
+await promisify(returnValue)
+```
+
+### uuid
+
+Get a random unique ID of fixed length 26 (these are 16 bytes = 128 bit, encoded in Base32). According to [Nano ID Collision Calculator](https://zelark.github.io/nano-id-cc/): "~597 billion years needed, in order to have a 1% probability of at least one collision."
+
+```js
+const id = uuid()
+```
+
+Get an incremental unique ID for current process with named groups, great for debugging.
+
+```js
+uname("something") // => 'something-0'
+uname("other") // => 'other-0'
+uname("something") // => 'something-1'
+```
+
+### emitter
+
+Typed and async emitter:
+
+```ts
+interface MyEvents {
+  inc: async (count: number) => void
+}
+
+let counter = 0
+
+const e = new Emitter<MyEvents>
+e.on('inc', async (count) => counter + count)
+await e.emit('inc', 1) // counter === 1
+```
+
+### sortable
+
+A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.
+
+```ts
+interface Row extends SortedItem {
+  id: string
+  title: string
+}
+
+let rows: Row[] = []
+
+const getSortedRows = () => sortedItems(rows)
+```
+
+Use `startSortWeight`, `endSortWeight` and `moveSortWeight` to get initial values for new entries or manipulate existing ones.
+
+Sources:
+
+- [Holtwick: Smart Reordering for UITableView](https://holtwick.de/en/blog/smart-table-reordering)
+- [Figma: Fractional Indexing](https://www.figma.com/blog/realtime-editing-of-ordered-sequences/#fractional-indexing)
+
+Future way to improve using growing string:
+
+- [Implementing Fractional Indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing)
+- [npm fractional-indexing](https://www.npmjs.com/package/fractional-indexing)
+- [github](https://github.com/rocicorp/fractional-indexing)
+
+### base32
+
+Human-readable yet efficient encoding of binary data.
+
+```js
+let s = base32Encode(Buffer.from("Hello World")) // returns "91JPRV3F41BPYWKCCG"
+```
+
+### deep
+
+Handle complex objects.
+
+```js
+deepEqual({ a: { b: 1 } }, { a: { b: 2 } }) // false
+deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
+```

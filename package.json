@@ -1,0 +1,53 @@
+{
+  "name": "zeed",
+  "version": "0.1.1",
+  "description": "Simple foundation library",
+  "keywords": [
+    "foundation",
+    "typescript",
+    "event",
+    "logging"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Dirk Holtwick",
+    "url": "https://holtwick.de"
+  },
+  "type": "module",
+  "module": "dist/esm/index.node.js",
+  "typings": "dist/esm/index.all.d.ts",
+  "exports": {
+    ".": {
+      "node": {
+        "require": "./dist/cjs/index.node.js",
+        "import": "./dist/esm/index.node.js"
+      },
+      "default": "./dist/esm/index.browser.js"
+    },
+    "./dist/": "./dist/"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "scripts": {
+    "start": "npm run watch",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build:esm": "tsc -p tsconfig.json",
+    "build:cjs": "tsc -p tsconfig.commonjs.json && echo '{\"type\":\"commonjs\"}' >> dist/cjs/package.json",
+    "clean": "rm -rf dist",
+    "watch": "tsc -w -p tsconfig.json",
+    "prepublishOnly": "npm run build",
+    "test": "jest src"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.12.5",
+    "jest": "^27.0.5",
+    "jest-ts-webcompat-resolver": "^1.0.0",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.4"
+  }
+}

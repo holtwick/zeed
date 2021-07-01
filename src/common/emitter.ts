@@ -1,0 +1,201 @@
+import { Logger } from "./log.js"
+import { promisify } from "./promise.js"
+
+const log = Logger("lib:emitter")
+
+export type EmitterHandler = (...objs: any[]) => void
+export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void
+
+// For magic see https://www.npmjs.com/package/tiny-typed-emitter / License MIT
+// https://stackoverflow.com/a/61609010/140927
+// https://basarat.gitbook.io/typescript/main-1/typed-event
+// https://github.com/andywer/typed-emitter#extending-an-emitter
+
+// TODO: Allow symbols? https://github.com/sindresorhus/emittery
+
+export declare type ListenerSignature<L> = {
+  [E in keyof L]: (...args: any[]) => any
+}
+
+export declare type DefaultListener = {
+  [k: string]: (...args: any[]) => any
+}
+
+export interface TypedEmitter<
+  L extends ListenerSignature<L> = DefaultListener
+> {
+  //   //   static defaultMaxListeners: number
+  //   // addListener<U extends keyof L>(event: U, listener: L[U]): this;
+  //   // prependListener<U extends keyof L>(event: U, listener: L[U]): this;
+  //   // prependOnceListener<U extends keyof L>(event: U, listener: L[U]): this;
+  //   // removeListener<U extends keyof L>(event: U, listener: L[U]): this;
+  //   removeAllListeners(event?: keyof L): this
+  //   once<U extends keyof L>(event: U, listener: L[U]): this
+  on<U extends keyof L>(event: U, listener: L[U]): this
+  //  off<U extends keyof L>(event: U, listener: L[U]): this
+  emit<U extends keyof L>(event: U, ...args: Parameters<L[U]>): boolean
+  //   // eventNames<U extends keyof L>(): U[]
+  //   // listenerCount(type: keyof L): number
+  //   // listeners<U extends keyof L>(type: U): L[U][]
+  //   // rawListeners<U extends keyof L>(type: U): L[U][]
+  //   // getMaxListeners(): number
+  //   // setMaxListeners(n: number): this
+}
+
+export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
+  debugEmitter = false
+  subscribers: any = {}
+  subscribersOnAny: any[] = []
+
+  public async emit<U extends keyof L>(
+    event: U,
+    ...args: Parameters<L[U]>
+  ): Promise<boolean> {
+    let ok = false
+    try {
+      let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
+      this.debugEmitter &&
+        log.debug("emit", this?.constructor?.name, event, ...args, subscribers)
+
+      this.subscribersOnAny.forEach((fn) => fn(event, ...args))
+
+      if (subscribers.length > 0) {
+        let all = subscribers.map((fn) => {
+          try {
+            return promisify(fn(...args))
+          } catch (err) {
+            log.warn("emit warning:", err)
+          }
+        })
+        ok = true
+        await Promise.all(all)
+      }
+    } catch (err) {
+      log.error("emit exception", err)
+    }
+    return ok
+  }
+
+  public onAny(fn: EmitterHandler) {
+    this.subscribersOnAny.push(fn)
+  }
+
+  public on<U extends keyof L>(event: U, listener: L[U]) {
+    let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
+    subscribers.push(listener)
+    this.subscribers[event] = subscribers
+    return {
+      cleanup: () => {
+        this.off(event, listener)
+      },
+    }
+  }
+
+  public once<U extends keyof L>(event: U, listener: L[U]) {
+    const onceListener = async (...args: any[]) => {
+      this.off(event, onceListener as any)
+      return await promisify(listener(...args))
+    }
+    this.on(event, onceListener as any)
+  }
+
+  public off<U extends keyof L>(event: U, listener: L[U]): this {
+    // log("off", key)
+    this.subscribers[event] = (this.subscribers[event] || []).filter(
+      (f: any) => listener && f !== listener
+    )
+    return this
+  }
+
+  public removeAllListeners(event?: keyof L): this {
+    this.subscribers = {}
+    return this
+  }
+}
+
+// This can be used as a global messaging port to connect loose
+// parts of your app
+export const messages = new Emitter()
+
+// For debugging
+
+interface LazyEvent {
+  key: string
+  obj: any
+}
+
+export function lazyListener(
+  emitter: any,
+  listenerKey?: string
+): (key?: string, skipUnmatched?: boolean) => Promise<any> {
+  const name = Math.round(Math.random() * 100)
+
+  var events: LazyEvent[] = []
+  var lazyResolve: (() => void) | undefined
+
+  const incoming = (key: string, obj: any) => {
+    let ev = { key, obj }
+    // debug(name, "  lazy push", ev)
+    events.push(ev)
+    lazyResolve && lazyResolve()
+  }
+
+  if (listenerKey) {
+    if (emitter.on) {
+      emitter.on(listenerKey, (obj: any) => {
+        incoming(listenerKey, obj)
+      })
+    } else if (emitter.addEventListener) {
+      emitter.addEventListener(listenerKey, (obj: any) => {
+        incoming(listenerKey, obj)
+      })
+    } else {
+      log.error(name, "Cannot listen to key")
+    }
+  } else {
+    if (emitter.onAny) {
+      emitter.onAny((key: string, obj: any) => {
+        incoming(key, obj)
+      })
+    } else {
+      log.error(name, "cannot listen to all for", emitter)
+    }
+  }
+
+  let on = (key?: string, skipUnmatched: boolean = true): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      if (!key) {
+        key = listenerKey
+        if (!key) {
+          if (events.length) {
+            // no key specified? just take the first one!
+            key = events[0].key
+          }
+        }
+      }
+      // debug(name, "lazy resolve on2", key, skipUnmatched, events)
+      lazyResolve = () => {
+        // debug(name, "lazy resolve", key, listenerKey, events)
+        while (events.length > 0) {
+          let ev = <LazyEvent>events.shift()
+          // debug(name, "  lazy analyze", ev)
+          if (ev.key === key) {
+            lazyResolve = undefined
+            resolve(ev.obj)
+          } else {
+            if (skipUnmatched) {
+              log.warn(name, `Unhandled event ${key} with value: ${ev.obj}`)
+              continue
+            }
+            reject(`Expected ${key}, but found ${ev.key} with value=${ev.obj}`)
+            log.error(name, `Unhandled event ${key} with value: ${ev.obj}`)
+          }
+          break
+        }
+      }
+      lazyResolve()
+    })
+  }
+
+  return on
+}

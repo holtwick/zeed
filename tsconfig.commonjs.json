@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": false,
+    "esModuleInterop": true,
+    "lib": ["es2017"],
+    "declaration": true,
+    "outDir": "./dist/cjs"
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.spec.ts",
+    "src/browser/**",
+    "src/queues/**",
+    "src/index.all.ts",
+    "src/index.browser.ts"
+  ]
+}

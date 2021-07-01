@@ -46,7 +46,6 @@ export function LoggerBrowserHandler(
       namespaces[name] = ninfo
     }
     const diff = formatMilliseconds(timeNow - time)
-    let styles: string[] = []
     let args: string[]
 
     if (opt.padding > 0) {
@@ -54,48 +53,43 @@ export function LoggerBrowserHandler(
     }
 
     if (opt.colors && useColors) {
-      args = [`%c${name}%c \t%s`]
-      styles.push(`color:${ninfo.color}; ${styleBold}`)
-      styles.push(styleDefault)
-      args.push(...msg.messages)
+      args = [`%c${name}%c \t%s %c+${diff}`]
+      args.push(`color:${ninfo.color}; ${styleBold}`)
+      args.push(styleDefault)
+      args.push(msg.messages?.[0] ?? "")
+      args.push(`color:${ninfo.color};`)
+      args.push(...msg.messages.slice(1))
     } else {
-      args = [name, ...msg.messages]
+      args = [name, ...msg.messages, `+${diff}`]
     }
 
-    if (opt.colors && useColors) {
-      args.push(`%c+${diff}`)
-      styles.push(`color:${ninfo.color};`)
-    } else {
-      args.push(`+${diff}`)
-    }
-
-    function consoleArgs(args: any[] = []): any[] {
-      return [
-        args
-          .filter((a) => typeof a === "string")
-          .map((a) => String(a))
-          .join(" "),
-        ...styles,
-        ...args.filter((a) => typeof a !== "string"),
-      ]
-    }
+    // function consoleArgs(args: any[] = []): any[] {
+    //   return [
+    //     args
+    //       .filter((a) => typeof a === "string")
+    //       .map((a) => String(a))
+    //       .join(" "),
+    //     ...styles,
+    //     ...args.filter((a) => typeof a !== "string"),
+    //   ]
+    // }
 
     switch (msg.level) {
       case LogLevel.info:
         if (opt.levelHelper) args[0] = `I|*   ` + args[0]
-        console.info(...consoleArgs(args))
+        console.info(...args)
         break
       case LogLevel.warn:
         if (opt.levelHelper) args[0] = `W|**  ` + args[0]
-        console.warn(...consoleArgs(args))
+        console.warn(...args)
         break
       case LogLevel.error:
         if (opt.levelHelper) args[0] = `E|*** ` + args[0]
-        console.error(...consoleArgs(args))
+        console.error(...args)
         break
       default:
         if (opt.levelHelper) args[0] = `D|    ` + args[0]
-        console.debug(...consoleArgs(args))
+        console.debug(...args)
         break
     }
   }

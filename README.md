@@ -31,8 +31,6 @@ Use multiple handlers:
 
 Write custom ones e.g. for [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
 
-<script src="https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650.js"></script>
-
 In the browser try calling `activateConsoleDebug()`, this will set only one logger which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
 
 <img src=".assets/safari-console.png" style="max-width:100%">

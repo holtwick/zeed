@@ -5,7 +5,7 @@ import { Logger } from "../common/log.js"
 import fs from "fs"
 import path from "path"
 
-const log = Logger("server:env")
+const log = Logger("zeed:env")
 
 const NEWLINE = "\n"
 const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/

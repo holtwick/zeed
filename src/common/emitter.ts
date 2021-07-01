@@ -1,7 +1,7 @@
 import { Logger } from "./log.js"
 import { promisify } from "./promise.js"
 
-const log = Logger("lib:emitter")
+const log = Logger("zeed:emitter")
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void

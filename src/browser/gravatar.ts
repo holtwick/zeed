@@ -2,6 +2,10 @@
 // https://github.com/mazondo/gravatarjs/blob/master/gravatar.js
 // https://en.gravatar.com/site/implement/images/
 
+import { Logger } from "../common"
+
+const log = Logger("zeed:gravatar")
+
 function gravatar(
   email: string,
   options: { size?: any; backup?: any; secure?: any; rating?: any }
@@ -226,7 +230,7 @@ export function gravatarURLByEmail(
       secure: true,
     })
   } catch (error) {
-    console.info("Gravatar issue: Did not find an image for " + email)
+    log("Gravatar issue: Did not find an image for " + email)
     return defaultURL
   }
 }

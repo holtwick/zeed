@@ -1,6 +1,6 @@
 import { Logger } from "./log.js"
 
-const { warn } = Logger("lib:promise")
+const { warn } = Logger("zeed:promise")
 
 /** Sleep for `milliSeconds`. Example 1s: `await sleep(1000)` */
 export async function sleep(milliSeconds: number): Promise<void> {

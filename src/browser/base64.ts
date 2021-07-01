@@ -1,6 +1,6 @@
 import { Logger } from "../common/log"
 
-const { error } = Logger("base64")
+const { error } = Logger("zeed:base64")
 
 export function urlBase64ToUint8Array(
   base64String: string

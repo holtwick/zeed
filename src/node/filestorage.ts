@@ -8,6 +8,9 @@ import {
   readdirSync,
 } from "fs"
 import { resolve } from "path"
+import { Logger } from "../common/log.js"
+
+const log = Logger("zeed:filestorage")
 
 export class FileStorage {
   private store: { [key: string]: string } = {}
@@ -26,7 +29,7 @@ export class FileStorage {
       mkdirSync(this.dirname, { recursive: true })
       writeFileSync(path, data, "utf8")
     } catch (err) {
-      console.error("setItem error", err)
+      log.error("setItem error", err)
     }
   }
 
@@ -42,7 +45,7 @@ export class FileStorage {
           return JSON.parse(data)
         }
       } catch (err) {
-        console.error("getItem error", err)
+        log.error("getItem error", err)
       }
     }
     return null

@@ -39,6 +39,12 @@ export function arrayRemoveElement<T>(arr: T[], el: T): T[] {
   return []
 }
 
+/** Only have it once in the set */
+export function arraySetElement<T>(arr: T[], el: T): T[] {
+  if (!arr.includes(el)) arr.push(el)
+  return arr
+}
+
 // via https://stackoverflow.com/a/49587869 and Erwin
 export function arrayFilterInPlace<T>(array: T[], fn: (el: T) => boolean): T[] {
   array.splice(0, array.length, ...array.filter(fn))

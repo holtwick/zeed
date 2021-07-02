@@ -8,6 +8,7 @@ import {
   arraySorted,
   arraySortedNumbers,
   arraySymmetricDifference,
+  arrayToggleInPlace,
   arrayUnion,
 } from "./array"
 
@@ -41,6 +42,10 @@ describe("Array", () => {
     let array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     arrayFilterInPlace(array, (el) => el % 2 === 0)
     expect(array).toEqual([2, 4, 6, 8])
+    arrayToggleInPlace(array, 2)
+    expect(array).toEqual([4, 6, 8])
+    arrayToggleInPlace(array, 2)
+    expect(array).toEqual([4, 6, 8, 2])
   })
 
   it("should compare arrays", () => {

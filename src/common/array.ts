@@ -45,6 +45,14 @@ export function arrayFilterInPlace<T>(array: T[], fn: (el: T) => boolean): T[] {
   return array
 }
 
+// via https://stackoverflow.com/a/49587869 and Erwin
+export function arrayToggleInPlace<T>(array: T[], el: T): T[] {
+  const index = array.findIndex((e) => e === el)
+  if (index >= 0) array.splice(index, 1)
+  else array.push(el)
+  return array
+}
+
 export function arrayEmptyInPlace<T>(array: T[]): T[] {
   array.splice(0, array.length)
   return array

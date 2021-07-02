@@ -35,10 +35,7 @@ In the browser try calling `activateConsoleDebug()`, this will set only one logg
 
 <img src=".assets/safari-console.png" style="max-width:100%">
 
-Alternatives:
-
-- [debug](https://github.com/visionmedia/debug)
-- [winston](https://github.com/winstonjs/winston)
+> Alternative logging solutions: [debug](https://github.com/visionmedia/debug) or [winston](https://github.com/winstonjs/winston) to name just a few.
 
 ### promise
 
@@ -78,8 +75,17 @@ Get an incremental unique ID for current process with named groups, great for de
 
 ```js
 uname("something") // => 'something-0'
-uname("other") // => 'other-0'
+uname("other")     // => 'other-0'
 uname("something") // => 'something-1'
+```
+
+Sortable unique ID inspired by [go-uuid](https://github.com/rsms/go-uuid):
+
+```js
+const shortSortableId = suid()
+
+const id = suidBytes()         // as UInt8Array(16)
+const data = suidBytesDate(id) // extract the date portion from the ID
 ```
 
 ### emitter
@@ -115,16 +121,14 @@ const getSortedRows = () => sortedItems(rows)
 
 Use `startSortWeight`, `endSortWeight` and `moveSortWeight` to get initial values for new entries or manipulate existing ones.
 
-Sources:
-
-- [Holtwick: Smart Reordering for UITableView](https://holtwick.de/en/blog/smart-table-reordering)
-- [Figma: Fractional Indexing](https://www.figma.com/blog/realtime-editing-of-ordered-sequences/#fractional-indexing)
-
-Future way to improve using growing string:
-
-- [Implementing Fractional Indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing)
-- [npm fractional-indexing](https://www.npmjs.com/package/fractional-indexing)
-- [github](https://github.com/rocicorp/fractional-indexing)
+> Essays:
+> - [Holtwick: Smart Reordering for UITableView](https://holtwick.de/en/blog/smart-table-reordering)
+> - [Figma: Fractional Indexing](https://www.figma.com/blog/realtime-editing-of-ordered-sequences/#fractional-indexing)
+> 
+> The implementation in Zeed is pretty straight forward, but there are also more sophisticated approaches available as alternatives:
+> 
+> - [Implementing Fractional Indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing)
+> - [fractional-indexing](https://github.com/rocicorp/fractional-indexing) - npm module
 
 ### base32
 

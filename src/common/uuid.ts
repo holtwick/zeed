@@ -1,6 +1,5 @@
 // https://stackoverflow.com/a/2117523/140927
 
-import { base32Encode } from "./base32.js"
 import { useBaseX } from "./basex.js"
 import { getGlobal } from "./platform.js"
 import { getTimestamp } from "./time.js"
@@ -12,6 +11,9 @@ import { getTimestamp } from "./time.js"
 //     return v.toString(16)
 //   })
 // }
+
+const { encode: encode62, decode: decode62 } = useBaseX(62)
+const { encode: encode32 } = useBaseX(32)
 
 const _crypto = getGlobal().crypto || getGlobal()["msCrypto"]
 
@@ -37,7 +39,11 @@ function randomUint8Array(length = 16): Uint8Array {
 // }
 
 export function uuid(): string {
-  return base32Encode(randomUint8Array(16))
+  return encode62(randomUint8Array(16), 22)
+}
+
+export function uuidB32(): string {
+  return encode32(randomUint8Array(16), 26)
 }
 
 let _unameCounters: { [key: string]: number } = {}
@@ -96,8 +102,6 @@ export function suidBytes(): Uint8Array {
   const ms = getTimestamp() - ReferenceDateInMS
   return new Uint8Array([...longToByteArray(ms), ...randomUint8Array(10)])
 }
-
-const { encode: encode62, decode: decode62 } = useBaseX(62)
 
 export function suid(): string {
   return encode62(suidBytes(), 22)

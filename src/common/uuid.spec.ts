@@ -1,8 +1,9 @@
 import { useBaseX } from "./basex"
-import { suid, suidBytes, suidBytesDate, suidDate, uname, uuid } from "./uuid"
+import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
 
-test("should not have collisions", () => {
-  expect(uuid().length).toBe(26)
+test("should not certain length", () => {
+  expect(uuid().length).toBe(22)
+  expect(uuidB32().length).toBe(26)
 })
 
 test("should not have collisions", () => {

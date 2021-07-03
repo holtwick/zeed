@@ -1,5 +1,4 @@
 export * from "./array.js"
-export * from "./base32.js"
 export * from "./basex.js"
 export * from "./camelcase.js"
 export * from "./convert.js"

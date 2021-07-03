@@ -27,20 +27,16 @@ export function useBaseX(ALPHABET: string) {
 
   function encode(
     source: number[] | Uint8Array,
-    padding: boolean = true
+    padToLength: number = -1
   ): string {
     if (source.length === 0) return ""
 
     // Skip & count leading zeroes.
-    let zeroes = 0
     let length = 0
     let pbegin = 0
     const pend = source.length
 
-    while (pbegin !== pend && source[pbegin] === 0) {
-      pbegin++
-      zeroes++
-    }
+    while (pbegin !== pend && source[pbegin] === 0) pbegin++
 
     // Allocate enough space in big-endian base58 representation.
     const size = ((pend - pbegin) * iFACTOR + 1) >>> 0
@@ -75,19 +71,17 @@ export function useBaseX(ALPHABET: string) {
     }
 
     // Translate the result into a string.
-    let str = LEADER.repeat(zeroes)
+    let str = ""
     for (; it2 < size; ++it2) str += ALPHABET.charAt(b58[it2])
 
-    if (padding) {
-      return str.padStart(size - 1, LEADER)
+    if (padToLength > 0) {
+      // const pad = Math.ceil(source.length * iFACTOR)
+      return str.padStart(padToLength, LEADER)
     }
     return str
   }
 
-  function decodeUnsafe(
-    source: string,
-    stripLeaders = false
-  ): Uint8Array | undefined {
+  function decode(source: string, padToLength: number = -1): Uint8Array {
     if (typeof source !== "string") throw new TypeError("Expected String")
     if (source.length === 0) return new Uint8Array()
 
@@ -95,41 +89,23 @@ export function useBaseX(ALPHABET: string) {
     source = source.trim()
 
     let psz = 0
-
-    // Skip leading spaces.
-    if (source[psz] === " ") return
-
-    // Skip and count leading '1's.
-    let zeroes = 0
     let length = 0
 
-    if (stripLeaders) {
-      while (source[psz] === LEADER) {
-        zeroes++
-        psz++
-      }
+    while (source[psz] === LEADER) {
+      psz++
     }
 
     // Allocate enough space in big-endian base256 representation.
-    // const size = ((source.length - psz) * FACTOR + 1) >>> 0 // log(58) / log(256), rounded up.
-    const size = Math.ceil((source.length - psz) * FACTOR)
+    const size = ((source.length - psz) * FACTOR + 1) >>> 0 // log(58) / log(256), rounded up.
     const b256 = new Uint8Array(size)
-
-    console.log(
-      source,
-      size,
-      FACTOR,
-      source.length,
-      (source.length - psz) * FACTOR + 1
-    )
 
     // Process the characters.
     while (source[psz]) {
-      // Decode character
       let carry = BASE_MAP[source.charCodeAt(psz)]
 
       // Invalid character
-      if (carry === 255) return
+      if (carry === 255)
+        throw new Error(`Unsupported character "${source[psz]}"`)
 
       let i = 0
       for (
@@ -147,38 +123,30 @@ export function useBaseX(ALPHABET: string) {
       psz++
     }
 
-    // Skip trailing spaces.
-    if (source[psz] === " ") return
-
+    // Skip leading zeroes
     let it4 = size - length
-
-    // Skip leading zeroes in b256.
-    if (stripLeaders) {
-      while (it4 !== size && b256[it4] === 0) {
-        it4++
-      }
+    while (it4 !== size && b256[it4] === 0) {
+      it4++
     }
 
-    // const vch = new Uint8Array(zeroes + (size - it4))
-    // vch.fill(0x00, 0, zeroes)
+    if (padToLength > 0) {
+      return new Uint8Array([
+        ...new Uint8Array(padToLength - it4 - b256.length),
+        ...b256.slice(it4),
+      ])
+    }
 
-    // let j = zeroes
-    // while (it4 !== size) {
-    //   vch[j++] = b256[it4++]
-    // }
-
-    return b256 // vch
-  }
-
-  function decode(string: string): Uint8Array {
-    const buffer = decodeUnsafe(string)
-    if (buffer) return buffer
-    throw new Error("Non-base" + BASE + " character")
+    return b256.slice(it4)
+    // console.log(source, source.length, FACTOR, iFACTOR, source.length * FACTOR)
+    // const pad = Math.ceil(source.length * FACTOR) - b256.length
+    // return new Uint8Array([
+    //   ...new Uint8Array(Math.max(0, pad)),
+    //   ...b256.slice(Math.min(0, pad) * -1),
+    // ])
   }
 
   return {
-    encode: encode,
-    decodeUnsafe: decodeUnsafe,
-    decode: decode,
+    encode,
+    decode,
   }
 }

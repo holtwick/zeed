@@ -75,7 +75,8 @@ export function uname(name: string = "id"): string {
  * Bytes 6-15: Random
  */
 
-const ReferenceDateInMS = 1622505600000 //  new Date('2021-06-01T00:00:00Z').getTime()
+// 1622505600000 //  new Date('2021-06-01T00:00:00Z').getTime()
+const ReferenceDateInMS = 1600000000000
 
 // 6 bytes will stay valid until end of time: new Date(1622505600000 + 0xffffffffffff) === Date Sun Jan 01 10941 06:31:50 GMT+0100 (Central European Standard Time)
 

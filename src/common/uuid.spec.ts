@@ -1,5 +1,6 @@
 import { useBaseX } from "./basex"
 import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
+import { sleep } from "./promise"
 
 test("should not certain length", () => {
   expect(uuid().length).toBe(22)
@@ -31,7 +32,7 @@ test("should create sortable ID", () => {
   let dateSuid = new Uint8Array([
     0, 0, 141, 33, 250, 205, 174, 58, 31, 221, 187, 156, 31, 221, 187, 156,
   ])
-  expect(suidBytesDate(dateSuid)).toEqual(new Date("2021-06-28T09:43:34.349Z"))
+  expect(suidBytesDate(dateSuid)).toEqual(new Date("2020-10-10T22:10:14.349Z"))
 
   //
   const { encode, decode } = useBaseX(62)
@@ -46,14 +47,15 @@ test("should create sortable ID", () => {
   )
 
   expect(suidDate("000iLynKhjMjrZAI6yaDmw")).toEqual(
-    new Date("2021-07-03T22:12:41.243Z")
+    new Date("2020-10-16T10:39:21.243Z")
   )
 })
 
-test("should evaluate demo", () => {
+test("should evaluate demo", async () => {
   const shortSortableId = suid()
   console.log(shortSortableId)
 
   console.log(suidDate(shortSortableId))
+  await sleep(1)
   expect(shortSortableId < suid()).toBe(true)
 })

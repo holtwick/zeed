@@ -1,6 +1,7 @@
 // https://stackoverflow.com/a/2117523/140927
 
 import { base32Encode } from "./base32.js"
+import { useBaseX } from "./basex.js"
 import { getGlobal } from "./platform.js"
 import { getTimestamp } from "./time.js"
 
@@ -93,21 +94,24 @@ function byteArrayToLong(byteArray: number[]): number {
 
 export function suidBytes(): Uint8Array {
   const ms = getTimestamp() - ReferenceDateInMS
-  return new Uint8Array([...longToByteArray(ms), ...randomUint8Array(6)])
+  return new Uint8Array([...longToByteArray(ms), ...randomUint8Array(10)])
 }
 
+const { encode: encode62, decode: decode62 } = useBaseX(62)
+
 export function suid(): string {
-  return base32Encode(suidBytes())
+  return encode62(suidBytes(), 22)
+}
+
+export function suidDate(id: string): Date {
+  return suidBytesDate(decode62(id, 16))
 }
 
 export function suidBytesDate(id: Uint8Array): Date {
   return new Date(
     ReferenceDateInMS +
-      id
-        .slice(0, 6)
-
-        .reduce((acc, byte) => {
-          return acc * 256 + byte
-        }, 0)
+      id.slice(0, 6).reduce((acc, byte) => {
+        return acc * 256 + byte
+      }, 0)
   )
 }

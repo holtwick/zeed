@@ -82,7 +82,7 @@ uname("something") // => 'something-1'
 Sortable unique ID inspired by [go-uuid](https://github.com/rsms/go-uuid):
 
 ```js
-const shortSortableId = suid()
+const shortSortableId = suid() // string of length 22, base62 encoded 
 
 const id = suidBytes()         // as UInt8Array(16)
 const data = suidBytesDate(id) // extract the date portion from the ID
@@ -137,7 +137,7 @@ Human-readable yet efficient encoding of binary data.
 
 ```js
 const sample = new UInt8Array([1,2,3])
-const {encode, decode} = useBase62(sample) 
+const {encode, decode} = useBase(62) 
 decode(encode(sample)) === sample // = true
 ```
 

@@ -25,7 +25,10 @@ export function useBaseX(ALPHABET: string) {
   const FACTOR = Math.log(BASE) / Math.log(256) // log(BASE) / log(256), rounded up
   const iFACTOR = Math.log(256) / Math.log(BASE) // log(256) / log(BASE), rounded up
 
-  function encode(source: number[] | Uint8Array): string {
+  function encode(
+    source: number[] | Uint8Array,
+    padding: boolean = true
+  ): string {
     if (source.length === 0) return ""
 
     // Skip & count leading zeroes.
@@ -64,8 +67,9 @@ export function useBaseX(ALPHABET: string) {
       pbegin++
     }
 
-    // Skip leading zeroes in base58 result.
     let it2 = size - length
+
+    // Skip leading zeroes in base58 result.
     while (it2 !== size && b58[it2] === 0) {
       it2++
     }
@@ -74,12 +78,21 @@ export function useBaseX(ALPHABET: string) {
     let str = LEADER.repeat(zeroes)
     for (; it2 < size; ++it2) str += ALPHABET.charAt(b58[it2])
 
+    if (padding) {
+      return str.padStart(size - 1, LEADER)
+    }
     return str
   }
 
-  function decodeUnsafe(source: string): Uint8Array | undefined {
+  function decodeUnsafe(
+    source: string,
+    stripLeaders = false
+  ): Uint8Array | undefined {
     if (typeof source !== "string") throw new TypeError("Expected String")
     if (source.length === 0) return new Uint8Array()
+
+    // Normalize
+    source = source.trim()
 
     let psz = 0
 
@@ -89,14 +102,26 @@ export function useBaseX(ALPHABET: string) {
     // Skip and count leading '1's.
     let zeroes = 0
     let length = 0
-    while (source[psz] === LEADER) {
-      zeroes++
-      psz++
+
+    if (stripLeaders) {
+      while (source[psz] === LEADER) {
+        zeroes++
+        psz++
+      }
     }
 
     // Allocate enough space in big-endian base256 representation.
-    const size = ((source.length - psz) * FACTOR + 1) >>> 0 // log(58) / log(256), rounded up.
+    // const size = ((source.length - psz) * FACTOR + 1) >>> 0 // log(58) / log(256), rounded up.
+    const size = Math.ceil((source.length - psz) * FACTOR)
     const b256 = new Uint8Array(size)
+
+    console.log(
+      source,
+      size,
+      FACTOR,
+      source.length,
+      (source.length - psz) * FACTOR + 1
+    )
 
     // Process the characters.
     while (source[psz]) {
@@ -125,21 +150,24 @@ export function useBaseX(ALPHABET: string) {
     // Skip trailing spaces.
     if (source[psz] === " ") return
 
-    // Skip leading zeroes in b256.
     let it4 = size - length
-    while (it4 !== size && b256[it4] === 0) {
-      it4++
+
+    // Skip leading zeroes in b256.
+    if (stripLeaders) {
+      while (it4 !== size && b256[it4] === 0) {
+        it4++
+      }
     }
 
-    const vch = new Uint8Array(zeroes + (size - it4))
-    vch.fill(0x00, 0, zeroes)
+    // const vch = new Uint8Array(zeroes + (size - it4))
+    // vch.fill(0x00, 0, zeroes)
 
-    let j = zeroes
-    while (it4 !== size) {
-      vch[j++] = b256[it4++]
-    }
+    // let j = zeroes
+    // while (it4 !== size) {
+    //   vch[j++] = b256[it4++]
+    // }
 
-    return vch
+    return b256 // vch
   }
 
   function decode(string: string): Uint8Array {

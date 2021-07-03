@@ -79,13 +79,12 @@ uname("other") // => 'other-0'
 uname("something") // => 'something-1'
 ```
 
-Sortable unique ID inspired by [go-uuid](https://github.com/rsms/go-uuid):
+Sortable unique ID inspired by [go-uuid](https://github.com/rsms/go-uuid). 6 bytes encode time and 10 bytes are random. String is Base62 encoded. Date can be extracted from the ID.
 
 ```js
-const shortSortableId = suid() // string of length 22, base62 encoded
-
-const id = suidBytes() // as UInt8Array(16)
-const data = suidBytesDate(id) // extract the date portion from the ID
+const shortSortableId = suid() // = '000iMi10bt6YK8buKlYPsd'                               
+suidDate(shortSortableId)      // = 2021-07-03T22:42:40.727Z 
+shortSortableId < suid()       // = true                              
 ```
 
 ### emitter

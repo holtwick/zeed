@@ -49,3 +49,11 @@ test("should create sortable ID", () => {
     new Date("2021-07-03T22:12:41.243Z")
   )
 })
+
+test("should evaluate demo", () => {
+  const shortSortableId = suid()
+  console.log(shortSortableId)
+
+  console.log(suidDate(shortSortableId))
+  expect(shortSortableId < suid()).toBe(true)
+})

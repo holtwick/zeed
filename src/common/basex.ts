@@ -154,18 +154,12 @@ export function useBaseX(alphaOrBase: string | number) {
 
     if (padToLength > 0) {
       return new Uint8Array([
-        ...new Uint8Array(padToLength - it4 - b256.length),
+        ...new Uint8Array(padToLength - b256.length + it4),
         ...b256.slice(it4),
       ])
     }
 
     return b256.slice(it4)
-    // console.log(source, source.length, FACTOR, iFACTOR, source.length * FACTOR)
-    // const pad = Math.ceil(source.length * FACTOR) - b256.length
-    // return new Uint8Array([
-    //   ...new Uint8Array(Math.max(0, pad)),
-    //   ...b256.slice(Math.min(0, pad) * -1),
-    // ])
   }
 
   return {

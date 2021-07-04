@@ -130,7 +130,7 @@ Use `startSortWeight`, `endSortWeight` and `moveSortWeight` to get initial value
 > - [Implementing Fractional Indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing)
 > - [fractional-indexing](https://github.com/rocicorp/fractional-indexing) - npm module
 
-### baseX
+### baseX encoding / decoding
 
 Integration of the [base-x](https://github.com/cryptocoinjs/base-x) code to support encoding and decoding to any alphabet, but especially base2, base16 (hex), base32, base62, base64.
 Human-readable yet efficient encoding of binary data.

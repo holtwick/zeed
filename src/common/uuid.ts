@@ -1,6 +1,6 @@
 // https://stackoverflow.com/a/2117523/140927
 
-import { useBaseX } from "./basex.js"
+import { useBase } from "./basex.js"
 import { getGlobal } from "./platform.js"
 import { getTimestamp } from "./time.js"
 
@@ -12,8 +12,8 @@ import { getTimestamp } from "./time.js"
 //   })
 // }
 
-const { encode: encode62, decode: decode62 } = useBaseX(62)
-const { encode: encode32 } = useBaseX(32)
+const { encode: encode62, decode: decode62 } = useBase(62)
+const { encode: encode32 } = useBase(32)
 
 const _crypto = getGlobal().crypto || getGlobal()["msCrypto"]
 

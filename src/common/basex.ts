@@ -18,7 +18,7 @@ const alphabets = {
   "66": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.!~",
 }
 
-export function useBaseX(alphaOrBase: string | number) {
+export function useBase(alphaOrBase: string | number) {
   let ALPHABET: string
   if (typeof alphaOrBase === "string") {
     ALPHABET = alphaOrBase
@@ -167,3 +167,10 @@ export function useBaseX(alphaOrBase: string | number) {
     decode,
   }
 }
+
+// Shortcuts
+
+export const { encode: encodeBase16, decode: decodeBase16 } = useBase(16)
+export const { encode: encodeBase32, decode: decodeBase32 } = useBase(32)
+export const { encode: encodeBase58, decode: decodeBase58 } = useBase(58)
+export const { encode: encodeBase62, decode: decodeBase62 } = useBase(62)

@@ -1,4 +1,4 @@
-import { useBaseX } from "./basex"
+import { useBase } from "./basex"
 import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
 import { sleep } from "./promise"
 
@@ -35,7 +35,7 @@ test("should create sortable ID", () => {
   expect(suidBytesDate(dateSuid)).toEqual(new Date("2020-10-10T22:10:14.349Z"))
 
   //
-  const { encode, decode } = useBaseX(62)
+  const { encode, decode } = useBase(62)
 
   expect(encode(dateSuid, 22)).toBe("000fCttjIoTJZRdgjvHFOA")
   expect(decode("000fCttjIoTJZRdgjvHFOA", 16)).toEqual(dateSuid)

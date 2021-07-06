@@ -9,16 +9,16 @@ describe("BaseX", () => {
 
   it("should encode base62", () => {
     const { encode, decode } = useBase(62)
-    expect(encode([0, 0x01, 0x09, 0x0, 0xff])).toBe("1aS1F")
-    expect(decode("01aS1F")).toEqual(new Uint8Array([1, 9, 0, 255]))
+    expect(encode([0, 0x01, 0x09, 0x0, 0xff])).toBe("1As1f")
+    expect(decode("01As1f")).toEqual(new Uint8Array([1, 9, 0, 255]))
   })
 
   it("should encode base62 carry", () => {
     const { encode, decode } = useBase(62)
-    expect(encode([61])).toBe("Z")
+    expect(encode([61])).toBe("z")
     expect(encode([62])).toBe("10")
-    expect(decode("Z")).toEqual(new Uint8Array([61]))
-    expect(decode("0Z")).toEqual(new Uint8Array([61]))
+    expect(decode("z")).toEqual(new Uint8Array([61]))
+    expect(decode("0z")).toEqual(new Uint8Array([61]))
     expect(decode("10")).toEqual(new Uint8Array([62]))
   })
 
@@ -29,9 +29,9 @@ describe("BaseX", () => {
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff,
       ])
-    ).toBe("7N42dgm5tFLK9N8MT7fHC7")
+    ).toBe("7n42DGM5Tflk9n8mt7Fhc7")
 
-    expect(decode("7N42dgm5tFLK9N8MT7fHC7")).toEqual(
+    expect(decode("7n42DGM5Tflk9n8mt7Fhc7")).toEqual(
       new Uint8Array([
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff,

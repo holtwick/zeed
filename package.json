@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.2.14",
+  "version": "0.3.1",
   "description": "Simple foundation library",
   "keywords": [
     "foundation",
@@ -18,12 +18,11 @@
   "typings": "dist/esm/index.all.d.ts",
   "exports": {
     ".": {
-      "node": {
-        "require": "./dist/cjs/index.node.js",
-        "import": "./dist/esm/index.node.js"
-      },
+      "node": "./dist/esm/index.node.js",
       "default": "./dist/esm/index.browser.js"
     },
+    "./browser": "./dist/esm/index.browser.js",
+    "./log": "./dist/esm/index.log.js",
     "./dist/": "./dist/"
   },
   "files": [
@@ -34,9 +33,8 @@
   },
   "scripts": {
     "start": "npm run watch",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm",
+    "build": "npm run clean && npm run build:esm",
     "build:esm": "tsc -p tsconfig.json",
-    "build:cjs": "tsc -p tsconfig.commonjs.json && echo '{\"type\":\"commonjs\"}' >> dist/cjs/package.json",
     "clean": "rm -rf dist",
     "watch": "tsc -w -p tsconfig.json",
     "prepublishOnly": "npm run build",
@@ -44,10 +42,10 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
-    "@types/node": "^15.12.5",
-    "jest": "^27.0.5",
+    "@types/node": "^16.0.0",
+    "jest": "^27.0.6",
     "jest-ts-webcompat-resolver": "^1.0.0",
     "ts-jest": "^27.0.3",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   }
 }

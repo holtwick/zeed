@@ -1,4 +1,4 @@
-export * from "./colors"
+export * from "./log-colors"
 export * from "./log-browser"
 export * from "./log-browser-classic"
 export * from "./localhost"

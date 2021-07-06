@@ -1,10 +1,10 @@
-import { Logger, LoggerFactory, LogLevel, LogMessage } from "./log"
+import { LoggerContext, LogLevel, LogMessage } from "./log"
 
 describe("Logger", function () {
   test("should log different levels", function () {
     let messages: LogMessage[] = []
 
-    let logger = LoggerFactory()
+    let logger = LoggerContext()
 
     function LoggerTestHandler(msg: LogMessage) {
       messages.push(msg)
@@ -62,7 +62,7 @@ describe("Logger", function () {
       messages.push(msg)
     }
 
-    let logger = LoggerFactory()
+    let logger = LoggerContext()
     logger.setLogLevel(LogLevel.info)
     logger.setHandlers([LoggerTestHandler])
 
@@ -111,14 +111,9 @@ describe("Logger", function () {
       messages.push(msg)
     }
 
-    let logger = LoggerFactory()
+    let logger = LoggerContext()
     logger.setHandlers([LoggerTestHandler])
     logger.setFilter("a*,-ab")
-
-    // @ts-ignore
-    expect(logger._accept).toEqual([/^a.*?$/])
-    // @ts-ignore
-    expect(logger._reject).toEqual([/^ab$/])
 
     let aa = logger("aa")
     let ab = logger("ab")
@@ -136,14 +131,8 @@ describe("Logger", function () {
       },
     ])
 
-    logger.setPrefix("app")
-    logger.setFilter("")
-    let xyz = logger("xyz")
-
-    // @ts-ignore
-    expect(logger._accept).toEqual([])
-    // @ts-ignore
-    expect(logger._reject).toEqual([])
+    // logger.setFilter("")
+    let xyz = aa.extend("xyz")
 
     xyz("xyz")
 
@@ -156,7 +145,7 @@ describe("Logger", function () {
       {
         level: 0,
         messages: ["xyz"],
-        name: "app:xyz",
+        name: "aa:xyz",
       },
     ])
   })

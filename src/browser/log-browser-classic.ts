@@ -1,6 +1,7 @@
 import { getTimestamp, formatMilliseconds } from "../common/time"
 import { LogHandler, LogLevel, LogMessage } from "../common/log"
-import { selectColor, supportsColors } from "./colors"
+import { selectColor, supportsColors } from "./log-colors"
+import { useNamespaceFilter } from "../common/log-filter"
 
 let namespaces: Record<string, any> = {}
 
@@ -20,8 +21,10 @@ export function LoggerBrowserClassicHandler(
     nameBrackets: true,
   }
 ): LogHandler {
+  const matches = useNamespaceFilter(localStorage.debug)
   return (msg: LogMessage) => {
     if (msg.level < level) return
+    if (!matches(msg.name)) return
 
     const timeNow = getTimestamp()
     let name = msg.name || ""

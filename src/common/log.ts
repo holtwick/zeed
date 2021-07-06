@@ -311,5 +311,18 @@ export function LoggerFactory(
 
 export const Logger = LoggerFactory()
 
-// console.log("Logger", Logger)
-// export function LogMemoryHandler(msg: LogMessage) {}
+// Global logger to guarantee all submodules use the same logger instance
+
+declare global {
+  interface Window {
+    _zeedGlobalLogger: LoggerFactoryInterface
+  }
+}
+
+if (typeof window != null) {
+  if (window._zeedGlobalLogger != null) {
+    window._zeedGlobalLogger = Logger
+  }
+}
+
+export const GlobalLogger = window._zeedGlobalLogger || Logger

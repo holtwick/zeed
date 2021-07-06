@@ -5,7 +5,7 @@
     "moduleResolution": "node",
     "strict": false,
     "esModuleInterop": true,
-    "lib": ["es2017"],
+    "lib": ["es2017", "dom"],
     "declaration": true,
     "outDir": "./dist/cjs"
   },

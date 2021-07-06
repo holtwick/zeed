@@ -101,19 +101,31 @@ export function LoggerBrowserHandler(
 /// For the regular implementation this information is lost. But this approach has other
 /// drawbacks, therefore only use it in the Browser when actively debugging.
 function LoggerBrowserDebugFactory(name: string = ""): LoggerInterface {
-  let fixedArgs = []
-  if (useColors) {
-    const color = selectColor(name)
-    fixedArgs.push(`%c${name.padEnd(16, " ")}%c \t%s`)
-    fixedArgs.push(`color:${color}; ${styleBold}`)
-    fixedArgs.push(styleDefault)
-  } else {
-    fixedArgs.push(`[${name}] \t%s`)
+  const matches = useNamespaceFilter(localStorage.debug)
+
+  if (matches(name)) {
+    let fixedArgs = []
+    if (useColors) {
+      const color = selectColor(name)
+      fixedArgs.push(`%c${name.padEnd(16, " ")}%c \t%s`)
+      fixedArgs.push(`color:${color}; ${styleBold}`)
+      fixedArgs.push(styleDefault)
+    } else {
+      fixedArgs.push(`[${name}] \t%s`)
+    }
+
+    let log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
+    log.info = console.info.bind(console, ...fixedArgs)
+    log.warn = console.warn.bind(console, ...fixedArgs)
+    log.error = console.error.bind(console, ...fixedArgs)
+    return log
   }
-  let log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
-  log.info = console.info.bind(console, ...fixedArgs)
-  log.warn = console.warn.bind(console, ...fixedArgs)
-  log.error = console.error.bind(console, ...fixedArgs)
+
+  const noop = () => {}
+  let log = noop as LoggerInterface
+  log.info = noop
+  log.warn = noop
+  log.error = noop
   return log
 }
 

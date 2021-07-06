@@ -1,4 +1,5 @@
 import { deepEqual } from "./deep.js"
+import { LoggerConsoleHandler } from "./log-console.js"
 import { useNamespaceFilter } from "./log-filter.js"
 
 export enum LogLevel {
@@ -20,29 +21,6 @@ export interface LogMessage {
 
 export type LogHandler = (msg: LogMessage) => void
 
-export function LoggerConsoleHandler(
-  level: LogLevel = LogLevel.debug
-): LogHandler {
-  return (msg: LogMessage) => {
-    if (msg.level < level) return
-    let name = msg.name ? `[${msg.name}]` : ""
-    switch (msg.level) {
-      case LogLevel.info:
-        console.info(`I|*   ${name}`, ...msg.messages)
-        break
-      case LogLevel.warn:
-        console.warn(`W|**  ${name}`, ...msg.messages)
-        break
-      case LogLevel.error:
-        console.error(`E|*** ${name}`, ...msg.messages)
-        break
-      default:
-        console.debug(`D|    ${name}`, ...msg.messages)
-        break
-    }
-  }
-}
-
 export interface LoggerInterface {
   (...messages: any[]): void
   active: boolean
@@ -55,38 +33,26 @@ export interface LoggerInterface {
   assertEqual(value: any, expected: any, ...args: any[]): void
   assertNotEqual(value: any, expected: any, ...args: any[]): void
   extend(prefix: string): LoggerInterface
+  factory?: LoggerFactoryInterface
 }
 
 export interface LoggerFactoryInterface {
   (name?: string): LoggerInterface
-  // _reject: RegExp[]
-  // _accept: RegExp[]
-  // _prefix: string
   registerHandler(handler: LogHandler): void
   setFilter(namespaces: string): void
-  _isNamespaceAllowed(name: string): boolean
   setPrefix(prefix: string): void
   setHandlers(handlers?: LogHandler[]): void
   setLock(lock: boolean): void
   level: number
   /** @deprecated */
   setLogLevel(level?: LogLevel): void
-  extend(prefix: string): LoggerInterface
   setFactory(factory: (name?: string) => LoggerInterface): void
+  // extend(prefix: string): LoggerInterface
 }
 
-export function LoggerFactory(
-  prefix: string = "",
-  opt: {
-    handlers?: LogHandler[]
-    level?: number
-    accept?: RegExp[]
-    reject?: RegExp[]
-  } = {}
-): LoggerFactoryInterface {
-  let logHandlers: LogHandler[] = opt?.handlers || [LoggerConsoleHandler()]
+export function LoggerFactory(prefix: string = ""): LoggerFactoryInterface {
+  let logHandlers: LogHandler[] = [LoggerConsoleHandler()]
   let logAssertLevel: LogLevel = LogLevel.warn
-  // let logLevel: LogLevel = 0
 
   function LoggerBaseFactory(name: string = ""): LoggerInterface {
     name = Logger._prefix + name
@@ -216,7 +182,6 @@ export function LoggerFactory(
   }
 
   function Logger(name: string = ""): LoggerInterface {
-    // console.log("Logger with name", name, Logger._factory)
     return Logger._factory(name)
   }
 
@@ -243,29 +208,27 @@ export function LoggerFactory(
     logHandlers = [...handlers].filter((h) => typeof h === "function")
   }
 
-  Logger.level = opt?.level ?? LogLevel.debug
+  Logger.level = LogLevel.debug
 
   /** @deprecated */
   Logger.setLogLevel = function (level: LogLevel = 0) {
     if (Logger._lock) return
     Logger.level = level
-    // logLevel = level
   }
 
   Logger.extend = function (prefix: string) {
     if (Logger._prefix) {
       prefix = Logger._prefix + ":" + prefix
     }
+    ;``
     if (prefix?.length > 0) {
-      return LoggerFactory(prefix, {
-        handlers: logHandlers,
-        level: Logger.level,
-      })()
+      return LoggerFactory(prefix)()
     }
     throw new Error("Logger.extend needs a prefix with minimal length of 1")
   }
 
   Logger._factory = LoggerBaseFactory
+
   Logger.setFactory = function (
     factory: (name?: string) => LoggerInterface
   ): void {

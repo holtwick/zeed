@@ -26,7 +26,7 @@ test("should have nice uname", () => {
 test("should create sortable ID", () => {
   // Create a suid
   let sample = suid()
-  expect(sample).toHaveLength("000iLynKhjMjrZAI6yaDmw".length) // === 22
+  expect(sample).toHaveLength("000FcTTJiOtjzrDGJVhfoa".length) // === 22
 
   // Extract the date from the suid
   let dateSuid = new Uint8Array([
@@ -37,25 +37,71 @@ test("should create sortable ID", () => {
   //
   const { encode, decode } = useBase(62)
 
-  expect(encode(dateSuid, 22)).toBe("000fCttjIoTJZRdgjvHFOA")
-  expect(decode("000fCttjIoTJZRdgjvHFOA", 16)).toEqual(dateSuid)
+  expect(encode(dateSuid, 22)).toBe("000FcTTJiOtjzrDGJVhfoa")
+  expect(decode("000FcTTJiOtjzrDGJVhfoa", 16)).toEqual(dateSuid)
 
-  expect(decode("000iLynKhjMjrZAI6yaDmw", 16)).toEqual(
+  expect(decode("000FcTTJiOtjzrDGJVhfoa", 16)).toEqual(
     new Uint8Array([
-      0, 0, 169, 143, 156, 155, 147, 176, 209, 12, 190, 214, 236, 69, 50, 32,
+      0, 0, 141, 33, 250, 205, 174, 58, 31, 221, 187, 156, 31, 221, 187, 156,
     ])
   )
 
-  expect(suidDate("000iLynKhjMjrZAI6yaDmw")).toEqual(
-    new Date("2020-10-16T10:39:21.243Z")
+  expect(suidDate("000FcTTJiOtjzrDGJVhfoa")).toEqual(
+    new Date("2020-10-10T22:10:14.349Z")
   )
+})
+
+test("should sort correctly", async () => {
+  // 0 < a < B
+  expect("abc" < "ABC").toBe(false)
+  expect("abc" > "ABC").toBe(true)
+  expect("0" < "A").toBe(true)
+  expect("0" < "a").toBe(true)
+  expect("0" > "A").toBe(false)
+  expect("0" > "a").toBe(false)
+
+  let sample = [
+    "012a",
+    "0123B",
+    "0123c",
+    "aBC",
+    "Abc",
+    "abC",
+    "aa",
+    "aZ",
+    "ay",
+    "aB",
+    "002ITJose",
+    "002ITJoCh",
+    "002ITJoch",
+    "002ITJoSE",
+  ]
+  sample.sort()
+  expect(sample).toEqual([
+    "002ITJoCh",
+    "002ITJoSE",
+    "002ITJoch",
+    "002ITJose",
+    "0123B",
+    "0123c",
+    "012a",
+    "Abc",
+    "aB",
+    "aBC",
+    "aZ",
+    "aa",
+    "abC",
+    "ay",
+  ])
 })
 
 test("should evaluate demo", async () => {
   const shortSortableId = suid()
-  console.log(shortSortableId)
 
-  console.log(suidDate(shortSortableId))
-  await sleep(1)
-  expect(shortSortableId < suid()).toBe(true)
+  await sleep(100)
+
+  const nextSUID = suid()
+  console.log(shortSortableId, nextSUID)
+  console.log(suidDate(shortSortableId), suidDate(nextSUID))
+  expect(shortSortableId < nextSUID).toBe(true)
 })

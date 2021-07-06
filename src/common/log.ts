@@ -58,14 +58,15 @@ export interface LoggerInterface {
 
 export interface LoggerFactoryInterface {
   (name?: string): LoggerInterface
+  // _reject: RegExp[]
+  // _accept: RegExp[]
+  // _prefix: string
   registerHandler(handler: LogHandler): void
-  _reject: RegExp[]
-  _accept: RegExp[]
   setFilter(namespaces: string): void
   _isNamespaceAllowed(name: string): boolean
-  _prefix: string
   setPrefix(prefix: string): void
   setHandlers(handlers?: LogHandler[]): void
+  setLock(lock: boolean): void
   level: number
   /** @deprecated */
   setLogLevel(level?: LogLevel): void
@@ -205,7 +206,6 @@ export function LoggerFactory(
 
     log.extend = function (prefix: string): LoggerInterface {
       return Logger.extend(name + ":" + prefix)
-      // return Logger.extend(prefix)
     }
 
     // This is the trick, log is a function but also an object makes both valid:
@@ -267,12 +267,16 @@ export function LoggerFactory(
   }
 
   Logger._prefix = prefix
+  Logger._lock = false
 
   Logger.setPrefix = function (prefix: string) {
     Logger._prefix = prefix + (prefix.endsWith(":") ? "" : ":")
   }
 
+  Logger.setLock = (lock: boolean = true) => (Logger._lock = lock)
+
   Logger.setHandlers = function (handlers: LogHandler[] = []) {
+    if (Logger._lock) return
     logHandlers = [...handlers].filter((h) => typeof h === "function")
   }
 
@@ -280,6 +284,7 @@ export function LoggerFactory(
 
   /** @deprecated */
   Logger.setLogLevel = function (level: LogLevel = 0) {
+    if (Logger._lock) return
     Logger.level = level
     // logLevel = level
   }
@@ -303,6 +308,7 @@ export function LoggerFactory(
   Logger.setFactory = function (
     factory: (name?: string) => LoggerInterface
   ): void {
+    if (Logger._lock) return
     Logger._factory = factory
   }
 
@@ -319,10 +325,16 @@ declare global {
   }
 }
 
-if (typeof window != null) {
-  if (window._zeedGlobalLogger != null) {
-    window._zeedGlobalLogger = Logger
-  }
-}
+let globalLogger = Logger
 
-export const GlobalLogger = window._zeedGlobalLogger || Logger
+try {
+  if (typeof window != null) {
+    if (window._zeedGlobalLogger == null) {
+      window._zeedGlobalLogger = Logger
+    } else {
+      globalLogger = window._zeedGlobalLogger
+    }
+  }
+} catch (e) {}
+
+export const GlobalLogger = globalLogger

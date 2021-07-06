@@ -1,6 +1,7 @@
 import { LogHandler, LogLevel, LogMessage } from "../common/log.js"
 import { getTimestamp, formatMilliseconds } from "../common/time.js"
 import tty from "tty"
+import { useNamespaceFilter } from "../common/log-filter.js"
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -39,8 +40,10 @@ export function LoggerNodeHandler(
     // paddingLeft: 16,
   }
 ): LogHandler {
+  const matches = useNamespaceFilter(process.env.DEBUG)
   return (msg: LogMessage) => {
     if (msg.level < level) return
+    if (!matches(msg.name)) return
 
     const timeNow = getTimestamp()
     let name = msg.name || ""

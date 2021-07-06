@@ -115,10 +115,10 @@ describe("Logger", function () {
     logger.setHandlers([LoggerTestHandler])
     logger.setFilter("a*,-ab")
 
-    // @ts-ignore
-    expect(logger._accept).toEqual([/^a.*?$/])
-    // @ts-ignore
-    expect(logger._reject).toEqual([/^ab$/])
+    // // @ts-ignore
+    // expect(logger._accept).toEqual([/^a.*?$/])
+    // // @ts-ignore
+    // expect(logger._reject).toEqual([/^ab$/])
 
     let aa = logger("aa")
     let ab = logger("ab")

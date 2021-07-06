@@ -20,9 +20,7 @@ log("Debug")
 log.info("Log this info")
 ```
 
-Filter via `localStorage = "*"` patterns compatible with [debug syntax](https://github.com/visionmedia/debug#wildcards).
-
-Use multiple handlers:
+By default, the most suitable log handlers are used, but it is also possible to set (`Logger.setHandlers([handlers])`) or add (`Logger.registerHandler(handler)`) new log handlers. You can choose from:
 
 - `LoggerConsoleHandler(level)`: Plain basic output via `console` (default)
 - `LoggerBrowserHandler(level)`: Colorful log entries
@@ -36,6 +34,10 @@ You can use `GlobalLogger` in submodules (for browsers) to make sure all logging
 In the browser try calling `activateConsoleDebug()`, this will set only one logger which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
 
 <img src=".assets/safari-console.png" style="max-width:100%">
+
+Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call).
+
+Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
 
 > Alternative logging solutions: [debug](https://github.com/visionmedia/debug) or [winston](https://github.com/winstonjs/winston) to name just a few.
 

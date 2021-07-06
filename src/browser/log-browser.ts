@@ -6,10 +6,8 @@ import {
   LogLevel,
   LogMessage,
 } from "../common/log"
-
 import { selectColor, supportsColors } from "./log-colors"
-
-Logger.setFilter(localStorage.debug)
+import { useNamespaceFilter } from "src/common"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`
@@ -34,8 +32,10 @@ export function LoggerBrowserHandler(
     padding: 16,
   }
 ): LogHandler {
+  const matches = useNamespaceFilter(localStorage.debug)
   return (msg: LogMessage) => {
     if (msg.level < level) return
+    if (!matches(msg.name)) return
 
     const timeNow = getTimestamp()
     let name = msg.name || ""

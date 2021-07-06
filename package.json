@@ -18,11 +18,19 @@
   "typings": "dist/esm/index.all.d.ts",
   "exports": {
     ".": {
+      "browser": {
+        "require": "./dist/cjs/index.browser.js",
+        "import": "./dist/esm/index.browser.js"
+      },
       "node": {
         "require": "./dist/cjs/index.node.js",
         "import": "./dist/esm/index.node.js"
       },
       "default": "./dist/esm/index.browser.js"
+    },
+    "./browser": {
+      "require": "./dist/cjs/index.browser.js",
+      "import": "./dist/esm/index.browser.js"
     },
     "./dist/": "./dist/"
   },

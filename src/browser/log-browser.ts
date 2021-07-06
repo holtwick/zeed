@@ -7,7 +7,7 @@ import {
   LogMessage,
 } from "../common/log"
 import { selectColor, supportsColors } from "./log-colors"
-import { useNamespaceFilter } from "src/common"
+import { useNamespaceFilter } from "../common/log-filter"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`

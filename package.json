@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Simple foundation library",
   "keywords": [
     "foundation",
@@ -14,19 +14,21 @@
     "url": "https://holtwick.de"
   },
   "type": "module",
-  "module": "dist/esm/index.node.js",
   "typings": "dist/esm/index.all.d.ts",
+  "module": "./dist/esm/index.node.js",
   "exports": {
+    "./ts": "./src/index.browser.ts",
+    "./browser": "./dist/esm/index.browser.js",
+    "./log": "./dist/esm/index.log.js",
+    "./dist/": "./dist/",
     ".": {
       "node": "./dist/esm/index.node.js",
       "default": "./dist/esm/index.browser.js"
-    },
-    "./browser": "./dist/esm/index.browser.js",
-    "./log": "./dist/esm/index.log.js",
-    "./dist/": "./dist/"
+    }
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"

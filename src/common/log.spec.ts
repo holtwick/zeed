@@ -140,11 +140,6 @@ describe("Logger", function () {
     logger.setFilter("")
     let xyz = logger("xyz")
 
-    // @ts-ignore
-    expect(logger._accept).toEqual([])
-    // @ts-ignore
-    expect(logger._reject).toEqual([])
-
     xyz("xyz")
 
     expect(messages).toEqual([

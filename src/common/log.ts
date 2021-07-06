@@ -1,4 +1,5 @@
 import { deepEqual } from "./deep.js"
+import { useNamespaceFilter } from "./log-filter.js"
 
 export enum LogLevel {
   debug,
@@ -223,47 +224,9 @@ export function LoggerFactory(
     logHandlers.push(handler)
   }
 
-  Logger._reject = opt?.reject ?? ([] as RegExp[])
-  Logger._accept = opt?.accept ?? ([] as RegExp[])
-
+  Logger._isNamespaceAllowed = (name: string) => true
   Logger.setFilter = function (namespaces: string) {
-    Logger._reject = []
-    Logger._accept = []
-    if (namespaces && namespaces !== "*") {
-      let i
-      const split = namespaces.split(/[\s,]+/)
-      const len = split.length
-      for (i = 0; i < len; i++) {
-        if (!split[i]) {
-          // ignore empty strings
-          continue
-        }
-        namespaces = split[i].replace(/\*/g, ".*?")
-        if (namespaces[0] === "-") {
-          Logger._reject.push(new RegExp("^" + namespaces.substr(1) + "$"))
-        } else {
-          Logger._accept.push(new RegExp("^" + namespaces + "$"))
-        }
-      }
-    }
-  }
-
-  Logger._isNamespaceAllowed = function (name: string) {
-    if (Logger._reject.length === 0 && Logger._accept.length === 0) {
-      return true
-    }
-    let i, len
-    for (i = 0, len = Logger._reject.length; i < len; i++) {
-      if (Logger._reject[i].test(name)) {
-        return false
-      }
-    }
-    for (i = 0, len = Logger._accept.length; i < len; i++) {
-      if (Logger._accept[i].test(name)) {
-        return true
-      }
-    }
-    return false
+    Logger._isNamespaceAllowed = useNamespaceFilter(namespaces)
   }
 
   Logger._prefix = prefix
@@ -297,8 +260,6 @@ export function LoggerFactory(
       return LoggerFactory(prefix, {
         handlers: logHandlers,
         level: Logger.level,
-        accept: Logger._accept,
-        reject: Logger._reject,
       })()
     }
     throw new Error("Logger.extend needs a prefix with minimal length of 1")

@@ -1,6 +1,6 @@
 import { getTimestamp, formatMilliseconds } from "../common/time"
 import { LogHandler, LogLevel, LogMessage } from "../common/log"
-import { selectColor, supportsColors } from "./colors"
+import { selectColor, supportsColors } from "./log-colors"
 
 let namespaces: Record<string, any> = {}
 

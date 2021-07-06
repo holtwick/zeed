@@ -7,7 +7,9 @@ import {
   LogMessage,
 } from "../common/log"
 
-import { selectColor, supportsColors } from "./colors"
+import { selectColor, supportsColors } from "./log-colors"
+
+Logger.setFilter(localStorage.debug)
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`

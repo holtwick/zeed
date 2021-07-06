@@ -1,6 +1,7 @@
 import { useBase } from "./basex"
 import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
 import { sleep } from "./promise"
+import { assert } from "console"
 
 test("should not certain length", () => {
   expect(uuid().length).toBe(22)
@@ -96,12 +97,11 @@ test("should sort correctly", async () => {
 })
 
 test("should evaluate demo", async () => {
-  const shortSortableId = suid()
-
-  await sleep(100)
-
-  const nextSUID = suid()
-  console.log(shortSortableId, nextSUID)
-  console.log(suidDate(shortSortableId), suidDate(nextSUID))
-  expect(shortSortableId < nextSUID).toBe(true)
+  expect.assertions(100)
+  for (let i = 0; i < 100; i++) {
+    const shortSortableId = suid()
+    await sleep(2)
+    const nextSUID = suid()
+    expect(shortSortableId < nextSUID).toBe(true)
+  }
 })

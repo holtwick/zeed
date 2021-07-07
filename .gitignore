@@ -1,5 +1,9 @@
 node_modules
 pnpm*
 .pnpm*
-dist
 tmp
+package-lock.json
+.DS_Store
+dist
+dist-ssr
+*.local

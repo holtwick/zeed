@@ -12,6 +12,6 @@
   },
   "author": "Dirk Holtwick",
   "dependencies": {
-    "zeed": "link:../.."
+    "zeed": "file:../.."
   }
 }

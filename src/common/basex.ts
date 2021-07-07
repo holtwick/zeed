@@ -1,8 +1,14 @@
+// Originial code at https://github.com/cryptocoinjs/base-x/blob/master/ts_src/index.ts
+//
 // base-x encoding / decoding
 // Copyright (c) 2018 base-x contributors
 // Copyright (c) 2014-2018 The Bitcoin Core developers (base58.cpp)
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
+import { Logger } from "./log.js"
+
+const log = Logger("basex")
 
 const alphabets = {
   "2": "01",
@@ -50,53 +56,64 @@ export function useBase(alphaOrBase: string | number) {
   const iFACTOR = Math.log(256) / Math.log(BASE) // log(256) / log(BASE), rounded up
 
   function encode(
-    source: number[] | Uint8Array,
+    source: number[] | Uint8Array | ArrayBuffer,
     padToLength: number = -1
   ): string {
-    if (source.length === 0) return ""
+    let data: number[] | Uint8Array
+    if (source instanceof ArrayBuffer) {
+      data = new Uint8Array(source)
+    } else {
+      data = source
+    }
+
+    if (data.length === 0) return ""
 
     // Skip & count leading zeroes.
     let length = 0
     let pbegin = 0
-    const pend = source.length
+    const pend = data.length
 
-    while (pbegin !== pend && source[pbegin] === 0) pbegin++
+    while (pbegin !== pend && data[pbegin] === 0) pbegin++
 
     // Allocate enough space in big-endian base58 representation.
     const size = ((pend - pbegin) * iFACTOR + 1) >>> 0
-    const b58 = new Uint8Array(size)
+    const dataEncoded = new Uint8Array(size)
 
     // Process the bytes.
     while (pbegin !== pend) {
-      let carry = source[pbegin]
+      let carry = data[pbegin]
 
-      // Apply "b58 = b58 * 256 + ch".
+      // Apply "dataEncoded = dataEncoded * 256 + ch".
       let i = 0
       for (
         let it1 = size - 1;
         (carry !== 0 || i < length) && it1 !== -1;
         it1--, i++
       ) {
-        carry += (256 * b58[it1]) >>> 0
-        b58[it1] = carry % BASE >>> 0
+        carry += (256 * dataEncoded[it1]) >>> 0
+        dataEncoded[it1] = carry % BASE >>> 0
         carry = (carry / BASE) >>> 0
       }
 
-      if (carry !== 0) throw new Error("Non-zero carry")
+      if (carry !== 0) {
+        log.warn("Non-zero carry", data, padToLength, i, size)
+        throw new Error("Non-zero carry")
+      }
+
       length = i
       pbegin++
     }
 
     let it2 = size - length
 
-    // Skip leading zeroes in base58 result.
-    while (it2 !== size && b58[it2] === 0) {
+    // Skip leading zeroes
+    while (it2 !== size && dataEncoded[it2] === 0) {
       it2++
     }
 
     // Translate the result into a string.
     let str = ""
-    for (; it2 < size; ++it2) str += ALPHABET.charAt(b58[it2])
+    for (; it2 < size; ++it2) str += ALPHABET.charAt(dataEncoded[it2])
 
     if (padToLength > 0) {
       // const pad = Math.ceil(source.length * iFACTOR)
@@ -110,7 +127,7 @@ export function useBase(alphaOrBase: string | number) {
     if (source.length === 0) return new Uint8Array()
 
     // Normalize
-    source = source.trim()
+    source = source.replaceAll(/\s+/gi, "")
 
     let psz = 0
     let length = 0
@@ -121,7 +138,7 @@ export function useBase(alphaOrBase: string | number) {
 
     // Allocate enough space in big-endian base256 representation.
     const size = ((source.length - psz) * FACTOR + 1) >>> 0 // log(58) / log(256), rounded up.
-    const b256 = new Uint8Array(size)
+    const dataDecoded = new Uint8Array(size)
 
     // Process the characters.
     while (source[psz]) {
@@ -137,8 +154,8 @@ export function useBase(alphaOrBase: string | number) {
         (carry !== 0 || i < length) && it3 !== -1;
         it3--, i++
       ) {
-        carry += (BASE * b256[it3]) >>> 0
-        b256[it3] = carry % 256 >>> 0
+        carry += (BASE * dataDecoded[it3]) >>> 0
+        dataDecoded[it3] = carry % 256 >>> 0
         carry = (carry / 256) >>> 0
       }
 
@@ -149,18 +166,18 @@ export function useBase(alphaOrBase: string | number) {
 
     // Skip leading zeroes
     let it4 = size - length
-    while (it4 !== size && b256[it4] === 0) {
+    while (it4 !== size && dataDecoded[it4] === 0) {
       it4++
     }
 
     if (padToLength > 0) {
       return new Uint8Array([
-        ...new Uint8Array(padToLength - b256.length + it4),
-        ...b256.slice(it4),
+        ...new Uint8Array(padToLength - dataDecoded.length + it4),
+        ...dataDecoded.slice(it4),
       ])
     }
 
-    return b256.slice(it4)
+    return dataDecoded.slice(it4)
   }
 
   return {

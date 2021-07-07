@@ -1,4 +1,4 @@
-import { LogLevel, LogHandler, LogMessage } from "./log"
+import { LogLevel, LogHandler, LogMessage } from "./log.js"
 
 /**
  * Very basic logger. Please take a look at the browser and node

@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Simple foundation library",
   "keywords": [
     "foundation",
@@ -15,17 +15,18 @@
   },
   "type": "module",
   "typings": "dist/esm/index.all.d.ts",
-  "module": "./dist/esm/index.node.js",
   "exports": {
     "./ts": "./src/index.browser.ts",
     "./browser": "./dist/esm/index.browser.js",
     "./log": "./dist/esm/index.log.js",
     "./dist/": "./dist/",
     ".": {
+      "browser": "./dist/esm/index.browser.js",
       "node": "./dist/esm/index.node.js",
       "default": "./dist/esm/index.browser.js"
     }
   },
+  "module": "dist/esm/index.browser.js",
   "files": [
     "dist",
     "src"
@@ -43,7 +44,7 @@
     "test": "jest src"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/node": "^16.0.0",
     "jest": "^27.0.6",
     "jest-ts-webcompat-resolver": "^1.0.0",

@@ -101,6 +101,8 @@ export function LoggerBrowserHandler(
 /// For the regular implementation this information is lost. But this approach has other
 /// drawbacks, therefore only use it in the Browser when actively debugging.
 function LoggerBrowserDebugFactory(name: string = ""): LoggerInterface {
+  let log: LoggerInterface
+
   const matches = useNamespaceFilter(localStorage.debug)
 
   if (matches(name)) {
@@ -114,18 +116,22 @@ function LoggerBrowserDebugFactory(name: string = ""): LoggerInterface {
       fixedArgs.push(`[${name}] \t%s`)
     }
 
-    let log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
+    log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
     log.info = console.info.bind(console, ...fixedArgs)
     log.warn = console.warn.bind(console, ...fixedArgs)
     log.error = console.error.bind(console, ...fixedArgs)
-    return log
+  } else {
+    const noop = () => {}
+    log = noop as LoggerInterface
+    log.info = noop
+    log.warn = noop
+    log.error = noop
   }
 
-  const noop = () => {}
-  let log = noop as LoggerInterface
-  log.info = noop
-  log.warn = noop
-  log.error = noop
+  log.extend = (subName: string) => {
+    return LoggerBrowserDebugFactory(name ? `${name}:${subName}` : subName)
+  }
+
   return log
 }
 

@@ -46,4 +46,12 @@ describe("BaseX", () => {
       new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
     )
   })
+
+  it("should encode arraybuffer", () => {
+    const { encode, decode } = useBase(62)
+    let buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xff])
+    // let buf = new ArrayBuffer(5) // [0, 0x01, 0x09, 0x0, 0xff])
+    expect(encode(buf)).toBe("1As1f")
+    expect(decode("01As1f")).toEqual(new Uint8Array([1, 9, 0, 255]))
+  })
 })

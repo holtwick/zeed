@@ -10,12 +10,21 @@
 - Unified logging; various handlers
 - Typed events
 
-### log
+Get started like this:
+
+```sh
+npm i zeed
+```
+
+### Logging
 
 Powerful logging.
 
 ```js
+import { Logger } from 'zeed'
+
 const log = Logger("app")
+
 log("Debug")
 log.info("Log this info")
 ```
@@ -41,7 +50,7 @@ Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo`
 
 > Alternative logging solutions: [debug](https://github.com/visionmedia/debug) or [winston](https://github.com/winstonjs/winston) to name just a few.
 
-### promise
+### Promise / async / await utils
 
 Wait for an event via `on` or `addEventListener`, useful in unit tests.
 
@@ -67,7 +76,7 @@ If a value is not yet a Promise, wrap it to become one.
 await promisify(returnValue)
 ```
 
-### uuid
+### Unique ID
 
 Get a random unique ID of fixed length 26 (these are 16 bytes = 128 bit, encoded in Base32). According to [Nano ID Collision Calculator](https://zelark.github.io/nano-id-cc/): "~597 billion years needed, in order to have a 1% probability of at least one collision."
 
@@ -91,7 +100,7 @@ suidDate(shortSortableId) // = 2021-07-03T22:42:40.727Z
 shortSortableId < suid() // = true
 ```
 
-### emitter
+### Typed event emitter
 
 Typed and async emitter:
 
@@ -107,7 +116,7 @@ e.on('inc', async (count) => counter + count)
 await e.emit('inc', 1) // counter === 1
 ```
 
-### sortable
+### CRDT compatible sorting
 
 A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.
 
@@ -134,7 +143,7 @@ Use `startSortWeight`, `endSortWeight` and `moveSortWeight` to get initial value
 > - [Implementing Fractional Indexing](https://observablehq.com/@dgreensp/implementing-fractional-indexing)
 > - [fractional-indexing](https://github.com/rocicorp/fractional-indexing) - npm module
 
-### baseX encoding / decoding
+### Custom binary data encoding / decoding
 
 Integration of the [base-x](https://github.com/cryptocoinjs/base-x) code to support encoding and decoding to any alphabet, but especially base2, base16 (hex), base32, base62, base64.
 Human-readable yet efficient encoding of binary data.
@@ -145,7 +154,7 @@ const { encode, decode } = useBase(62)
 decode(encode(sample)) === sample // = true
 ```
 
-### deep
+### Deeply nested object utils
 
 Handle complex objects.
 

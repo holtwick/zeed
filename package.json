@@ -44,7 +44,7 @@
     "test": "jest src"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/node": "^16.0.0",
     "jest": "^27.0.6",
     "jest-ts-webcompat-resolver": "^1.0.0",

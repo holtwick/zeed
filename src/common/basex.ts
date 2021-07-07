@@ -1,8 +1,14 @@
+// Originial code at https://github.com/cryptocoinjs/base-x/blob/master/ts_src/index.ts
+//
 // base-x encoding / decoding
 // Copyright (c) 2018 base-x contributors
 // Copyright (c) 2014-2018 The Bitcoin Core developers (base58.cpp)
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
+
+import { Logger } from "./log.js"
+
+const log = Logger("basex")
 
 const alphabets = {
   "2": "01",
@@ -82,7 +88,9 @@ export function useBase(alphaOrBase: string | number) {
         carry = (carry / BASE) >>> 0
       }
 
-      if (carry !== 0) throw new Error("Non-zero carry")
+      if (carry !== 0) {
+        log.warn("Non-zero carry", source, padToLength, i, size)
+      }
       length = i
       pbegin++
     }

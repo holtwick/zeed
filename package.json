@@ -15,17 +15,18 @@
   },
   "type": "module",
   "typings": "dist/esm/index.all.d.ts",
-  "module": "./dist/esm/index.node.js",
   "exports": {
     "./ts": "./src/index.browser.ts",
     "./browser": "./dist/esm/index.browser.js",
     "./log": "./dist/esm/index.log.js",
     "./dist/": "./dist/",
     ".": {
+      "browser": "./dist/esm/index.browser.js",
       "node": "./dist/esm/index.node.js",
       "default": "./dist/esm/index.browser.js"
     }
   },
+  "module": "dist/esm/index.browser.js",
   "files": [
     "dist",
     "src"

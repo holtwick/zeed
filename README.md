@@ -38,7 +38,7 @@ By default, the most suitable log handlers are used, but it is also possible to 
 
 Write custom ones e.g. for [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
 
-You can use `GlobalLogger` in submodules (for browsers) to make sure all logging goes through the same handlers, no matter what bundler is used. With `GlobalLogger.setLock(true)` any changes to handlers, factories and log levels can be suppressed, to ensure no conflicting settings with submodules. You should set up the Logging very early in your main project before loading submodules.
+You can use `Logger` in submodules and Zeed will make sure all logging goes through the same handlers, no matter what bundler is used. With `Logger.setLock(true)` any further changes to handlers, factories and log levels can be forbidden, to ensure no conflicting settings with submodules. You should set up the Logging very early in your main project before loading submodules.
 
 In the browser try calling `activateConsoleDebug()`, this will set only one logger which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
 

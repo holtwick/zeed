@@ -9,6 +9,7 @@ let time = getTimestamp()
 
 const useColors = supportsColors()
 
+/** @deprecated */
 export function LoggerBrowserClassicHandler(
   level: LogLevel = LogLevel.debug,
   opt: {

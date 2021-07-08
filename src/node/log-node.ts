@@ -1,4 +1,9 @@
-import { LogHandler, LogLevel, LogMessage } from "../common/log.js"
+import {
+  LogHandler,
+  LogHandlerOptions,
+  LogLevel,
+  LogMessage,
+} from "../common/log.js"
 import { getTimestamp, formatMilliseconds } from "../common/time.js"
 import tty from "tty"
 import { useNamespaceFilter } from "../common/log-filter.js"
@@ -24,27 +29,21 @@ function log(...args: any[]) {
   return process.stderr.write(args.join(" ") + "\n")
 }
 
-export function LoggerNodeHandler(
-  level: LogLevel = LogLevel.debug,
-  opt: {
-    colors: boolean
-    levelHelper: boolean
-    nameBrackets: boolean
-    padding: number
-    // paddingRight: number
-  } = {
-    colors: true,
-    levelHelper: true,
-    nameBrackets: false,
-    padding: 16,
-    // paddingLeft: 16,
-  }
-): LogHandler {
-  const matches = useNamespaceFilter(process.env.DEBUG)
+export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
+  const {
+    level = LogLevel.debug,
+    colors = true,
+    levelHelper = false,
+    nameBrackets = true,
+    padding = 16,
+    filter = undefined,
+  } = opt
+  const matches = useNamespaceFilter(
+    filter ?? process.env.ZEED ?? process.env.DEBUG
+  )
   return (msg: LogMessage) => {
     if (msg.level < level) return
     if (!matches(msg.name)) return
-
     const timeNow = getTimestamp()
     let name = msg.name || ""
     let ninfo = namespaces[name || ""]
@@ -59,17 +58,17 @@ export function LoggerNodeHandler(
 
     let args: string[]
 
-    let displayName = opt.nameBrackets ? `[${name}]` : name
+    let displayName = nameBrackets ? `[${name}]` : name
 
-    if (opt.padding > 0) {
-      displayName = displayName.padStart(opt.padding, " ")
-      // displayName = displayName.padEnd(opt.padding, " ")
+    if (padding > 0) {
+      displayName = displayName.padStart(padding, " ")
+      // displayName = displayName.padEnd(padding, " ")
     }
 
-    if (opt.colors && useColors) {
+    if (colors && useColors) {
       const c = ninfo.color
       const colorCode = "\u001B[3" + (c < 8 ? c : "8;5;" + c) + "m" // ";1m "
-      args = [`${colorCode}${displayName}\u001B[0m | `] // opt.nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
+      args = [`${colorCode}${displayName}\u001B[0m | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
       args.push(...msg.messages)
       args.push(`${colorCode}+${diff}\u001B[0m`)
     } else {
@@ -78,19 +77,19 @@ export function LoggerNodeHandler(
     }
     switch (msg.level) {
       case LogLevel.info:
-        if (opt.levelHelper) args[0] = `I|*   ` + args[0]
+        if (levelHelper) args[0] = `I|*   ` + args[0]
         log(...args)
         break
       case LogLevel.warn:
-        if (opt.levelHelper) args[0] = `W|**  ` + args[0]
+        if (levelHelper) args[0] = `W|**  ` + args[0]
         log(...args)
         break
       case LogLevel.error:
-        if (opt.levelHelper) args[0] = `E|*** ` + args[0]
+        if (levelHelper) args[0] = `E|*** ` + args[0]
         log(...args)
         break
       default:
-        if (opt.levelHelper) args[0] = `D|    ` + args[0]
+        if (levelHelper) args[0] = `D|    ` + args[0]
         log(...args)
         break
     }

@@ -31,10 +31,12 @@ log.info("Log this info")
 
 By default, the most suitable log handlers are used, but it is also possible to set (`Logger.setHandlers([handlers])`) or add (`Logger.registerHandler(handler)`) new log handlers. You can choose from:
 
-- `LoggerConsoleHandler(level)`: Plain basic output via `console` (default)
-- `LoggerBrowserHandler(level)`: Colorful log entries
-- `LoggerNodeHandler(path, level)`: Colorful logging for node.js
-- `LoggerFileHandler(path, level)`: Write to file
+- `LoggerConsoleHandler(opt)`: Plain basic output via `console` (default)
+- `LoggerBrowserHandler(opt)`: Colorful log entries
+- `LoggerNodeHandler(opt)`: Colorful logging for node.js
+- `LoggerFileHandler(path, opt)`: Write to file
+
+`opt` are general option like `level` for the log level or `filter` for custom filtering (see below). But it can also hold individual settings specific for a log handler.
 
 Write custom ones e.g. for [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
 
@@ -44,7 +46,7 @@ In the browser try calling `activateConsoleDebug()`, this will set only one logg
 
 <img src=".assets/safari-console.png" style="max-width:100%">
 
-Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call).
+Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage.debug = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call). `process.env.ZEED` and `localStorage.zeed` supersede `DEBUG`.
 
 Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
 

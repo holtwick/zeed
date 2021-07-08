@@ -1,4 +1,4 @@
-import { LogLevel, LogHandler, LogMessage } from "./log.js"
+import { LogLevel, LogHandler, LogMessage, LogHandlerOptions } from "./log.js"
 
 /**
  * Very basic logger. Please take a look at the browser and node
@@ -7,9 +7,15 @@ import { LogLevel, LogHandler, LogMessage } from "./log.js"
  * @param level Log level
  * @returns Logger
  */
-export function LoggerConsoleHandler(
-  level: LogLevel = LogLevel.debug
-): LogHandler {
+export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
+  const {
+    level = LogLevel.debug,
+    colors = true,
+    levelHelper = false,
+    nameBrackets = true,
+    padding = 16,
+    filter = undefined,
+  } = opt
   return (msg: LogMessage) => {
     if (msg.level < level) return
     let name = msg.name ? `[${msg.name}]` : ""

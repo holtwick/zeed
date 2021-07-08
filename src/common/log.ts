@@ -46,6 +46,15 @@ export interface LoggerContextInterface {
   setFactory(factory: (name?: string) => LoggerInterface): void
 }
 
+export interface LogHandlerOptions {
+  level?: LogLevel
+  filter?: string
+  colors?: boolean
+  levelHelper?: boolean
+  nameBrackets?: boolean
+  padding?: number
+}
+
 export function LoggerContext(prefix: string = ""): LoggerContextInterface {
   let logHandlers: LogHandler[] = [LoggerConsoleHandler()]
   let logAssertLevel: LogLevel = LogLevel.warn

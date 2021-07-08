@@ -1,5 +1,5 @@
 import { platform } from "./platform"
-import { on, sleep } from "./promise"
+import { waitOn, sleep } from "./promise"
 import { Emitter, lazyListener } from "./emitter"
 
 describe("Emitter", () => {
@@ -67,11 +67,13 @@ describe("Emitter", () => {
       e1.emit("f", 1)
     }, 100)
 
-    let v = await on(e1, "f")
+    let v = await waitOn(e1, "f")
     expect(v).toBe(1)
 
     if (platform.jest) {
-      await expect(on(e1, "x", 10)).rejects.toThrow("Did not response in time")
+      await expect(waitOn(e1, "x", 10)).rejects.toThrow(
+        "Did not response in time"
+      )
       // } else {
       //   // https://jasmine.github.io/api/3.5/global
       //   await expectAsync(on(e1, "x", 10)).toBeRejectedWithError(

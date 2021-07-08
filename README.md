@@ -55,7 +55,7 @@ Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo`
 Wait for an event via `on` or `addEventListener`, useful in unit tests.
 
 ```js
-await on(emitter, "action", 1000) // 1000 is optional timeout in ms
+await waitOn(emitter, "action", 1000) // 1000 is optional timeout in ms
 ```
 
 Wait for milliseconds.

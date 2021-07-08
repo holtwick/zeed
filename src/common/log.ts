@@ -212,26 +212,34 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
   return Logger
 }
 
-export const Logger = LoggerContext()
-
 // Global logger to guarantee all submodules use the same logger instance
 
-declare global {
-  interface Window {
-    _zeedGlobalLogger: LoggerContextInterface
-  }
-}
+// declare global {
+//   interface Window {
+//     _zeedGlobalLogger: LoggerContextInterface
+//   }
 
-let globalLogger = Logger
+//   namespace NodeJS {
+//     interface Global {
+//       _zeedGlobalLogger: LoggerContextInterface
+//     }
+//   }
+// }
+
+let globalLogger: LoggerContextInterface = LoggerContext()
 
 try {
-  if (typeof window != null) {
-    if (window._zeedGlobalLogger == null) {
-      window._zeedGlobalLogger = Logger
+  if (typeof globalThis != null) {
+    // @ts-ignore
+    if (globalThis._zeedGlobalLogger == null) {
+      // @ts-ignore
+      globalThis._zeedGlobalLogger = Logger
     } else {
-      globalLogger = window._zeedGlobalLogger
+      // @ts-ignore
+      globalLogger = globalThis._zeedGlobalLogger
     }
   }
 } catch (e) {}
 
 export const GlobalLogger = globalLogger
+export const Logger = globalLogger

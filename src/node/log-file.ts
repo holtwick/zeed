@@ -1,14 +1,19 @@
 import { createWriteStream, mkdirSync } from "fs"
 import { resolve, dirname } from "path"
 import { renderMessages } from "../common/convert.js"
-import { LogLevel, LogMessage } from "../common/log.js"
+import { LogHandlerOptions, LogLevel, LogMessage } from "../common/log.js"
 
 let namespaces: Record<string, any> = {}
 
-export function LoggerFileHandler(
-  path: string,
-  level: LogLevel = LogLevel.debug
-) {
+export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
+  const {
+    level = LogLevel.debug,
+    colors = true,
+    levelHelper = false,
+    nameBrackets = true,
+    padding = 16,
+    filter = undefined,
+  } = opt
   path = resolve(process.cwd(), path)
   mkdirSync(dirname(path), { recursive: true })
   var stream = createWriteStream(path, { flags: "a" })

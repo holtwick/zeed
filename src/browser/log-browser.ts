@@ -3,6 +3,7 @@ import {
   Logger,
   LoggerInterface,
   LogHandler,
+  LogHandlerOptions,
   LogLevel,
   LogMessage,
 } from "../common/log"
@@ -18,20 +19,14 @@ let namespaces: Record<string, any> = {}
 
 let time = getTimestamp()
 
-export function LoggerBrowserHandler(
-  level: LogLevel = LogLevel.debug,
-  opt: {
-    colors: boolean
-    levelHelper: boolean
-    nameBrackets: boolean
-    padding: number
-  } = {
-    colors: true,
-    levelHelper: false,
-    nameBrackets: true,
-    padding: 16,
-  }
-): LogHandler {
+export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
+  const {
+    level = LogLevel.debug,
+    colors = true,
+    levelHelper = false,
+    nameBrackets = true,
+    padding = 16,
+  } = opt
   const matches = useNamespaceFilter(localStorage.debug)
   return (msg: LogMessage) => {
     if (msg.level < level) return
@@ -50,11 +45,11 @@ export function LoggerBrowserHandler(
     const diff = formatMilliseconds(timeNow - time)
     let args: string[]
 
-    if (opt.padding > 0) {
+    if (padding > 0) {
       name = name.padEnd(16, " ")
     }
 
-    if (opt.colors && useColors) {
+    if (colors && useColors) {
       args = [`%c${name}%c \t%s %c+${diff}`]
       args.push(`color:${ninfo.color}; ${styleBold}`)
       args.push(styleDefault)
@@ -97,47 +92,53 @@ export function LoggerBrowserHandler(
   }
 }
 
-/// The trick is, that console called directly provides a reference to the source code.
-/// For the regular implementation this information is lost. But this approach has other
-/// drawbacks, therefore only use it in the Browser when actively debugging.
-function LoggerBrowserDebugFactory(name: string = ""): LoggerInterface {
-  let log: LoggerInterface
+function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
+  const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
 
-  const matches = useNamespaceFilter(localStorage.debug)
+  /// The trick is, that console called directly provides a reference to the source code.
+  /// For the regular implementation this information is lost. But this approach has other
+  /// drawbacks, therefore only use it in the Browser when actively debugging.
+  return function LoggerBrowserDebugFactory(
+    name: string = ""
+  ): LoggerInterface {
+    let log: LoggerInterface
 
-  if (matches(name)) {
-    let fixedArgs = []
-    if (useColors) {
-      const color = selectColor(name)
-      fixedArgs.push(`%c${name.padEnd(16, " ")}%c \t%s`)
-      fixedArgs.push(`color:${color}; ${styleBold}`)
-      fixedArgs.push(styleDefault)
+    const matches = useNamespaceFilter(filter)
+
+    if (matches(name)) {
+      let fixedArgs = []
+      if (useColors) {
+        const color = selectColor(name)
+        fixedArgs.push(`%c${name.padEnd(16, " ")}%c \t%s`)
+        fixedArgs.push(`color:${color}; ${styleBold}`)
+        fixedArgs.push(styleDefault)
+      } else {
+        fixedArgs.push(`[${name}] \t%s`)
+      }
+
+      log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
+      log.info = console.info.bind(console, ...fixedArgs)
+      log.warn = console.warn.bind(console, ...fixedArgs)
+      log.error = console.error.bind(console, ...fixedArgs)
     } else {
-      fixedArgs.push(`[${name}] \t%s`)
+      const noop = () => {}
+      log = noop as LoggerInterface
+      log.info = noop
+      log.warn = noop
+      log.error = noop
     }
 
-    log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
-    log.info = console.info.bind(console, ...fixedArgs)
-    log.warn = console.warn.bind(console, ...fixedArgs)
-    log.error = console.error.bind(console, ...fixedArgs)
-  } else {
-    const noop = () => {}
-    log = noop as LoggerInterface
-    log.info = noop
-    log.warn = noop
-    log.error = noop
-  }
+    log.extend = (subName: string) => {
+      return LoggerBrowserDebugFactory(name ? `${name}:${subName}` : subName)
+    }
 
-  log.extend = (subName: string) => {
-    return LoggerBrowserDebugFactory(name ? `${name}:${subName}` : subName)
+    return log
   }
-
-  return log
 }
 
-export function activateConsoleDebug() {
-  Logger.setHandlers([LoggerBrowserHandler()]) // Fallback for previously registered Loggers
-  Logger.setFactory(LoggerBrowserDebugFactory)
+export function activateConsoleDebug(opt: LogHandlerOptions = {}) {
+  Logger.setHandlers([LoggerBrowserHandler(opt)]) // Fallback for previously registered Loggers
+  Logger.setFactory(LoggerBrowserSetupDebugFactory(opt))
 }
 
 // let klass = console

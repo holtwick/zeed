@@ -1,8 +1,7 @@
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-import { Logger } from "../common/log.js"
-
-const log = Logger("queue")
+// import { Logger } from "../common/log.js"
+// const log = Logger("queue")
 
 type QueueTaskResolver = any
 type QueueTask<T = any> = () => Promise<T>

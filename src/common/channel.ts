@@ -19,7 +19,7 @@ interface ChannelMessageEvent {
  * http://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel
  * https://deno.com/deploy/docs/runtime-broadcast-channel
  * */
-export abstract class ChannelTransport extends Emitter<{
+export abstract class Channel extends Emitter<{
   message(event: ChannelMessageEvent): void
   messageerror(event: ChannelMessageEvent): void
 }> {
@@ -28,7 +28,7 @@ export abstract class ChannelTransport extends Emitter<{
 }
 
 /** Very basic channel demonstrating local communication */
-export class LocalChannel extends ChannelTransport {
+export class LocalChannel extends Channel {
   other?: LocalChannel
 
   postMessage(data: any) {
@@ -39,6 +39,9 @@ export class LocalChannel extends ChannelTransport {
     })
   }
 }
+
+/** Channel that requires  */
+export class CommandChannel {}
 
 // export class Channel {
 //   _name = uname(this.constructor.name)

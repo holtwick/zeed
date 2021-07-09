@@ -1,4 +1,4 @@
-import { Channel } from "./channel.js"
+import { Channel, ChannelMessageEvent } from "./channel.js"
 import {
   DefaultListener,
   EmitterHandler,
@@ -20,6 +20,10 @@ export class Encoder {
   }
 }
 
+interface BrideOptions {
+  timeout?: number
+}
+
 export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
   channel: Channel
 
@@ -29,16 +33,39 @@ export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
-  constructor(channel: Channel) {
+  opt: BrideOptions
+
+  constructor(channel: Channel, opt: BrideOptions = {}) {
+    this.opt = opt
     this.channel = channel
+    this.channel.on("message", (event) => this._recv(event))
+    this.channel.on("messageerror", (event) => {
+      log.error("Error in channel", event)
+    })
   }
 
-  public async emit<U extends keyof L>(
-    event: U,
-    ...args: Parameters<L[U]>
-  ): Promise<boolean> {
-    let ok = false
+  private _post(msg: any) {
+    this.channel.postMessage(this.encoder.encode(msg))
+  }
+
+  private _recv(msg: ChannelMessageEvent) {
+    let obj = this.encoder.decode(msg.data)
+
+    let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
+    // this.subscribersOnAny.forEach((fn) => fn(event, ...args))
+    //   if (subscribers.length > 0) {
+    //     let all = subscribers.map((fn) => {
+    //       try {
+    //         return promisify(fn(...args))
+    //       } catch (err) {
+    //         log.warn("emit warning:", err)
+    //       }
+    //     })
+  }
+
+  public emit<U extends keyof L>(event: U, ...args: Parameters<L[U]>): this {
     try {
+      // this._post(msg)
       let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
       // log.debug("emit", this?.constructor?.name, event, ...args, subscribers)
 
@@ -52,17 +79,28 @@ export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
             log.warn("emit warning:", err)
           }
         })
-        ok = true
-        await Promise.all(all)
+        return (await Promise.all(all)) as any
       }
     } catch (err) {
       log.error("emit exception", err)
     }
-    return ok
+    return this
   }
 
-  public onAny(fn: EmitterHandler) {
+  public async fetch<U extends keyof L>(
+    event: U,
+    ...args: Parameters<L[U]>
+  ): Promise<undefined | ReturnType<L[U]>> {
+    let result = await this.emit(event, ...args)
+    if (Array.isArray(result) && result.length === 1) {
+      return result[0]
+    }
+    return undefined
+  }
+
+  public onAny(fn: EmitterHandler): this {
     this.subscribersOnAny.push(fn)
+    return this
   }
 
   public on<U extends keyof L>(event: U, listener: L[U]) {
@@ -76,23 +114,23 @@ export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
     }
   }
 
-  public once<U extends keyof L>(event: U, listener: L[U]) {
+  public once<U extends keyof L>(event: U, listener: L[U]): this {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)
       return await promisify(listener(...args))
     }
     this.on(event, onceListener as any)
+    return this
   }
 
   public off<U extends keyof L>(event: U, listener: L[U]): this {
-    // log("off", key)
     this.subscribers[event] = (this.subscribers[event] || []).filter(
       (f: any) => listener && f !== listener
     )
     return this
   }
 
-  public removeAllListeners(event?: keyof L): this {
+  public removeAllListeners(): this {
     this.subscribers = {}
     return this
   }

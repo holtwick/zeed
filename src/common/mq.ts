@@ -1,10 +1,9 @@
-// Inspied by https://github.com/diamondio/better-queue
+// Inspired by https://github.com/diamondio/better-queue
 
 import { Logger } from "./log.js"
+import { uuid } from "./uuid.js"
 import { Emitter } from "./emitter.js"
 import { cloneObject } from "./utils.js"
-import { uuid } from "./uuid.js"
-
 import { Channel } from "./channel.js"
 
 const log = Logger("mq")

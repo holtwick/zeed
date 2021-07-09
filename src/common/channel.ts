@@ -8,7 +8,7 @@ const log = Logger("channel")
 type Data = string | Uint8Array
 
 /** See http://developer.mozilla.org/en-US/docs/Web/API/MessageEvent */
-interface ChannelMessageEvent {
+export interface ChannelMessageEvent {
   data: any
   origin?: string
   lastEventId?: string

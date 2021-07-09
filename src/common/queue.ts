@@ -1,7 +1,7 @@
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-// import { Logger } from "../common/log.js"
-// const log = Logger("queue")
+import { Logger } from "../common/log.js"
+const log = Logger("queue")
 
 type QueueTaskResolver = any
 type QueueTask<T = any> = () => Promise<T>
@@ -31,7 +31,13 @@ export class SerialQueue {
       }
       const { task, resolve } = info
       this.currentTask = task()
-      let result = await this.currentTask
+      let result = undefined
+      try {
+        result = await this.currentTask
+      } catch (err) {
+        log.error("Error performing task", err)
+      }
+
       resolve(result)
       this.currentTask = undefined
     }

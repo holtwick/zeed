@@ -1,6 +1,7 @@
-import { Disposable, Logger, uname, Emitter } from "../common"
-import { cloneObject } from "./utils"
-import { uuid } from "./uuid"
+import { Logger } from "./log.js"
+import { Emitter } from "./emitter.js"
+import { cloneObject } from "./utils.js"
+import { uuid } from "./uuid.js"
 
 const log = Logger("channel")
 
@@ -15,6 +16,7 @@ interface ChannelMessageEvent {
 
 /**
  * Inspired by
+ * http://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel
  * https://deno.com/deploy/docs/runtime-broadcast-channel
  * */
 export abstract class ChannelTransport extends Emitter<{

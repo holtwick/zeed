@@ -1,13 +1,17 @@
 {
   "name": "zeed",
   "version": "0.3.10",
-  "description": "Simple foundation library",
+  "description": "🌱 Simple foundation library",
   "keywords": [
     "foundation",
     "typescript",
     "event",
     "logging"
   ],
+  "funding": {
+    "type": "GitHub Sponsors ❤",
+    "url": "https://github.com/sponsors/holtwick"
+  },
   "license": "MIT",
   "author": {
     "name": "Dirk Holtwick",

@@ -20,6 +20,15 @@ export class Encoder {
   }
 }
 
+export interface BridgeMessage {
+  name: string
+  info: any
+  responseName?: string
+  success?: boolean
+  error?: string | null | undefined
+  requestPayload?: any
+}
+
 interface BrideOptions {
   timeout?: number
 }
@@ -44,43 +53,35 @@ export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
     })
   }
 
-  private _post(msg: any) {
+  private _post(msg: BridgeMessage) {
     this.channel.postMessage(this.encoder.encode(msg))
   }
 
-  private _recv(msg: ChannelMessageEvent) {
-    let obj = this.encoder.decode(msg.data)
+  private _recv(ev: ChannelMessageEvent) {
+    let msg = this.encoder.decode(ev.data) as BridgeMessage
+
+    const event = msg.name
+    const args = msg.info
 
     let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
-    // this.subscribersOnAny.forEach((fn) => fn(event, ...args))
-    //   if (subscribers.length > 0) {
-    //     let all = subscribers.map((fn) => {
-    //       try {
-    //         return promisify(fn(...args))
-    //       } catch (err) {
-    //         log.warn("emit warning:", err)
-    //       }
-    //     })
+    this.subscribersOnAny.forEach((fn) => fn(event, ...args))
+    if (subscribers.length > 0) {
+      let all = subscribers.map((fn) => {
+        try {
+          return promisify(fn(...args))
+        } catch (err) {
+          log.warn("emit warning:", err)
+        }
+      })
+    }
   }
 
   public emit<U extends keyof L>(event: U, ...args: Parameters<L[U]>): this {
     try {
-      // this._post(msg)
-      let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
-      // log.debug("emit", this?.constructor?.name, event, ...args, subscribers)
-
-      this.subscribersOnAny.forEach((fn) => fn(event, ...args))
-
-      if (subscribers.length > 0) {
-        let all = subscribers.map((fn) => {
-          try {
-            return promisify(fn(...args))
-          } catch (err) {
-            log.warn("emit warning:", err)
-          }
-        })
-        return (await Promise.all(all)) as any
-      }
+      this._post({
+        name: event as string,
+        info: args,
+      })
     } catch (err) {
       log.error("emit exception", err)
     }

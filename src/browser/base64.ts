@@ -1,4 +1,4 @@
-import { Logger } from "../common/log"
+import { Logger } from "../common/log.js"
 
 const { error } = Logger("zeed:base64")
 

@@ -1,4 +1,4 @@
-import { formatMilliseconds, getTimestamp } from "../common/time"
+import { formatMilliseconds, getTimestamp } from "../common/time.js"
 import {
   Logger,
   LoggerInterface,
@@ -7,8 +7,8 @@ import {
   LogLevel,
   LogMessage,
 } from "../common/log"
-import { selectColor, supportsColors } from "./log-colors"
-import { useNamespaceFilter } from "../common/log-filter"
+import { selectColor, supportsColors } from "./log-colors.js"
+import { useNamespaceFilter } from "../common/log-filter.js"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`

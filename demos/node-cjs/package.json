@@ -2,7 +2,7 @@
   "name": "zeed-node-demo",
   "version": "0.1.0",
   "description": "Just a demo",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "engines": {
     "node": ">=14.13.1"

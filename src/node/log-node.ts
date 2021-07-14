@@ -33,9 +33,9 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     level = LogLevel.debug,
     colors = true,
-    levelHelper = false,
+    levelHelper = true,
     nameBrackets = true,
-    padding = 16,
+    padding = 0,
     filter = undefined,
   } = opt
   const matches = useNamespaceFilter(

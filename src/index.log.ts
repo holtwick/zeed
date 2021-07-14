@@ -1,4 +1,4 @@
 // console.log("browser")
 
-export * from "./common/log"
-export * from "./browser/log-browser"
+export * from "./common/log.js"
+export * from "./browser/log-browser.js"

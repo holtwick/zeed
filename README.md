@@ -6,7 +6,7 @@
 - Covered by tests
 - Universal for node.js and browsers
 - No dependencies and lightweight
-- Only modern ESM, no more CommonJS 
+- Modern ESM, fallback to CommonJS 
 - Unified logging; various handlers
 - Typed events
 

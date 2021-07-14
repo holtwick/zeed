@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "🌱 Simple foundation library",
   "keywords": [
     "foundation",
@@ -28,6 +28,7 @@
     }
   },
   "module": "dist/esm/index.browser.js",
+  "main": "dist/cjs/index.node.js",
   "files": [
     "dist"
   ],
@@ -51,7 +52,6 @@
     "jest": "^27.0.6",
     "jest-ts-webcompat-resolver": "^1.0.0",
     "ts-jest": "^27.0.3",
-    "tsup": "^4.12.5",
     "typescript": "^4.3.5"
   },
   "dependencies": {

@@ -28,10 +28,8 @@
     }
   },
   "module": "dist/index.browser.js",
-  "main": "dist/index.node.cjs",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=14.13.1"

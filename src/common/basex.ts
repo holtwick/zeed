@@ -127,7 +127,7 @@ export function useBase(alphaOrBase: string | number) {
     if (source.length === 0) return new Uint8Array()
 
     // Normalize
-    source = source.replaceAll(/\s+/gi, "")
+    source = source.replace(/\s+/gi, "")
 
     let psz = 0
     let length = 0

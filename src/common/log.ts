@@ -3,7 +3,7 @@ import { LoggerConsoleHandler } from "./log-console.js"
 import { useNamespaceFilter } from "./log-filter.js"
 
 export enum LogLevel {
-  debug,
+  debug = 1,
   info,
   warn,
   error,

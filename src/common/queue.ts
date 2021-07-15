@@ -57,9 +57,9 @@ export class SerialQueue {
       this.currentTask = task()
       let result = undefined
       try {
-        this.debug && log(`start ${name}`)
+        this.debug && log.info(`start task ${name}`)
         result = await this.currentTask
-        this.debug && log(`end ${name} with result =`, result)
+        this.debug && log(`finished task ${name} with result =`, result)
       } catch (err) {
         log.error("Error performing task", err)
       }
@@ -73,8 +73,15 @@ export class SerialQueue {
     }
   }
 
-  async enqueue<T>(task: QueueTask<T>): Promise<T> {
-    const name = uname(this.name)
+  async enqueue<T>(
+    task: QueueTask<T>,
+    opt: { immediate?: boolean; name?: string } = {}
+  ): Promise<T> {
+    const { immediate = false, name = uname(this.name) } = opt
+    if (immediate) {
+      this.debug && log.info(`immediate execution ${name}`)
+      return await task()
+    }
     this.debug && log(`enqueue ${name}`)
     return new Promise((resolve) => {
       this.queue.push({

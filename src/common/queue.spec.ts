@@ -1,15 +1,18 @@
 import { Logger } from "../common"
 import { sleep } from "../common/promise"
+import { LogLevel } from "./log"
 import { SerialQueue } from "./queue"
 
 const log = Logger("queue")
+
+const debug = false // LogLevel.info
 
 describe("queue", () => {
   it("should execute in strict order", async () => {
     expect.assertions(1)
 
     let list: any = []
-    let queue = new SerialQueue()
+    let queue = new SerialQueue({ debug })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -53,7 +56,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue({ debug: true })
+    let queue = new SerialQueue({ debug })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -74,7 +77,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue()
+    let queue = new SerialQueue({ debug })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -99,7 +102,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue({ debug: true })
+    let queue = new SerialQueue({ debug })
 
     await queue.pause()
 

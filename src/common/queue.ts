@@ -14,6 +14,7 @@ interface QueueTaskInfo {
   resolve: QueueTaskResolver
 }
 
+/** Guarentee serial execution of tasks. Able to wait, pause, resume and cancel all. */
 export class SerialQueue {
   private queue: QueueTaskInfo[] = []
 
@@ -79,6 +80,7 @@ export class SerialQueue {
     }
   }
 
+  /** Enqueue task to be executed when all other tasks are done. Except `immediate = true`. */
   async enqueue<T>(
     task: QueueTask<T>,
     opt: { immediate?: boolean; name?: string } = {}
@@ -99,13 +101,18 @@ export class SerialQueue {
     })
   }
 
-  // async enqueueReentrant<T>(task: QueueTask<T>): Promise<T> {
-  //   return new Promise((resolve) => {
-  //     this.queue.push({ task, resolve })
-  //     this.performNext()
-  //   })
-  // }
+  /** If a task is already performing, execute immediately. Otherwise enqueue as usual. */
+  async enqueueReentrant<T>(
+    task: QueueTask<T>,
+    opt: { name?: string } = {}
+  ): Promise<T> {
+    return this.enqueue(task, {
+      immediate: this.currentTask != null,
+      name: opt.name,
+    })
+  }
 
+  /** Remove all tasks from queue that are not yet executing. */
   async cancelAll(unblock = true) {
     this.log(`cancelAll`)
     let resolver = this.queue.map((task) => task.resolve)
@@ -114,18 +121,21 @@ export class SerialQueue {
     await this.wait()
   }
 
+  /** Pause execution after current task is finished. */
   async pause() {
     this.log(`pause`)
     this.isPaused = true
     await this.wait()
   }
 
+  /** Resume paused queue. */
   resume() {
     this.log(`resume`)
     this.isPaused = false
     this.performNext()
   }
 
+  /** Wait for all tasks to finish */
   async wait() {
     this.log(`wait`)
     if (

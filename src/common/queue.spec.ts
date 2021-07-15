@@ -53,7 +53,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue()
+    let queue = new SerialQueue({ debug: true })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -99,7 +99,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue()
+    let queue = new SerialQueue({ debug: true })
 
     await queue.pause()
 

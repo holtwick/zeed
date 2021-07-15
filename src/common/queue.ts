@@ -1,12 +1,15 @@
 // Can learn from here https://github.com/sindresorhus/p-queue
 
 import { Logger } from "../common/log.js"
+import { uname } from "./uuid.js"
+
 const log = Logger("queue")
 
 type QueueTaskResolver = any
 type QueueTask<T = any> = () => Promise<T>
 
 interface QueueTaskInfo {
+  name: string
   task: QueueTask
   resolve: QueueTaskResolver
 }
@@ -19,21 +22,44 @@ export class SerialQueue {
 
   private currentTask?: Promise<any>
 
+  private debug: boolean
+
+  name: string
+
+  constructor(opt: { name?: string; debug?: boolean } = {}) {
+    const { name = uname("queue"), debug = false } = opt
+    this.debug = debug
+    this.name = name
+  }
+
   private async performNext() {
+    this.debug && log(`performNext, queue.length =`, this.queue.length)
+
     if (this.currentTask != null) {
+      this.debug && log(`performNext => skip while another task is running`)
+      return
+    }
+
+    if (this.isPaused) {
+      this.debug && log(`performNext => skip while is paused`)
       return
     }
 
     while (this.currentTask == null && !this.isPaused) {
       let info = this.queue.shift()
+      this.debug && log(`performNext => ${info?.name}`)
+
       if (info == null) {
         break
       }
-      const { task, resolve } = info
+
+      const { name, task, resolve } = info
       this.currentTask = task()
       let result = undefined
       try {
+        this.debug && log.info(`start task ${name}`)
         result = await this.currentTask
+        this.debug && log(`finished task ${name} with result =`, result)
       } catch (err) {
         log.error("Error performing task", err)
       }
@@ -47,9 +73,22 @@ export class SerialQueue {
     }
   }
 
-  async enqueue<T>(task: QueueTask<T>): Promise<T> {
+  async enqueue<T>(
+    task: QueueTask<T>,
+    opt: { immediate?: boolean; name?: string } = {}
+  ): Promise<T> {
+    const { immediate = false, name = uname(this.name) } = opt
+    if (immediate) {
+      this.debug && log.info(`immediate execution ${name}`)
+      return await task()
+    }
+    this.debug && log(`enqueue ${name}`)
     return new Promise((resolve) => {
-      this.queue.push({ task, resolve })
+      this.queue.push({
+        name,
+        task,
+        resolve,
+      })
       this.performNext()
     })
   }
@@ -62,6 +101,7 @@ export class SerialQueue {
   // }
 
   async cancelAll(unblock = true) {
+    this.debug && log(`cancelAll`)
     let resolver = this.queue.map((task) => task.resolve)
     this.queue = []
     resolver.forEach((r) => r(undefined))
@@ -69,16 +109,19 @@ export class SerialQueue {
   }
 
   async pause() {
+    this.debug && log(`pause`)
     this.isPaused = true
     await this.wait()
   }
 
   resume() {
+    this.debug && log(`resume`)
     this.isPaused = false
     this.performNext()
   }
 
   async wait() {
+    this.debug && log(`wait`)
     if (
       this.currentTask == null &&
       (this.queue.length === 0 || this.isPaused)

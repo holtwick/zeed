@@ -12,6 +12,14 @@ export function arrayUnion<T>(...a: T[][]): T[] {
   return arrayUnique(a.reduce((acc: T[] = [], value) => acc.concat(value), []))
 }
 
+/** `[1,[2,3]]` becomes `[1,2,3]` */
+export function arrayFlatten<T>(list: (T | T[])[]): T[] {
+  return list.reduce(
+    (a: any, b: any) => a.concat(Array.isArray(b) ? arrayFlatten(b) : b),
+    []
+  ) as T[]
+}
+
 export function arrayIntersection<T>(x: T[], y: T[]): T[] {
   return arrayUnique<T>(x).filter((n: any) => y.includes(n))
 }

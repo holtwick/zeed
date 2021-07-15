@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 // Adopted from https://github.com/motdotla/dotenv BSD-2
 
 import { Logger } from "../common/log.js"

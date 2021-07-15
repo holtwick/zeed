@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 export function stringToBoolean(value?: string, defaultValue = false): boolean {
   if (value == null || typeof value !== "string") return defaultValue
   return ["1", "true", "yes"].includes(value.toLocaleLowerCase())

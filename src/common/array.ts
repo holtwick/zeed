@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 import { cmp } from "./orderby.js"
 
 export function arrayUnique<T>(x: T[]): T[] {

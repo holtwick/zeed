@@ -1,16 +1,8 @@
-// https://stackoverflow.com/a/2117523/140927
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { useBase } from "./basex.js"
 import { getGlobal } from "./platform.js"
 import { getTimestamp } from "./time.js"
-
-// export function uuid(): string {
-//   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-//     var r = (Math.random() * 16) | 0,
-//       v = c == "x" ? r : (r & 0x3) | 0x8
-//     return v.toString(16)
-//   })
-// }
 
 const { encode: encode62, decode: decode62 } = useBase(62)
 const { encode: encode32 } = useBase(32)

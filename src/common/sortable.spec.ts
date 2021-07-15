@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 import { arrayShuffleForce } from "./array"
 import { endSortWeight, sortedItems, startSortWeight } from "./sortable"
 import { last } from "./utils"

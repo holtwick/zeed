@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 import { useBase } from "./basex"
 import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
 import { sleep } from "./promise"

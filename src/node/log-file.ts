@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 import { createWriteStream, mkdirSync } from "fs"
 import { resolve, dirname } from "path"
 import { renderMessages } from "../common/convert.js"

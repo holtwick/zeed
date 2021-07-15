@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 import { Logger } from "./log.js"
 import { Emitter } from "./emitter.js"
 import { cloneObject } from "./utils.js"

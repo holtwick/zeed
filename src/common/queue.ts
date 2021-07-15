@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 // Can learn from here https://github.com/sindresorhus/p-queue
 
 import { Logger, LoggerInterface, LogLevel } from "../common/log.js"

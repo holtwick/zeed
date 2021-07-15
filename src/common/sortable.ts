@@ -1,7 +1,11 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 // Get a sort_weight suitable for adding to top of list
 // Original idea https://holtwick.de/en/blog/smart-table-reordering
 
-import { SortableItem } from "./types.js"
+export interface SortableItem {
+  sort_weight: number
+}
 
 export function startSortWeight(items: SortableItem[]): number {
   return (

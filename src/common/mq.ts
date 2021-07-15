@@ -1,3 +1,5 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
 // Inspired by https://github.com/diamondio/better-queue
 
 import { Logger } from "./log.js"

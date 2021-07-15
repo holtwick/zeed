@@ -1,9 +1,9 @@
+// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+
+export {}
+
 export interface Disposable {
   cleanup(): Promise<void>
-}
-
-export interface SortableItem {
-  sort_weight: number
 }
 
 // JSON

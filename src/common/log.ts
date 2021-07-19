@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { deepEqual } from "./deep.js"
+import { getGlobalContext } from "./global.js"
 import { LoggerConsoleHandler } from "./log-console.js"
 import { useNamespaceFilter } from "./log-filter.js"
 
@@ -228,25 +229,19 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
 
 let globalLogger: LoggerContextInterface = LoggerContext()
 
-interface LoggerGlobal {
-  _zeedGlobalLogger?: LoggerContextInterface
-}
-
-function getGlobal(): LoggerGlobal {
-  if (typeof self !== "undefined") return self as LoggerGlobal
-  if (typeof window !== "undefined") return window as LoggerGlobal
-  if (typeof global !== "undefined") return global as LoggerGlobal
-  if (typeof globalThis !== "undefined") return globalThis as LoggerGlobal
-  throw new Error("unable to locate global object")
+declare global {
+  interface ZeedGlobalContext {
+    logger?: LoggerContextInterface
+  }
 }
 
 try {
-  let _global = getGlobal()
+  let _global = getGlobalContext()
   if (_global != null) {
-    if (_global?._zeedGlobalLogger == null) {
-      _global._zeedGlobalLogger = globalLogger
+    if (_global?.logger == null) {
+      _global.logger = globalLogger
     } else {
-      globalLogger = _global._zeedGlobalLogger
+      globalLogger = _global.logger
     }
   }
 } catch (e) {}

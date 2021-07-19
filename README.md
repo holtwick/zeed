@@ -52,7 +52,7 @@ Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo`
 
 > Alternative logging solutions: [debug](https://github.com/visionmedia/debug) or [winston](https://github.com/winstonjs/winston) to name just a few.
 
-## Promise / async / await utils
+## Promise / async / await utilities
 
 Wait for an event via `on` or `addEventListener`, useful in unit tests.
 
@@ -118,6 +118,18 @@ e.on('inc', async (count) => counter + count)
 await e.emit('inc', 1) // counter === 1
 ```
 
+You can also use a global emitter that will be available even over module boundaries:
+
+```ts
+declare global {
+  interface ZeedGlobalEmitter {
+    test(x:string):void
+  }
+}
+
+getGlobalEmitter().emit("x", "Hello World")
+```
+
 ## CRDT compatible sorting
 
 A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.
@@ -156,7 +168,7 @@ const { encode, decode } = useBase(62)
 decode(encode(sample)) === sample // = true
 ```
 
-## Deeply nested object utils
+## Deeply nested object utilities
 
 Handle complex objects.
 

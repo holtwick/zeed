@@ -11,7 +11,7 @@ import {
 } from "../common/log"
 import { selectColor, supportsColors } from "./log-colors.js"
 import { useNamespaceFilter } from "../common/log-filter.js"
-import { deepEqual } from "src/common/deep.js"
+import { deepEqual } from "../common/deep.js"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`
@@ -125,20 +125,6 @@ function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       log.error = console.error.bind(console, ...fixedArgs)
 
       log.assert = console.assert.bind(console)
-
-      // function (cond: any, ...messages: any[]) {
-      //   if (!cond) {
-      //     if (typeof console !== undefined) {
-      //       if (console.assert) {
-      //         // https://developer.mozilla.org/de/docs/Web/API/Console/assert
-      //         console.assert(cond, ...messages)
-      //       } else {
-      //         console.error(`Assert did fail with: ${cond}`, ...messages)
-      //       }
-      //     }
-      //     log.warn(`Assert did fail with: ${cond}`, ...messages)
-      //   }
-      // }
 
       log.assertEqual = function (value: any, expected: any, ...args: any[]) {
         let equal = deepEqual(value, expected)

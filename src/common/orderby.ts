@@ -27,15 +27,20 @@ export function cmp(a: any, b: any, asc: boolean = true): number {
   return aa > bb ? (asc ? 1 : -1) : aa < bb ? (asc ? -1 : 1) : 0
 }
 
-export function sortedOrderby<T>(values: T[], orderby: string): T[] {
-  let { field, asc } = parseOrderby(orderby)
-  if (field != null && typeof field === "string") {
+export function sortedOrderby<T>(values: T[], ...orderby: string[]): T[] {
+  if (orderby.length > 0) {
+    let orderByList = orderby.map(parseOrderby)
+    // let { field, asc } = parseOrderby(orderby)
+    //if (field != null && typeof field === "string") {
     // let bigger = asc ? 1 : -1
     // let smaller = asc ? -1 : 1
     let sortValues = Array.from(values)
     sortValues.sort((a: any, b: any): number => {
-      // @ts-ignore
-      return cmp(a[field], b[field], asc)
+      for (let { field, asc } of orderByList) {
+        const result = cmp(a[field], b[field], asc)
+        if (result !== 0) return result
+      }
+      return 0
       // const aa = a[field] || 0
       // const bb = b[field] || 0
       // return aa > bb ? bigger : aa < bb ? smaller : 0

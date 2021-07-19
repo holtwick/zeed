@@ -87,4 +87,67 @@ describe("Order by", () => {
       ]
     `)
   })
+
+  it("should sort by", () => {
+    const values = [
+      {
+        group: 1,
+        name: "b",
+      },
+      {
+        group: 1,
+        name: "a",
+      },
+      {
+        group: 2,
+        name: "c",
+      },
+      {
+        group: 1,
+        name: "d",
+      },
+    ]
+    expect(sortedOrderby(values, "group desc", "name asc"))
+      .toMatchInlineSnapshot(`
+Array [
+  Object {
+    "group": 2,
+    "name": "c",
+  },
+  Object {
+    "group": 1,
+    "name": "a",
+  },
+  Object {
+    "group": 1,
+    "name": "b",
+  },
+  Object {
+    "group": 1,
+    "name": "d",
+  },
+]
+`)
+
+    expect(sortedOrderby(values, "group", "name desc")).toMatchInlineSnapshot(`
+Array [
+  Object {
+    "group": 1,
+    "name": "d",
+  },
+  Object {
+    "group": 1,
+    "name": "b",
+  },
+  Object {
+    "group": 1,
+    "name": "a",
+  },
+  Object {
+    "group": 2,
+    "name": "c",
+  },
+]
+`)
+  })
 })

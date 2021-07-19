@@ -1,5 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { getGlobalContext } from "./global.js"
 import { Logger } from "./log.js"
 import { promisify } from "./promise.js"
 
@@ -90,6 +91,22 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
     this.subscribers = {}
     return this
   }
+}
+
+declare global {
+  interface ZeedGlobalContext {
+    emitter?: Emitter
+  }
+}
+
+/** Global emitter that will listen even across modules */
+export function getGlobalEmitter(): Emitter {
+  let emitter = getGlobalContext().emitter
+  if (!emitter) {
+    emitter = new Emitter()
+    getGlobalContext().emitter = emitter
+  }
+  return emitter
 }
 
 // This can be used as a global messaging port to connect loose

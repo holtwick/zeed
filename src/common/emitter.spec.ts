@@ -4,6 +4,13 @@ import { platform } from "./platform"
 import { waitOn, sleep } from "./promise"
 import { Emitter, getGlobalEmitter, lazyListener } from "./emitter"
 
+declare global {
+  interface ZeedGlobalEmitter {
+    a(n: number): void
+    b(n: number): void
+  }
+}
+
 describe("Emitter", () => {
   it("should emit", async () => {
     expect.assertions(2)

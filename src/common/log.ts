@@ -34,7 +34,11 @@ export interface LoggerInterface {
   warn(...messages: any[]): void
   error(...messages: any[]): void
   assert(cond: any, ...messages: any[]): void
+
+  /** @deprecated use .assert */
   assertEqual(value: any, expected: any, ...args: any[]): void
+
+  /** @deprecated use .assert */
   assertNotEqual(value: any, expected: any, ...args: any[]): void
   extend(prefix: string): LoggerInterface
   factory?: LoggerContextInterface

@@ -11,6 +11,7 @@ import {
 } from "../common/log"
 import { selectColor, supportsColors } from "./log-colors.js"
 import { useNamespaceFilter } from "../common/log-filter.js"
+import { deepEqual } from "src/common/deep.js"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`
@@ -122,12 +123,62 @@ function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       log.info = console.info.bind(console, ...fixedArgs)
       log.warn = console.warn.bind(console, ...fixedArgs)
       log.error = console.error.bind(console, ...fixedArgs)
+
+      log.assert = console.assert.bind(console)
+
+      // function (cond: any, ...messages: any[]) {
+      //   if (!cond) {
+      //     if (typeof console !== undefined) {
+      //       if (console.assert) {
+      //         // https://developer.mozilla.org/de/docs/Web/API/Console/assert
+      //         console.assert(cond, ...messages)
+      //       } else {
+      //         console.error(`Assert did fail with: ${cond}`, ...messages)
+      //       }
+      //     }
+      //     log.warn(`Assert did fail with: ${cond}`, ...messages)
+      //   }
+      // }
+
+      log.assertEqual = function (value: any, expected: any, ...args: any[]) {
+        let equal = deepEqual(value, expected)
+        if (!equal) {
+          log.assert(
+            equal,
+            `Assert did fail. Expected ${expected} got ${value}`,
+            expected,
+            value,
+            ...args
+          )
+        }
+      }
+
+      log.assertNotEqual = function (
+        value: any,
+        expected: any,
+        ...args: any[]
+      ) {
+        let equal = deepEqual(value, expected)
+        if (equal) {
+          log.assert(
+            equal,
+            `Assert did fail. Expected ${expected} not to be equal with ${value}`,
+            expected,
+            value,
+            ...args
+          )
+        }
+      }
     } else {
       const noop = () => {}
       log = noop as LoggerInterface
       log.info = noop
       log.warn = noop
       log.error = noop
+
+      log.assert = noop
+      log.assertEqual = noop
+      log.assertNotEqual = noop
     }
 
     log.extend = (subName: string) => {

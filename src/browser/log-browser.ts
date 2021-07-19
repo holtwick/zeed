@@ -120,6 +120,7 @@ function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       }
 
       log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
+      log.debug = console.debug.bind(console, ...fixedArgs)
       log.info = console.info.bind(console, ...fixedArgs)
       log.warn = console.warn.bind(console, ...fixedArgs)
       log.error = console.error.bind(console, ...fixedArgs)
@@ -158,6 +159,7 @@ function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
     } else {
       const noop = () => {}
       log = noop as LoggerInterface
+      log.debug = noop
       log.info = noop
       log.warn = noop
       log.error = noop

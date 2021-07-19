@@ -2,7 +2,7 @@
 
 import { platform } from "./platform"
 import { waitOn, sleep } from "./promise"
-import { Emitter, lazyListener } from "./emitter"
+import { Emitter, getGlobalEmitter, lazyListener } from "./emitter"
 
 describe("Emitter", () => {
   it("should emit", async () => {
@@ -137,6 +137,21 @@ describe("Emitter", () => {
 
     await e.emit("a", 1)
     await e.emit("b", 1)
+
+    expect(fn).toBeCalledTimes(3)
+  })
+
+  it("should work with global listener", async () => {
+    let fn = jest.fn()
+
+    let e = getGlobalEmitter()
+
+    e.on("a", fn)
+    e.on("a", fn)
+    e.on("b", fn)
+
+    await e.emit("a", 1)
+    await getGlobalEmitter().emit("b", 1)
 
     expect(fn).toBeCalledTimes(3)
   })

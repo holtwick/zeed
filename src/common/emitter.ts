@@ -97,10 +97,12 @@ declare global {
   interface ZeedGlobalContext {
     emitter?: Emitter
   }
+
+  interface ZeedGlobalEmitter {}
 }
 
 /** Global emitter that will listen even across modules */
-export function getGlobalEmitter(): Emitter {
+export function getGlobalEmitter(): Emitter<ZeedGlobalEmitter> {
   let emitter = getGlobalContext().emitter
   if (!emitter) {
     emitter = new Emitter()

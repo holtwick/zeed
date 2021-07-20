@@ -9,7 +9,7 @@ let namespaces: Record<string, any> = {}
 
 export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
   const {
-    level = LogLevel.debug,
+    level = LogLevel.all,
     colors = true,
     levelHelper = false,
     nameBrackets = true,

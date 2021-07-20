@@ -6,6 +6,7 @@ import { LoggerConsoleHandler } from "./log-console.js"
 import { useNamespaceFilter } from "./log-filter.js"
 
 export enum LogLevel {
+  all = -1,
   debug = 0,
   info,
   warn,
@@ -27,12 +28,20 @@ export type LogHandler = (msg: LogMessage) => void
 
 export interface LoggerInterface {
   (...messages: any[]): void
+
+  /** @deprecated use .level = LogLevel.off or LogLevel.all */
   active: boolean
+
   level: LogLevel
+
   debug(...messages: any[]): void
+
   info(...messages: any[]): void
+
   warn(...messages: any[]): void
+
   error(...messages: any[]): void
+
   assert(cond: any, ...messages: any[]): void
 
   /** @deprecated use .assert */
@@ -40,7 +49,9 @@ export interface LoggerInterface {
 
   /** @deprecated use .assert */
   assertNotEqual(value: any, expected: any, ...args: any[]): void
+
   extend(prefix: string): LoggerInterface
+
   factory?: LoggerContextInterface
 }
 
@@ -96,7 +107,7 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     }
 
     log.active = true
-    log.level = LogLevel.debug
+    log.level = LogLevel.all
 
     log.debug = function (...messages: any[]) {
       emit({
@@ -211,10 +222,10 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     logHandlers = [...handlers].filter((h) => typeof h === "function")
   }
 
-  Logger.level = LogLevel.debug
+  Logger.level = LogLevel.all
 
   /** @deprecated */
-  Logger.setLogLevel = function (level: LogLevel = 0) {
+  Logger.setLogLevel = function (level: LogLevel = LogLevel.all) {
     if (logLock) return
     Logger.level = level
   }

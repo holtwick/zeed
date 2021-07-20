@@ -24,7 +24,7 @@ let time = getTimestamp()
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.debug,
+    level = LogLevel.all,
     colors = true,
     levelHelper = false,
     nameBrackets = true,

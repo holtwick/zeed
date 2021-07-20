@@ -3,9 +3,13 @@
 import { Logger, sleep } from "../common/index.js"
 import { LoggerFileHandler } from "./log-file.js"
 import { LoggerNodeHandler } from "./log-node.js"
-import { statSync, unlinkSync } from "fs"
+import { rmSync, statSync, unlinkSync } from "fs"
 
 describe("Log File", () => {
+  afterAll(() => {
+    rmSync(__dirname + "/tmp", { recursive: true, force: true })
+  })
+
   it("should write log", async () => {
     const path = __dirname + "/tmp/test.log"
     Logger.setHandlers([LoggerFileHandler(path)])

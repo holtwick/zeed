@@ -2,13 +2,14 @@
 
 // Inspired by https://github.com/diamondio/better-queue
 
-import { Logger } from "./log.js"
+import { Logger, LogLevel } from "./log.js"
 import { uuid } from "./uuid.js"
 import { Emitter } from "./emitter.js"
 import { cloneObject } from "./utils.js"
 import { Channel } from "./channel.js"
 
 const log = Logger("zeed:mq")
+log.level = LogLevel.off
 
 interface Task {
   id: string

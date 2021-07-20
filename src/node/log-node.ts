@@ -33,7 +33,7 @@ function log(...args: any[]) {
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.debug,
+    level = LogLevel.all,
     colors = true,
     levelHelper = true,
     nameBrackets = true,

@@ -13,7 +13,7 @@ const useColors = supportsColors()
 
 /** @deprecated */
 export function LoggerBrowserClassicHandler(
-  level: LogLevel = LogLevel.debug,
+  level: LogLevel = LogLevel.all,
   opt: {
     colors: boolean
     levelHelper: boolean

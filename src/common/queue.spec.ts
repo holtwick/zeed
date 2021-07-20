@@ -1,20 +1,17 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../common"
 import { sleep } from "../common/promise"
 import { LogLevel } from "./log"
 import { SerialQueue } from "./queue"
 
-const log = Logger("test:queue")
-
-const debug = false // LogLevel.info
+const logLevel = LogLevel.off
 
 describe("queue", () => {
   it("should execute in strict order", async () => {
     expect.assertions(1)
 
     let list: any = []
-    let queue = new SerialQueue({ debug })
+    let queue = new SerialQueue({ logLevel })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -58,7 +55,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue({ debug })
+    let queue = new SerialQueue({ logLevel })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -79,7 +76,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue({ debug })
+    let queue = new SerialQueue({ logLevel })
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -104,7 +101,7 @@ describe("queue", () => {
     expect.assertions(2)
 
     let list: any = []
-    let queue = new SerialQueue({ debug })
+    let queue = new SerialQueue({ logLevel })
 
     await queue.pause()
 

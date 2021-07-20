@@ -5,7 +5,7 @@ import { sleep } from "../common/promise"
 import { LogLevel } from "./log"
 import { SerialQueue } from "./queue"
 
-const log = Logger("queue")
+const log = Logger("test:queue")
 
 const debug = false // LogLevel.info
 

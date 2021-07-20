@@ -8,7 +8,7 @@
 
 import { Logger } from "./log.js"
 
-const log = Logger("basex")
+const log = Logger("zeed:basex")
 
 const alphabets = {
   "2": "01",

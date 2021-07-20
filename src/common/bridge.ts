@@ -10,7 +10,7 @@ import { Logger } from "./log.js"
 import { promisify } from "./promise.js"
 import { SerialQueue } from "./queue.js"
 
-const log = Logger("bridge")
+const log = Logger("zeed:bridge")
 
 export class Encoder {
   encode(data: any) {

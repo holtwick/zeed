@@ -5,7 +5,7 @@ import { Emitter } from "./emitter.js"
 import { cloneObject } from "./utils.js"
 import { uuid } from "./uuid.js"
 
-const log = Logger("channel")
+const log = Logger("zeed:channel")
 
 type Data = string | Uint8Array
 

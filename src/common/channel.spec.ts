@@ -3,7 +3,7 @@
 import { Logger } from "../common"
 import { LocalChannel } from "./channel"
 
-const log = Logger("channel.spec")
+const log = Logger("test:channel")
 
 // class FakeSimpleChannel implements SimpleChannel {
 //   _other?: FakeSimpleChannel

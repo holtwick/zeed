@@ -8,7 +8,7 @@ import { Emitter } from "./emitter.js"
 import { cloneObject } from "./utils.js"
 import { Channel } from "./channel.js"
 
-const log = Logger("mq")
+const log = Logger("zeed:mq")
 
 interface Task {
   id: string

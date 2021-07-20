@@ -5,7 +5,7 @@
 import { Logger, LoggerInterface, LogLevel } from "../common/log.js"
 import { uname } from "./uuid.js"
 
-const log = Logger("queue")
+const log = Logger("zeed:queue")
 
 type QueueTaskResolver = any
 type QueueTask<T = any> = () => Promise<T>
@@ -33,8 +33,7 @@ export class SerialQueue {
     const { name = uname("queue"), debug = false } = opt
 
     this.name = name
-
-    this.log = Logger("queue")
+    this.log = Logger(`zeed:queue:${name}`)
 
     const logLevel = debug === true ? LogLevel.debug : +debug
     this.log.active = logLevel >= LogLevel.debug

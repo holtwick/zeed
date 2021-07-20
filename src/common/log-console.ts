@@ -11,7 +11,7 @@ import { LogLevel, LogHandler, LogMessage, LogHandlerOptions } from "./log.js"
  */
 export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.debug,
+    level = LogLevel.all,
     colors = true,
     levelHelper = false,
     nameBrackets = true,

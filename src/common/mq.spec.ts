@@ -1,10 +1,12 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { immediate, Logger } from "../common"
+import { LogLevel } from "./log"
 import { TaskQueue } from "./mq"
 
 // require('debug').enable('*')
 const log = Logger("debug:mq")
+log.level = LogLevel.off
 
 describe("MQ", () => {
   it("should perform each entry", async () => {

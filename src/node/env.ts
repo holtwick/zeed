@@ -2,7 +2,7 @@
 
 // Adopted from https://github.com/motdotla/dotenv BSD-2
 
-import { Logger } from "../common/log.js"
+import { Logger, LogLevel } from "../common/log.js"
 
 import fs from "fs"
 import path from "path"
@@ -15,6 +15,7 @@ const RE_NEWLINES = /\\n/g
 const NEWLINES_MATCH = /\n|\r|\r\n/
 
 type csvOptions = {
+  /** @deprecated will probably be replaced by logLevel */
   debug?: boolean
   path?: string
   filename?: string
@@ -81,7 +82,7 @@ export function setupEnv(options: csvOptions = {}) {
   const encoding: BufferEncoding = options?.encoding ?? "utf8"
   const debug = options?.debug || false
 
-  log.active = debug
+  if (debug !== true) log.level = LogLevel.off
 
   try {
     // specifying an encoding returns a string instead of a buffer

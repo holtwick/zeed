@@ -29,15 +29,12 @@ export class SerialQueue {
 
   name: string
 
-  constructor(opt: { name?: string; debug?: boolean | LogLevel } = {}) {
-    const { name = uname("queue"), debug = false } = opt
+  constructor(opt: { name?: string; logLevel?: LogLevel } = {}) {
+    const { name = uname("queue"), logLevel } = opt
 
     this.name = name
     this.log = Logger(`zeed:queue:${name}`)
-
-    const logLevel = debug === true ? LogLevel.debug : +debug
-    this.log.active = logLevel >= LogLevel.debug
-    this.log.level = logLevel
+    this.log.level = logLevel ?? LogLevel.off
   }
 
   private async performNext() {

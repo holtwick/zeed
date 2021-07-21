@@ -14,17 +14,25 @@ import { Logger } from "../common/log.js"
 
 const log = Logger("zeed:filestorage")
 
+export interface FileStorageOptions {
+  pretty?: boolean
+}
+
 export class FileStorage {
   private store: { [key: string]: string } = {}
   private dirname: string
   private fileKeys?: string[] = undefined
+  private pretty: boolean = false
 
-  constructor(basePath?: string) {
+  constructor(basePath?: string, opt: FileStorageOptions = {}) {
     this.dirname = resolve(process.cwd(), basePath || ".fileStorage")
+    this.pretty = opt.pretty ?? false
   }
 
   setItem(key: string, value: Json): void {
-    const data = JSON.stringify(value)
+    const data = this.pretty
+      ? JSON.stringify(value, null, 2)
+      : JSON.stringify(value)
     this.store[key] = data
     try {
       const path = resolve(this.dirname, key + ".json")

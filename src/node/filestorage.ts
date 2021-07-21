@@ -16,6 +16,7 @@ const log = Logger("zeed:filestorage")
 
 export interface FileStorageOptions {
   pretty?: boolean
+  path?: string
 }
 
 export class FileStorage {
@@ -24,8 +25,8 @@ export class FileStorage {
   private fileKeys?: string[] = undefined
   private pretty: boolean = false
 
-  constructor(basePath?: string, opt: FileStorageOptions = {}) {
-    this.dirname = resolve(process.cwd(), basePath || ".fileStorage")
+  constructor(opt: FileStorageOptions = {}) {
+    this.dirname = resolve(process.cwd(), opt.path || ".fileStorage")
     this.pretty = opt.pretty ?? false
   }
 

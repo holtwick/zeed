@@ -18,8 +18,8 @@ npm i zeed
 
 Related projects:
 
-- [zeed-dom](github.com/holtwick/zeed-dom)
-- [zerva](github.com/holtwick/zerva)
+- [zeed-dom](https://github.com/holtwick/zeed-dom)
+- [zerva](https://github.com/holtwick/zerva)
 
 ## Logging
 

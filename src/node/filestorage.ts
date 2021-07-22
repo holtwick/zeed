@@ -27,7 +27,7 @@ export class FileStorage {
 
   constructor(opt: FileStorageOptions = {}) {
     this.dirname = resolve(process.cwd(), opt.path || ".fileStorage")
-    this.pretty = opt.pretty ?? false
+    this.pretty = !!opt.pretty
   }
 
   setItem(key: string, value: Json): void {

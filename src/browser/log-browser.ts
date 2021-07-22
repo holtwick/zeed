@@ -30,7 +30,9 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     nameBrackets = true,
     padding = 16,
   } = opt
-  const matches = useNamespaceFilter(localStorage.debug)
+  const matches = useNamespaceFilter(
+    opt.filter ?? localStorage.zeed ?? localStorage.debug
+  )
   return (msg: LogMessage) => {
     if (msg.level < level) return
     if (!matches(msg.name)) return

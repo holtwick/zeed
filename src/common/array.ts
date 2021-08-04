@@ -96,6 +96,13 @@ export function arrayIsEqual<T>(array1: T[], array2: T[]): boolean {
 
 export function arrayShuffleInPlace<T>(array: T[]): T[] {
   array.sort(() => (Math.random() > 0.5 ? 1 : -1))
+
+  // Alternative https://github.com/sindresorhus/array-shuffle/blob/main/index.js#L8
+  // for (let index = array.length - 1; index > 0; index--) {
+  // 	const newIndex = Math.floor(Math.random() * (index + 1));
+  // 	[array[index], array[newIndex]] = [array[newIndex], array[index]];
+  // }
+
   return array
 }
 

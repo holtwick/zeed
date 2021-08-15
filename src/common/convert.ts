@@ -1,8 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+const TRUE_VALUES_LIST = ["1", "true", "yes", "y", "on"]
+
 export function stringToBoolean(value?: string, defaultValue = false): boolean {
   if (value == null || typeof value !== "string") return defaultValue
-  return ["1", "true", "yes"].includes(value.toLocaleLowerCase())
+  return TRUE_VALUES_LIST.includes(String(value).trim().toLowerCase())
 }
 
 export function stringToInteger(value?: string, defaultValue = 0): number {
@@ -19,7 +21,7 @@ export function valueToBoolean(value?: any, defaultValue = false): boolean {
   if (value == null) return defaultValue
   if (typeof value === "boolean") return value
   if (typeof value === "number") return value !== 0
-  return ["1", "true", "yes"].includes(value.toString().toLocaleLowerCase())
+  return TRUE_VALUES_LIST.includes(String(value).trim().toLowerCase())
 }
 
 export function valueToInteger(value?: any, defaultValue = 0): number {

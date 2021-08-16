@@ -2,10 +2,6 @@
   "name": "zeed",
   "version": "0.6.3",
   "description": "🌱 Simple foundation library",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/holtwick/zeed.git"
-  },
   "keywords": [
     "foundation",
     "typescript",

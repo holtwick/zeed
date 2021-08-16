@@ -2,6 +2,10 @@
   "name": "zeed",
   "version": "0.6.2",
   "description": "🌱 Simple foundation library",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holtwick/zeed.git"
+  },
   "keywords": [
     "foundation",
     "typescript",
@@ -43,7 +47,7 @@
     "build:tsup": "tsup src/index.*.ts --dts --sourcemap --format esm,cjs --keep-names --minify-whitespace",
     "clean": "rm -rf dist",
     "watch": "tsc -w -p tsconfig.json",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build && npm test",
     "test": "jest src"
   },
   "devDependencies": {

@@ -71,6 +71,15 @@ export class FileStorage {
     }
   }
 
+  getPath(key: string): string {
+    return resolve(this.dirname, key + this.extension)
+  }
+
+  getBuffer(key: string): Buffer {
+    const path = resolve(this.dirname, key + this.extension)
+    return Buffer.from(readFileSync(path))
+  }
+
   getItem(key: string): Json | null {
     if (this.store.hasOwnProperty(key)) {
       let value = this.store[key]

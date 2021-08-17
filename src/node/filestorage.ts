@@ -17,6 +17,9 @@ const log = Logger("zeed:filestorage")
 export interface FileStorageOptions {
   pretty?: boolean
   path?: string
+  extension?: string
+  objectFromString?: (data: string) => any
+  objectToString?: (data: any) => string
 }
 
 export class FileStorage {
@@ -24,19 +27,43 @@ export class FileStorage {
   private dirname: string
   private fileKeys?: string[] = undefined
   private pretty: boolean = false
+  private extension: string
+  private extensionLength: number
+  private objectFromString: (data: string) => any
+  private objectToString: (data: any) => string
 
   constructor(opt: FileStorageOptions = {}) {
     this.dirname = resolve(process.cwd(), opt.path || ".fileStorage")
     this.pretty = !!opt.pretty
+    this.extension = opt.extension ?? ".json"
+
+    if (!this.extension.startsWith(".")) this.extension = "." + this.extension
+    this.extensionLength = this.extension.length
+
+    this.objectToString =
+      opt.objectToString ??
+      ((data: any): string => {
+        return this.pretty
+          ? JSON.stringify(data, null, 2)
+          : JSON.stringify(data)
+      })
+
+    this.objectFromString =
+      opt.objectFromString ??
+      ((data: string) => {
+        try {
+          return JSON.parse(data)
+        } catch (err) {
+          log.warn(`fileStorage parse error '${err}' in`, data)
+        }
+      })
   }
 
   setItem(key: string, value: Json): void {
-    const data = this.pretty
-      ? JSON.stringify(value, null, 2)
-      : JSON.stringify(value)
+    const data = this.objectToString(value)
     this.store[key] = data
     try {
-      const path = resolve(this.dirname, key + ".json")
+      const path = resolve(this.dirname, key + this.extension)
       mkdirSync(this.dirname, { recursive: true })
       writeFileSync(path, data, "utf8")
     } catch (err) {
@@ -47,13 +74,13 @@ export class FileStorage {
   getItem(key: string): Json | null {
     if (this.store.hasOwnProperty(key)) {
       let value = this.store[key]
-      return JSON.parse(value) || null
+      return this.objectFromString(value) || null
     } else {
       try {
-        const path = resolve(this.dirname, key + ".json")
+        const path = resolve(this.dirname, key + this.extension)
         const data = readFileSync(path, "utf8")
         if (data) {
-          return JSON.parse(data)
+          return this.objectFromString(data)
         }
       } catch (err) {
         log.error("getItem error", err)
@@ -71,7 +98,7 @@ export class FileStorage {
       }
     }
     try {
-      const path = resolve(this.dirname, key + ".json")
+      const path = resolve(this.dirname, key + this.extension)
       unlinkSync(path)
     } catch (err) {}
   }
@@ -88,9 +115,10 @@ export class FileStorage {
         this.fileKeys =
           readdirSync(this.dirname, { withFileTypes: true })
             .filter(
-              (item) => !item.isDirectory() && item.name.endsWith(".json")
+              (item) =>
+                !item.isDirectory() && item.name.endsWith(this.extension)
             )
-            .map((item) => item.name.slice(0, -5)) || []
+            .map((item) => item.name.slice(0, -this.extensionLength)) || []
       } catch (err) {}
     }
     let keys = [...(this.fileKeys || [])]

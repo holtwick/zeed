@@ -37,3 +37,26 @@ export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
   }
 }
+
+/**
+ * Get the source code location of the caller
+ * https://stackoverflow.com/a/47296370/140927
+ *
+ * @param level Number of levels to go down the stack trace
+ * @param stripCwd Strip the current working directory, only reasonable for Node.js environment
+ * @returns
+ */
+export function logSourceLocation(level = 2, stripCwd = true): string {
+  let line: string | undefined
+  let stack = new Error().stack
+  if (typeof stack === "string") {
+    let rawLine: string | undefined = stack
+      ?.split("\n")
+      ?.map((rawLine) => rawLine.match(/^\s+at.*\((.*?)\)/)?.[1])
+      ?.filter((v) => v != null)?.[level]
+    if (rawLine && stripCwd && rawLine.startsWith(process.cwd())) {
+      rawLine = "./" + rawLine.substr(process.cwd().length + 1)
+    }
+  }
+  return line || ""
+}

@@ -33,6 +33,49 @@ function log(...args: any[]) {
   return process.stderr.write(renderMessages(args) + "\n")
 }
 
+// export const BOLD = Symbol()
+// export const UNBOLD = Symbol()
+// export const BLUE = Symbol()
+// export const GREY = Symbol()
+// export const GREEN = Symbol()
+// export const RED = Symbol()
+// export const PURPLE = Symbol()
+// export const ORANGE = Symbol()
+// export const UNCOLOR = Symbol()
+
+// const _browserStyleMap = {
+//   [BOLD]: pair.create("font-weight", "bold"),
+//   [UNBOLD]: pair.create("font-weight", "normal"),
+//   [BLUE]: pair.create("color", "blue"),
+//   [GREEN]: pair.create("color", "green"),
+//   [GREY]: pair.create("color", "grey"),
+//   [RED]: pair.create("color", "red"),
+//   [PURPLE]: pair.create("color", "purple"),
+//   [ORANGE]: pair.create("color", "orange"), // not well supported in chrome when debugging node with inspector - TODO: deprecate
+//   [UNCOLOR]: pair.create("color", "black"),
+// }
+
+// const _nodeStyleMap = {
+//   [BOLD]: "\u001b[1m",
+//   [UNBOLD]: "\u001b[2m",
+//   [BLUE]: "\x1b[34m",
+//   [GREEN]: "\x1b[32m",
+//   [GREY]: "\u001b[37m",
+//   [RED]: "\x1b[31m",
+//   [PURPLE]: "\x1b[35m",
+//   [ORANGE]: "\x1b[38;5;208m",
+//   [UNCOLOR]: "\x1b[0m",
+// }
+
+enum COLOR {
+  RED = 1,
+  GREEN = 2,
+  BLUE = 4,
+  PURPLE = 5,
+  GRAY = 7,
+  ORANGE = 8,
+}
+
 const colorEnd = "\u001B[0m"
 
 export function colorString(value: string, colorCode: number) {
@@ -89,9 +132,9 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
 
     if (stack) {
-      const line = getSourceLocation(2, true)
+      const line = getSourceLocation(3, true)
       if (line) {
-        args.push(`(${line})`)
+        args.push(colorString(`(${line})`, COLOR.GRAY))
       }
     }
     switch (msg.level) {

@@ -1,0 +1,17 @@
+{
+  "name": "zeed-node-demo",
+  "version": "0.1.0",
+  "description": "Just a demo",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=14.13.1"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Dirk Holtwick",
+  "dependencies": {
+    "zeed": "file:../.."
+  }
+}

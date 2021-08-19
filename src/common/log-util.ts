@@ -30,11 +30,23 @@ export function getSourceLocation(level = 2, stripCwd = true): string {
   let stack = new Error().stack || ""
   let line: string | undefined = getStackLlocationList(stack)?.[level]
   if (line && stripCwd) {
-    if (line.startsWith("file://")) {
-      line = line.substr("file://".length)
+    if (line.includes("/node_modules/")) {
+      return ""
     }
-    if (line.startsWith(process.cwd())) {
-      line = line.substr(process.cwd().length + 1)
+
+    const fileURL = "file://"
+    if (line.startsWith(fileURL)) {
+      return line.substr(fileURL.length)
+    }
+
+    const cwd = process.cwd()
+    if (cwd && line.startsWith(cwd)) {
+      return line.substr(cwd.length + 1)
+    }
+
+    const home = process.env["HOME"]
+    if (home && line.startsWith(home)) {
+      line = line.substr(home.length + 1)
     }
   }
   return line || ""

@@ -5,6 +5,6 @@ import { getSourceLocation } from "./log-util"
 describe("log-util", function () {
   test("should find correct source file line", function () {
     const source = getSourceLocation(0, true)
-    expect(source).toBe("./src/common/log-util.ts:13:15")
+    expect(source).toBe("src/common/log-util.ts:13:15")
   })
 })

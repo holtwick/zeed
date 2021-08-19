@@ -9,6 +9,7 @@ import {
 import { getTimestamp, formatMilliseconds } from "../common/time.js"
 import tty from "tty"
 import { useNamespaceFilter } from "../common/log-filter.js"
+import { renderMessages } from "src/common/convert.js"
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -28,7 +29,7 @@ let time = getTimestamp()
 const useColors = tty.isatty(process.stderr.fd)
 
 function log(...args: any[]) {
-  return process.stderr.write(args.join(" ") + "\n")
+  return process.stderr.write(renderMessages(args) + "\n")
 }
 
 const colorEnd = "\u001B[0m"

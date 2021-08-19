@@ -72,6 +72,7 @@ export interface LogHandlerOptions {
   levelHelper?: boolean
   nameBrackets?: boolean
   padding?: number
+  stack?: boolean
 }
 
 export function LoggerContext(prefix: string = ""): LoggerContextInterface {

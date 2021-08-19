@@ -17,7 +17,7 @@ export function getSourceLocation(level = 2, stripCwd = true): string {
       ?.map((rawLine) => rawLine.match(/^\s+at.*\((.*?)\)/)?.[1])
       ?.filter((v) => v != null)?.[level]
     if (line && stripCwd && line.startsWith(process.cwd())) {
-      line = "./" + line.substr(process.cwd().length + 1)
+      line = line.substr(process.cwd().length + 1)
     }
   }
   return line || ""

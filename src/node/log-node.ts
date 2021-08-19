@@ -9,7 +9,8 @@ import {
 import { getTimestamp, formatMilliseconds } from "../common/time.js"
 import tty from "tty"
 import { useNamespaceFilter } from "../common/log-filter.js"
-import { renderMessages } from "src/common/convert.js"
+import { renderMessages } from "../common/convert.js"
+import { getSourceLocation } from "../common/log-util.js"
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -48,6 +49,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     nameBrackets = true,
     padding = 0,
     filter = undefined,
+    stack = true,
   } = opt
   const matches = useNamespaceFilter(
     filter ?? process.env.ZEED ?? process.env.DEBUG
@@ -84,6 +86,13 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     } else {
       args = [displayName, ...msg.messages]
       args.push(`+${diff}`)
+    }
+
+    if (stack) {
+      const line = getSourceLocation(2, true)
+      if (line) {
+        args.push(`(${line})`)
+      }
     }
     switch (msg.level) {
       case LogLevel.info:

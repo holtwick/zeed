@@ -55,7 +55,7 @@ Output can be filtered by setting `Logger.setFilter(filter)` following the well 
 
 Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
 
-> Alternative logging solutions: [debug](https://github.com/visionmedia/debug) or [winston](https://github.com/winstonjs/winston) to name just a few.
+> Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog) or [winston](https://github.com/winstonjs/winston) to name just a few.
 
 ## Promise / async / await utilities
 

@@ -6,7 +6,14 @@ export function getStackLlocationList(stack: string): any[] {
   return (
     stack
       ?.split("\n")
-      ?.map((rawLine) => rawLine.match(/^\s+at.*\((.*?)\)/)?.[1])
+      ?.map((rawLine) => {
+        let m = rawLine.match(/^\s+at.*(\((.*)\)|file:\/\/(.*)$)/)
+        if (m) {
+          let line = m[3] || m[2]
+          if (line.endsWith(")")) line = line.slice(0, -1)
+          return line
+        }
+      })
       ?.filter((v) => v != null) || []
   )
 }

@@ -43,3 +43,13 @@
 2021-08-19T16:14:04.531Z	W|** 	[demo]	Warning
 2021-08-19T16:14:04.531Z	E|***	[demo]	Error
 2021-08-19T16:14:04.532Z	I|*  	[demo]	DEMO_SECRET = 987654321
+2021-08-19T16:27:02.507Z	D|   	[demo]	Hello World
+2021-08-19T16:27:02.508Z	I|*  	[demo]	Info
+2021-08-19T16:27:02.508Z	W|** 	[demo]	Warning
+2021-08-19T16:27:02.508Z	E|***	[demo]	Error
+2021-08-19T16:27:02.509Z	I|*  	[demo]	DEMO_SECRET = 987654321
+2021-08-19T16:27:37.961Z	D|   	[demo]	Hello World
+2021-08-19T16:27:37.962Z	I|*  	[demo]	Info
+2021-08-19T16:27:37.962Z	W|** 	[demo]	Warning
+2021-08-19T16:27:37.962Z	E|***	[demo]	Error
+2021-08-19T16:27:37.964Z	I|*  	[demo]	DEMO_SECRET = 987654321

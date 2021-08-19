@@ -132,7 +132,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
 
     if (stack) {
-      const line = getSourceLocation(3, true)
+      const line = getSourceLocation(4, true)
       if (line) {
         args.push(colorString(`(${line})`, COLOR.GRAY))
       }

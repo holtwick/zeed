@@ -9,6 +9,7 @@ import {
 import { getTimestamp, formatMilliseconds } from "../common/time.js"
 import tty from "tty"
 import { useNamespaceFilter } from "../common/log-filter.js"
+import { renderMessages } from "src/common/convert.js"
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -28,7 +29,15 @@ let time = getTimestamp()
 const useColors = tty.isatty(process.stderr.fd)
 
 function log(...args: any[]) {
-  return process.stderr.write(args.join(" ") + "\n")
+  return process.stderr.write(renderMessages(args) + "\n")
+}
+
+const colorEnd = "\u001B[0m"
+
+export function colorString(value: string, colorCode: number) {
+  const colorStart =
+    "\u001B[3" + (colorCode < 8 ? colorCode : "8;5;" + colorCode) + "m"
+  return `${colorStart}${value}${colorEnd}`
 }
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
@@ -69,10 +78,9 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
 
     if (colors && useColors) {
       const c = ninfo.color
-      const colorCode = "\u001B[3" + (c < 8 ? c : "8;5;" + c) + "m" // ";1m "
-      args = [`${colorCode}${displayName}\u001B[0m | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
+      args = [colorString(displayName, c) + ` | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
       args.push(...msg.messages)
-      args.push(`${colorCode}+${diff}\u001B[0m`)
+      args.push(colorString(`+${diff}`, c))
     } else {
       args = [displayName, ...msg.messages]
       args.push(`+${diff}`)

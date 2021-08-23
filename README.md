@@ -88,8 +88,8 @@ await promisify(returnValue)
 Get a random unique ID of fixed length of 22 chars (these are 16 bytes = 128 bit, encoded in Base62). According to [Nano ID Collision Calculator](https://zelark.github.io/nano-id-cc/): "~597 billion years needed, in order to have a 1% probability of at least one collision."
 
 ```js
-const id1 = uuid()    # base62 encoded => 22 chars
-const id2 = uuidB32() # base32 encoded => 26 chars
+const id1 = uuid()    // base62 encoded => 22 chars
+const id2 = uuidB32() // base32 encoded => 26 chars
 ```
 
 Get an incremental unique ID for current process with named groups, great for debugging.

@@ -3,7 +3,6 @@
 import { useBase } from "./basex"
 import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
 import { sleep } from "./promise"
-import { assert } from "console"
 
 test("should not certain length", () => {
   expect(uuid().length).toBe(22)

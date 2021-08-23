@@ -4,9 +4,9 @@
 
 import { Logger, LogLevel } from "./log.js"
 import { uuid } from "./uuid.js"
-import { Emitter } from "./emitter.js"
-import { cloneObject } from "./utils.js"
-import { Channel } from "./channel.js"
+// import { Emitter } from "./emitter.js"
+// import { cloneObject } from "./utils.js"
+// import { Channel } from "./channel.js"
 
 const log = Logger("zeed:mq")
 log.level = LogLevel.off
@@ -306,6 +306,7 @@ export class TaskQueue {
     return this._emit(name, info, props)
   }
 
+  // fetchOne, fetchMany
   async fetch(name: string, info: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const id = uuid()

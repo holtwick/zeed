@@ -28,21 +28,23 @@ export function valueToInteger(value?: any, defaultValue = 0): number {
   if (value == null) return defaultValue
   if (typeof value === "boolean") return value ? 1 : 0
   if (typeof value === "number") return Math.floor(value)
-  return parseInt(value.toString().trim(), 10) ?? defaultValue
+  return parseInt(String(value).trim(), 10) ?? defaultValue
 }
 
 export function valueToFloat(value?: any, defaultValue = 0.0): number {
   if (value == null) return defaultValue
   if (typeof value === "boolean") return value ? 1 : 0
   if (typeof value === "number") return Math.floor(value)
-  return parseFloat(value.toString().trim()) ?? defaultValue
+  return parseFloat(String(value).trim()) ?? defaultValue
 }
 
 export function valueToString(value?: any, defaultValue = ""): string {
   if (value == null) return defaultValue
   // if (value == "") return defaultValue // ???
-  return value.toString() ?? defaultValue
+  return String(value) ?? defaultValue
 }
+
+// todo: toDate, toTimestamp, toData(value, base=64)
 
 // export function mapToObject<T>(map: Map<string, T>): { [key: string]: T } {
 //   return Object.fromEntries(map)

@@ -5,7 +5,7 @@
 import { Logger, LogLevel } from "../common/log.js"
 
 import fs from "fs"
-import path from "path"
+import { resolve } from "path"
 
 const log = Logger("zeed:env")
 
@@ -71,14 +71,24 @@ function parse(src: string, options: csvOptions = {}) {
   return obj
 }
 
-export function stringToPath(value?: string): string {
-  return path.resolve(process.cwd(), value || ".")
+export function stringToPath(
+  value?: string,
+  defaultValue: string = "."
+): string {
+  return resolve(value ?? defaultValue)
 }
+
+export function valueToPath(value?: any, defaultValue = ""): string {
+  if (value == null) value = defaultValue
+  return stringToPath(String(value).trim(), defaultValue)
+}
+
+export const toPath = valueToPath
 
 // Populates process.env from .env file
 export function setupEnv(options: csvOptions = {}) {
   const dotenvPath: string =
-    options?.path ?? path.resolve(process.cwd(), options?.filename ?? ".env")
+    options?.path ?? resolve(process.cwd(), options?.filename ?? ".env")
   const encoding: BufferEncoding = options?.encoding ?? "utf8"
   const debug = options?.debug || false
 

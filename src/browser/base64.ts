@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../common/log.js"
+import { Logger } from "../common/log"
 
 const { error } = Logger("zeed:base64")
 

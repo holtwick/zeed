@@ -1,14 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Channel, ChannelMessageEvent } from "./channel.js"
-import {
-  DefaultListener,
-  EmitterHandler,
-  ListenerSignature,
-} from "./emitter.js"
-import { Logger } from "./log.js"
-import { promisify } from "./promise.js"
-import { SerialQueue } from "./queue.js"
+import { Channel, ChannelMessageEvent } from "./channel"
+import { DefaultListener, EmitterHandler, ListenerSignature } from "./emitter"
+import { Logger } from "./log"
+import { promisify } from "./promise"
+import { SerialQueue } from "./queue"
 
 const log = Logger("zeed:bridge")
 

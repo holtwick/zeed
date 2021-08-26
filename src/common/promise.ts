@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "./log.js"
+import { Logger } from "./log"
 
 const { warn } = Logger("zeed:promise")
 

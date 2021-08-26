@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json } from "../common/types.js"
+import { Json } from "../common/types"
 import {
   readFileSync,
   writeFileSync,
@@ -10,7 +10,7 @@ import {
   readdirSync,
 } from "fs"
 import { resolve } from "path"
-import { Logger } from "../common/log.js"
+import { Logger } from "../common/log"
 
 const log = Logger("zeed:filestorage")
 

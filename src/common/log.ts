@@ -1,9 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepEqual } from "./deep.js"
-import { getGlobalContext } from "./global.js"
-import { LoggerConsoleHandler } from "./log-console.js"
-import { useNamespaceFilter } from "./log-filter.js"
+import { deepEqual } from "./deep"
+import { getGlobalContext } from "./global"
+import { LoggerConsoleHandler } from "./log-console"
+import { useNamespaceFilter } from "./log-filter"
 
 export enum LogLevel {
   all = -1,

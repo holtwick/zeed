@@ -2,8 +2,8 @@
 
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-import { Logger, LoggerInterface, LogLevel } from "../common/log.js"
-import { uname } from "./uuid.js"
+import { Logger, LoggerInterface, LogLevel } from "../common/log"
+import { uname } from "./uuid"
 
 const log = Logger("zeed:queue")
 

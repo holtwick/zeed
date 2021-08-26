@@ -2,11 +2,11 @@
 
 // Inspired by https://github.com/diamondio/better-queue
 
-import { Logger, LogLevel } from "./log.js"
-import { uuid } from "./uuid.js"
-// import { Emitter } from "./emitter.js"
-// import { cloneObject } from "./utils.js"
-// import { Channel } from "./channel.js"
+import { Logger, LogLevel } from "./log"
+import { uuid } from "./uuid"
+// import { Emitter } from "./emitter"
+// import { cloneObject } from "./utils"
+// import { Channel } from "./channel"
 
 const log = Logger("zeed:mq")
 log.level = LogLevel.off

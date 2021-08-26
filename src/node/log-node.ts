@@ -5,12 +5,12 @@ import {
   LogHandlerOptions,
   LogLevel,
   LogMessage,
-} from "../common/log.js"
-import { getTimestamp, formatMilliseconds } from "../common/time.js"
+} from "../common/log"
+import { getTimestamp, formatMilliseconds } from "../common/time"
 import tty from "tty"
-import { useNamespaceFilter } from "../common/log-filter.js"
-import { renderMessages } from "../common/convert.js"
-import { getSourceLocation } from "../common/log-util.js"
+import { useNamespaceFilter } from "../common/log-filter"
+import { renderMessages } from "../common/convert"
+import { getSourceLocation } from "../common/log-util"
 
 const colors = [6, 2, 3, 4, 5, 1]
 

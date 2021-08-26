@@ -1,8 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useBase } from "./basex.js"
-import { getGlobal } from "./platform.js"
-import { getTimestamp } from "./time.js"
+import { useBase } from "./basex"
+import { getGlobal } from "./platform"
+import { getTimestamp } from "./time"
 
 const { encode: encode62, decode: decode62 } = useBase(62)
 const { encode: encode32 } = useBase(32)

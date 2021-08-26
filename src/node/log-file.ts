@@ -2,8 +2,8 @@
 
 import { createWriteStream, mkdirSync } from "fs"
 import { resolve, dirname } from "path"
-import { renderMessages } from "../common/convert.js"
-import { LogHandlerOptions, LogLevel, LogMessage } from "../common/log.js"
+import { renderMessages } from "../common/convert"
+import { LogHandlerOptions, LogLevel, LogMessage } from "../common/log"
 
 let namespaces: Record<string, any> = {}
 

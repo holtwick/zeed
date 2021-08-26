@@ -6,7 +6,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-import { Logger } from "./log.js"
+import { Logger } from "./log"
 
 const log = Logger("zeed:basex")
 

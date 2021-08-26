@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { cmp } from "./orderby.js"
+import { cmp } from "./orderby"
 
 export function arrayUnique<T>(x: T[]): T[] {
   return x.filter((n: any, index: any) => x.indexOf(n) === index)

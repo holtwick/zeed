@@ -1,8 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getGlobalContext } from "./global.js"
-import { Logger } from "./log.js"
-import { promisify } from "./promise.js"
+import { getGlobalContext } from "./global"
+import { Logger } from "./log"
+import { promisify } from "./promise"
 
 const log = Logger("zeed:emitter")
 

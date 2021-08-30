@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { arrayShuffleForce } from "./array"
+import { arrayShuffleForce, arrayShuffleInPlace } from "./array"
 import {
   endSortWeight,
   moveSortWeight,
@@ -53,7 +53,10 @@ describe("Sortable", () => {
         .join("")
     ).toEqual("0812345679")
 
+    items = sortedItems(items)
     let moveItem2 = items[1]
+
+    arrayShuffleInPlace(items)
     moveItem2.sort_weight = moveSortWeight(8, 1, items)
 
     expect(

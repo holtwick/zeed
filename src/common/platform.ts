@@ -96,16 +96,18 @@ export function detect(
 
 export const platform = detect()
 
-export function subscribeDetectOrientation(fn: ({}) => void) {
-  const mediaQuery = _window?.matchMedia("(orientation: landscape)")
-  const emit = () => {
-    const landscape = mediaQuery?.matches
-    fn({
-      landscape,
-      portrait: !landscape,
-      orientation: landscape ? "landscape" : "portrait",
-    })
-  }
-  emit()
-  mediaQuery?.addEventListener("change", emit)
-}
+// todo: prefer https://vueuse.org/ instead
+
+// export function subscribeDetectOrientation(fn: ({}) => void) {
+//   const mediaQuery = _window?.matchMedia("(orientation: landscape)")
+//   const emit = () => {
+//     const landscape = mediaQuery?.matches
+//     fn({
+//       landscape,
+//       portrait: !landscape,
+//       orientation: landscape ? "landscape" : "portrait",
+//     })
+//   }
+//   emit()
+//   mediaQuery?.addEventListener("change", emit)
+// }

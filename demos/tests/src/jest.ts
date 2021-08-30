@@ -1,4 +1,5 @@
 import { deepEqual, Logger } from "zeed"
+
 import { Buffer } from "buffer"
 import { fn } from "jest-mock"
 
@@ -149,7 +150,7 @@ Object.assign(window, {
   jest: { fn },
 })
 
-//
+// Actual tests
 
 import("../../../src/browser/localhost.spec")
 
@@ -171,3 +172,11 @@ import("../../../src/common/queue.spec")
 import("../../../src/common/sortable.spec")
 import("../../../src/common/utils.spec")
 import("../../../src/common/uuid.spec")
+
+// describe("Stack", () => {
+//   it("should find correct line", () => {
+//     const line = getSourceLocation(0)
+//     log("stack", new Error().stack)
+//     expect(line).toBe("")
+//   })
+// })

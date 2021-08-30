@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepEqual } from "./deep"
+import { deepEqual } from "./data/deep"
 import { getGlobalContext } from "./global"
 import { LoggerConsoleHandler } from "./log-console"
 import { useNamespaceFilter } from "./log-filter"

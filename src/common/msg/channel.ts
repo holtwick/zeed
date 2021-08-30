@@ -1,9 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "./log"
+import { Logger } from "../log"
 import { Emitter } from "./emitter"
-import { cloneObject } from "./utils"
-import { uuid } from "./uuid"
+import { cloneObject } from "../data/utils"
+import { uuid } from "../uuid"
 
 const log = Logger("zeed:channel")
 

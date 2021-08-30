@@ -9,7 +9,7 @@ import {
 import { getTimestamp, formatMilliseconds } from "../common/time"
 import tty from "tty"
 import { useNamespaceFilter } from "../common/log-filter"
-import { renderMessages } from "../common/convert"
+import { renderMessages } from "../common/data/convert"
 import { getSourceLocation } from "../common/log-util"
 
 const colors = [6, 2, 3, 4, 5, 1]

@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useBase } from "./basex"
+import { useBase } from "./data/basex"
 import { getGlobal } from "./platform"
 import { getTimestamp } from "./time"
 

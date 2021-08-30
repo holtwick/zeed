@@ -1,8 +1,18 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { arrayShuffleForce } from "./array"
-import { endSortWeight, sortedItems, startSortWeight } from "./sortable"
+import {
+  endSortWeight,
+  moveSortWeight,
+  SortableItem,
+  sortedItems,
+  startSortWeight,
+} from "./sortable"
 import { last } from "./utils"
+
+interface SItem extends SortableItem {
+  name: string
+}
 
 describe("Sortable", () => {
   const list = [-0.2, -0.001, 0, 0.001, 2]
@@ -17,5 +27,39 @@ describe("Sortable", () => {
     let shuffledItems = arrayShuffleForce(items)
     expect(shuffledItems.map((el) => el.sort_weight)).not.toEqual(list)
     expect(sortedItems(shuffledItems).map((el) => el.sort_weight)).toEqual(list)
+  })
+
+  it("should move correctly", () => {
+    let items: SItem[] = []
+    for (let i = 0; i < 10; i++) {
+      items.push({
+        name: String(i),
+        sort_weight: i,
+      })
+    }
+
+    expect(
+      sortedItems(items)
+        .map((o) => o.name)
+        .join("")
+    ).toEqual("0123456789")
+
+    let moveItem = items[8]
+    moveItem.sort_weight = moveSortWeight(1, 8, items)
+
+    expect(
+      sortedItems(items)
+        .map((o) => o.name)
+        .join("")
+    ).toEqual("0812345679")
+
+    let moveItem2 = items[1]
+    moveItem2.sort_weight = moveSortWeight(8, 1, items)
+
+    expect(
+      sortedItems(items)
+        .map((o) => o.name)
+        .join("")
+    ).toEqual("0123456789")
   })
 })

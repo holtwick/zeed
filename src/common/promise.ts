@@ -117,7 +117,6 @@ export function waitOn(
   })
 }
 
-/** @deprecated */
 export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
   return Boolean(
     value &&

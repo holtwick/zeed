@@ -1,7 +1,6 @@
-import { deepEqual, Logger } from "zeed"
-
 import { Buffer } from "buffer"
 import { fn } from "jest-mock"
+import { deepEqual, isPromise, Logger } from "zeed"
 
 const log = Logger("jest")
 
@@ -20,7 +19,7 @@ export async function describe(title: string, fn: any) {
   try {
     let r = fn.call(context)
 
-    if (r?.then) {
+    if (isPromise(r)) {
       await r
     }
   } catch (err) {
@@ -39,19 +38,28 @@ export async function describe(title: string, fn: any) {
       perfomedAssertions = 0
       expectAssertions = -1
 
-      // let done
-      // let rdone = new Promise((r) => (done = r))
-
-      let r = it.fn.call()
-
-      if (r?.then) {
-        await r
-        // await Promise.race([r, rdone])
+      var rdone
+      var done = (value: any) => log.error("Did not set up done() correctly")
+      if (it.fn.length > 0) {
+        rdone = new Promise((r) => (done = r))
       }
+
+      let r = it.fn.call(null, done)
+
+      if (rdone || isPromise(r)) {
+        log(`      #async`)
+      } else if (expectAssertions > 0) {
+        log.warn("If expecting assertions, the test should be async.")
+      }
+
+      if (expectAssertions > 0) log(`      #expect=${expectAssertions}`)
+
+      if (rdone) await rdone
+      if (isPromise(r)) await r
 
       if (expectAssertions >= 0 && perfomedAssertions !== expectAssertions) {
         log.warn(
-          `Expected ${expectAssertions} assertions, only got ${perfomedAssertions}`
+          `Expected ${expectAssertions} assertions, got ${perfomedAssertions}. ${title}/${it.title}`
         )
       }
     } catch (err) {
@@ -89,7 +97,7 @@ export function it(title: string, fn: any) {
 function expect(actual: any) {
   function test(ok: boolean, expected: any) {
     if (ok) {
-      log("OK - Passed Test")
+      // log("OK - Passed Test")
       perfomedAssertions += 1
     } else {
       log.warn(`Fail: got ${actual} expected ${expected}`)

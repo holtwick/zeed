@@ -38,6 +38,7 @@ function fakeWorkerPair(): [LocalChannel, LocalChannel] {
 
 describe("Channel", () => {
   it("should fake", (done) => {
+    // log.info("done", done.toSource())
     expect.assertions(1)
 
     let [f1, f2] = fakeWorkerPair()

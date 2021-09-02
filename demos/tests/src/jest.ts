@@ -39,10 +39,14 @@ export async function describe(title: string, fn: any) {
       perfomedAssertions = 0
       expectAssertions = -1
 
+      // let done
+      // let rdone = new Promise((r) => (done = r))
+
       let r = it.fn.call()
 
       if (r?.then) {
         await r
+        // await Promise.race([r, rdone])
       }
 
       if (expectAssertions >= 0 && perfomedAssertions !== expectAssertions) {
@@ -154,23 +158,23 @@ Object.assign(window, {
 
 import("../../../src/browser/localhost.spec")
 
-import("../../../src/common/array.spec")
-import("../../../src/common/basex.spec")
-import("../../../src/common/camelcase.spec")
-import("../../../src/common/channel.spec")
-import("../../../src/common/convert.spec")
+import("../../../src/common/data/array.spec")
+import("../../../src/common/data/basex.spec")
+import("../../../src/common/data/camelcase.spec")
+import("../../../src/common/msg/channel.spec")
+import("../../../src/common/data/convert.spec")
 // import("../../../src/common/emitter.spec")
 import("../../../src/common/log-filter.spec")
 // import("../../../src/common/log-util.spec")
 import("../../../src/common/log.spec")
-import("../../../src/common/mq.spec")
+import("../../../src/common/msg/mq.spec")
 import("../../../src/common/mutex.spec")
-import("../../../src/common/orderby.spec")
+import("../../../src/common/data/orderby.spec")
 // import("../../../src/common/platform.spec")
 import("../../../src/common/promises.spec")
 import("../../../src/common/queue.spec")
-import("../../../src/common/sortable.spec")
-import("../../../src/common/utils.spec")
+import("../../../src/common/data/sortable.spec")
+import("../../../src/common/data/utils.spec")
 import("../../../src/common/uuid.spec")
 
 // describe("Stack", () => {

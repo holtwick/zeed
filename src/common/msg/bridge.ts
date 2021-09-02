@@ -2,9 +2,9 @@
 
 import { Channel, ChannelMessageEvent } from "./channel"
 import { DefaultListener, EmitterHandler, ListenerSignature } from "./emitter"
-import { Logger } from "./log"
-import { promisify } from "./promise"
-import { SerialQueue } from "./queue"
+import { Logger } from "../log"
+import { promisify } from "../promise"
+import { SerialQueue } from "../queue"
 
 const log = Logger("zeed:bridge")
 

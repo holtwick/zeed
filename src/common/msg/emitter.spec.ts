@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { platform } from "./platform"
-import { waitOn, sleep } from "./promise"
+import { platform } from "../platform"
+import { waitOn, sleep } from "../promise"
 import { Emitter, getGlobalEmitter, lazyListener } from "./emitter"
 
 declare global {

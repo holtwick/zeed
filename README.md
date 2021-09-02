@@ -186,3 +186,8 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 ---
 
 Additional notes for development: [NOTES.md](NOTES.md).
+
+Recommended other collections of common JS utils:
+
+- [lib0](https://github.com/dmonad/lib0)
+- [vueuse](https://vueuse.org/)

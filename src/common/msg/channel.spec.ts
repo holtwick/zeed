@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../common"
+import { Logger } from "../log"
 import { LocalChannel } from "./channel"
 
 const log = Logger("test:channel")

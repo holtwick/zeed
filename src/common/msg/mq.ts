@@ -2,8 +2,8 @@
 
 // Inspired by https://github.com/diamondio/better-queue
 
-import { Logger, LogLevel } from "./log"
-import { uuid } from "./uuid"
+import { Logger, LogLevel } from "../log"
+import { uuid } from "../uuid"
 // import { Emitter } from "./emitter"
 // import { cloneObject } from "./utils"
 // import { Channel } from "./channel"

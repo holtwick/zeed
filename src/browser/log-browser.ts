@@ -11,7 +11,7 @@ import {
 } from "../common/log"
 import { selectColor, supportsColors } from "./log-colors"
 import { useNamespaceFilter } from "../common/log-filter"
-import { deepEqual } from "../common/deep"
+import { deepEqual } from "../common/data/deep"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`

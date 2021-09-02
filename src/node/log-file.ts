@@ -2,7 +2,7 @@
 
 import { createWriteStream, mkdirSync } from "fs"
 import { resolve, dirname } from "path"
-import { renderMessages } from "../common/convert"
+import { renderMessages } from "../common/data/convert"
 import { LogHandlerOptions, LogLevel, LogMessage } from "../common/log"
 
 let namespaces: Record<string, any> = {}

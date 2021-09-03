@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getTimestamp, formatMilliseconds } from "../common/time"
-import { LogHandler, LogLevel, LogMessage } from "../common/log"
+import { LogHandler, LogLevel, LogMessage } from "../common/log-base"
 import { selectColor, supportsColors } from "./log-colors"
 import { useNamespaceFilter } from "../common/log-filter"
 

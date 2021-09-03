@@ -5,18 +5,9 @@ import { DefaultListener, EmitterHandler, ListenerSignature } from "./emitter"
 import { Logger } from "../log"
 import { promisify } from "../promise"
 import { SerialQueue } from "../queue"
+import { JsonEncoder } from "./encoder"
 
 const log = Logger("zeed:bridge")
-
-export class Encoder {
-  encode(data: any) {
-    return JSON.stringify(data)
-  }
-
-  decode(data: any) {
-    return JSON.parse(data)
-  }
-}
 
 export interface BridgeMessage {
   name: string
@@ -34,7 +25,7 @@ interface BrideOptions {
 export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
   channel: Channel
 
-  encoder = new Encoder()
+  encoder = new JsonEncoder()
   queue = new SerialQueue()
 
   subscribers: any = {}
@@ -86,10 +77,25 @@ export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
     return this
   }
 
+  // public async fetchOne<U extends keyof L>(
+  //   event: U,
+  //   ...args: Parameters<L[U]>
+  // ): Promise<undefined | ReturnType<L[U]>> {
+  //   return []
+  // }
+
+  // public async fetchAll<U extends keyof L>(
+  //   event: U,
+  //   ...args: Parameters<L[U]>
+  // ): Promise<undefined | ReturnType<L[U][]>> {
+  //   return []
+  // }
+
   public async fetch<U extends keyof L>(
     event: U,
     ...args: Parameters<L[U]>
   ): Promise<undefined | ReturnType<L[U]>> {
+    // todo
     let result = await this.emit(event, ...args)
     if (Array.isArray(result) && result.length === 1) {
       return result[0]

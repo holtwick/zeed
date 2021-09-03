@@ -2,13 +2,12 @@
 
 import { formatMilliseconds, getTimestamp } from "../common/time"
 import {
-  Logger,
   LoggerInterface,
   LogHandler,
   LogHandlerOptions,
   LogLevel,
   LogMessage,
-} from "../common/log"
+} from "../common/log-base"
 import { selectColor, supportsColors } from "./log-colors"
 import { useNamespaceFilter } from "../common/log-filter"
 import { deepEqual } from "../common/data/deep"
@@ -97,7 +96,7 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   }
 }
 
-function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
+export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
 
   /// The trick is, that console called directly provides a reference to the source code.
@@ -120,6 +119,15 @@ function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       } else {
         fixedArgs.push(`[${name}] \t%s`)
       }
+
+      // @ts-ignore
+      // console.previous = {
+      //   debug: console.debug,
+      //   info: console.info,
+      //   warn: console.warn,
+      //   error: console.error,
+      //   assert: console.assert,
+      // }
 
       log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
       log.debug = console.debug.bind(console, ...fixedArgs)
@@ -180,8 +188,9 @@ function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
 }
 
 export function activateConsoleDebug(opt: LogHandlerOptions = {}) {
-  Logger.setHandlers([LoggerBrowserHandler(opt)]) // Fallback for previously registered Loggers
-  Logger.setFactory(LoggerBrowserSetupDebugFactory(opt))
+  console.info("activateConsoleDebug is activated by default in browsers")
+  //   Logger.setHandlers([LoggerBrowserHandler(opt)]) // Fallback for previously registered Loggers
+  //   Logger.setFactory(LoggerBrowserSetupDebugFactory(opt))
 }
 
 // let klass = console

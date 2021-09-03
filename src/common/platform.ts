@@ -94,4 +94,13 @@ export function detect(
   return info
 }
 
+// https://stackoverflow.com/a/31090240/140927
+export const isBrowser = new Function(
+  "try {return this===window;}catch(e){ return false;}"
+)
+
+export const isNode = new Function(
+  "try {return this===global;}catch(e){return false;}"
+)
+
 export const platform = detect()

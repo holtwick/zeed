@@ -1,11 +1,10 @@
+import "./logging"
+
+// <-- logging must be first import!
+
 import { createApp } from "vue"
+import { Logger } from "zeed"
 import App from "./App.vue"
-
-import { activateConsoleDebug, Logger } from "zeed"
-
-if (import.meta.env?.MODE === "development") {
-  activateConsoleDebug()
-}
 
 const log = Logger("app")
 log("Hello World")

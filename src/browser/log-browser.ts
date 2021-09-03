@@ -187,6 +187,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   }
 }
 
+/** @deprecated This output is default for initial use of Logger in browser environments. */
 export function activateConsoleDebug(opt: LogHandlerOptions = {}) {
   console.info("activateConsoleDebug is activated by default in browsers")
   //   Logger.setHandlers([LoggerBrowserHandler(opt)]) // Fallback for previously registered Loggers

@@ -40,7 +40,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && npm run build:tsup",
     "build:tsup": "tsup src/index.*.ts --dts --sourcemap --format esm,cjs --keep-names --minify-whitespace",
-    "watch": "tsup --watch src src/index.*.ts --dts --sourcemap --format esm,cjs --keep-names --minify-whitespace",
+    "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm test",
     "test": "jest src"
   },

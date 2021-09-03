@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { LoggerContext, LogLevel, LogMessage } from "./log"
+import { LoggerContext, LogLevel, LogMessage } from "./log-base"
 
 describe("Logger", function () {
   test("should log different levels", function () {

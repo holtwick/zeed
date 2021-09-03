@@ -5,7 +5,7 @@ import {
   LogHandlerOptions,
   LogLevel,
   LogMessage,
-} from "../common/log"
+} from "../common/log-base"
 import { getTimestamp, formatMilliseconds } from "../common/time"
 import tty from "tty"
 import { useNamespaceFilter } from "../common/log-filter"

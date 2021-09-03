@@ -47,13 +47,30 @@ Write custom ones e.g. for [breadcrumb tracking in Sentry.io](https://gist.githu
 
 You can use `Logger` in submodules and Zeed will make sure all logging goes through the same handlers, no matter what bundler is used. With `Logger.setLock(true)` any further changes to handlers, factories and log levels can be forbidden, to ensure no conflicting settings with submodules. You should set up the Logging very early in your main project before loading submodules.
 
-In the browser try calling `activateConsoleDebug()`, this will set only one logger which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
+By default, in browsers a special handler is activated, which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
 
 <img src=".assets/safari-console.png" style="max-width:100%">
 
 Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage.debug = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call). `process.env.ZEED` and `localStorage.zeed` supersede `DEBUG`.
 
 Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
+
+If you want to set up your own logging behavior or handlers best practice is to have a separate source file where you define those settings on top level. Then import this file as the very first. All other approaches may result in configurations that to not come in time to affect loggers defined in other modules:
+
+```js
+// logging.js
+
+import { Logger, LoggerConsoleHandler } from "zeed"
+
+Logger.setHandlers([LoggerConsoleHandler()])
+```
+
+```js
+// main.js or similar
+
+import "./logging"
+import "anyOtherModuleUsingLogger"
+```
 
 > Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog) or [winston](https://github.com/winstonjs/winston) to name just a few.
 

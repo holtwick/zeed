@@ -1,3 +1,5 @@
+export {}
+
 // These can be emitted from both the Client or the Server
 interface BridgeBoth {}
 

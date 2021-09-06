@@ -6,7 +6,7 @@
 - Covered by tests
 - Universal for node.js and browsers
 - No dependencies and lightweight
-- Modern ESM, fallback to CommonJS 
+- Modern ESM, fallback to CommonJS
 - Unified logging; various handlers
 - Typed events
 
@@ -26,7 +26,7 @@ Related projects:
 Powerful logging.
 
 ```js
-import { Logger } from 'zeed'
+import { Logger } from "zeed"
 
 const log = Logger("app")
 
@@ -105,7 +105,7 @@ await promisify(returnValue)
 Get a random unique ID of fixed length of 22 chars (these are 16 bytes = 128 bit, encoded in Base62). According to [Nano ID Collision Calculator](https://zelark.github.io/nano-id-cc/): "~597 billion years needed, in order to have a 1% probability of at least one collision."
 
 ```js
-const id1 = uuid()    // base62 encoded => 22 chars
+const id1 = uuid() // base62 encoded => 22 chars
 const id2 = uuidB32() // base32 encoded => 26 chars
 ```
 
@@ -146,7 +146,7 @@ You can also use a global emitter that will be available even over module bounda
 ```ts
 declare global {
   interface ZeedGlobalEmitter {
-    test(x:string):void
+    test(x: string): void
   }
 }
 

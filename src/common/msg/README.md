@@ -6,18 +6,17 @@ We differentiate between the following parts:
 
 - `Emitter`: Local event handling
 - `Channel`: Simple `postMessage` interface for basic data transport
-- `Messages`: Layer on to of `Channel`, same interface as `Emitter` 
+- `Messages`: Layer on to of `Channel`, same interface as `Emitter`
 - `Bridge`: xxx
 
 Messages are defined via `interface`. Typescript checks for valid calls:
 
 ```ts
 interface MyMessages {
-  ping(data:any)
-  pong(data:any)
+  ping(data: any)
+  pong(data: any)
 }
 
 let m = Messages<MyMessages>()
 m.emit("ping", { hello: "world" })
 ```
-

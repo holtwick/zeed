@@ -2,7 +2,7 @@
 
 ## Features
 
-- Multiple handlers 
+- Multiple handlers
 - Colorful output
 - Extendable
 - Correct source code backlinks in browsers
@@ -10,7 +10,7 @@
 ## How to use
 
 ```js
-import { Logger } from 'zeed'
+import { Logger } from "zeed"
 
 const log = Logger("app")
 
@@ -43,4 +43,4 @@ Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo`
 
 - [debug](https://github.com/visionmedia/debug)
 - [tslog](https://github.com/fullstack-build/tslog)
-- [winston](https://github.com/winstonjs/winston) 
+- [winston](https://github.com/winstonjs/winston)

@@ -2,6 +2,7 @@
 
 import { Json } from "../types"
 import { Logger } from "../log"
+import { ObjectStorage } from "../types"
 
 const log = Logger("zeed:memstorage")
 
@@ -10,7 +11,7 @@ export interface MemStorageOptions {
   objectToString?: (data: any) => string
 }
 
-export class MemStorage {
+export class MemStorage implements ObjectStorage {
   private store: { [key: string]: string } = {}
   private pretty: boolean = false
   private objectFromString: (data: string) => any
@@ -41,12 +42,11 @@ export class MemStorage {
     this.store[key] = data
   }
 
-  getItem(key: string): Json | null {
+  getItem(key: string): Json | undefined {
     if (this.store.hasOwnProperty(key)) {
       let value = this.store[key]
-      return this.objectFromString(value) || null
+      return this.objectFromString(value)
     }
-    return null
   }
 
   removeItem(key: string): void {

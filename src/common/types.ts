@@ -12,3 +12,12 @@ type JsonPrimitive = string | number | boolean | null
 interface JsonMap extends Record<string, JsonPrimitive | JsonArray | JsonMap> {}
 interface JsonArray extends Array<JsonPrimitive | JsonArray | JsonMap> {}
 export type Json = JsonPrimitive | JsonMap | JsonArray
+
+// Implemented by MemStorage, LocalStorage, FileStorage
+export interface ObjectStorage {
+  setItem(key: string, value: Json): void
+  getItem(key: string): Json | undefined
+  removeItem(key: string): void
+  clear(): void
+  allKeys(): string[]
+}

@@ -1,13 +1,13 @@
 export {}
 
 // These can be emitted from both the Client or the Server
-interface BridgeBoth {}
+interface BridgeBothWays {}
 
 // These are emitted by the client to the service
-interface BridgeClientToServer extends BridgeBoth {}
+interface BridgeToServer extends BridgeBothWays {}
 
 // These are emitted by the service to the client
-interface BridgeServiceToClient extends BridgeBoth {}
+interface BridgeToClient extends BridgeBothWays {}
 
 describe("bridge", () => {
   it("should ", () => {})

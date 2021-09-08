@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json } from "../common/types"
+import { Json, ObjectStorage } from "../common/types"
 import { Logger } from "../common/log"
 
 const log = Logger("zeed:localstorage")
@@ -46,12 +46,11 @@ export class LocalStorage {
     localStorage.setItem(`${this.prefix}${key}`, data)
   }
 
-  getItem(key: string): Json | null {
+  getItem(key: string): Json | undefined {
     let value = localStorage.getItem(`${this.prefix}${key}`)
     if (value != null) {
-      return this.objectFromString(value) || null
+      return this.objectFromString(value)
     }
-    return null
   }
 
   removeItem(key: string): void {

@@ -202,9 +202,17 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 
 ---
 
-Additional notes for development: [NOTES.md](NOTES.md).
-
 Recommended other collections of common JS utils:
 
 - [lib0](https://github.com/dmonad/lib0)
 - [vueuse](https://vueuse.org/)
+
+Code integrated from other sources:
+
+- [base-x](https://github.com/cryptocoinjs/base-x/blob/master/ts_src/index.ts) MIT
+- [debug](https://github.com/visionmedia/debug) MIT
+- [dotenv](https://github.com/motdotla/dotenv) BSD-2
+- [filenamify](https://github.com/sindresorhus/filenamify) MIT
+- [gravatar](https://github.com/mazondo/gravatarjs/blob/master/gravatar.js) MIT
+- [lib0](https://github.com/dmonad/lib0)
+

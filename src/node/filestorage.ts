@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json } from "../common/types"
+import { Json, ObjectStorage } from "../common/types"
 import {
   readFileSync,
   writeFileSync,
@@ -11,6 +11,7 @@ import {
 } from "fs"
 import { resolve } from "path"
 import { Logger } from "../common/log"
+import { toValidFilename } from "../common/data/path"
 
 const log = Logger("zeed:filestorage")
 
@@ -22,7 +23,7 @@ export interface FileStorageOptions {
   objectToString?: (data: any) => string
 }
 
-export class FileStorage {
+export class FileStorage implements ObjectStorage {
   private store: { [key: string]: string } = {}
   private dirname: string
   private fileKeys?: string[] = undefined
@@ -63,7 +64,7 @@ export class FileStorage {
     const data = this.objectToString(value)
     this.store[key] = data
     try {
-      const path = resolve(this.dirname, key + this.extension)
+      const path = this.getPath(key)
       mkdirSync(this.dirname, { recursive: true })
       writeFileSync(path, data, "utf8")
     } catch (err) {
@@ -72,21 +73,21 @@ export class FileStorage {
   }
 
   getPath(key: string): string {
-    return resolve(this.dirname, key + this.extension)
+    return resolve(this.dirname, toValidFilename(key) + this.extension)
   }
 
   getBuffer(key: string): Buffer {
-    const path = resolve(this.dirname, key + this.extension)
+    const path = this.getPath(key)
     return Buffer.from(readFileSync(path))
   }
 
-  getItem(key: string): Json | null {
+  getItem(key: string): Json | undefined {
     if (this.store.hasOwnProperty(key)) {
       let value = this.store[key]
-      return this.objectFromString(value) || null
+      return this.objectFromString(value)
     } else {
       try {
-        const path = resolve(this.dirname, key + this.extension)
+        const path = this.getPath(key)
         const data = readFileSync(path, "utf8")
         if (data) {
           return this.objectFromString(data)
@@ -95,7 +96,6 @@ export class FileStorage {
         log.error("getItem error", err)
       }
     }
-    return null
   }
 
   removeItem(key: string): void {
@@ -107,7 +107,7 @@ export class FileStorage {
       }
     }
     try {
-      const path = resolve(this.dirname, key + this.extension)
+      const path = this.getPath(key)
       unlinkSync(path)
     } catch (err) {}
   }

@@ -12,7 +12,7 @@ export function linkifyPlainText(text: string): string {
     .map((part, i) => {
       const escapedPart = escapeHTML(part)
       return i % 2
-        ? `<a target="_blank" href="${escapedPart}">${humanizeURL(
+        ? `<a target="_blank" href="${escapedPart}">${toHumanReadableUrl(
             escapedPart
           )}</a>`
         : escapedPart
@@ -20,6 +20,6 @@ export function linkifyPlainText(text: string): string {
     .join("")
 }
 
-export function humanizeURL(url: string): string {
+export function toHumanReadableUrl(url: string): string {
   return url.replace(/^https?:\/\/(?:www\.)/, "")
 }

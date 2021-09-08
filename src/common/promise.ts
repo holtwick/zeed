@@ -57,25 +57,26 @@ export async function tryTimeout<T>(
   promise: Promise<T>,
   milliSeconds: number
 ): Promise<T | undefined> {
-  if (milliSeconds > 0) {
-    return new Promise(async (resolve, reject) => {
-      let done = false
-
-      const timeout = setTimeout(() => {
-        done = true
-        reject(timoutError)
-      }, milliSeconds)
-
-      try {
-        let result = await promise
-        clearTimeout(timeout)
-        if (!done) resolve(result)
-      } catch (err) {
-        clearTimeout(timeout)
-        if (!done) reject(err)
-      }
-    })
+  if (milliSeconds <= 0) {
+    return await promise
   }
+  return new Promise(async (resolve, reject) => {
+    let done = false
+
+    const timeout = setTimeout(() => {
+      done = true
+      reject(timoutError)
+    }, milliSeconds)
+
+    try {
+      let result = await promise
+      clearTimeout(timeout)
+      if (!done) resolve(result)
+    } catch (err) {
+      clearTimeout(timeout)
+      if (!done) reject(err)
+    }
+  })
 }
 
 /** Wait for `event` on `obj` to emit. Resolve with result or reject on `timeout` */

@@ -1,8 +1,5 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-// const log = require('debug')('hostic:deep')
-// import { cloneDeep } from 'lodash'
-
 export const isObject = (obj: any) => obj && typeof obj === "object"
 export const isPrimitive = (obj: any) => Object(obj) !== obj
 

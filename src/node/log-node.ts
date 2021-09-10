@@ -136,7 +136,8 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
 
     if (stack) {
-      const line = getSourceLocation(4, true)
+      const depth = typeof stack === "number" ? stack : 3
+      const line = getSourceLocation(depth, true)
       if (line) {
         args.push(colorString(`(${line})`, COLOR.GRAY))
       }

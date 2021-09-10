@@ -72,7 +72,7 @@ export interface LogHandlerOptions {
   nameBrackets?: boolean
   padding?: number
   fill?: number
-  stack?: boolean
+  stack?: boolean | number
 }
 
 export function LoggerContext(prefix: string = ""): LoggerContextInterface {

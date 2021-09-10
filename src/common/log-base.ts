@@ -71,6 +71,7 @@ export interface LogHandlerOptions {
   levelHelper?: boolean
   nameBrackets?: boolean
   padding?: number
+  fill?: number
   stack?: boolean
 }
 

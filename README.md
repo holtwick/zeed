@@ -72,7 +72,7 @@ import "./logging"
 import "anyOtherModuleUsingLogger"
 ```
 
-> Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog) or [winston](https://github.com/winstonjs/winston) to name just a few.
+> Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog), [consola](https://github.com/unjs/consola) or [winston](https://github.com/winstonjs/winston) to name just a few.
 
 ## Promise / async / await utilities
 

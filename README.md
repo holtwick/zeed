@@ -205,6 +205,7 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 Recommended other collections of common JS utils:
 
 - [lib0](https://github.com/dmonad/lib0)
+- [antfu/utils](https://github.com/antfu/utils)
 - [vueuse](https://vueuse.org/)
 
 Code integrated from other sources:
@@ -215,4 +216,3 @@ Code integrated from other sources:
 - [filenamify](https://github.com/sindresorhus/filenamify) MIT
 - [gravatar](https://github.com/mazondo/gravatarjs/blob/master/gravatar.js) MIT
 - [lib0](https://github.com/dmonad/lib0)
-

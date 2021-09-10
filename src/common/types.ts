@@ -14,6 +14,7 @@ interface JsonArray extends Array<JsonPrimitive | JsonArray | JsonMap> {}
 export type Json = JsonPrimitive | JsonMap | JsonArray
 
 // Implemented by MemStorage, LocalStorage, FileStorage
+// Similar to https://github.com/unjs/unstorage
 export interface ObjectStorage {
   setItem(key: string, value: Json): void
   getItem(key: string): Json | undefined

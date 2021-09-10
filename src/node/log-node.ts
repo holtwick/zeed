@@ -91,6 +91,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     levelHelper = true,
     nameBrackets = true,
     padding = 0,
+    fill = 0,
     filter = undefined,
     stack = true,
   } = opt
@@ -118,7 +119,10 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
 
     if (padding > 0) {
       displayName = displayName.padStart(padding, " ")
-      // displayName = displayName.padEnd(padding, " ")
+    }
+
+    if (fill > 0) {
+      displayName = displayName.padEnd(fill, " ")
     }
 
     if (colors && useColors) {
@@ -132,7 +136,8 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
 
     if (stack) {
-      const line = getSourceLocation(4, true)
+      const depth = typeof stack === "number" ? stack : 3
+      const line = getSourceLocation(depth, true)
       if (line) {
         args.push(colorString(`(${line})`, COLOR.GRAY))
       }

@@ -28,7 +28,6 @@ test("should not have collisions", () => {
 
 test("should not have collisions v4", () => {
   let list = Array.apply(null, Array(100)).map(uuidv4)
-  console.log(list)
   while (list.length) {
     let id = list.pop()
     expect(id?.length).toBe(36)

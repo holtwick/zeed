@@ -44,17 +44,22 @@ export function uname(name: string = "id"): string {
   if (_unameCounters[name] == null) {
     _unameCounters[name] = 0
   }
-  return `${name}-${(_unameCounters[name]++).toString()}`
+  return `${name}-${_unameCounters[name]++}`
 }
 
-// export function uuidv4() {
-//   return String(1e7 + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c: any) =>
-//     (
-//       c ^
-//       (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-//     ).toString(16)
-//   )
-// }
+let _qid = 0
+
+export function qid(): string {
+  return `id-${_qid++}`
+}
+
+// https://stackoverflow.com/a/2117523/140927
+const pattern = "10000000-1000-4000-8000-100000000000" // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
+
+export const uuidv4 = () =>
+  pattern.replace(/[018]/g, (c: any) =>
+    (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16)
+  )
 
 // https://github.com/segmentio/ksuid
 // https://pkg.go.dev/github.com/rsms/go-uuid
@@ -83,13 +88,13 @@ function longToByteArray(long: number) {
   return byteArray
 }
 
-function byteArrayToLong(byteArray: number[]): number {
-  var value = 0
-  for (var i = byteArray.length - 1; i >= 0; i--) {
-    value = value * 256 + byteArray[i]
-  }
-  return value
-}
+// function byteArrayToLong(byteArray: number[]): number {
+//   var value = 0
+//   for (var i = byteArray.length - 1; i >= 0; i--) {
+//     value = value * 256 + byteArray[i]
+//   }
+//   return value
+// }
 
 export function suidBytes(): Uint8Array {
   const ms = getTimestamp() - ReferenceDateInMS

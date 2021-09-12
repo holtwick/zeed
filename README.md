@@ -125,6 +125,15 @@ suidDate(shortSortableId) // = 2021-07-03T22:42:40.727Z
 shortSortableId < suid() // = true
 ```
 
+Overview of available IDs:
+
+- `uuid`
+- `uuidB32`
+- `suid`
+- `quid`: Quick ID great for UI purposes of patter `id-1`, `id-2`, ...
+- `uuidv4`: The *classic* UID like `a7755f8d-ef6f-45e9-8db3-d29347a4a2a1`
+  
+ 
 ## Typed event emitter
 
 Typed and async emitter:

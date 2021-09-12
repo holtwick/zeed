@@ -1,7 +1,15 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { useBase } from "./data/basex"
-import { suid, suidBytesDate, suidDate, uname, uuid, uuidB32 } from "./uuid"
+import {
+  suid,
+  suidBytesDate,
+  suidDate,
+  uname,
+  uuid,
+  uuidB32,
+  uuidv4,
+} from "./uuid"
 import { sleep } from "./promise"
 
 test("should not certain length", () => {
@@ -11,9 +19,18 @@ test("should not certain length", () => {
 
 test("should not have collisions", () => {
   let list = Array.apply(null, Array(100)).map(uuid)
-  // console.log(list)
   while (list.length) {
     let id = list.pop()
+    expect(id?.length).toBe(22)
+    expect(list).not.toContain(id)
+  }
+})
+
+test("should not have collisions v4", () => {
+  let list = Array.apply(null, Array(100)).map(uuidv4)
+  while (list.length) {
+    let id = list.pop()
+    expect(id?.length).toBe(36)
     expect(list).not.toContain(id)
   }
 })

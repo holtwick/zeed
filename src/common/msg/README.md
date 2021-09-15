@@ -20,3 +20,15 @@ interface MyMessages {
 let m = Messages<MyMessages>()
 m.emit("ping", { hello: "world" })
 ```
+
+## Various transports and their properties
+
+<http://developer.mozilla.org/en-US/docs/Web/API/Transferable>
+
+- WebSocket: Supports binary channel
+- WebRTC: Supports binary channel
+- HTTP: Supports binary channel
+- WebWorker: Supports ArrayBuffer
+- IFrame
+- BroadcastCannel
+- 

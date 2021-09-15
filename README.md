@@ -140,14 +140,30 @@ Typed and async emitter:
 
 ```ts
 interface MyEvents {
-  inc: async (count: number) => void
+  async inc(count: number): number
 }
 
 let counter = 0
 
 const e = new Emitter<MyEvents>
-e.on('inc', async (count) => counter + count)
+e.on('inc', async (count) => counter + 1)
 await e.emit('inc', 1) // counter === 1
+```
+
+It is also possible to alternatively use a Proxy called `.call` that makes nice dynamic function calls of the events:
+
+```ts
+await e.call.inc(1)
+```
+
+We can also alternatively declare the listeners this way:
+
+```ts
+e.onCall({
+  async inc(count: number): number {
+    return counter + 1      
+  }
+})
 ```
 
 You can also use a global emitter that will be available even over module boundaries:
@@ -159,7 +175,8 @@ declare global {
   }
 }
 
-getGlobalEmitter().emit("x", "Hello World")
+getGlobalEmitter().emit("test", "Hello World") // or
+getGlobalEmitter().call.test("Hello World")
 ```
 
 ## CRDT compatible sorting

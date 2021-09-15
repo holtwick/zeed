@@ -78,6 +78,12 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
     }
   }
 
+  public onCall(handlers: Partial<L>) {
+    for (const [name, handler] of Object.entries(handlers)) {
+      this.on(name as any, handler as any)
+    }
+  }
+
   public once<U extends keyof L>(event: U, listener: L[U]) {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)

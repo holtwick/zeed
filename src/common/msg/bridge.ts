@@ -6,16 +6,17 @@ import { Logger } from "../log"
 import { promisify } from "../promise"
 import { SerialQueue } from "../queue"
 import { JsonEncoder } from "./encoder"
+import { Json } from "../types"
 
 const log = Logger("zeed:bridge")
 
-export interface BridgeMessage {
+export type BridgeMessage = {
   name: string
-  info: any
+  info: Json[]
   responseName?: string
   success?: boolean
-  error?: string | null | undefined
-  requestPayload?: any
+  error?: string
+  requestPayload?: Json
 }
 
 interface BrideOptions {
@@ -96,7 +97,7 @@ export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
     ...args: Parameters<L[U]>
   ): Promise<undefined | ReturnType<L[U]>> {
     // todo
-    let result = await this.emit(event, ...args)
+    let result = this.emit(event, ...args)
     if (Array.isArray(result) && result.length === 1) {
       return result[0]
     }

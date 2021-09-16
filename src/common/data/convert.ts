@@ -63,43 +63,8 @@ export const toBool = valueToBoolean
 
 // Strings
 
-// From https://github.com/moll/json-stringify-safe License ISC
+import { jsonStringify } from "./json"
 
-type EntryProcessor = (key: string, value: any) => any
-
-function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
-  var stack: any[] = [],
-    keys: string[] = []
-
-  if (cycleReplacer == null)
-    cycleReplacer = function (key, value) {
-      if (stack[0] === value) return "[Circular ~]"
-      return (
-        "[Circular ~." + keys.slice(0, stack.indexOf(value)).join(".") + "]"
-      )
-    }
-
-  return function (this: EntryProcessor, key: string, value: any): any {
-    if (stack.length > 0) {
-      var thisPos = stack.indexOf(this)
-      ~thisPos ? stack.splice(thisPos + 1) : stack.push(this)
-      ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key)
-      if (~stack.indexOf(value)) value = cycleReplacer?.call(this, key, value)
-    } else stack.push(value)
-
-    return replacer == null ? value : replacer.call(this, key, value)
-  }
-}
-
-export function stringify(
-  obj: any,
-  replacer?: EntryProcessor | null,
-  spaces?: string | number | null,
-  cycleReplacer?: EntryProcessor
-): string {
-  // @ts-ignore
-  return JSON.stringify(obj, serializer(replacer, cycleReplacer), spaces)
-}
 export type RenderMessagesOptions = {
   trace?: boolean // = true
   pretty?: boolean // = true
@@ -118,7 +83,7 @@ export function formatMessages(
         }
         return `${obj.name || "Error"}: ${obj.message}\n${obj.stack}`
       }
-      return pretty ? stringify(obj, null, 2) : stringify(obj)
+      return pretty ? jsonStringify(obj, null, 2) : jsonStringify(obj)
     }
     return String(obj)
   })

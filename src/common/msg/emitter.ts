@@ -28,6 +28,13 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
+  call: L = new Proxy<L>({} as any, {
+    get:
+      (target: any, name: any) =>
+      (...args: any): any =>
+        this.emit(name, ...args),
+  })
+
   public async emit<U extends keyof L>(
     event: U,
     ...args: Parameters<L[U]>
@@ -71,6 +78,12 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
     }
   }
 
+  public onCall(handlers: Partial<L>) {
+    for (const [name, handler] of Object.entries(handlers)) {
+      this.on(name as any, handler as any)
+    }
+  }
+
   public once<U extends keyof L>(event: U, listener: L[U]) {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)
@@ -108,7 +121,7 @@ export function getGlobalEmitter(): Emitter<ZeedGlobalEmitter> {
     emitter = new Emitter()
     getGlobalContext().emitter = emitter
   }
-  return emitter
+  return emitter as any
 }
 
 // This can be used as a global messaging port to connect loose

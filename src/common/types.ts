@@ -8,10 +8,28 @@ export interface Disposable {
 
 // JSON
 
-type JsonPrimitive = string | number | boolean | null
-interface JsonMap extends Record<string, JsonPrimitive | JsonArray | JsonMap> {}
-interface JsonArray extends Array<JsonPrimitive | JsonArray | JsonMap> {}
-export type Json = JsonPrimitive | JsonMap | JsonArray
+// type JsonPrimitive = string | number | boolean | null
+// interface JsonMap extends Record<string, JsonPrimitive | JsonArray | JsonMap> {}
+// interface JsonArray extends Array<JsonPrimitive | JsonArray | JsonMap> {}
+// export type Json =
+//   | JsonPrimitive
+//   | JsonMap
+//   | JsonArray
+//   | { [property: string]: Json }
+//   | Json[]
+
+// interface JsonInterface {
+//   [property: string]: Json | undefined
+// }
+
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [property: string]: Json }
+  | Json[]
+// | JsonInterface
 
 // Implemented by MemStorage, LocalStorage, FileStorage
 // Similar to https://github.com/unjs/unstorage

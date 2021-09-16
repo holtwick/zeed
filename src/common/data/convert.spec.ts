@@ -1,11 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import {
-  renderMessages,
-  stringify,
-  valueToInteger,
-  valueToString,
-} from "./convert"
+import { renderMessages, valueToInteger, valueToString } from "./convert"
 
 describe("convert", () => {
   it("should convert", () => {
@@ -13,17 +8,6 @@ describe("convert", () => {
 
     expect(valueToInteger("123")).toBe(123)
     expect(valueToInteger(true)).toBe(1)
-  })
-
-  it("should stringify", () => {
-    var circularObj = {}
-    // @ts-ignore
-    circularObj.circularRef = circularObj
-    // @ts-ignore
-    circularObj.list = [circularObj, circularObj]
-    expect(stringify(circularObj)).toBe(
-      '{"circularRef":"[Circular ~]","list":["[Circular ~]","[Circular ~]"]}'
-    )
   })
 
   it("should print errors", () => {

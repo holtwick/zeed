@@ -1,142 +1,84 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
+import { promisify, tryTimeout } from "../promise"
+import { uname, uuid } from "../uuid"
+import { Channel } from "./channel"
+import { Logger } from ".."
 
-import { Channel, ChannelMessageEvent } from "./channel"
-import { DefaultListener, EmitterHandler, ListenerSignature } from "./emitter"
-import { Logger } from "../log"
-import { promisify } from "../promise"
-import { SerialQueue } from "../queue"
-import { JsonEncoder } from "./encoder"
-
-const log = Logger("zeed:bridge")
-
-export interface BridgeMessage {
-  name: string
-  info: any
-  responseName?: string
-  success?: boolean
-  error?: string | null | undefined
-  requestPayload?: any
-}
-
-interface BrideOptions {
+interface BridgeOptions {
   timeout?: number
 }
 
-export class Bridge<L extends ListenerSignature<L> = DefaultListener> {
-  channel: Channel
+export function useBridge<L extends object>(
+  info: { channel: Channel },
+  methods?: L
+) {
+  const log = Logger(`bridge:${uname(!!methods ? "server" : "client")}`)
 
-  encoder = new JsonEncoder()
-  queue = new SerialQueue()
-
-  subscribers: any = {}
-  subscribersOnAny: any[] = []
-
-  opt: BrideOptions
-
-  constructor(channel: Channel, opt: BrideOptions = {}) {
-    this.opt = opt
-    this.channel = channel
-    this.channel.on("message", (event) => this._recv(event))
-    this.channel.on("messageerror", (event) => {
-      log.error("Error in channel", event)
+  if (methods) {
+    info.channel.on("message", async (msg: any) => {
+      const { name, args, id } = msg.data
+      if (name) {
+        log(`name ${name} id ${id}`)
+        // @ts-ignore
+        let result = await promisify(methods[name](...args))
+        log(`result ${result}`)
+        if (id) {
+          info.channel.postMessage({ id, result })
+        }
+      }
     })
   }
 
-  private _post(msg: BridgeMessage) {
-    this.channel.postMessage(this.encoder.encode(msg))
-  }
+  let waitingForResponse: any = {}
 
-  private _recv(ev: ChannelMessageEvent) {
-    let msg = this.encoder.decode(ev.data) as BridgeMessage
+  info.channel.on("message", async (msg: any) => {
+    const { name, args, id, result } = msg.data
+    if (!name && id) {
+      log(`id ${id} result ${result}`)
+      const resolve = waitingForResponse[id]
+      if (resolve) {
+        delete waitingForResponse[id]
+        resolve(result)
+      }
+    }
+  })
 
-    const event = msg.name
-    const args = msg.info
-
-    let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
-    this.subscribersOnAny.forEach((fn) => fn(event, ...args))
-    if (subscribers.length > 0) {
-      let all = subscribers.map((fn) => {
-        try {
-          return promisify(fn(...args))
-        } catch (err) {
-          log.warn("emit warning:", err)
+  // The async proxy, waiting for a response
+  const createPromiseProxy = (opt: any): L =>
+    new Proxy<L>({} as any, {
+      get: (target: any, name: any) => {
+        return (...args: any): any => {
+          if (!methods) {
+            const id = uuid()
+            info.channel.postMessage({ name, args, id })
+            return tryTimeout(
+              new Promise((resolve) => (waitingForResponse[id] = resolve)),
+              1000
+            )
+          }
         }
-      })
+      },
+    })
+
+  // The regular proxy without responding, just send
+  return new Proxy<
+    L & {
+      promise: L
+      options(opt: BridgeOptions): L
     }
-  }
-
-  public emit<U extends keyof L>(event: U, ...args: Parameters<L[U]>): this {
-    try {
-      this._post({
-        name: event as string,
-        info: args,
-      })
-    } catch (err) {
-      log.error("emit exception", err)
-    }
-    return this
-  }
-
-  // public async fetchOne<U extends keyof L>(
-  //   event: U,
-  //   ...args: Parameters<L[U]>
-  // ): Promise<undefined | ReturnType<L[U]>> {
-  //   return []
-  // }
-
-  // public async fetchAll<U extends keyof L>(
-  //   event: U,
-  //   ...args: Parameters<L[U]>
-  // ): Promise<undefined | ReturnType<L[U][]>> {
-  //   return []
-  // }
-
-  public async fetch<U extends keyof L>(
-    event: U,
-    ...args: Parameters<L[U]>
-  ): Promise<undefined | ReturnType<L[U]>> {
-    // todo
-    let result = await this.emit(event, ...args)
-    if (Array.isArray(result) && result.length === 1) {
-      return result[0]
-    }
-    return undefined
-  }
-
-  public onAny(fn: EmitterHandler): this {
-    this.subscribersOnAny.push(fn)
-    return this
-  }
-
-  public on<U extends keyof L>(event: U, listener: L[U]) {
-    let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
-    subscribers.push(listener)
-    this.subscribers[event] = subscribers
-    return {
-      cleanup: () => {
-        this.off(event, listener)
+  >(
+    {
+      promise: createPromiseProxy({}),
+      options: (opt: BridgeOptions): L => createPromiseProxy(opt),
+    } as any,
+    {
+      get: (target: any, name: any) => {
+        if (name in target) return target[name]
+        return (...args: any): any => {
+          if (!methods) {
+            info.channel.postMessage({ name, args })
+          }
+        }
       },
     }
-  }
-
-  public once<U extends keyof L>(event: U, listener: L[U]): this {
-    const onceListener = async (...args: any[]) => {
-      this.off(event, onceListener as any)
-      return await promisify(listener(...args))
-    }
-    this.on(event, onceListener as any)
-    return this
-  }
-
-  public off<U extends keyof L>(event: U, listener: L[U]): this {
-    this.subscribers[event] = (this.subscribers[event] || []).filter(
-      (f: any) => listener && f !== listener
-    )
-    return this
-  }
-
-  public removeAllListeners(): this {
-    this.subscribers = {}
-    return this
-  }
+  )
 }

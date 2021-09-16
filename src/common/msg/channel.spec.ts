@@ -26,7 +26,7 @@ const log = Logger("test:channel")
 //   async cleanup() {}
 // }
 
-function fakeWorkerPair(): [LocalChannel, LocalChannel] {
+export function fakeWorkerPair(): [LocalChannel, LocalChannel] {
   let w1 = new LocalChannel()
   let w2 = new LocalChannel()
 

@@ -13,7 +13,7 @@ declare global {
 
 describe("Emitter", () => {
   it("should emit", async () => {
-    expect.assertions(2)
+    expect.assertions(4)
 
     interface TestMessages {
       test(x: number): void
@@ -29,8 +29,19 @@ describe("Emitter", () => {
       ctr++
     })
 
-    await e.emit("long")
+    let ee = e.call
+
+    await ee.long()
     expect(ctr).toBe(1)
+
+    e.onCall({
+      test(x: number) {
+        expect(x).toBe(123)
+      },
+    })
+
+    await e.emit("long")
+    expect(ctr).toBe(2)
 
     await e.emit("test", 123)
   })

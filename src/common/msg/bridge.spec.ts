@@ -1,15 +1,6 @@
 import { useBridge } from "./bridge"
 import { fakeWorkerPair } from "./channel.spec"
 
-// These can be emitted from both the Client or the Server
-interface BridgeBothWays {}
-
-// These are emitted by the client to the service
-interface BridgeToServer extends BridgeBothWays {}
-
-// These are emitted by the service to the client
-interface BridgeToClient extends BridgeBothWays {}
-
 interface BridgeCommands {
   ping(value: number): number
   aping(value: number): Promise<number>
@@ -53,10 +44,10 @@ describe("bridge", () => {
       channel: clientChannel,
     })
 
-    expect(client.await).not.toBeNull()
+    expect(client.promise).not.toBeNull()
 
-    let x = await client.await.aping(1)
-    let y = await client.await.aping(3)
+    let x = await client.promise.aping(1)
+    let y = await client.promise.aping(3)
 
     expect(x).toBe(1)
     expect(y).toBe(3)

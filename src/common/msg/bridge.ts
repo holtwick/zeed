@@ -6,7 +6,7 @@ import { Logger } from ".."
 export function useBridge<L extends object>(
   info: { channel: Channel },
   methods?: L
-): L & { await: L } {
+): L & { promise: L } {
   const log = Logger(`bridge:${uname(!!methods ? "server" : "client")}`)
 
   if (methods) {
@@ -55,16 +55,19 @@ export function useBridge<L extends object>(
   })
 
   // The regular proxy without responding, just send
-  return new Proxy<L & { await: L }>({} as any, {
-    get: (target: any, name: any) => {
-      if (name === "await") {
-        return aproxy
-      }
-      return (...args: any): any => {
-        if (!methods) {
-          info.channel.postMessage({ name, args })
+  return new Proxy<L & { promise: L }>(
+    {
+      promise: aproxy,
+    } as any,
+    {
+      get: (target: any, name: any) => {
+        if (name in target) return target[name]
+        return (...args: any): any => {
+          if (!methods) {
+            info.channel.postMessage({ name, args })
+          }
         }
-      }
-    },
-  })
+      },
+    }
+  )
 }

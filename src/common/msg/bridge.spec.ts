@@ -47,7 +47,11 @@ describe("bridge", () => {
     expect(client.promise).not.toBeNull()
 
     let x = await client.promise.aping(1)
-    let y = await client.promise.aping(3)
+    let y = await client
+      .options({
+        timeout: 1000,
+      })
+      .aping(3)
 
     expect(x).toBe(1)
     expect(y).toBe(3)

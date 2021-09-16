@@ -3,10 +3,14 @@ import { uname, uuid } from "../uuid"
 import { Channel } from "./channel"
 import { Logger } from ".."
 
+interface BridgeOptions {
+  timeout?: number
+}
+
 export function useBridge<L extends object>(
   info: { channel: Channel },
   methods?: L
-): L & { promise: L } {
+) {
   const log = Logger(`bridge:${uname(!!methods ? "server" : "client")}`)
 
   if (methods) {
@@ -39,25 +43,32 @@ export function useBridge<L extends object>(
   })
 
   // The async proxy, waiting for a response
-  let aproxy: L = new Proxy<L>({} as any, {
-    get: (target: any, name: any) => {
-      return (...args: any): any => {
-        if (!methods) {
-          const id = uuid()
-          info.channel.postMessage({ name, args, id })
-          return tryTimeout(
-            new Promise((resolve) => (waitingForResponse[id] = resolve)),
-            1000
-          )
+  const createPromiseProxy = (opt: any): L =>
+    new Proxy<L>({} as any, {
+      get: (target: any, name: any) => {
+        return (...args: any): any => {
+          if (!methods) {
+            const id = uuid()
+            info.channel.postMessage({ name, args, id })
+            return tryTimeout(
+              new Promise((resolve) => (waitingForResponse[id] = resolve)),
+              1000
+            )
+          }
         }
-      }
-    },
-  })
+      },
+    })
 
   // The regular proxy without responding, just send
-  return new Proxy<L & { promise: L }>(
+  return new Proxy<
+    L & {
+      promise: L
+      options(opt: BridgeOptions): L
+    }
+  >(
     {
-      promise: aproxy,
+      promise: createPromiseProxy({}),
+      options: (opt: BridgeOptions): L => createPromiseProxy(opt),
     } as any,
     {
       get: (target: any, name: any) => {

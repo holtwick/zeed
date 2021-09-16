@@ -134,3 +134,25 @@ export function promisify<T>(value: Promise<T> | T): Promise<T> {
   // return isPromise(value) ? value : Promise.resolve(value)
   return Promise.resolve(value)
 }
+
+// // https://github.com/unjs/items-promise
+
+// /**
+//  * Run tasks one by one by calling fn(task, previous) in a promise chain.
+//  * Return value is of type Promise<*> which resolves to the last fn result.
+//  */
+// export async function serial(tasks: any, fn: any) {
+//   return tasks.reduce(
+//     (promise: Promise<any>, task: any) =>
+//       promise.then((previous) => fn(task, previous)),
+//     Promise.resolve(null)
+//   )
+// }
+
+// /**
+//  * Run all tasks in parallel by calling fn(tasks) and await using Promise.all.
+//  * Return value is of type Promise<*[]> which resolves to results of all fns in an array.
+//  */
+// export async function parallel(tasks: any[], fn: any): Promise<any[]> {
+//   return Promise.all(tasks.map((task) => fn(task)))
+// }

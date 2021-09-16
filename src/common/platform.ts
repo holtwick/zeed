@@ -107,3 +107,15 @@ export const isBrowser = () =>
   typeof window !== "undefined" && globalThis === window
 
 export const platform = detect()
+
+/**
+ * Before closing the tab/window or quitting the node process
+ * allow to do something important first
+ */
+export function useExitHandler(handler: () => void) {
+  if (isBrowser()) {
+    window.addEventListener("beforeunload", handler)
+  } else if (typeof process !== "undefined") {
+    process.on("exit", () => handler)
+  }
+}

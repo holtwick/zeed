@@ -1,14 +1,14 @@
-import { useBridge } from "./bridge"
 import { fakeWorkerPair } from "./channel"
+import { useMessages } from "./messages"
 
-interface BridgeCommands {
+interface TestMessages {
   ping(value: number): number
-  aping(value: number): Promise<number>
+  aping(value: number | string): Promise<number | string>
 }
 
-describe("bridge", () => {
+describe("messages", () => {
   it("should show the magic of proxies ", () => {
-    let p = new Proxy<BridgeCommands>({} as any, {
+    let p = new Proxy<TestMessages>({} as any, {
       get(target, name) {
         console.log(target, name)
         return (...args: any) => {
@@ -25,36 +25,30 @@ describe("bridge", () => {
 
     const [clientChannel, serverChannel] = fakeWorkerPair()
 
-    const server = useBridge<BridgeCommands>(
+    useMessages<TestMessages>(
       {
         channel: serverChannel,
       },
       {
-        ping(value: number): number {
+        ping(value) {
           expect(value).toBe(2)
           return value
         },
-        async aping(value: number): Promise<number> {
-          return value ///new Promise((resolve) => setTimeout(() => resolve(value), 500))
+        async aping(value) {
+          return new Promise((resolve) => setTimeout(() => resolve(value), 500))
         },
       }
     )
 
-    const client = useBridge<BridgeCommands>({
+    const client = useMessages<TestMessages>({
       channel: clientChannel,
     })
 
-    expect(client.promise).not.toBeNull()
-
-    let x = await client.promise.aping(1)
-    let y = await client
-      .options({
-        timeout: 1000,
-      })
-      .aping(3)
+    let x = await client.aping(1)
+    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
 
     expect(x).toBe(1)
-    expect(y).toBe(3)
+    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
 
     client.ping(2)
   })

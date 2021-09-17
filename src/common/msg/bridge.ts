@@ -8,6 +8,7 @@ interface BridgeOptions {
   timeout?: number
 }
 
+/** @deprecated */
 export function useBridge<L extends object>(
   info: { channel: Channel; encoder?: any },
   methods?: L

@@ -45,5 +45,12 @@ export class LocalChannel extends Channel {
   }
 }
 
-/** Channel that requires  */
-export class CommandChannel {}
+export function fakeWorkerPair(): [LocalChannel, LocalChannel] {
+  let w1 = new LocalChannel()
+  let w2 = new LocalChannel()
+
+  w1.other = w2
+  w2.other = w1
+
+  return [w1, w2]
+}

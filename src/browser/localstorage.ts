@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json, ObjectStorage } from "../common/types"
+import { Json } from "../common/types"
 import { Logger } from "../common/log"
 
 const log = Logger("zeed:localstorage")

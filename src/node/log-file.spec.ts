@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger, sleep } from "../common/index"
+import { Logger, sleep } from "../common"
 import { LoggerFileHandler } from "./log-file"
 import { LoggerNodeHandler } from "./log-node"
 import { rmSync, statSync, unlinkSync } from "fs"

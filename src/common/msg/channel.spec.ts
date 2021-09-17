@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { Logger } from "../log"
-import { LocalChannel } from "./channel"
+import { fakeWorkerPair, LocalChannel } from "./channel"
 
 const log = Logger("test:channel")
 
@@ -25,16 +25,6 @@ const log = Logger("test:channel")
 
 //   async cleanup() {}
 // }
-
-export function fakeWorkerPair(): [LocalChannel, LocalChannel] {
-  let w1 = new LocalChannel()
-  let w2 = new LocalChannel()
-
-  w1.other = w2
-  w2.other = w1
-
-  return [w1, w2]
-}
 
 describe("Channel", () => {
   it("should fake", (done) => {

@@ -2,7 +2,7 @@
 // https://github.com/mazondo/gravatarjs/blob/master/gravatar.js
 // https://en.gravatar.com/site/implement/images/
 
-import { Logger } from "../common"
+import { Logger } from "../common/log"
 
 const log = Logger("zeed:gravatar")
 

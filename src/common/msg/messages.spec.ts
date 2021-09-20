@@ -74,7 +74,11 @@ describe("messages", () => {
     client.connect(clientChannel)
 
     let x = await client.aping(1)
-    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
+    let y = await client
+      .options({
+        timeout: 1000,
+      })
+      .aping("Hällo W👨‍👩‍👧‍👦rld")
 
     expect(x).toBe(1)
     expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")

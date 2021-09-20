@@ -21,7 +21,7 @@ export interface ChannelMessageEvent {
  * */
 export abstract class Channel extends Emitter<{
   message(event: ChannelMessageEvent): void
-  messageerror(event: ChannelMessageEvent): void
+  messageerror(event: ChannelMessageEvent): void // optional
   connect(): void // optional
   disconnect(): void // optional
 }> {

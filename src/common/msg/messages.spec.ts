@@ -25,11 +25,9 @@ describe("messages", () => {
 
     const [clientChannel, serverChannel] = fakeWorkerPair()
 
-    useMessages<TestMessages>(
-      {
-        channel: serverChannel,
-      },
-      {
+    useMessages<TestMessages>({
+      channel: serverChannel,
+      handlers: {
         ping(value) {
           expect(value).toBe(2)
           return value
@@ -37,12 +35,43 @@ describe("messages", () => {
         async aping(value) {
           return new Promise((resolve) => setTimeout(() => resolve(value), 500))
         },
-      }
-    )
+      },
+    })
 
     const client = useMessages<TestMessages>({
       channel: clientChannel,
     })
+
+    let x = await client.aping(1)
+    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
+
+    expect(x).toBe(1)
+    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
+
+    client.ping(2)
+  })
+
+  it("should connect later", async () => {
+    // expect.assertions(1)
+
+    const [clientChannel, serverChannel] = fakeWorkerPair()
+
+    const server = useMessages<TestMessages>({
+      handlers: {
+        ping(value) {
+          expect(value).toBe(2)
+          return value
+        },
+        async aping(value) {
+          return new Promise((resolve) => setTimeout(() => resolve(value), 500))
+        },
+      },
+    })
+
+    const client = useMessages<TestMessages>()
+
+    server.connect(serverChannel)
+    client.connect(clientChannel)
 
     let x = await client.aping(1)
     let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")

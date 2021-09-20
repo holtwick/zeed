@@ -24,41 +24,47 @@ export type MessagesOptions = {
   timeout?: number
 }
 
+type MessageDefaultMethods = {
+  connect(channel: Channel): void
+}
+
 export function useMessages<L extends object>(
-  info: {
-    channel: Channel
+  opt: {
+    channel?: Channel
     encoder?: Encoder
     retryAfter?: number
-  },
-  methods?: L
-) {
-  const log = Logger(`messages:${uname(!!methods ? "server" : "client")}`)
+    handlers?: L
+  } = {}
+): L & MessageDefaultMethods {
+  let { handlers, encoder = new JsonEncoder(), retryAfter = 1000 } = opt
 
-  const { channel, encoder = new JsonEncoder(), retryAfter = 1000 } = info
+  const log = Logger(`messages:${uname(!!handlers ? "server" : "client")}`)
 
+  let channel: Channel | undefined
   let queue: Message[] = []
   let queueRetryTimer: any
+  let waitingForResponse: any = {}
 
   const postNext = () => {
     clearTimeout(queueRetryTimer)
-    if (channel.isConnected) {
-      while (queue.length) {
-        let message = queue[0]
-        try {
-          channel.postMessage(encoder.encode(message))
-          queue.shift() // remove from queue when done
-        } catch (err) {
-          log.warn("postMessage", err)
-          break
+    if (channel) {
+      if (channel.isConnected) {
+        while (queue.length) {
+          let message = queue[0]
+          try {
+            channel.postMessage(encoder.encode(message))
+            queue.shift() // remove from queue when done
+          } catch (err) {
+            log.warn("postMessage", err)
+            break
+          }
         }
       }
-    }
-    if (queue.length > 0 && retryAfter > 0) {
-      queueRetryTimer = setTimeout(postNext, retryAfter)
+      if (queue.length > 0 && retryAfter > 0) {
+        queueRetryTimer = setTimeout(postNext, retryAfter)
+      }
     }
   }
-
-  channel.on("connect", postNext)
 
   const postMessage = (message: Message) => {
     log("enqueue postMessage", message)
@@ -66,70 +72,79 @@ export function useMessages<L extends object>(
     postNext()
   }
 
-  // Server side
+  const connect = (newChannel: Channel) => {
+    channel = newChannel
+    channel.on("connect", postNext)
 
-  if (methods) {
-    channel.on("message", async (msg: any) => {
-      const { name, args, id } = encoder.decode(msg.data) as any
-      if (name) {
-        log(`name ${name} id ${id}`)
-        try {
-          // @ts-ignore
-          let result = await promisify(methods[name](...args))
-          log(`result ${result}`)
-          if (id) {
-            postMessage({ id, result })
+    // Server side
+
+    if (handlers) {
+      channel.on("message", async (msg: any) => {
+        const { name, args, id } = encoder.decode(msg.data) as any
+        if (name) {
+          log(`name ${name} id ${id}`)
+          try {
+            // @ts-ignore
+            let result = await promisify(handlers[name](...args))
+            log(`result ${result}`)
+            if (id) {
+              postMessage({ id, result })
+            }
+          } catch (error) {
+            log("execution error", error)
+            let err =
+              error instanceof Error ? error : new Error(valueToString(error))
+            postMessage({
+              id,
+              error: {
+                message: err.message,
+                stack: err.stack,
+                name: err.name,
+              },
+            })
           }
-        } catch (error) {
-          log("execution error", error)
-          let err =
-            error instanceof Error ? error : new Error(valueToString(error))
-          postMessage({
-            id,
-            error: {
-              message: err.message,
-              stack: err.stack,
-              name: err.name,
-            },
-          })
+        }
+      })
+    }
+
+    // Client side
+
+    channel.on("message", async (msg: any) => {
+      const { name, args, id, result, error } = encoder.decode(msg.data) as any
+      if (!name && id) {
+        log(`response for id=${id}: result=${result}, error=${error}`)
+        const [resolve, reject] = waitingForResponse[id]
+        if (resolve && reject) {
+          delete waitingForResponse[id]
+          if (error) {
+            let err = new Error(error.message)
+            err.stack = error.stack
+            err.name = error.name
+            log("reject", err)
+            reject(err)
+          } else {
+            log("resolve", result)
+            resolve(result)
+          }
         }
       }
     })
+
+    postNext()
   }
 
-  let waitingForResponse: any = {}
-
-  // Client side
-
-  channel.on("message", async (msg: any) => {
-    const { name, args, id, result, error } = encoder.decode(msg.data) as any
-    if (!name && id) {
-      log(`response for id=${id}: result=${result}, error=${error}`)
-      const [resolve, reject] = waitingForResponse[id]
-      if (resolve && reject) {
-        delete waitingForResponse[id]
-        if (error) {
-          let err = new Error(error.message)
-          err.stack = error.stack
-          err.name = error.name
-          log("reject", err)
-          reject(err)
-        } else {
-          log("resolve", result)
-          resolve(result)
-        }
-      }
-    }
-  })
+  if (opt.channel) {
+    connect(opt.channel)
+  }
 
   // The async proxy, waiting for a response
   const createPromiseProxy = (opt: MessagesOptions): L => {
     const { timeout = 5000 } = opt
-    return new Proxy<L>({} as any, {
+    return new Proxy<L>({ connect } as any, {
       get: (target: any, name: any) => {
         if (name in target) return target[name]
         return (...args: any): any => {
-          if (!methods) {
+          if (!handlers) {
             const id = uuid()
             postMessage({ name, args, id })
             return tryTimeout(
@@ -146,5 +161,5 @@ export function useMessages<L extends object>(
   }
 
   // The regular proxy without responding, just send
-  return createPromiseProxy({})
+  return createPromiseProxy({}) as any
 }

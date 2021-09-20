@@ -24,10 +24,12 @@ export type MessagesOptions = {
   timeout?: number
 }
 
-type MessageDefaultMethods<L> = {
+export type MessagesDefaultMethods<L> = {
   connect(channel: Channel): void
   options(opt: MessagesOptions): L
 }
+
+export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 
 export function useMessages<L extends object>(
   opt: {
@@ -37,7 +39,7 @@ export function useMessages<L extends object>(
     retryAfter?: number
     ignoreUnhandled?: boolean
   } = {}
-): L & MessageDefaultMethods<L> {
+): MessagesMethods<L> {
   let {
     handlers,
     encoder = new JsonEncoder(),
@@ -178,5 +180,5 @@ export function useMessages<L extends object>(
     options(perCallopt: MessagesOptions) {
       return createPromiseProxy({ ...perCallopt })
     },
-  } as MessageDefaultMethods<L>) as any
+  } as MessagesDefaultMethods<L>) as MessagesMethods<L>
 }

@@ -1,15 +1,15 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../log"
+// import { Logger } from "../log"
 import { Emitter } from "./emitter"
 import { cloneObject } from "../data/utils"
 import { uuid } from "../uuid"
 
-const log = Logger("zeed:channel")
+// const log = Logger("zeed:channel")
 
 /** See http://developer.mozilla.org/en-US/docs/Web/API/MessageEvent */
 export interface ChannelMessageEvent {
-  data: ArrayBuffer
+  data: any
   origin?: string
   lastEventId?: string
 }
@@ -26,7 +26,7 @@ export abstract class Channel extends Emitter<{
   disconnect(): void // optional
 }> {
   abstract isConnected?: boolean
-  abstract postMessage(data: ArrayBuffer): void
+  abstract postMessage(data: any): void
   close() {}
 }
 

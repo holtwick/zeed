@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { immediate, Logger } from ".."
-import { LogLevel } from "../log-base"
+import { immediate, Logger } from "../.."
+import { LogLevel } from "../../log-base"
 import { TaskQueue } from "./mq"
 
 // require('debug').enable('*')

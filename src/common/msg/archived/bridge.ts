@@ -1,8 +1,8 @@
-import { promisify, tryTimeout } from "../promise"
-import { uname, uuid } from "../uuid"
-import { Channel } from "./channel"
-import { Logger } from "../log"
-import { JsonEncoder } from "./encoder"
+import { promisify, tryTimeout } from "../../promise"
+import { uname, uuid } from "../../uuid"
+import { Channel } from "../channel"
+import { Logger } from "../../log"
+import { JsonEncoder } from "./../encoder"
 
 interface BridgeOptions {
   timeout?: number

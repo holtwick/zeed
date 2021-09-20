@@ -1,5 +1,5 @@
 import { useBridge } from "./bridge"
-import { fakeWorkerPair } from "./channel"
+import { fakeWorkerPair } from "../channel"
 
 interface BridgeCommands {
   ping(value: number): number

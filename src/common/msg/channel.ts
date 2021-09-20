@@ -24,7 +24,9 @@ export abstract class Channel extends Emitter<{
   messageerror(event: ChannelMessageEvent): void // optional
   connect(): void // optional
   disconnect(): void // optional
+  close(): void
 }> {
+  id: string = uuid()
   abstract isConnected?: boolean
   abstract postMessage(data: any): void
   close() {}

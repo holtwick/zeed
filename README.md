@@ -131,23 +131,21 @@ Overview of available IDs:
 - `uuidB32`
 - `suid`
 - `quid`: Quick ID great for UI purposes of patter `id-1`, `id-2`, ...
-- `uuidv4`: The *classic* UID like `a7755f8d-ef6f-45e9-8db3-d29347a4a2a1`
-  
- 
+- `uuidv4`: The _classic_ UID like `a7755f8d-ef6f-45e9-8db3-d29347a4a2a1`
+
 ## Typed event emitter
 
 Typed and async emitter:
 
 ```ts
 interface MyEvents {
-  async inc(count: number): number
+  inc(count: number): number
 }
 
 let counter = 0
 
-const e = new Emitter<MyEvents>
-e.on('inc', async (count) => counter + 1)
-await e.emit('inc', 1) // counter === 1
+const e = new Emitter() < MyEvents > e.on("inc", async (count) => counter + 1)
+await e.emit("inc", 1) // counter === 1
 ```
 
 It is also possible to alternatively use a Proxy called `.call` that makes nice dynamic function calls of the events:
@@ -161,8 +159,8 @@ We can also alternatively declare the listeners this way:
 ```ts
 e.onCall({
   async inc(count: number): number {
-    return counter + 1      
-  }
+    return counter + 1
+  },
 })
 ```
 
@@ -178,6 +176,17 @@ declare global {
 getGlobalEmitter().emit("test", "Hello World") // or
 getGlobalEmitter().call.test("Hello World")
 ```
+
+## Messaging
+
+Communicating to servers or other remote parts through messages as if they were methods on a local object in a typesafe way:
+
+```ts
+let m = new Messages<MyMessages>({ cannel })
+m.echo({ hello: "world" })
+```
+
+More on it at [src/common/msg/README.md](./src/common/msg/README.md)
 
 ## CRDT compatible sorting
 

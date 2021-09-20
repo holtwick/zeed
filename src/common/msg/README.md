@@ -39,7 +39,7 @@ interface MyMessages {
 Using the messages is easy:
 
 ```ts
-let m = useMessages<MyMessages>({ cannel })
+let m = useMessages<MyMessages>({ channel })
 m.echo({ hello: "world" })
 ```
 
@@ -47,7 +47,7 @@ On the receiver part implementation is also straight forward:
 
 ```ts
 useMessages<MyMessages>({
-  cannel,
+  channel,
   handlers: {
     echo(data) {
       return data

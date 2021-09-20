@@ -182,7 +182,7 @@ getGlobalEmitter().call.test("Hello World")
 Communicating to servers or other remote parts through messages as if they were methods on a local object in a typesafe way:
 
 ```ts
-let m = new Messages<MyMessages>({ cannel })
+let m = useMessages<MyMessages>({ cannel })
 m.echo({ hello: "world" })
 ```
 

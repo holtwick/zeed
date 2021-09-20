@@ -24,19 +24,26 @@ export type MessagesOptions = {
   timeout?: number
 }
 
-type MessageDefaultMethods = {
+type MessageDefaultMethods<L> = {
   connect(channel: Channel): void
+  options(opt: MessagesOptions): L
 }
 
 export function useMessages<L extends object>(
   opt: {
     channel?: Channel
     encoder?: Encoder
-    retryAfter?: number
     handlers?: L
+    retryAfter?: number
+    ignoreUnhandled?: boolean
   } = {}
-): L & MessageDefaultMethods {
-  let { handlers, encoder = new JsonEncoder(), retryAfter = 1000 } = opt
+): L & MessageDefaultMethods<L> {
+  let {
+    handlers,
+    encoder = new JsonEncoder(),
+    retryAfter = 1000,
+    ignoreUnhandled = true,
+  } = opt
 
   const log = Logger(`messages:${uname(!!handlers ? "server" : "client")}`)
 
@@ -103,6 +110,8 @@ export function useMessages<L extends object>(
               },
             })
           }
+        } else if (!ignoreUnhandled) {
+          log.warn("Unhandled message", msg)
         }
       })
     }
@@ -138,9 +147,12 @@ export function useMessages<L extends object>(
   }
 
   // The async proxy, waiting for a response
-  const createPromiseProxy = (opt: MessagesOptions): L => {
+  const createPromiseProxy = (
+    opt: MessagesOptions,
+    predefinedMethods: any = {}
+  ): L => {
     const { timeout = 5000 } = opt
-    return new Proxy<L>({ connect } as any, {
+    return new Proxy<L>(predefinedMethods, {
       get: (target: any, name: any) => {
         if (name in target) return target[name]
         return (...args: any): any => {
@@ -161,5 +173,10 @@ export function useMessages<L extends object>(
   }
 
   // The regular proxy without responding, just send
-  return createPromiseProxy({}) as any
+  return createPromiseProxy({}, {
+    connect,
+    options(perCallopt: MessagesOptions) {
+      return createPromiseProxy({ ...perCallopt })
+    },
+  } as MessageDefaultMethods<L>) as any
 }

@@ -39,16 +39,16 @@ interface MyMessages {
 Using the messages is easy:
 
 ```ts
-let m = new Messages<MyMessages>({ cannel })
+let m = useMessages<MyMessages>({ cannel })
 m.echo({ hello: "world" })
 ```
 
 On the receiver part implementation is also straight forward:
 
 ```ts
-new Messages<MyMessages>(
-  { cannel },
-  {
+useMessages<MyMessages>({
+  cannel,
+  handlers: {
     echo(data) {
       return data
     },

@@ -144,6 +144,26 @@ export function useMessages<L extends object>(
     postNext()
   }
 
+  const fetchMessage = async (
+    name: string,
+    args: any[],
+    opt: MessagesOptions = {}
+  ) => {
+    const { timeout = 5000 } = opt
+    const id = uuid()
+    postMessage({
+      name,
+      args,
+      id,
+    })
+    return tryTimeout(
+      new Promise(
+        (resolve, reject) => (waitingForResponse[id] = [resolve, reject])
+      ),
+      timeout
+    )
+  }
+
   if (opt.channel) {
     connect(opt.channel)
   }
@@ -159,15 +179,7 @@ export function useMessages<L extends object>(
         if (name in target) return target[name]
         return (...args: any): any => {
           if (!handlers) {
-            const id = uuid()
-            postMessage({ name, args, id })
-            return tryTimeout(
-              new Promise(
-                (resolve, reject) =>
-                  (waitingForResponse[id] = [resolve, reject])
-              ),
-              timeout
-            )
+            return fetchMessage(name, args, opt)
           }
         }
       },

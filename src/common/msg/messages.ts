@@ -25,7 +25,7 @@ export type MessagesOptions = {
 }
 
 export type MessagesDefaultMethods<L> = {
-  connect(channel: Channel): void
+  connect?(channel: Channel): void
   options(opt: MessagesOptions): L
 }
 
@@ -193,4 +193,162 @@ export function useMessages<L extends object>(
       return createPromiseProxy({ ...perCallopt })
     },
   } as MessagesDefaultMethods<L>) as MessagesMethods<L>
+}
+
+export function useMessageHub(
+  opt: {
+    channel?: Channel
+    encoder?: Encoder
+    retryAfter?: number
+    ignoreUnhandled?: boolean
+  } = {}
+) {
+  let {
+    encoder = new JsonEncoder(),
+    retryAfter = 1000,
+    ignoreUnhandled = true,
+  } = opt
+
+  const log = Logger(`messagehub`)
+
+  let handlers = {}
+  let channel: Channel | undefined
+  let queue: Message[] = []
+  let queueRetryTimer: any
+  let waitingForResponse: any = {}
+
+  const postNext = () => {
+    clearTimeout(queueRetryTimer)
+    if (channel) {
+      if (channel.isConnected) {
+        while (queue.length) {
+          let message = queue[0]
+          try {
+            channel.postMessage(encoder.encode(message))
+            queue.shift() // remove from queue when done
+          } catch (err) {
+            log.warn("postMessage", err)
+            break
+          }
+        }
+      }
+      if (queue.length > 0 && retryAfter > 0) {
+        queueRetryTimer = setTimeout(postNext, retryAfter)
+      }
+    }
+  }
+
+  const postMessage = (message: Message) => {
+    log("enqueue postMessage", message)
+    queue.push(message)
+    postNext()
+  }
+
+  const connect = (newChannel: Channel) => {
+    channel = newChannel
+    channel.on("connect", postNext)
+
+    channel.on("message", async (msg: any) => {
+      const { name, args, id } = encoder.decode(msg.data) as any
+      if (name) {
+        log(`name ${name} id ${id}`)
+        try {
+          // @ts-ignore
+          let result = await promisify(handlers[name](...args))
+          log(`result ${result}`)
+          if (id) {
+            postMessage({ id, result })
+          }
+        } catch (error) {
+          log("execution error", error)
+          let err =
+            error instanceof Error ? error : new Error(valueToString(error))
+          postMessage({
+            id,
+            error: {
+              message: err.message,
+              stack: err.stack,
+              name: err.name,
+            },
+          })
+        }
+      } else if (!ignoreUnhandled) {
+        log.warn("Unhandled message", msg)
+      }
+    })
+
+    channel.on("message", async (msg: any) => {
+      const { name, id, result, error } = encoder.decode(msg.data) as any
+      if (!name && id) {
+        log(`response for id=${id}: result=${result}, error=${error}`)
+        const [resolve, reject] = waitingForResponse[id]
+        if (resolve && reject) {
+          delete waitingForResponse[id]
+          if (error) {
+            let err = new Error(error.message)
+            err.stack = error.stack
+            err.name = error.name
+            log("reject", err)
+            reject(err)
+          } else {
+            log("resolve", result)
+            resolve(result)
+          }
+        }
+      }
+    })
+
+    postNext()
+  }
+
+  const fetchMessage = async (
+    name: string,
+    args: any[],
+    opt: MessagesOptions = {}
+  ) => {
+    const { timeout = 5000 } = opt
+    const id = uuid()
+    postMessage({
+      name,
+      args,
+      id,
+    })
+    return tryTimeout(
+      new Promise(
+        (resolve, reject) => (waitingForResponse[id] = [resolve, reject])
+      ),
+      timeout
+    )
+  }
+
+  if (opt.channel) {
+    connect(opt.channel)
+  }
+
+  // The async proxy, waiting for a response
+  const createPromiseProxy = <P extends object>(
+    opt: MessagesOptions,
+    predefinedMethods: any = {}
+  ): P =>
+    new Proxy<P>(predefinedMethods, {
+      get: (target: any, name: any) => {
+        if (name in target) return target[name]
+        return (...args: any): any => fetchMessage(name, args, opt)
+      },
+    })
+
+  return {
+    connect,
+    server<L extends object>(newHandlers: L) {
+      Object.assign(handlers, newHandlers)
+    },
+    client<L extends object>() {
+      // The regular proxy without responding, just send
+      return createPromiseProxy<L>({}, {
+        options(perCallopt: MessagesOptions) {
+          return createPromiseProxy<L>({ ...perCallopt })
+        },
+      } as MessagesDefaultMethods<L>) as MessagesMethods<L>
+    },
+  }
 }

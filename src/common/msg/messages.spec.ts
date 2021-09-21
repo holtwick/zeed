@@ -1,5 +1,5 @@
 import { fakeWorkerPair } from "./channel"
-import { useMessages } from "./messages"
+import { useMessageHub, useMessages } from "./messages"
 
 interface TestMessages {
   ping(value: number): number
@@ -70,7 +70,9 @@ describe("messages", () => {
 
     const client = useMessages<TestMessages>()
 
+    // @ts-ignore
     server.connect(serverChannel)
+    // @ts-ignore
     client.connect(clientChannel)
 
     let x = await client.aping(1)
@@ -79,6 +81,36 @@ describe("messages", () => {
         timeout: 1000,
       })
       .aping("Hällo W👨‍👩‍👧‍👦rld")
+
+    expect(x).toBe(1)
+    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
+
+    client.ping(2)
+  })
+
+  it("should do hub thing", async () => {
+    // expect.assertions(1)
+
+    const [clientChannel, serverChannel] = fakeWorkerPair()
+
+    const serverHub = useMessageHub({ channel: serverChannel })
+    serverHub.server<Partial<TestMessages>>({
+      ping(value) {
+        expect(value).toBe(2)
+        return value
+      },
+    })
+    serverHub.server<Partial<TestMessages>>({
+      async aping(value) {
+        return new Promise((resolve) => setTimeout(() => resolve(value), 500))
+      },
+    })
+
+    const clientHub = useMessageHub({ channel: clientChannel })
+    const client = clientHub.client<TestMessages>()
+
+    let x = await client.aping(1)
+    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
 
     expect(x).toBe(1)
     expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")

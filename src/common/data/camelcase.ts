@@ -24,3 +24,11 @@ export const toCamelCase = (s: string) => {
   }
   return s
 }
+
+export function toCapitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.toLowerCase().slice(1)
+}
+
+export function toCapitalizeWords(s: string) {
+  return s.replace(/\w\S*/g, toCapitalize)
+}

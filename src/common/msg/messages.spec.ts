@@ -94,11 +94,13 @@ describe("messages", () => {
     const [clientChannel, serverChannel] = fakeWorkerPair()
 
     const serverHub = useMessageHub({ channel: serverChannel })
-    serverHub.server<TestMessages>({
+    serverHub.server<Partial<TestMessages>>({
       ping(value) {
         expect(value).toBe(2)
         return value
       },
+    })
+    serverHub.server<Partial<TestMessages>>({
       async aping(value) {
         return new Promise((resolve) => setTimeout(() => resolve(value), 500))
       },

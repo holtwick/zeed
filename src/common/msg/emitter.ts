@@ -72,7 +72,11 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
     subscribers.push(listener)
     this.subscribers[event] = subscribers
     return {
+      /** @deprecated */
       cleanup: () => {
+        this.off(event, listener)
+      },
+      dispose: () => {
         this.off(event, listener)
       },
     }

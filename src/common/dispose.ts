@@ -1,10 +1,18 @@
+import { time } from "console"
 import { arrayFilterInPlace } from "./data/array"
 import { promisify, isPromise } from "./promise"
+
+// https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
 type Disposable =
   | Function
   | Promise<unknown>
-  | { dispose: Function | Promise<unknown> }
+  | {
+      dispose?: Function | Promise<unknown>
+
+      // deprecated, but used often in my old code
+      cleanup?: Function | Promise<unknown>
+    }
 
 export function useDisposer() {
   let tracked: Disposable[] = []
@@ -24,6 +32,10 @@ export function useDisposer() {
         await promisify(disposable.dispose())
       } else if (isPromise(disposable.dispose)) {
         await disposable.dispose
+      } else if (typeof disposable.cleanup === "function") {
+        await promisify(disposable.cleanup())
+      } else if (isPromise(disposable.cleanup)) {
+        await disposable.cleanup
       }
     }
   }
@@ -42,4 +54,14 @@ export function useDisposer() {
       return tracked.length
     },
   }
+}
+
+export function useTimeout(fn: Function, timeout: number = 0) {
+  const timeoutHandle = setTimeout(fn, timeout)
+  return () => clearTimeout(timeoutHandle)
+}
+
+export function useInterval(fn: Function, interval: number) {
+  const intervalHandle = setInterval(fn, interval)
+  return () => clearInterval(intervalHandle)
 }

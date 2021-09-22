@@ -2,10 +2,6 @@
 
 export {}
 
-export interface Disposable {
-  cleanup(): Promise<void>
-}
-
 // JSON
 
 // type JsonPrimitive = string | number | boolean | null

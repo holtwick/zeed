@@ -94,20 +94,20 @@ describe("messages", () => {
     const [clientChannel, serverChannel] = fakeWorkerPair()
 
     const serverHub = useMessageHub({ channel: serverChannel })
-    serverHub.server<Partial<TestMessages>>({
+    serverHub.listen<Partial<TestMessages>>({
       ping(value) {
         expect(value).toBe(2)
         return value
       },
     })
-    serverHub.server<Partial<TestMessages>>({
+    serverHub.listen<Partial<TestMessages>>({
       async aping(value) {
         return new Promise((resolve) => setTimeout(() => resolve(value), 500))
       },
     })
 
     const clientHub = useMessageHub({ channel: clientChannel })
-    const client = clientHub.client<TestMessages>()
+    const client = clientHub.send<TestMessages>()
 
     let x = await client.aping(1)
     let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")

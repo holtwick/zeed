@@ -31,6 +31,12 @@ export type MessagesDefaultMethods<L> = {
 
 export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 
+export type MessageHub = {
+  connect: (newChannel: Channel) => void
+  server<L extends object>(newHandlers: L): void
+  client<L extends object>(): MessagesMethods<L>
+}
+
 export function useMessages<L extends object>(
   opt: {
     channel?: Channel
@@ -202,7 +208,7 @@ export function useMessageHub(
     retryAfter?: number
     ignoreUnhandled?: boolean
   } = {}
-) {
+): MessageHub {
   let {
     encoder = new JsonEncoder(),
     retryAfter = 1000,

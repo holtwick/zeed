@@ -42,14 +42,23 @@ export function useDisposer() {
     }
   }
 
-  return {
+  return Object.assign(dispose, {
     track,
     untrack,
     dispose,
     get size() {
       return tracked.length
     },
-  }
+  })
+
+  // return {
+  //   track,
+  //   untrack,
+  //   dispose,
+  //   get size() {
+  //     return tracked.length
+  //   },
+  // }
 }
 
 export function useTimeout(fn: Function, timeout: number = 0) {

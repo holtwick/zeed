@@ -1,4 +1,5 @@
 export * from "./basex"
+export * from "./bin"
 export * from "./camelcase"
 export * from "./convert"
 export * from "./html"

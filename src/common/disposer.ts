@@ -13,10 +13,6 @@ type Disposable =
 export function useDisposer() {
   let tracked: Disposable[] = []
 
-  const track = (obj: Disposable) => {
-    tracked.unshift(obj) // LIFO
-  }
-
   const untrack = async (disposable: Disposable) => {
     if (tracked.includes(disposable)) {
       arrayFilterInPlace(tracked, (el) => el !== disposable)
@@ -42,6 +38,11 @@ export function useDisposer() {
     }
   }
 
+  const track = (obj: Disposable) => {
+    tracked.unshift(obj) // LIFO
+    return () => untrack(obj)
+  }
+
   return Object.assign(dispose, {
     track,
     untrack,
@@ -50,15 +51,6 @@ export function useDisposer() {
       return tracked.length
     },
   })
-
-  // return {
-  //   track,
-  //   untrack,
-  //   dispose,
-  //   get size() {
-  //     return tracked.length
-  //   },
-  // }
 }
 
 export function useTimeout(fn: Function, timeout: number = 0) {

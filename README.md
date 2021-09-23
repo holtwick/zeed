@@ -246,15 +246,20 @@ const disposableTimer = () => {
 }
 
 let disposer = useDisposer()
-disposer.track(disposableTimer())
-disposer.track(disposableTimer())
+
+const obj = disposableTimer()
+disposer.track(obj)
+
+const untrackTimer = disposer.track(disposableTimer())
 
 // ...
 
-disposer.dispose() // will dispose all tracked elements
+disposer.untrack(obj) // dispose single object
+untrackTimer()        // dispose single object by return value of .track
+disposer.dispose()    // will dispose all tracked elements
 ```
 
-You can also `untrack` single entries. Entries are untracked LIFO.
+You can also `untrack` single entries. Entries are untracked LIFO. Disposers can also return a Promise and therefore `await` async disposals.
 
 The disposer itself is also a call to dispose i.e. for convenience you can add it to objects and provide `dispose` easily like this:
 

@@ -6,18 +6,21 @@ describe("dispose", () => {
   it("should dispose correctly", async () => {
     let disposeCalls: any[] = []
     const disposer = useDisposer()
-    disposer.track({
+
+    const y = disposer.track({
       dispose() {
         disposeCalls.push(1)
       },
     })
     disposer.track(() => disposeCalls.push(2))
+
     const x = {
       async dispose() {
         disposeCalls.push(3)
       },
     }
     disposer.track(x)
+
     disposer.track(async () => disposeCalls.push(4))
     expect(disposeCalls).toEqual([])
     expect(disposer.getSize()).toEqual(4)
@@ -30,12 +33,18 @@ describe("dispose", () => {
     expect(disposeCalls).toEqual([3])
     expect(disposer.getSize()).toEqual(3)
 
+    y()
+    y()
+    await disposer.untrack(x)
+    expect(disposeCalls).toEqual([3, 1])
+    expect(disposer.getSize()).toEqual(2)
+
     await disposer.dispose()
-    expect(disposeCalls).toEqual([3, 4, 2, 1])
+    expect(disposeCalls).toEqual([3, 1, 4, 2])
     expect(disposer.getSize()).toEqual(0)
 
     await disposer.dispose()
-    expect(disposeCalls).toEqual([3, 4, 2, 1])
+    expect(disposeCalls).toEqual([3, 1, 4, 2])
     expect(disposer.getSize()).toEqual(0)
   })
 

@@ -53,11 +53,44 @@ export function useDisposer() {
 }
 
 export function useTimeout(fn: Function, timeout: number = 0) {
-  const timeoutHandle = setTimeout(fn, timeout)
-  return () => clearTimeout(timeoutHandle)
+  let timeoutHandle: any = setTimeout(fn, timeout)
+  return () => {
+    if (timeoutHandle) {
+      clearTimeout(timeoutHandle)
+      timeoutHandle = undefined
+    }
+  }
 }
 
 export function useInterval(fn: Function, interval: number) {
-  const intervalHandle = setInterval(fn, interval)
-  return () => clearInterval(intervalHandle)
+  let intervalHandle: any = setInterval(fn, interval)
+  return () => {
+    if (intervalHandle) {
+      clearInterval(intervalHandle)
+      intervalHandle = undefined
+    }
+  }
+}
+
+export function useEventListener(
+  emitter: any,
+  eventName: string,
+  fn: (ev?: Event) => void,
+  ...args: any[]
+) {
+  if (emitter == null) return () => {}
+
+  if (emitter.on) {
+    emitter.on(eventName, fn, ...args)
+  } else if (emitter.addEventListener) {
+    emitter.addEventListener(eventName, fn, ...args)
+  }
+
+  return () => {
+    if (emitter.off) {
+      emitter.off(eventName, fn, ...args)
+    } else if (emitter.removeEventListener) {
+      emitter.removeEventListener(eventName, fn, ...args)
+    }
+  }
 }

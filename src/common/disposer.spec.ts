@@ -1,6 +1,6 @@
 // (C)opyright 20210922 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useDisposer } from "./dispose"
+import { useDisposer } from "./disposer"
 
 describe("dispose", () => {
   it("should dispose correctly", async () => {

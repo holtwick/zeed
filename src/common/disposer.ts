@@ -1,4 +1,3 @@
-import { time } from "console"
 import { arrayFilterInPlace } from "./data/array"
 import { promisify, isPromise } from "./promise"
 
@@ -6,12 +5,9 @@ import { promisify, isPromise } from "./promise"
 
 type Disposable =
   | Function
-  | Promise<unknown>
   | {
       dispose?: Function | Promise<unknown>
-
-      // deprecated, but used often in my old code
-      cleanup?: Function | Promise<unknown>
+      cleanup?: Function | Promise<unknown> // deprecated, but used often in my old code
     }
 
 export function useDisposer() {

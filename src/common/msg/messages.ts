@@ -25,6 +25,7 @@ export type MessagesOptions = {
 }
 
 export type MessagesDefaultMethods<L> = {
+  dispose(): void
   connect?(channel: Channel): void
   options(opt: MessagesOptions): L
 }
@@ -32,11 +33,13 @@ export type MessagesDefaultMethods<L> = {
 export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 
 export type MessageHub = {
+  dispose(): void
   connect: (newChannel: Channel) => void
   listen<L extends object>(newHandlers: L): void
   send<L extends object>(): MessagesMethods<L>
 }
 
+/** @deprecated */
 export function useMessages<L extends object>(
   opt: {
     channel?: Channel
@@ -59,6 +62,10 @@ export function useMessages<L extends object>(
   let queue: Message[] = []
   let queueRetryTimer: any
   let waitingForResponse: any = {}
+
+  const dispose = () => {
+    clearTimeout(queueRetryTimer)
+  }
 
   const postNext = () => {
     clearTimeout(queueRetryTimer)
@@ -194,6 +201,7 @@ export function useMessages<L extends object>(
 
   // The regular proxy without responding, just send
   return createPromiseProxy({}, {
+    dispose,
     connect,
     options(perCallopt: MessagesOptions) {
       return createPromiseProxy({ ...perCallopt })
@@ -237,6 +245,10 @@ export function useMessageHub(
   let queue: Message[] = []
   let queueRetryTimer: any
   let waitingForResponse: Record<string, [Function, Function]> = {}
+
+  const dispose = () => {
+    clearTimeout(queueRetryTimer)
+  }
 
   const postNext = () => {
     clearTimeout(queueRetryTimer)
@@ -349,6 +361,7 @@ export function useMessageHub(
   }
 
   return {
+    dispose,
     connect,
     listen<L extends object>(newHandlers: L) {
       Object.assign(handlers, newHandlers)

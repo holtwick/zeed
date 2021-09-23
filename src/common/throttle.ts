@@ -17,7 +17,7 @@ interface DebounceOptions {
   debounceMode?: boolean
 }
 
-type DebounceFunction = Function & { cancel: () => void }
+type DebounceFunction = Function & { cancel: () => void; dispose: () => void }
 
 /*
  * Throttle execution of a function. Especially useful for rate limiting
@@ -115,6 +115,7 @@ export function throttle(
   }
 
   wrapper.cancel = cancel
+  wrapper.dispose = cancel
 
   // Return the wrapper function.
   return wrapper
@@ -162,7 +163,7 @@ export function throttleAnimationFrame(callback: Function): DebounceFunction {
     }
   }
 
-  throttled.cancel = () => {
+  throttled.cancel = throttled.dispose = () => {
     cancelAnimationFrame(requestId)
     requestId = undefined
   }

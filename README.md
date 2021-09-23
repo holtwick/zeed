@@ -254,7 +254,7 @@ disposer.track(disposableTimer())
 disposer.dispose() // will dispose all tracked elements
 ```
 
-You can also `untrack` single entries.
+You can also `untrack` single entries. Entries are untracked LIFO.
 
 The disposer itself is also a call to dispose i.e. for convenience you can add it to objects and provide `dispose` easily like this:
 

@@ -20,23 +20,23 @@ describe("dispose", () => {
     disposer.track(x)
     disposer.track(async () => disposeCalls.push(4))
     expect(disposeCalls).toEqual([])
-    expect(disposer.size).toEqual(4)
+    expect(disposer.getSize()).toEqual(4)
 
     await disposer.untrack(x)
     expect(disposeCalls).toEqual([3])
-    expect(disposer.size).toEqual(3)
+    expect(disposer.getSize()).toEqual(3)
 
     await disposer.untrack(x)
     expect(disposeCalls).toEqual([3])
-    expect(disposer.size).toEqual(3)
+    expect(disposer.getSize()).toEqual(3)
 
     await disposer.dispose()
     expect(disposeCalls).toEqual([3, 4, 2, 1])
-    expect(disposer.size).toEqual(0)
+    expect(disposer.getSize()).toEqual(0)
 
     await disposer.dispose()
     expect(disposeCalls).toEqual([3, 4, 2, 1])
-    expect(disposer.size).toEqual(0)
+    expect(disposer.getSize()).toEqual(0)
   })
 
   it("should be a fancy disposer itself", () => {

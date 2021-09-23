@@ -46,7 +46,7 @@ export function useDisposer() {
     track,
     untrack,
     dispose,
-    get size() {
+    getSize() {
       return tracked.length
     },
   })

@@ -235,6 +235,43 @@ deepEqual({ a: { b: 1 } }, { a: { b: 2 } }) // false
 deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 ```
 
+## Disposer
+
+`useDisposer` will simplify cleaning up objects. You just need to `track` a function or and object with `dispose` method to be called for cleanup. This can also be nested. A simple example is a timer:
+
+```ts
+const disposableTimer = () => {
+  const timout = setTimeout(() => console.log('hello world')), 1000)
+  return () => clearTimeout(timeout)
+}
+
+let disposer = useDisposer()
+disposer.track(disposableTimer())
+disposer.track(disposableTimer())
+
+// ...
+
+disposer.dispose() // will dispose all tracked elements
+```
+
+You can also `untrack` single entries.
+
+The disposer itself is also a call to dispose i.e. for convenience you can add it to objects and provide `dispose` easily like this:
+
+```ts
+class DisposeExample {
+  dispose = useDisposer()
+
+  constructor() {
+    this.dispose.track(disposableTimer())
+  }
+}
+
+let obj = new DisposeExample()
+// ...
+obj.dispose()
+```
+
 ---
 
 Recommended other collections of common JS utils:

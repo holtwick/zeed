@@ -136,19 +136,21 @@ export function useMessages<L extends object>(
     channel.on("message", async (msg: any) => {
       const { name, args, id, result, error } = encoder.decode(msg.data) as any
       if (!name && id) {
-        log(`response for id=${id}: result=${result}, error=${error}`)
-        const [resolve, reject] = waitingForResponse[id]
-        if (resolve && reject) {
-          delete waitingForResponse[id]
-          if (error) {
-            let err = new Error(error.message)
-            err.stack = error.stack
-            err.name = error.name
-            log("reject", err)
-            reject(err)
-          } else {
-            log("resolve", result)
-            resolve(result)
+        log(`response for id=${id}: error=${error}, result=$`, result)
+        if (id in waitingForResponse) {
+          const [resolve, reject] = waitingForResponse[id]
+          if (resolve && reject) {
+            delete waitingForResponse[id]
+            if (error) {
+              let err = new Error(error.message)
+              err.stack = error.stack
+              err.name = error.name
+              log("reject", err)
+              reject(err)
+            } else {
+              log("resolve", result)
+              resolve(result)
+            }
           }
         }
       }

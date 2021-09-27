@@ -1,16 +1,16 @@
-import { Json } from "../types"
+// import { Json } from "../types"
 
 export interface Encoder {
-  encode(data: Json): ArrayBuffer
-  decode(data: ArrayBuffer): Json
+  encode(data: any): Promise<ArrayBuffer>
+  decode(data: ArrayBuffer): Promise<any>
 }
 
 export class JsonEncoder implements Encoder {
-  encode(data: Json): ArrayBuffer {
+  async encode(data: any): Promise<ArrayBuffer> {
     return JSON.stringify(data) as any
   }
 
-  decode(data: ArrayBuffer): Json {
-    return JSON.parse(data as any) as any
+  async decode(data: ArrayBuffer): Promise<any> {
+    return JSON.parse(data as any)
   }
 }

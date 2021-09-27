@@ -40,7 +40,7 @@ export class LocalChannel extends Channel {
 
   postMessage(data: any) {
     this.other?.emit("message", {
-      data: cloneObject(data),
+      data, // : cloneObject(data),
       origin: "local",
       lastEventId: uuid(),
     })

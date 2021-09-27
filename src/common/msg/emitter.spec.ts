@@ -16,14 +16,14 @@ describe("Emitter", () => {
     expect.assertions(4)
 
     interface TestMessages {
-      test(x: number): void
+      test(x: number, y: number): void
       long(): Promise<void>
     }
 
     let ctr = 0
 
     let e = new Emitter<TestMessages>()
-    e.on("test", (x) => expect(x).toBe(123))
+    e.on("test", (x, y) => expect(x + y).toBe(123))
     e.on("long", async () => {
       await sleep(500)
       ctr++
@@ -35,15 +35,15 @@ describe("Emitter", () => {
     expect(ctr).toBe(1)
 
     e.onCall({
-      test(x: number) {
-        expect(x).toBe(123)
+      test(x: number, y: number) {
+        expect(x + y).toBe(123)
       },
     })
 
     await e.emit("long")
     expect(ctr).toBe(2)
 
-    await e.emit("test", 123)
+    await e.emit("test", 100, 23)
   })
 
   it("should work", async () => {

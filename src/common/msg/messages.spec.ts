@@ -1,5 +1,5 @@
 import { fakeWorkerPair } from "./channel"
-import { useMessageHub, useMessages } from "./messages"
+import { useMessageHub } from "./messages"
 
 interface TestMessages {
   ping(value: number): number
@@ -20,73 +20,73 @@ describe("messages", () => {
     expect(p.ping(p.ping(2))).toBe(2)
   })
 
-  it("should do basic bridging", async () => {
-    // expect.assertions(1)
+  // it("should do basic bridging", async () => {
+  //   // expect.assertions(1)
 
-    const [clientChannel, serverChannel] = fakeWorkerPair()
+  //   const [clientChannel, serverChannel] = fakeWorkerPair()
 
-    useMessages<TestMessages>({
-      channel: serverChannel,
-      handlers: {
-        ping(value) {
-          expect(value).toBe(2)
-          return value
-        },
-        async aping(value) {
-          return new Promise((resolve) => setTimeout(() => resolve(value), 500))
-        },
-      },
-    })
+  //   useMessages<TestMessages>({
+  //     channel: serverChannel,
+  //     handlers: {
+  //       ping(value) {
+  //         expect(value).toBe(2)
+  //         return value
+  //       },
+  //       async aping(value) {
+  //         return new Promise((resolve) => setTimeout(() => resolve(value), 500))
+  //       },
+  //     },
+  //   })
 
-    const client = useMessages<TestMessages>({
-      channel: clientChannel,
-    })
+  //   const client = useMessages<TestMessages>({
+  //     channel: clientChannel,
+  //   })
 
-    let x = await client.aping(1)
-    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
+  //   let x = await client.aping(1)
+  //   let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
 
-    expect(x).toBe(1)
-    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
+  //   expect(x).toBe(1)
+  //   expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
 
-    client.ping(2)
-  })
+  //   client.ping(2)
+  // })
 
-  it("should connect later", async () => {
-    // expect.assertions(1)
+  // it("should connect later", async () => {
+  //   // expect.assertions(1)
 
-    const [clientChannel, serverChannel] = fakeWorkerPair()
+  //   const [clientChannel, serverChannel] = fakeWorkerPair()
 
-    const server = useMessages<TestMessages>({
-      handlers: {
-        ping(value) {
-          expect(value).toBe(2)
-          return value
-        },
-        async aping(value) {
-          return new Promise((resolve) => setTimeout(() => resolve(value), 500))
-        },
-      },
-    })
+  //   const server = useMessages<TestMessages>({
+  //     handlers: {
+  //       ping(value) {
+  //         expect(value).toBe(2)
+  //         return value
+  //       },
+  //       async aping(value) {
+  //         return new Promise((resolve) => setTimeout(() => resolve(value), 500))
+  //       },
+  //     },
+  //   })
 
-    const client = useMessages<TestMessages>()
+  //   const client = useMessages<TestMessages>()
 
-    // @ts-ignore
-    server.connect(serverChannel)
-    // @ts-ignore
-    client.connect(clientChannel)
+  //   // @ts-ignore
+  //   server.connect(serverChannel)
+  //   // @ts-ignore
+  //   client.connect(clientChannel)
 
-    let x = await client.aping(1)
-    let y = await client
-      .options({
-        timeout: 1000,
-      })
-      .aping("Hällo W👨‍👩‍👧‍👦rld")
+  //   let x = await client.aping(1)
+  //   let y = await client
+  //     .options({
+  //       timeout: 1000,
+  //     })
+  //     .aping("Hällo W👨‍👩‍👧‍👦rld")
 
-    expect(x).toBe(1)
-    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
+  //   expect(x).toBe(1)
+  //   expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
 
-    client.ping(2)
-  })
+  //   client.ping(2)
+  // })
 
   it("should do hub thing", async () => {
     // expect.assertions(1)

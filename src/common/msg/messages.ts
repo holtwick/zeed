@@ -285,6 +285,7 @@ export function useMessageHub(
     channel = newChannel
     channel.on("connect", postNext)
     channel.on("message", async (msg: any) => {
+      log("onmessage", msg)
       const { name, args, id, result, error } = await encoder.decode(msg.data)
 
       // Incoming new message

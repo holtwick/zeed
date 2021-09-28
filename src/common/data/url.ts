@@ -23,3 +23,47 @@ export function linkifyPlainText(text: string): string {
 export function toHumanReadableUrl(url: string): string {
   return url.replace(/^https?:\/\/(?:www\.)/, "")
 }
+
+//
+
+export function encodeQuery(data: Record<string, any>) {
+  let pairs = []
+  for (let [key, value] of Object.entries(data)) {
+    if (value != null) {
+      if (!Array.isArray(value)) {
+        value = [value]
+      }
+      for (let v of value) {
+        if (v != null) {
+          pairs.push(
+            encodeURIComponent(key) +
+              "=" +
+              encodeURIComponent(v.toString() || "")
+          )
+        }
+      }
+    }
+  }
+  return pairs.join("&")
+}
+
+export function parseQuery(queryString: string) {
+  let query: any = {}
+  let pairs = (
+    queryString[0] === "?" ? queryString.substr(1) : queryString
+  ).split("&")
+  for (let i = 0; i < pairs.length; i++) {
+    let pair = pairs[i].split("=")
+    let key = decodeURIComponent(pair[0])
+    let value = decodeURIComponent(pair[1] || "")
+    if (query[key] != null) {
+      if (!Array.isArray(query[key])) {
+        query[key] = [query[key]]
+      }
+      query[key].push(value)
+    } else {
+      query[key] = value
+    }
+  }
+  return query
+}

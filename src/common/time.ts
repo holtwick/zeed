@@ -1,7 +1,5 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { time } from "console"
-
 /**
  * @returns Timestamp in miliseconds
  */

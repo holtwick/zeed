@@ -1,9 +1,12 @@
 import { Json } from "./types"
 import { Logger } from "./log"
+import { encodeQuery } from "./data/url"
 
 const log = Logger("network")
 
 // export const fetch = require("node-fetch")
+
+const defaultOptions = { cache: "no-cache", redirect: "follow" }
 
 export async function fetchBasic(
   url: string,
@@ -40,13 +43,14 @@ export async function fetchBasic(
   }
 }
 
-export async function fetchJSON(
+export async function fetchJson(
   url: string,
   opts: any = {}
 ): Promise<Json | undefined> {
   try {
     let res = await fetchBasic(url, {
       method: "GET",
+      ...defaultOptions,
       headers: {},
       ...opts,
     })
@@ -58,6 +62,35 @@ export async function fetchJSON(
   }
 }
 
+export function fetchOptionsFormURLEncoded(
+  data: Object,
+  method: "GET" | "POST" = "POST"
+) {
+  return {
+    method,
+    ...defaultOptions,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: encodeQuery(data),
+  }
+}
+
+export function fetchOptionsJson(
+  data: Object,
+  method: "GET" | "POST" = "POST"
+) {
+  return {
+    method,
+    ...defaultOptions,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(data),
+  }
+}
+
 export async function fetchText(
   url: string,
   opts: any = {}
@@ -65,6 +98,7 @@ export async function fetchText(
   try {
     let res = await fetchBasic(url, {
       method: "GET",
+      ...defaultOptions,
       headers: {},
       ...opts,
     })

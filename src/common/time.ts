@@ -13,17 +13,18 @@ export function formatMilliseconds(ms: number): string {
 
 export const DAY_MS = 1000 * 60 * 60 * 24
 
+interface DayOffsetOptions {
+  relativeToDate?: Date
+  localTime?: boolean
+}
+
+/** Relative date calculation based on GMT */
 export function getDayOffset<T = number>(
   offset: number = 0,
   relativeToDate: Date = new Date(),
   mode?: (timestamp: number) => T
 ): T {
-  let tdate = new Date(relativeToDate.getTime())
-  tdate.setHours(0)
-  tdate.setMinutes(0)
-  tdate.setSeconds(0)
-  tdate.setMilliseconds(0)
-  const ms = tdate.getTime()
+  const ms = Math.floor(relativeToDate.getTime() / DAY_MS) * DAY_MS
   const ts = ms + offset * DAY_MS
   if (mode) return mode(ts)
   return ts as any

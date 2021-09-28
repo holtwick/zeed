@@ -24,7 +24,7 @@ export function getDayOffset<T = number>(
   tdate.setSeconds(0)
   tdate.setMilliseconds(0)
   const ms = tdate.getTime()
-  const ts = ms - offset * DAY_MS
+  const ts = ms + offset * DAY_MS
   if (mode) return mode(ts)
   return ts as any
 }

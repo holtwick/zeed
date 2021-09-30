@@ -14,6 +14,21 @@ export enum LogLevel {
   off = Infinity,
 }
 
+export const LogLevelAlias: Record<string, LogLevel> = {
+  "*": LogLevel.all,
+  all: LogLevel.all,
+  dbg: LogLevel.debug,
+  debug: LogLevel.debug,
+  inf: LogLevel.info,
+  info: LogLevel.info,
+  warn: LogLevel.warn,
+  warning: LogLevel.warn,
+  err: LogLevel.error,
+  error: LogLevel.error,
+  fatal: LogLevel.fatal,
+  off: LogLevel.off,
+}
+
 export interface LogMessage {
   level: LogLevel
   name: string

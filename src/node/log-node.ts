@@ -8,7 +8,7 @@ import {
 } from "../common/log-base"
 import { getTimestamp, formatMilliseconds } from "../common/time"
 import tty from "tty"
-import { useNamespaceFilter } from "../common/log-filter"
+import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
 import { renderMessages } from "../common/data/convert"
 import { getSourceLocation } from "../common/log-util"
 
@@ -86,7 +86,7 @@ export function colorString(value: string, colorCode: number) {
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.all,
+    level = undefined,
     colors = true,
     levelHelper = true,
     nameBrackets = true,
@@ -95,12 +95,18 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     filter = undefined,
     stack = true,
   } = opt
-  const matches = useNamespaceFilter(
+  const matchesNamespace = useNamespaceFilter(
     filter ?? process.env.ZEED ?? process.env.DEBUG
   )
+  const matchesLevel = useLevelFilter(
+    level ??
+      process.env.ZEED_LEVEL ??
+      process.env.LEVEL ??
+      process.env.DEBUG_LEVEL
+  )
   return (msg: LogMessage) => {
-    if (msg.level < level) return
-    if (!matches(msg.name)) return
+    if (!matchesLevel(msg.level)) return
+    if (!matchesNamespace(msg.name)) return
     const timeNow = getTimestamp()
     let name = msg.name || ""
     let ninfo = namespaces[name || ""]

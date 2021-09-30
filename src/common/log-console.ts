@@ -1,8 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useLevelFilter } from "src/index.all"
-import { LogLevel, LogHandler, LogMessage, LogHandlerOptions } from "./log-base"
-import { useNamespaceFilter } from "./log-filter"
+import { LogHandler, LogHandlerOptions, LogLevel, LogMessage } from "./log-base"
+import { useLevelFilter, useNamespaceFilter } from "./log-filter"
 
 /**
  * Very basic logger. Please take a look at the browser and node

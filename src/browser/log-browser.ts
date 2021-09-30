@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { formatMilliseconds, getTimestamp } from "../common/time"
+import { deepEqual } from "../common/data/deep"
 import {
   LoggerInterface,
   LogHandler,
@@ -8,9 +8,9 @@ import {
   LogLevel,
   LogMessage,
 } from "../common/log-base"
+import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
+import { formatMilliseconds, getTimestamp } from "../common/time"
 import { selectColor, supportsColors } from "./log-colors"
-import { useNamespaceFilter } from "../common/log-filter"
-import { deepEqual } from "../common/data/deep"
 
 const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
 const styleDefault = `${styleFont}`
@@ -23,18 +23,18 @@ let time = getTimestamp()
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.all,
+    filter = undefined,
+    level = undefined,
     colors = true,
     levelHelper = false,
     nameBrackets = true,
     padding = 16,
   } = opt
-  const matches = useNamespaceFilter(
-    opt.filter ?? localStorage.zeed ?? localStorage.debug
-  )
+  const matchesNamespace = useNamespaceFilter(filter)
+  const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
-    if (msg.level < level) return
-    if (!matches(msg.name)) return
+    if (!matchesLevel(msg.level)) return
+    if (!matchesNamespace(msg.name)) return
 
     const timeNow = getTimestamp()
     let name = msg.name || ""

@@ -1,9 +1,14 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getTimestamp, formatMilliseconds } from "../common/time"
-import { LogHandler, LogLevel, LogMessage } from "../common/log-base"
+import {
+  LogHandler,
+  LogHandlerOptions,
+  LogLevel,
+  LogMessage,
+} from "../common/log-base"
 import { selectColor, supportsColors } from "./log-colors"
-import { useNamespaceFilter } from "../common/log-filter"
+import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
 
 let namespaces: Record<string, any> = {}
 
@@ -13,21 +18,15 @@ const useColors = supportsColors()
 
 /** @deprecated */
 export function LoggerBrowserClassicHandler(
-  level: LogLevel = LogLevel.all,
-  opt: {
-    colors: boolean
-    levelHelper: boolean
-    nameBrackets: boolean
-  } = {
-    colors: true,
-    levelHelper: false,
-    nameBrackets: true,
-  }
+  level?: LogLevel,
+  opt: LogHandlerOptions = {}
 ): LogHandler {
-  const matches = useNamespaceFilter(localStorage.debug)
+  const { filter = undefined } = opt
+  const matchesNamespace = useNamespaceFilter(filter)
+  const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
-    if (msg.level < level) return
-    if (!matches(msg.name)) return
+    if (!matchesLevel(msg.level)) return
+    if (!matchesNamespace(msg.name)) return
 
     const timeNow = getTimestamp()
     let name = msg.name || ""

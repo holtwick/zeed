@@ -95,15 +95,8 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     filter = undefined,
     stack = true,
   } = opt
-  const matchesNamespace = useNamespaceFilter(
-    filter ?? process.env.ZEED ?? process.env.DEBUG
-  )
-  const matchesLevel = useLevelFilter(
-    level ??
-      process.env.ZEED_LEVEL ??
-      process.env.LEVEL ??
-      process.env.DEBUG_LEVEL
-  )
+  const matchesNamespace = useNamespaceFilter(filter)
+  const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
     if (!matchesLevel(msg.level)) return
     if (!matchesNamespace(msg.name)) return

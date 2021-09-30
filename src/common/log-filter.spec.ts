@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useNamespaceFilter } from "./log-filter"
+import { useLevelFilter, useNamespaceFilter } from "./log-filter"
+import { LogLevel } from "./log-base"
 
 describe("log-filter", function () {
   test("should match", function () {
@@ -57,6 +58,27 @@ describe("log-filter", function () {
       expect(matches.reject).toEqual([])
       expect(matches("a")).toBe(true)
       expect(matches("b:c")).toBe(true)
+    }
+  })
+
+  it("should filter by level", () => {
+    {
+      const levelFilter = useLevelFilter("err")
+      expect(levelFilter(LogLevel.debug)).toBe(false)
+      expect(levelFilter(LogLevel.warn)).toBe(false)
+      expect(levelFilter(LogLevel.error)).toBe(true)
+    }
+    {
+      const levelFilter = useLevelFilter("adfdfds")
+      expect(levelFilter(LogLevel.debug)).toBe(true)
+      expect(levelFilter(LogLevel.warn)).toBe(true)
+      expect(levelFilter(LogLevel.error)).toBe(true)
+    }
+    {
+      const levelFilter = useLevelFilter(LogLevel.warn)
+      expect(levelFilter(LogLevel.debug)).toBe(false)
+      expect(levelFilter(LogLevel.warn)).toBe(true)
+      expect(levelFilter(LogLevel.error)).toBe(true)
     }
   })
 })

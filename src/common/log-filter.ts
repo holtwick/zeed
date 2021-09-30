@@ -1,5 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { LogLevel, LogLevelAlias } from "./log-base"
+
 interface NamespaceFilter {
   (name: string): boolean
   accept: RegExp[]
@@ -65,4 +67,23 @@ export function useNamespaceFilter(filter?: string): NamespaceFilter {
   fn.reject = reject
   fn.filter = filter
   return fn as NamespaceFilter
+}
+
+/**
+ * Filter as described here https://github.com/visionmedia/debug#wildcards
+ *
+ * @param filter Namespace filter
+ * @returns Function to check if filter applies
+ */
+export function useLevelFilter(
+  filter?: string | number
+): (level: LogLevel) => boolean {
+  let filterLevel: LogLevel = LogLevel.all
+  if (typeof filter === "string") {
+    const l = LogLevelAlias[filter.toLocaleLowerCase().trim()]
+    if (l != null) filterLevel = l
+  } else {
+    filterLevel = filter as any
+  }
+  return (level) => level >= filterLevel
 }

@@ -76,7 +76,7 @@ export function useInterval(fn: Function, interval: number) {
 export function useEventListener(
   emitter: any,
   eventName: string,
-  fn: (ev?: Event) => void,
+  fn: (ev?: any) => void,
   ...args: any[]
 ) {
   if (emitter == null) return () => {}

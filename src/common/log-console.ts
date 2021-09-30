@@ -1,6 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { useLevelFilter } from "src/index.all"
 import { LogLevel, LogHandler, LogMessage, LogHandlerOptions } from "./log-base"
+import { useNamespaceFilter } from "./log-filter"
 
 /**
  * Very basic logger. Please take a look at the browser and node
@@ -11,15 +13,25 @@ import { LogLevel, LogHandler, LogMessage, LogHandlerOptions } from "./log-base"
  */
 export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.all,
+    level = undefined,
     colors = true,
     levelHelper = false,
     nameBrackets = true,
     padding = 16,
     filter = undefined,
   } = opt
+  const matchesNamespace = useNamespaceFilter(
+    filter ?? process.env.ZEED ?? process.env.DEBUG
+  )
+  const matchesLevel = useLevelFilter(
+    level ??
+      process.env.ZEED_LEVEL ??
+      process.env.LEVEL ??
+      process.env.DEBUG_LEVEL
+  )
   return (msg: LogMessage) => {
-    if (msg.level < level) return
+    if (!matchesLevel(msg.level)) return
+    if (!matchesNamespace(msg.name)) return
     let name = msg.name ? `[${msg.name}]` : ""
     switch (msg.level) {
       case LogLevel.info:

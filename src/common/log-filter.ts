@@ -9,13 +9,22 @@ interface NamespaceFilter {
   filter: string
 }
 
+const defaultNamespaceFilter: any =
+  typeof process !== "undefined"
+    ? process.env.ZEED ?? process.env.DEBUG
+    : typeof localStorage !== "undefined"
+    ? localStorage.zeed ?? localStorage.debug
+    : "*"
+
 /**
  * Filter as described here https://github.com/visionmedia/debug#wildcards
  *
  * @param filter Namespace filter
  * @returns Function to check if filter applies
  */
-export function useNamespaceFilter(filter?: string): NamespaceFilter {
+export function useNamespaceFilter(
+  filter: string = defaultNamespaceFilter
+): NamespaceFilter {
   let fn: any // (name: string) => boolean
   let reject = [] as RegExp[]
   let accept = [] as RegExp[]
@@ -69,14 +78,15 @@ export function useNamespaceFilter(filter?: string): NamespaceFilter {
   return fn as NamespaceFilter
 }
 
-/**
- * Filter as described here https://github.com/visionmedia/debug#wildcards
- *
- * @param filter Namespace filter
- * @returns Function to check if filter applies
- */
+const defaultLevelFilter: any =
+  typeof process !== "undefined"
+    ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL
+    : typeof localStorage !== "undefined"
+    ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
+    : LogLevel.all
+
 export function useLevelFilter(
-  filter?: string | number
+  filter: string | number = defaultLevelFilter
 ): (level: LogLevel) => boolean {
   let filterLevel: LogLevel = LogLevel.all
   if (typeof filter === "string") {

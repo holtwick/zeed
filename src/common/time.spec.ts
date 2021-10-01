@@ -1,6 +1,7 @@
 import {
   daysFromLocalDate,
   DAY_MS,
+  forEachDay,
   getDayOffset,
   getDayOffsetISO,
   getDayOffsetYYYYDDMM,
@@ -70,5 +71,16 @@ describe("Days", () => {
     let days = daysFromLocalDate(date)
     expect(days).toBe(19871231)
     expect(toDate(days).toDateString()).toEqual(date.toDateString())
+  })
+
+  it("should iterate days", () => {
+    let list: any = []
+    forEachDay(20101230, 20110102, (x) => list.push(x))
+    expect(list).toEqual([
+      "2010-12-30",
+      "2010-12-31",
+      "2011-01-01",
+      "2011-01-02",
+    ])
   })
 })

@@ -8,7 +8,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from "fs"
-import { resolve } from "path"
+import { dirname, resolve } from "path"
 import { toValidFilename } from "../common/data/path"
 import { Logger } from "../common/log"
 import { Json, ObjectStorage } from "../common/types"
@@ -21,6 +21,7 @@ export interface FileStorageOptions {
   extension?: string
   objectFromString?: (data: string) => any
   objectToString?: (data: any) => string
+  keyToFilename?: (key: string) => string
 }
 
 export class FileStorage<T = Json> implements ObjectStorage<T> {
@@ -32,6 +33,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   private extensionLength: number
   private objectFromString: (data: string) => any
   private objectToString: (data: any) => string
+  private keyToFilename: (key: string) => string
 
   constructor(opt: FileStorageOptions = {}) {
     this.dirname = resolve(process.cwd(), opt.path || ".fileStorage")
@@ -60,6 +62,8 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
           log.warn(`fileStorage parse error '${err}' in`, data)
         }
       })
+
+    this.keyToFilename = opt.keyToFilename ?? toValidFilename
   }
 
   setItem(key: string, value: T): void {
@@ -67,7 +71,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
     this.store[key] = data
     try {
       const path = this.getPath(key)
-      mkdirSync(this.dirname, { recursive: true })
+      mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, data, "utf8")
     } catch (err) {
       log.error("setItem error", err)
@@ -75,7 +79,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   }
 
   getPath(key: string): string {
-    return resolve(this.dirname, toValidFilename(key) + this.extension)
+    return resolve(this.dirname, this.keyToFilename(key) + this.extension)
   }
 
   getBuffer(key: string): Buffer {

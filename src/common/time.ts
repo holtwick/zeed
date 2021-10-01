@@ -31,6 +31,43 @@ export function toDate(n: number): Date {
   )
 }
 
+export function toGMTDate(n: number): Date {
+  return new Date(`${toDateString(n)}T00:00:00.000Z`)
+}
+
+export function toDateNumber(dateString: string): number | undefined {
+  if (dateString.length === 10) {
+    dateString.replaceAll("-", "")
+  }
+  if (dateString.length === 8) {
+    return +dateString
+  }
+}
+
+export function toDateString(n: number): string {
+  let baseString = String(n)
+  return (
+    baseString.slice(0, 4) +
+    "-" +
+    baseString.slice(4, 6) +
+    "-" +
+    baseString.slice(6, 8)
+  )
+}
+
+export function forEachDay(
+  from: number,
+  to: number,
+  handler: (date: string) => {}
+) {
+  let start = toGMTDate(from).getTime()
+  let end = toGMTDate(to).getTime()
+  while (start <= end) {
+    handler(new Date(start).toISOString().slice(0, 10))
+    start += DAY_MS
+  }
+}
+
 //
 
 export const DAY_MS = 1000 * 60 * 60 * 24

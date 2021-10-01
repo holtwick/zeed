@@ -5,7 +5,7 @@ import { FileStorage } from "./filestorage"
 describe("FileStorage", () => {
   it("should store data and read it again", () => {
     {
-      const db = new FileStorage()
+      const db = new FileStorage<any>()
       db.clear()
       expect(db.allKeys()).toEqual([])
       db.setItem("a", 1)

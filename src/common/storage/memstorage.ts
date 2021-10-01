@@ -11,7 +11,7 @@ export interface MemStorageOptions {
   objectToString?: (data: any) => string
 }
 
-export class MemStorage implements ObjectStorage {
+export class MemStorage<T = Json> implements ObjectStorage<T> {
   private store: { [key: string]: string } = {}
   private pretty: boolean = false
   private objectFromString: (data: string) => any
@@ -37,12 +37,12 @@ export class MemStorage implements ObjectStorage {
       })
   }
 
-  setItem(key: string, value: Json): void {
+  setItem(key: string, value: T): void {
     const data = this.objectToString(value)
     this.store[key] = data
   }
 
-  getItem(key: string): Json | undefined {
+  getItem(key: string): T | undefined {
     if (this.store.hasOwnProperty(key)) {
       let value = this.store[key]
       return this.objectFromString(value)

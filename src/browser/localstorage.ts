@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json } from "../common/types"
+import { Json, ObjectStorage } from "../common/types"
 import { Logger } from "../common/log"
 
 const log = Logger("zeed:localstorage")
@@ -11,7 +11,7 @@ export interface LocalStorageOptions {
   objectToString?: (data: any) => string
 }
 
-export class LocalStorage {
+export class LocalStorage<T = Json> implements ObjectStorage<T> {
   private name: string
   private prefix: string
   private pretty: boolean = false
@@ -41,12 +41,12 @@ export class LocalStorage {
       })
   }
 
-  setItem(key: string, value: Json): void {
+  setItem(key: string, value: T): void {
     const data = this.objectToString(value)
     localStorage.setItem(`${this.prefix}${key}`, data)
   }
 
-  getItem(key: string): Json | undefined {
+  getItem(key: string): T | undefined {
     let value = localStorage.getItem(`${this.prefix}${key}`)
     if (value != null) {
       return this.objectFromString(value)

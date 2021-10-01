@@ -1,17 +1,17 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json, ObjectStorage } from "../common/types"
 import {
-  readFileSync,
-  writeFileSync,
   mkdirSync,
+  readdirSync,
+  readFileSync,
   rmSync,
   unlinkSync,
-  readdirSync,
+  writeFileSync,
 } from "fs"
 import { resolve } from "path"
-import { Logger } from "../common/log"
 import { toValidFilename } from "../common/data/path"
+import { Logger } from "../common/log"
+import { Json, ObjectStorage } from "../common/types"
 
 const log = Logger("zeed:filestorage")
 
@@ -23,7 +23,7 @@ export interface FileStorageOptions {
   objectToString?: (data: any) => string
 }
 
-export class FileStorage implements ObjectStorage {
+export class FileStorage<T = Json> implements ObjectStorage<T> {
   private store: { [key: string]: string } = {}
   private dirname: string
   private fileKeys?: string[] = undefined
@@ -62,7 +62,7 @@ export class FileStorage implements ObjectStorage {
       })
   }
 
-  setItem(key: string, value: Json): void {
+  setItem(key: string, value: T): void {
     const data = this.objectToString(value)
     this.store[key] = data
     try {
@@ -83,7 +83,7 @@ export class FileStorage implements ObjectStorage {
     return Buffer.from(readFileSync(path))
   }
 
-  getItem(key: string): Json | undefined {
+  getItem(key: string): T | undefined {
     if (this.store.hasOwnProperty(key)) {
       let value = this.store[key]
       return this.objectFromString(value)

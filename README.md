@@ -16,14 +16,14 @@ Get started like this:
 npm i zeed
 ```
 
-Related projects:
-
-- [zeed-dom](https://github.com/holtwick/zeed-dom)
-- [zerva](https://github.com/holtwick/zerva)
+> Related projects:
+>
+> - [zeed-dom](https://github.com/holtwick/zeed-dom)
+> - [zerva](https://github.com/holtwick/zerva)
 
 ## Logging
 
-Powerful logging.
+Powerful logging for browser and terminal.
 
 ```js
 import { Logger } from "zeed"
@@ -36,22 +36,24 @@ log.info("Log this info")
 
 By default, the most suitable log handlers are used, but it is also possible to set (`Logger.setHandlers([handlers])`) or add (`Logger.registerHandler(handler)`) new log handlers. You can choose from:
 
-- `LoggerConsoleHandler(opt)`: Plain basic output via `console` (default)
-- `LoggerBrowserHandler(opt)`: Colorful log entries
-- `LoggerNodeHandler(opt)`: Colorful logging for node.js
+- `LoggerConsoleHandler(opt)`: Plain basic output via `console` (default) - _(muted by default)_
+- `LoggerBrowserHandler(opt)`: Colorful log entries - _(muted by default)_
+- `LoggerNodeHandler(opt)`: Colorful logging for node.js - _(muted by default)_
 - `LoggerFileHandler(path, opt)`: Write to file
 
-`opt` are general option like `level` for the log level or `filter` for custom filtering (see below). But it can also hold individual settings specific for a log handler.
+`opt` are general options like `level` for the log level or `filter` for custom filtering (see below). But it can also hold individual settings specific for a log handler.
 
-Write custom ones e.g. for [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
+Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage.debug = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call). `process.env.ZEED` and `localStorage.zeed` supersede `DEBUG`. **By default the standard loggers are muted!** Others like file loggers are not.
+
+The same applies for the level where you may use `ZEED_LEVEL`, `LEVEL` or `DEBUG_LEVEL` to set the filter e.g. `ZEED_LEVEL=info` to hide debug logs.
+
+Write **custom loggers** e.g. for [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
 
 You can use `Logger` in submodules and Zeed will make sure all logging goes through the same handlers, no matter what bundler is used. With `Logger.setLock(true)` any further changes to handlers, factories and log levels can be forbidden, to ensure no conflicting settings with submodules. You should set up the Logging very early in your main project before loading submodules.
 
 By default, in browsers a special handler is activated, which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
 
 <img src=".assets/safari-console.png" style="max-width:100%">
-
-Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage.debug = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call). `process.env.ZEED` and `localStorage.zeed` supersede `DEBUG`.
 
 Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
 
@@ -186,7 +188,7 @@ let m = useMessages<MyMessages>({ cannel })
 m.echo({ hello: "world" })
 ```
 
-More on it at [src/common/msg/README.md](./src/common/msg/README.md)
+> More details at [src/common/msg/README.md](./src/common/msg/README.md)
 
 ## CRDT compatible sorting
 

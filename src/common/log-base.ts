@@ -16,17 +16,23 @@ export enum LogLevel {
 
 export const LogLevelAlias: Record<string, LogLevel> = {
   "*": LogLevel.all,
+  a: LogLevel.all,
   all: LogLevel.all,
+  d: LogLevel.debug,
   dbg: LogLevel.debug,
   debug: LogLevel.debug,
+  i: LogLevel.info,
   inf: LogLevel.info,
   info: LogLevel.info,
+  w: LogLevel.warn,
   warn: LogLevel.warn,
   warning: LogLevel.warn,
+  e: LogLevel.error,
   err: LogLevel.error,
   error: LogLevel.error,
   fatal: LogLevel.fatal,
   off: LogLevel.off,
+  "-": LogLevel.off,
 }
 
 export interface LogMessage {

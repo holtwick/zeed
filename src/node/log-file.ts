@@ -1,27 +1,24 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { createWriteStream, mkdirSync } from "fs"
-import { resolve, dirname } from "path"
+import { dirname, resolve } from "path"
 import { renderMessages } from "../common/data/convert"
 import { LogHandlerOptions, LogLevel, LogMessage } from "../common/log-base"
+import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
 
 let namespaces: Record<string, any> = {}
 
 export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
-  const {
-    level = LogLevel.all,
-    colors = true,
-    levelHelper = false,
-    nameBrackets = true,
-    padding = 16,
-    filter = undefined,
-  } = opt
+  const { level = LogLevel.all, filter = "*" } = opt
   path = resolve(process.cwd(), path)
   mkdirSync(dirname(path), { recursive: true })
   var stream = createWriteStream(path, { flags: "a" })
   // stream.end()
+  const matchesNamespace = useNamespaceFilter(filter)
+  const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
-    if (msg.level < level) return
+    if (!matchesLevel(msg.level)) return
+    if (!matchesNamespace(msg.name)) return
 
     const time = new Date().toISOString()
     let name = msg.name || ""

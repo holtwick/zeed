@@ -38,7 +38,9 @@ export class FileStorage implements ObjectStorage {
     this.pretty = !!opt.pretty
     this.extension = opt.extension ?? ".json"
 
-    if (!this.extension.startsWith(".")) this.extension = "." + this.extension
+    if (opt.extension && !this.extension.startsWith(".")) {
+      this.extension = "." + this.extension
+    }
     this.extensionLength = this.extension.length
 
     this.objectToString =

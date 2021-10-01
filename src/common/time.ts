@@ -11,6 +11,28 @@ export function formatMilliseconds(ms: number): string {
   return ms > 999 ? (ms / 1000).toFixed(1) + "s" : ms.toFixed(2) + "ms"
 }
 
+//
+
+export function daysFromLocalDate(date: Date): number {
+  return (
+    date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()
+  )
+}
+
+export function daysFromGMTDate(date: Date): number {
+  return +date.toISOString().substr(0, 10)
+}
+
+export function toDate(n: number): Date {
+  return new Date(
+    n / 10000, // year
+    ((n / 100) % 100) - 1, // month
+    n % 100 // day
+  )
+}
+
+//
+
 export const DAY_MS = 1000 * 60 * 60 * 24
 
 interface DayOffsetOptions {

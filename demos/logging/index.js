@@ -13,25 +13,33 @@ Logger.setHandlers([
     level: LogLevel.debug,
   }),
   LoggerNodeHandler({
-    // level: LogLevel.info,
-    filter: "*",
     colors: true,
     padding: 16,
     nameBrackets: false,
-    levelHelper: false,
+    levelHelper: true,
   }),
 ])
-
-// Some basic logging
-
-const log = Logger("demo")
-log("Hello World")
-log.info("Info")
-log.warn("Warning")
-log.error("Error")
 
 // Read .env file
 
 setupEnv()
 
-log.info("DEMO_SECRET =", process.env.DEMO_SECRET)
+// Some basic logging
+
+{
+  const log = Logger("demo")
+  log("Hello World")
+  log.info("Info")
+  log.warn("Warning")
+  log.error("Error")
+
+  log.info("DEMO_SECRET =", process.env.DEMO_SECRET)
+}
+
+{
+  const log = Logger("demo2")
+  log("Hello World")
+  log.info("Info")
+  log.warn("Warning")
+  log.error("Error")
+}

@@ -16,6 +16,8 @@ describe("MemStorage", () => {
       expect(db.getItem("a")).toEqual(1)
       expect(db.getItem("b")).toEqual({ complex: [1, 2, "3"] })
       expect(db.getItem("c")).toEqual("Again!")
+      expect(db.getItem("d")).toBe(undefined)
+      expect(db.getItem("d")).toBe(undefined)
     }
     // {
     //   const db = new MemStorage()

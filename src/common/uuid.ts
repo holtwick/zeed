@@ -38,7 +38,7 @@ export function uuidB32(): string {
   return encode32(randomUint8Array(16), 26)
 }
 
-let _unameCounters: { [key: string]: number } = {}
+let _unameCounters: Record<string, number> = {}
 
 export function uname(name: string = "id"): string {
   if (_unameCounters[name] == null) {

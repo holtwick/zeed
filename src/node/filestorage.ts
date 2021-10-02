@@ -10,6 +10,7 @@ import {
 } from "fs"
 import { dirname, resolve } from "path"
 import { toValidFilename } from "../common/data/path"
+import { cloneObject } from "../common/data/utils"
 import { Logger } from "../common/log"
 import { Json, ObjectStorage } from "../common/types"
 
@@ -25,7 +26,7 @@ export interface FileStorageOptions {
 }
 
 export class FileStorage<T = Json> implements ObjectStorage<T> {
-  private store: { [key: string]: string } = {}
+  private store: Record<string, T | null> = {}
   private dirname: string
   private fileKeys?: string[] = undefined
   private pretty: boolean = false
@@ -67,9 +68,9 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   }
 
   setItem(key: string, value: T): void {
-    const data = this.objectToString(value)
-    this.store[key] = data
+    this.store[key] = cloneObject(value)
     try {
+      const data = this.objectToString(value)
       const path = this.getPath(key)
       mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, data, "utf8")
@@ -88,19 +89,26 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   }
 
   getItem(key: string): T | undefined {
-    if (this.store.hasOwnProperty(key)) {
-      let value = this.store[key]
-      return this.objectFromString(value)
-    } else {
-      try {
-        const path = this.getPath(key)
-        const data = readFileSync(path, "utf8")
-        if (data) {
-          return this.objectFromString(data)
-        }
-      } catch (err) {
-        log.error("getItem error", err)
+    let value = this.store[key]
+
+    //  null is an indicator for not existing!
+    if (value === null) return
+
+    if (value != null) {
+      return cloneObject(value) // this.objectFromString(value)
+    }
+
+    try {
+      const path = this.getPath(key)
+      const data = readFileSync(path, "utf8")
+      if (data != null) {
+        const value = this.objectFromString(data)
+        this.store[key] = value
+        return value
       }
+    } catch (err) {
+      log.warn("getItem error", err)
+      this.store[key] = null // do not retry next time
     }
   }
 

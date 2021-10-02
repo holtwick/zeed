@@ -1,6 +1,23 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { empty, size } from "./utils"
+import { cloneObject, empty, size } from "./utils"
+
+describe("cloneObject", () => {
+  it("should clone only non primitives", () => {
+    {
+      const sample = "Test"
+      expect(cloneObject(sample) === sample).toBe(true)
+      expect(cloneObject(sample) === "Test").toBe(true)
+    }
+    {
+      const sample = { hello: "world" }
+      expect(cloneObject(sample) === sample).toBe(false)
+      expect(cloneObject(sample)).toEqual(sample)
+      expect(sample === { hello: "world" }).toBe(false)
+      expect(cloneObject(sample)).toEqual({ hello: "world" })
+    }
+  })
+})
 
 describe("size", () => {
   it("should calc size of map", () => {

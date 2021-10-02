@@ -58,7 +58,7 @@ export function toDateString(n: number): string {
 export function forEachDay(
   from: number,
   to: number,
-  handler: (date: string) => {}
+  handler: (date: string) => void
 ) {
   let start = toGMTDate(from).getTime()
   let end = toGMTDate(to).getTime()

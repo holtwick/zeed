@@ -38,13 +38,8 @@ export function empty(value: any): boolean {
 }
 
 export function cloneObject<T>(obj: T): T {
+  // Primitives are immutable anyway
+  if (Object(obj) !== obj) return obj
+  // Rude but very efficient way to clone
   return JSON.parse(JSON.stringify(obj))
 }
-
-// export function timestampToDate(ts: number): Date {
-//   return new Date(+ts * 1000)
-// }
-
-// export function dateToTimestamp(date: Date): number {
-//   return date.getTime() / 1000
-// }

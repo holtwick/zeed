@@ -1,4 +1,4 @@
-import { Day, DAY_MS, forEachDay } from "./day"
+import { Day, forEachDay } from "./day"
 
 describe("Days", () => {
   it("Day Simple Approach", () => {
@@ -40,6 +40,17 @@ describe("Days", () => {
       "2011-01-01",
       "2011-01-02",
     ])
+
+    let list2: any = []
+    forEachDay(19991230, 20000102, (x) => list2.push(x.toString()))
+    expect(list2).toMatchInlineSnapshot(`
+Array [
+  "1999-12-30",
+  "1999-12-31",
+  "2000-01-01",
+  "2000-01-02",
+]
+`)
   })
 
   it("should use Day class", () => {

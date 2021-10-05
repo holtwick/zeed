@@ -10,9 +10,9 @@ describe("messages", () => {
   it("should show the magic of proxies ", () => {
     let p = new Proxy<TestMessages>({} as any, {
       get(target, name) {
-        console.log(target, name)
+        // console.log(target, name)
         return (...args: any) => {
-          console.log(name, args)
+          // console.log(name, args)
           return args[0] ?? 0
         }
       },

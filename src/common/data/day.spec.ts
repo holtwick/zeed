@@ -1,4 +1,5 @@
 import {
+  Day,
   daysFromLocalDate,
   DAY_MS,
   forEachDay,
@@ -6,7 +7,7 @@ import {
   getDayOffsetISO,
   getDayOffsetYYYYDDMM,
   toDate,
-} from "./time"
+} from "./day"
 
 describe("Days", () => {
   it("should calc correctly", () => {
@@ -82,5 +83,21 @@ describe("Days", () => {
       "2011-01-01",
       "2011-01-02",
     ])
+  })
+
+  it("should use Day class", () => {
+    let day = Day.from(new Date("1987-12-31T00:02:03"))
+    expect(day?.days).toEqual(19871231)
+    expect(day?.dayOffset(+1).days).toEqual(19880101)
+    expect(day?.dayOffset(-1).days).toEqual(19871230)
+    expect(day?.toString()).toEqual("1987-12-31")
+    expect(day?.toString("")).toEqual("19871231")
+    expect(day?.toDate()).toMatchInlineSnapshot(`1987-12-30T23:00:00.000Z`)
+    expect(day?.toDateGMT()).toMatchInlineSnapshot(`1987-12-31T00:00:00.000Z`)
+
+    expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
+
+    let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
+    expect(day2?.days).toEqual(19871230)
   })
 })

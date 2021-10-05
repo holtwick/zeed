@@ -68,9 +68,9 @@ Array [
 
     expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
 
-    let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
-    expect(day2?.days).toEqual(19871230)
-
+    // Following depend on timezone
+    // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
+    // expect(day2?.days).toEqual(19871230)
     // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
   })
 })

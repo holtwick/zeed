@@ -1,6 +1,6 @@
 import { valueToString } from "../data/convert"
 import { Logger } from "../log"
-import { tryTimeout, promisify } from "../promise"
+import { tryTimeout, isPromise } from "../promise"
 import { Json } from "../types"
 import { uname, uuid } from "../uuid"
 import { Channel } from "./channel"
@@ -119,7 +119,8 @@ export function useMessageHub(
         log(`name ${name} id ${id}`)
         try {
           // @ts-ignore
-          let result = await promisify(handlers[name](...args))
+          let result = handlers[name](...args)
+          if (isPromise(result)) result = await result
           log(`result ${result}`)
           if (id) {
             postMessage({ id, result })

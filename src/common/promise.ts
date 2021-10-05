@@ -131,8 +131,8 @@ export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
 
 /** This is exactly what Prose.resolve(x) is supposed to be: return a Promise no matter what type x is */
 export function promisify<T>(value: Promise<T> | T): Promise<T> {
-  // return isPromise(value) ? value : Promise.resolve(value)
   return Promise.resolve(value)
+  // return isPromise(value) ? value : Promise.resolve(value)
 }
 
 // // https://github.com/unjs/items-promise

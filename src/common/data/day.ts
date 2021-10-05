@@ -1,3 +1,5 @@
+import { isPromise } from "../promise"
+
 export const DAY_MS = 1000 * 60 * 60 * 24
 
 export type DayCompatible = number | string | Date | Day
@@ -113,16 +115,19 @@ export class Day {
   }
 }
 
-export function forEachDay(
+export async function forEachDay(
   from: DayCompatible,
   to: DayCompatible,
-  handler: (date: Day) => void
+  handler: (date: Day) => Promise<void> | void
 ) {
   let start = Day.from(from)
   let end = Day.from(to)
   while (start && end && start?.days <= end?.days) {
-    handler(start)
-    start = start.dayOffset(1)
+    let result = handler(start)
+    if (isPromise(result)) {
+      await result
+    }
+    start = start.dayOffset(+1)
   }
 }
 

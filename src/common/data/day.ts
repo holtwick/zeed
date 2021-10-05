@@ -86,22 +86,28 @@ export class Day {
     )
   }
 
-  toDate(): Date {
-    return new Date(
-      this.days / 10000, // year
-      ((this.days / 100) % 100) - 1, // month
-      this.days % 100 // day
-    )
+  toDate(gmt: boolean = false): Date {
+    return gmt
+      ? new Date(`${this.toString()}T00:00:00.000Z`)
+      : new Date(
+          this.days / 10000, // year
+          ((this.days / 100) % 100) - 1, // month
+          this.days % 100 // day
+        )
   }
 
   toDateGMT() {
-    return new Date(`${this.toString()}T00:00:00.000Z`)
+    return this.toDate(true)
   }
 
   // Calculations
 
   dayOffset(offset: number): Day {
-    return Day.fromDate(new Date(this.toDate().getTime() + offset * DAY_MS))
+    // Important! Don't use local time here due to summer/winter time days can
+    // be longer or shorter!
+    return Day.fromDateGMT(
+      new Date(this.toDateGMT().getTime() + offset * DAY_MS)
+    )
   }
 
   // Shortcuts

@@ -1,4 +1,4 @@
-import { Day, forEachDay } from "./day"
+import { Day, forEachDay, today } from "./day"
 
 describe("Days", () => {
   it("Day Simple Approach", () => {
@@ -42,13 +42,13 @@ describe("Days", () => {
     ])
 
     let list2: any = []
-    forEachDay(19991230, 20000102, (x) => list2.push(x.toString()))
+    forEachDay(19991030, 19991102, (x) => list2.push(x.toString()))
     expect(list2).toMatchInlineSnapshot(`
 Array [
-  "1999-12-30",
-  "1999-12-31",
-  "2000-01-01",
-  "2000-01-02",
+  "1999-10-30",
+  "1999-10-31",
+  "1999-11-01",
+  "1999-11-02",
 ]
 `)
   })
@@ -70,6 +70,8 @@ Array [
 
     let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
     expect(day2?.days).toEqual(19871230)
+
+    // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
   })
 
   // it("should calc correctly", () => {

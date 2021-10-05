@@ -5,7 +5,16 @@ export type DayCompatible = number | string | Date | Day
 export class Day {
   days: number
 
-  constructor(days?: number) {
+  constructor(days?: DayCompatible) {
+    if (typeof days === "number") {
+      this.days = days
+      return
+    }
+
+    if (days != null) {
+      days = Day.from(days)?.days
+    }
+
     if (days == null) {
       const date = new Date()
       this.days =
@@ -57,6 +66,13 @@ export class Day {
     return this.days
   }
 
+  // Transformer
+
+  /** Just for future extensions */
+  toJson() {
+    return this.days
+  }
+
   toString(sep: string = "-") {
     let baseString = String(this.days)
     return (
@@ -80,8 +96,20 @@ export class Day {
     return new Date(`${this.toString()}T00:00:00.000Z`)
   }
 
+  // Calculations
+
   dayOffset(offset: number): Day {
     return Day.fromDate(new Date(this.toDate().getTime() + offset * DAY_MS))
+  }
+
+  // Shortcuts
+
+  yesterday() {
+    return this.dayOffset(-1)
+  }
+
+  tomorrow() {
+    return this.dayOffset(+1)
   }
 }
 
@@ -96,6 +124,10 @@ export function forEachDay(
     handler(start)
     start = start.dayOffset(1)
   }
+}
+
+export function today(): Day {
+  return new Day()
 }
 
 // export function daysFromLocalDate(date: Date): number {

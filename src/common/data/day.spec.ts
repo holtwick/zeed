@@ -1,42 +1,6 @@
-import {
-  Day,
-  daysFromLocalDate,
-  DAY_MS,
-  forEachDay,
-  getDayOffset,
-  getDayOffsetISO,
-  getDayOffsetYYYYDDMM,
-  toDate,
-} from "./day"
+import { Day, DAY_MS, forEachDay } from "./day"
 
 describe("Days", () => {
-  it("should calc correctly", () => {
-    let yesterday = getDayOffset(-1)
-    let today = getDayOffset()
-    expect(yesterday).toBeLessThan(today)
-  })
-
-  it("should respect timezone", () => {
-    let ts = new Date("2020-01-01T00:00:00Z").getTime()
-    expect(getDayOffset(0, new Date("2020-01-01T00:00:00Z"))).toEqual(ts)
-    expect(getDayOffset(0, new Date("2020-01-01T02:00:00Z"))).toEqual(ts)
-    expect(getDayOffset(0, new Date("2019-12-31T23:59:59Z"))).toEqual(
-      ts - DAY_MS
-    )
-    expect(getDayOffset(-1, new Date("2020-01-01T00:00:00Z"))).toEqual(
-      ts - DAY_MS
-    )
-    expect(getDayOffsetYYYYDDMM(0, new Date("2020-01-01T00:00:00Z"))).toEqual(
-      "20200101"
-    )
-    expect(getDayOffsetYYYYDDMM(-1, new Date("2020-01-01T00:00:00Z"))).toEqual(
-      "20191231"
-    )
-    expect(getDayOffsetISO(-1, new Date("2020-01-01T00:00:00Z"))).toEqual(
-      "2019-12-31"
-    )
-  })
-
   it("Day Simple Approach", () => {
     // https://stackoverflow.com/a/21101949/140927
     let date = new Date("1987-12-31T00:02:03")
@@ -67,16 +31,9 @@ describe("Days", () => {
     )
   })
 
-  it("should convert to Days", () => {
-    let date = new Date("1987-12-31T00:02:03")
-    let days = daysFromLocalDate(date)
-    expect(days).toBe(19871231)
-    expect(toDate(days).toDateString()).toEqual(date.toDateString())
-  })
-
   it("should iterate days", () => {
     let list: any = []
-    forEachDay(20101230, 20110102, (x) => list.push(x))
+    forEachDay(20101230, 20110102, (x) => list.push(x.toString()))
     expect(list).toEqual([
       "2010-12-30",
       "2010-12-31",
@@ -100,4 +57,38 @@ describe("Days", () => {
     let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
     expect(day2?.days).toEqual(19871230)
   })
+
+  // it("should calc correctly", () => {
+  //   let yesterday = getDayOffset(-1)
+  //   let today = getDayOffset()
+  //   expect(yesterday).toBeLessThan(today)
+  // })
+
+  // it("should convert to Days", () => {
+  //   let date = new Date("1987-12-31T00:02:03")
+  //   let days = daysFromLocalDate(date)
+  //   expect(days).toBe(19871231)
+  //   expect(toDate(days).toDateString()).toEqual(date.toDateString())
+  // })
+
+  // it("should respect timezone", () => {
+  //   let ts = new Date("2020-01-01T00:00:00Z").getTime()
+  //   expect(getDayOffset(0, new Date("2020-01-01T00:00:00Z"))).toEqual(ts)
+  //   expect(getDayOffset(0, new Date("2020-01-01T02:00:00Z"))).toEqual(ts)
+  //   expect(getDayOffset(0, new Date("2019-12-31T23:59:59Z"))).toEqual(
+  //     ts - DAY_MS
+  //   )
+  //   expect(getDayOffset(-1, new Date("2020-01-01T00:00:00Z"))).toEqual(
+  //     ts - DAY_MS
+  //   )
+  //   expect(getDayOffsetYYYYDDMM(0, new Date("2020-01-01T00:00:00Z"))).toEqual(
+  //     "20200101"
+  //   )
+  //   expect(getDayOffsetYYYYDDMM(-1, new Date("2020-01-01T00:00:00Z"))).toEqual(
+  //     "20191231"
+  //   )
+  //   expect(getDayOffsetISO(-1, new Date("2020-01-01T00:00:00Z"))).toEqual(
+  //     "2019-12-31"
+  //   )
+  // })
 })

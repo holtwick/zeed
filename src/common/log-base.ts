@@ -79,7 +79,7 @@ export interface LoggerContextInterface {
   (name?: string): LoggerInterface
   registerHandler(handler: LogHandler): void
   setFilter(namespaces: string): void
-  setHandlers(handlers?: LogHandler[]): void
+  setHandlers(handlers?: (LogHandler | undefined | null)[]): void
   setLock(lock: boolean): void
   setLogLevel(level?: LogLevel): void
   setFactory(factory: (name?: string) => LoggerInterface): void

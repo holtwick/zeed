@@ -4,9 +4,10 @@ import { encodeQuery } from "./data/url"
 
 const log = Logger("network")
 
-// export const fetch = require("node-fetch")
-
-const defaultOptions = { cache: "no-cache", redirect: "follow" }
+const defaultOptions = {
+  cache: "no-cache",
+  redirect: "follow",
+}
 
 export async function fetchBasic(
   url: string,

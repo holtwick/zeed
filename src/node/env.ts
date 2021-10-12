@@ -72,11 +72,14 @@ function parse(src: string, options: csvOptions = {}) {
   return obj
 }
 
+/**
+ * Return a path relative to the current working directory
+ */
 export function stringToPath(
   value?: string,
   defaultValue: string = "."
 ): string {
-  return resolve(value ?? defaultValue)
+  return resolve(process.cwd(), value ?? defaultValue)
 }
 
 export function valueToPath(value?: any, defaultValue = ""): string {
@@ -89,7 +92,7 @@ export const toPath = valueToPath
 // Populates process.env from .env file
 export function setupEnv(options: csvOptions = {}) {
   const dotenvPath: string =
-    options?.path ?? resolve(process.cwd(), options?.filename ?? ".env")
+    options?.path ?? toPath(options?.filename ?? ".env")
   const encoding: BufferEncoding = options?.encoding ?? "utf8"
   const debug = options?.debug || false
 

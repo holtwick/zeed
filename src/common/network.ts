@@ -11,14 +11,15 @@ const defaultOptions = {
 
 export async function fetchBasic(
   url: string,
-  fetchOptions: any = {}
+  fetchOptions: any = {},
+  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
 ): Promise<Response | undefined> {
   try {
     // if (fetchOptions.headers != null && !(fetchOptions.headers instanceof Headers)) {
     //   fetchOptions.headers = new Headers(fetchOptions.headers)
     // }
     // log.log('fetch', url, fetchOptions)
-    const response = await fetch(url, fetchOptions)
+    const response = await fetchFn(url, fetchOptions)
     if (response.status === 200) {
       return response
     }
@@ -46,15 +47,20 @@ export async function fetchBasic(
 
 export async function fetchJson(
   url: string,
-  opts: any = {}
+  opts: any = {},
+  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
 ): Promise<Json | undefined> {
   try {
-    let res = await fetchBasic(url, {
-      method: "GET",
-      ...defaultOptions,
-      headers: {},
-      ...opts,
-    })
+    let res = await fetchBasic(
+      url,
+      {
+        method: "GET",
+        ...defaultOptions,
+        headers: {},
+        ...opts,
+      },
+      fetchFn
+    )
     if (res) {
       return await res.json()
     }
@@ -94,15 +100,20 @@ export function fetchOptionsJson(
 
 export async function fetchText(
   url: string,
-  opts: any = {}
+  opts: any = {},
+  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
 ): Promise<string | undefined> {
   try {
-    let res = await fetchBasic(url, {
-      method: "GET",
-      ...defaultOptions,
-      headers: {},
-      ...opts,
-    })
+    let res = await fetchBasic(
+      url,
+      {
+        method: "GET",
+        ...defaultOptions,
+        headers: {},
+        ...opts,
+      },
+      fetchFn
+    )
     if (res) {
       return await res.text()
     }

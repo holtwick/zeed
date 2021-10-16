@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isLocalHost } from "./localhost"
+import { isLocalHost } from "../browser/localhost"
 
 describe("Localhost", () => {
   it("should be accurate", () => {

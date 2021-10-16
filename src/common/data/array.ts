@@ -78,9 +78,7 @@ export function arraySorted<T>(
   arr: Iterable<T> | ArrayLike<T>,
   cond: ((a: T, b: T) => number) | undefined = cmp
 ): T[] {
-  let copy = Array.from(arr)
-  copy.sort(cond)
-  return copy as T[]
+  return Array.from(arr).sort(cond)
 }
 
 export function arraySortedNumbers(arr: number[]): number[] {

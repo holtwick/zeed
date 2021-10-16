@@ -164,7 +164,7 @@ Object.assign(window, {
 
 // Actual tests
 
-import("../../../src/browser/localhost.spec")
+import("../../../src/common/localhost.spec")
 
 import("../../../src/common/data/array.spec")
 import("../../../src/common/data/basex.spec")

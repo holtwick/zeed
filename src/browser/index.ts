@@ -2,7 +2,6 @@
 
 export * from "./base64"
 export * from "./gravatar"
-export * from "./localhost"
 export * from "./localstorage"
 export * from "./log-browser-classic"
 export * from "./log-browser"

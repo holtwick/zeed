@@ -4,9 +4,9 @@ import { linkifyPlainText, toHumanReadableUrl } from "./url"
 describe("url", () => {
   it("Split string to URLs", () => {
     const sample =
-      "http://example.com has <strange & fancy> some example.com at end http://example.com some"
+      "https://example.com has <strange & fancy> some example.com at end http://example.com some"
     expect(linkifyPlainText(sample)).toBe(
-      '<a target="_blank" href="http://example.com">http://example.com</a> has &lt;strange &amp; fancy&gt; some example.com at end <a target="_blank" href="http://example.com">http://example.com</a> some'
+      '<a target="_blank" href="https://example.com">example.com</a> has &lt;strange &amp; fancy&gt; some example.com at end <a target="_blank" href="http://example.com">example.com</a> some'
     )
   })
 

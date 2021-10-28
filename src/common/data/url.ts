@@ -21,7 +21,7 @@ export function linkifyPlainText(text: string): string {
 }
 
 export function toHumanReadableUrl(url: string): string {
-  return url.replace(/^https?:\/\/(?:www\.)/, "")
+  return url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")
 }
 
 //

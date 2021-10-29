@@ -1,16 +1,20 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import tty from "tty"
+import { renderMessages } from "../common/data/convert"
 import {
   LogHandler,
   LogHandlerOptions,
   LogLevel,
   LogMessage,
 } from "../common/log-base"
-import { getTimestamp, formatMilliseconds } from "../common/time"
-import tty from "tty"
 import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
-import { renderMessages } from "../common/data/convert"
 import { getSourceLocation } from "../common/log-util"
+import { formatMilliseconds, getTimestamp } from "../common/time"
+
+export function isTTY() {
+  tty.isatty(process.stderr.fd)
+}
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -87,7 +91,7 @@ export function colorString(value: string, colorCode: number) {
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     level = undefined,
-    colors = true,
+    colors = isTTY(),
     levelHelper = true,
     nameBrackets = true,
     padding = 0,

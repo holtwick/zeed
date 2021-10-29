@@ -12,8 +12,11 @@ import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
 import { getSourceLocation } from "../common/log-util"
 import { formatMilliseconds, getTimestamp } from "../common/time"
 
-export function isTTY() {
-  tty.isatty(process.stderr.fd)
+export function isTTY(): boolean {
+  try {
+    return tty.isatty(process.stdout.fd)
+  } catch (err) {}
+  return false
 }
 
 const colors = [6, 2, 3, 4, 5, 1]
@@ -90,13 +93,13 @@ export function colorString(value: string, colorCode: number) {
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = undefined,
+    level = LogLevel.info,
+    filter = undefined,
     colors = isTTY(),
     levelHelper = true,
     nameBrackets = true,
     padding = 0,
     fill = 0,
-    filter = undefined,
     stack = true,
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)

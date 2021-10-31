@@ -79,11 +79,11 @@ export function useNamespaceFilter(
 }
 
 const defaultLevelFilter: any =
-  typeof process !== "undefined"
+  (typeof process !== "undefined"
     ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL
     : typeof localStorage !== "undefined"
     ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
-    : LogLevel.all
+    : undefined) ?? LogLevel.all
 
 export function useLevelFilter(
   filter: string | number = defaultLevelFilter

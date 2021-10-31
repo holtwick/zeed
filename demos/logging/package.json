@@ -9,6 +9,8 @@
   },
   "scripts": {
     "start": "LEVEL=* ZEED=* node index.js",
+    "level": "LEVEL=* node index.js",
+    "debug": "ZEED=* node index.js",
     "quiet": "node index.js",
     "filtered": "LEVEL=info ZEED=demo2 node index.js"
   },

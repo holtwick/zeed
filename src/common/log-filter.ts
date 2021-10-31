@@ -83,7 +83,7 @@ const defaultLevelFilter: any =
     ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL
     : typeof localStorage !== "undefined"
     ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
-    : LogLevel.all
+    : undefined
 
 export function useLevelFilter(
   filter: string | number = defaultLevelFilter
@@ -92,8 +92,8 @@ export function useLevelFilter(
   if (typeof filter === "string") {
     const l = LogLevelAlias[filter.toLocaleLowerCase().trim()]
     if (l != null) filterLevel = l
-  } else {
-    filterLevel = filter as any
+  } else if (typeof filter === "number") {
+    filterLevel = filter as number
   }
   return (level) => level >= filterLevel
 }

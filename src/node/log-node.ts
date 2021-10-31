@@ -62,17 +62,17 @@ function log(...args: any[]) {
 //   [UNCOLOR]: pair.create("color", "black"),
 // }
 
-// const _nodeStyleMap = {
-//   [BOLD]: "\u001b[1m",
-//   [UNBOLD]: "\u001b[2m",
-//   [BLUE]: "\x1b[34m",
-//   [GREEN]: "\x1b[32m",
-//   [GREY]: "\u001b[37m",
-//   [RED]: "\x1b[31m",
-//   [PURPLE]: "\x1b[35m",
-//   [ORANGE]: "\x1b[38;5;208m",
-//   [UNCOLOR]: "\x1b[0m",
-// }
+const TTY_STYLE = {
+  BOLD: "\u001b[1m",
+  UNBOLD: "\u001b[2m",
+  RED: "\u001b[31m",
+  GREEN: "\u001b[32m",
+  BLUE: "\u001b[34m",
+  PURPLE: "\u001b[35m",
+  GRAY: "\u001b[37m",
+  ORANGE: "\u001b[38;5;208m",
+  UNCOLOR: "\u001b[0m",
+}
 
 enum COLOR {
   RED = 1,
@@ -87,13 +87,32 @@ const colorEnd = "\u001B[0m"
 
 export function colorString(value: string, colorCode: number) {
   const colorStart =
-    "\u001B[3" + (colorCode < 8 ? colorCode : "8;5;" + colorCode) + "m"
+    colorCode === COLOR.ORANGE
+      ? TTY_STYLE.ORANGE
+      : "\u001B[3" + (colorCode < 8 ? colorCode : "8;5;" + colorCode) + "m"
   return `${colorStart}${value}${colorEnd}`
+}
+
+export function colorStringList(
+  list: Array<any>,
+  style: string,
+  bold: boolean = true
+) {
+  return list.map((value) => {
+    if (typeof value !== "string") return value
+    let start = style
+    let end = colorEnd
+    if (bold) {
+      start = `${TTY_STYLE.BOLD}${start}`
+      end = `${end}${TTY_STYLE.BOLD}`
+    }
+    return `${start}${value}${end}`
+  })
 }
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.info,
+    level = undefined,
     filter = undefined,
     colors = isTTY(),
     levelHelper = true,
@@ -134,7 +153,13 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     if (colors && useColors) {
       const c = ninfo.color
       args = [colorString(displayName, c) + ` | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
-      args.push(...msg.messages)
+      if (msg.level === LogLevel.warn) {
+        args.push(...colorStringList(msg.messages, TTY_STYLE.ORANGE))
+      } else if (msg.level === LogLevel.error) {
+        args.push(...colorStringList(msg.messages, TTY_STYLE.RED))
+      } else {
+        args.push(...msg.messages)
+      }
       args.push(colorString(`+${diff}`, c))
     } else {
       args = [displayName, ...msg.messages]
@@ -154,11 +179,19 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
         log(...args)
         break
       case LogLevel.warn:
-        if (levelHelper) args[0] = `W|**  ` + args[0]
+        if (levelHelper)
+          args[0] =
+            (colors && useColors
+              ? colorString(`W|**  `, COLOR.ORANGE)
+              : `W|**  `) + args[0]
         log(...args)
         break
       case LogLevel.error:
-        if (levelHelper) args[0] = `E|*** ` + args[0]
+        if (levelHelper)
+          args[0] =
+            (colors && useColors
+              ? colorString(`E|*** `, COLOR.RED)
+              : `E|*** `) + args[0]
         log(...args)
         break
       default:

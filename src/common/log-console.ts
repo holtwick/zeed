@@ -12,7 +12,7 @@ import { useLevelFilter, useNamespaceFilter } from "./log-filter"
  */
 export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
-    level = LogLevel.info,
+    level = undefined,
     filter = undefined,
     colors = true,
     levelHelper = false,

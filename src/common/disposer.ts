@@ -3,17 +3,21 @@ import { promisify, isPromise } from "./promise"
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
-type Disposable =
+type Disposer =
   | Function
   | {
       dispose?: Function | Promise<unknown>
       cleanup?: Function | Promise<unknown> // deprecated, but used often in my old code
     }
 
-export function useDisposer() {
-  let tracked: Disposable[] = []
+export interface Disposable {
+  dispose(): unknown | Promise<unknown>
+}
 
-  const untrack = async (disposable: Disposable) => {
+export function useDisposer() {
+  let tracked: Disposer[] = []
+
+  const untrack = async (disposable: Disposer) => {
     if (tracked.includes(disposable)) {
       arrayFilterInPlace(tracked, (el) => el !== disposable)
       if (typeof disposable === "function") {
@@ -38,7 +42,7 @@ export function useDisposer() {
     }
   }
 
-  const track = (obj: Disposable) => {
+  const track = (obj: Disposer) => {
     tracked.unshift(obj) // LIFO
     return () => untrack(obj)
   }

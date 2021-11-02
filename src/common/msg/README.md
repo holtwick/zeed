@@ -11,11 +11,35 @@ We differentiate between the following parts:
 
 ## Channel
 
-Channels are a uniform abstraction for sending and receiving data using `postMessage` for sending and listening to `message`.
+Channels are a uniform abstraction for sending and receiving data usually in binary format. It uses the [commonly known `MessageEvent` pattern](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), with send via `postMessage` and listening on `message`. It is extended to optionally reflect connection states.
+
+```ts
+channel.postMessage("Hello World")
+channel.on("message", (msg) => {
+  log(`Received data=${data}`)
+})
+```
+
+## Connection
+
+Same API as `Emitter` for easily sending event like messages via a `Channel`. It is type safe, if you pass an interface as the generic.
+
+```ts
+interface MyConn {
+  doSomething(with:string, count:number):void
+}
+
+const conn = new Connection<MyConn>(channel)
+
+conn.emit("doSomething", "hello", 2)
+conn.on("doSomething", (with, count) => {
+  // ...
+})
+```
 
 ## Encoder
 
-Usually data should be sent in a binary form. Therefore, an encoding should transfrom objects into a form, that both ends can understand. Encoders could also apply additional transforms like encryption.
+Usually data is sent in a binary form. Therefore, an encoding has to transform objects into a form, that both ends can understand. Specific encoders can also apply additional transforms like encryption.
 
 ## Messages
 

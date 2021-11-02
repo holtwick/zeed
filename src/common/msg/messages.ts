@@ -59,6 +59,7 @@ export function useMessageHub(
     encoder?: Encoder
     retryAfter?: number
     ignoreUnhandled?: boolean
+    debug?: boolean
   } = {}
 ): MessageHub {
   let {
@@ -111,13 +112,17 @@ export function useMessageHub(
     channel = newChannel
     channel.on("connect", postNext)
     channel.on("message", async (msg: any) => {
-      log("onmessage", msg)
+      log("onmessage", typeof msg)
       const { name, args, id, result, error } = await encoder.decode(msg.data)
 
       // Incoming new message
       if (name) {
         log(`name ${name} id ${id}`)
         try {
+          // @ts-ignore
+          if (handlers[name] == null) {
+            throw new Error(`handler for ${name} was not found`)
+          }
           // @ts-ignore
           let result = handlers[name](...args)
           if (isPromise(result)) result = await result
@@ -126,9 +131,9 @@ export function useMessageHub(
             postMessage({ id, result })
           }
         } catch (error) {
-          log("execution error", error)
           let err =
             error instanceof Error ? error : new Error(valueToString(error))
+          log.warn("execution error", err.name)
           postMessage({
             id,
             error: {
@@ -143,18 +148,26 @@ export function useMessageHub(
       // Incoming new response
       else if (id) {
         log(`response for id=${id}: result=${result}, error=${error}`)
-        const [resolve, reject] = waitingForResponse[id]
-        if (resolve && reject) {
-          delete waitingForResponse[id]
-          if (error) {
-            let err = new Error(error.message)
-            err.stack = error.stack
-            err.name = error.name
-            log("reject", err)
-            reject(err)
+        if (waitingForResponse[id] == null) {
+          if (result === undefined) {
+            log(`skip response for ${id}`)
           } else {
-            log("resolve", result)
-            resolve(result)
+            log.warn(`no response hook for ${id}`)
+          }
+        } else {
+          const [resolve, reject] = waitingForResponse[id]
+          if (resolve && reject) {
+            delete waitingForResponse[id]
+            if (error) {
+              let err = new Error(error.message)
+              err.stack = error.stack
+              err.name = error.name
+              log.warn("reject", err.name)
+              reject(err)
+            } else {
+              log("resolve", result)
+              resolve(result)
+            }
           }
         }
       }

@@ -4,45 +4,52 @@ import { Channel } from "./channel"
 import { DefaultListener, Emitter, ListenerSignature } from "./emitter"
 import { Encoder, JsonEncoder } from "./encoder"
 
-interface ConnectionConfig {
+interface PubSubConfig {
   channel: Channel
   encoder?: Encoder
   name?: string
+  debug?: boolean
 }
 
-export class Connection<
+export class PubSub<
   L extends ListenerSignature<L> = DefaultListener
 > extends Emitter<L> {
   name: string
   channel: Channel
   encoder: Encoder
   log: any
+  debug: boolean
 
   get shortId() {
     return this.name.substr(0, 6)
   }
 
-  constructor(opt: ConnectionConfig) {
+  constructor(opt: PubSubConfig) {
     super()
 
-    let { name, encoder = new JsonEncoder(), channel } = opt
+    let { name, encoder = new JsonEncoder(), channel, debug = false } = opt
 
     this.channel = channel
     this.encoder = encoder
+    this.debug = debug
 
-    this.name = name ?? this.channel.id ?? uname("conn")
+    this.name = name ?? this.channel.id ?? uname("pubsub")
     this.log = Logger(`${this.shortId}`)
 
-    this.channel.on("connect", () => {
-      this.log("channel connected")
-    })
-    this.channel.on("disconnect", () => {
-      this.log("channel disconnected")
-    })
+    if (this.debug) {
+      this.channel.on("connect", () => {
+        this.log("channel connected")
+      })
+      this.channel.on("disconnect", () => {
+        this.log("channel disconnected")
+      })
+    }
 
     this.channel.on("message", async ({ data }) => {
       let info = await this.encoder.decode(data)
-      this.log(`channel message, event=${info?.event}`)
+      if (this.debug)
+        this.log(`channel message, event=${info?.event}, info=`, info)
+      else this.log(`channel message, event=${info?.event}`)
       if (info) {
         const { event, args } = info
         super.emit(event, ...args)
@@ -55,7 +62,8 @@ export class Connection<
     ...args: Parameters<L[U]>
   ): Promise<boolean> {
     try {
-      this.log(`emit(${event})`, args.length)
+      if (this.debug) this.log(`emit(${event})`, event)
+      else this.log(`emit(${event})`, args.length)
       if (!this.channel.isConnected) {
         this.log.warn("channel not connected")
         return false
@@ -68,10 +76,13 @@ export class Connection<
     }
     return false
   }
+
+  publish = this.emit
+  subscribe = this.on
 }
 
-export function useConnection<L extends ListenerSignature<L> = DefaultListener>(
-  opt: ConnectionConfig
+export function usePubSub<L extends ListenerSignature<L> = DefaultListener>(
+  opt: PubSubConfig
 ) {
-  return new Connection<L>(opt)
+  return new PubSub<L>(opt)
 }

@@ -20,21 +20,28 @@ channel.on("message", (msg) => {
 })
 ```
 
-## Connection
+## PubSub
 
 Same API as `Emitter` for easily sending event like messages via a `Channel`. It is type safe, if you pass an interface as the generic.
 
 ```ts
-interface MyConn {
+interface MyProtocol {
   doSomething(with:string, count:number):void
 }
 
-const conn = useConnection<MyConn>({ channel })
+const hub = usePubSub<MyProtocol>({ channel })
 
-conn.emit("doSomething", "hello", 2)
-conn.on("doSomething", (with, count) => {
+hub.emit("doSomething", "hello", 2)
+hub.on("doSomething", (with, count) => {
   // ...
 })
+```
+
+You can also use the alternative more PubSub like syntax ;)
+
+```ts
+hub.publish("doSomething", "hello", 2)
+hub.subscribe("doSomething", (with, count) => {})
 ```
 
 ## Encoder

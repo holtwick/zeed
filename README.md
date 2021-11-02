@@ -1,25 +1,18 @@
 # 🌱 Zeed Library
 
-> Plant the "zeed" of your next Typescript project and let it grow with this useful lib, providing basic functionalities handy in most projects.
+> Plant the "zeed" for your next Typescript project and let it grow with this useful lib, providing basic functionalities handy in most projects.
 
 - Strict TypeScript
+- No dependencies and lightweight
 - Covered by tests
 - Universal for node.js and browsers
-- No dependencies and lightweight
 - Modern ESM, fallback to CommonJS
-- Unified logging; various handlers
-- Typed events
 
 Get started like this:
 
 ```sh
 npm i zeed
 ```
-
-> Related projects:
->
-> - [zeed-dom](https://github.com/holtwick/zeed-dom)
-> - [zerva](https://github.com/holtwick/zerva)
 
 ## Logging
 
@@ -181,14 +174,14 @@ getGlobalEmitter().call.test("Hello World")
 
 ## Messaging
 
-Communicating to servers or other remote parts through messages as if they were methods on a local object in a typesafe way:
+Communicating to servers or other remote parts through messages as if they were methods on a local object in a type safe way:
 
 ```ts
-let m = useMessages<MyMessages>({ cannel })
+let m = useMessageHub({ cannel }).send<MyMessages>()
 m.echo({ hello: "world" })
 ```
 
-> More details at [src/common/msg/README.md](./src/common/msg/README.md)
+> But there is much more basic infrastructure for communication available in `zeed`. More details at [src/common/msg/README.md](./src/common/msg/README.md)
 
 ## CRDT compatible sorting
 
@@ -283,7 +276,12 @@ let obj = new DisposeExample()
 obj.dispose()
 ```
 
----
+## Related and Links
+
+Related projects:
+
+- [zeed-dom](https://github.com/holtwick/zeed-dom)
+- [zerva](https://github.com/holtwick/zerva)
 
 Recommended other collections of common JS utils:
 

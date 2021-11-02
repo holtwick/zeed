@@ -1,8 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { Logger } from "../log"
-import { fakeWorkerPair, LocalChannel } from "./channel"
-import { Connection } from "./connection"
+import { fakeWorkerPair } from "./channel"
+import { useConnection } from "./connection"
 
 const log = Logger("test:connection")
 
@@ -11,14 +11,13 @@ interface SampleConnection {
 }
 
 describe("connection", () => {
-  it("should send and receive messages", () => {
-    // log.info("done", done.toSource())
+  it("should send and receive messages", async () => {
     expect.assertions(3)
 
     let [f1, f2] = fakeWorkerPair()
 
-    let c1 = new Connection<SampleConnection>(f1)
-    let c2 = new Connection<SampleConnection>(f2)
+    let c1 = useConnection<SampleConnection>({ channel: f1 })
+    let c2 = useConnection<SampleConnection>({ channel: f2 })
 
     let counter = 0
 
@@ -30,11 +29,11 @@ describe("connection", () => {
       expect(a).toBe("hello")
     })
 
-    c1.emit("bla", "hello", 3)
+    await c1.emit("bla", "hello", 3)
 
     expect(counter).toBe(3)
 
-    c2.emit("bla", "hello2", 2)
+    await c2.emit("bla", "hello2", 2)
 
     expect(counter).toBe(1)
   })

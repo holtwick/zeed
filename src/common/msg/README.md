@@ -29,7 +29,7 @@ interface MyConn {
   doSomething(with:string, count:number):void
 }
 
-const conn = new Connection<MyConn>(channel)
+const conn = useConnection<MyConn>({ channel })
 
 conn.emit("doSomething", "hello", 2)
 conn.on("doSomething", (with, count) => {

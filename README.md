@@ -252,9 +252,11 @@ let disposer = useDisposer()
 const obj = disposableTimer()
 disposer.track(obj)
 
+// or
+
 const untrackTimer = disposer.track(disposableTimer())
 
-// ...
+// then later one of these
 
 disposer.untrack(obj) // dispose single object
 untrackTimer()        // dispose single object by return value of .track
@@ -267,6 +269,8 @@ The disposer itself is also a call to dispose i.e. for convenience you can add i
 
 ```ts
 class DisposeExample {
+  // the trick is to assign to member `dispose`, will be both
+  // the destructor and the registration point for disposables
   dispose = useDisposer()
 
   constructor() {

@@ -52,9 +52,16 @@ export class PubSub<
       else this.log(`channel message, event=${info?.event}`)
       if (info) {
         const { event, args } = info
-        super.emit(event, ...args)
+        await this.emitSuper(event, ...args)
       }
     })
+  }
+
+  private async emitSuper<U extends keyof L>(
+    event: U,
+    ...args: Parameters<L[U]>
+  ): Promise<boolean> {
+    return await super.emit(event, ...args)
   }
 
   async emit<U extends keyof L>(

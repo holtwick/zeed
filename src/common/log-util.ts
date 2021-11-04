@@ -68,6 +68,10 @@ export function getSourceLocation(level = 2, stripCwd = true): string {
   return line || ""
 }
 
+export function getStack(): string {
+  return new Error().stack || ""
+}
+
 export function getSourceLocationByPrecedingPattern(
   patterns: string[],
   stripCwd = true

@@ -1,6 +1,8 @@
 // Original taken from https://github.com/scurker/currency.js
 // @ts-nocheck
 
+import { arrayFlatten } from "./array"
+
 type CurrencyAny = number | string | Currency
 
 type CurrencyFormat = (currency?: Currency, opts?: CurrencyOptions) => string
@@ -47,12 +49,14 @@ export function currency(
   return new Currency(value, opts)
 }
 
-class Currency {
-  intValue: number
-  value: number
-
-  private _settings: CurrencyOptions
-  private _precision: number
+/**
+ * Immuteable currency representation
+ */
+export class Currency {
+  readonly intValue: number
+  readonly value: number
+  private readonly _settings: CurrencyOptions
+  private readonly _precision: number
 
   constructor(value: CurrencyAny, opts: CurrencyOptions) {
     let settings = Object.assign({}, defaults, opts)
@@ -156,6 +160,23 @@ class Currency {
 
   toJSON(): number {
     return this.value
+  }
+
+  static zero = new Currency(0)
+  static one = new Currency(1)
+
+  static sum(...array: (CurrencyAny | CurrencyAny[])[]): Currency {
+    return arrayFlatten(array).reduce(
+      (acc, value) => currency(acc).add(value),
+      this.zero
+    )
+  }
+
+  static avg(...array: (CurrencyAny | CurrencyAny[])[]): Currency {
+    let arr = arrayFlatten(array)
+    return arr
+      .reduce((acc, value) => currency(acc).add(value), this.zero)
+      .divide(arr.length)
   }
 }
 

@@ -3,7 +3,7 @@
 
 import { arrayFlatten } from "./array"
 
-type CurrencyAny = number | string | Currency
+type CurrencyInput = number | string | Currency
 
 type CurrencyFormat = (currency?: Currency, opts?: CurrencyOptions) => string
 
@@ -43,7 +43,7 @@ const groupRegex = /(\d)(?=(\d{3})+\b)/g
 const vedicRegex = /(\d)(?=(\d\d)+\d\b)/g
 
 export function currency(
-  value: CurrencyAny,
+  value: CurrencyInput,
   opts: CurrencyOptions = {}
 ): Currency {
   return new Currency(value, opts)
@@ -58,7 +58,7 @@ export class Currency {
   private readonly _settings: CurrencyOptions
   private readonly _precision: number
 
-  constructor(value: CurrencyAny, opts: CurrencyOptions) {
+  constructor(value: CurrencyInput, opts: CurrencyOptions) {
     let settings = Object.assign({}, defaults, opts)
     let precision = pow(settings.precision ?? 2)
     let v = parse(value, settings)
@@ -82,7 +82,7 @@ export class Currency {
     this._precision = precision
   }
 
-  add(number: CurrencyAny): Currency {
+  add(number: CurrencyInput): Currency {
     let { intValue, _settings, _precision } = this
     return currency(
       (intValue += parse(number, _settings)) /
@@ -91,7 +91,7 @@ export class Currency {
     )
   }
 
-  subtract(number: CurrencyAny): Currency {
+  subtract(number: CurrencyInput): Currency {
     let { intValue, _settings, _precision } = this
     return currency(
       (intValue -= parse(number, _settings)) /
@@ -109,7 +109,7 @@ export class Currency {
     )
   }
 
-  divide(number: CurrencyAny): Currency {
+  divide(number: CurrencyInput): Currency {
     let { intValue, _settings } = this
     return currency((intValue /= parse(number, _settings, false)), _settings)
   }
@@ -165,14 +165,14 @@ export class Currency {
   static zero = new Currency(0)
   static one = new Currency(1)
 
-  static sum(...array: (CurrencyAny | CurrencyAny[])[]): Currency {
+  static sum(...array: (CurrencyInput | CurrencyInput[])[]): Currency {
     return arrayFlatten(array).reduce(
       (acc, value) => currency(acc).add(value),
       this.zero
     )
   }
 
-  static avg(...array: (CurrencyAny | CurrencyAny[])[]): Currency {
+  static avg(...array: (CurrencyInput | CurrencyInput[])[]): Currency {
     let arr = arrayFlatten(array)
     return arr
       .reduce((acc, value) => currency(acc).add(value), this.zero)
@@ -181,7 +181,7 @@ export class Currency {
 }
 
 function parse(
-  value: CurrencyAny,
+  value: CurrencyInput,
   opts: CurrencyOptions,
   useRounding = true
 ): number {

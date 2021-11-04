@@ -8,7 +8,7 @@
     "node": ">=14.13.1"
   },
   "scripts": {
-    "start": "LEVEL=* ZEED=* node index.js",
+    "start": "LEVEL=* ZEED=* node --enable-source-maps index.js",
     "level": "LEVEL=* node index.js",
     "debug": "ZEED=* node index.js",
     "quiet": "node index.js",

@@ -22,13 +22,4 @@ describe("Log File", () => {
     expect(statSync(path).size).toBeGreaterThan(100)
     unlinkSync(path)
   })
-
-  it("should color log", async () => {
-    Logger.setHandlers([LoggerNodeHandler()])
-    const log = Logger("test")
-    log("debug")
-    log.info("info")
-    log.warn("warn")
-    log.error("error")
-  })
 })

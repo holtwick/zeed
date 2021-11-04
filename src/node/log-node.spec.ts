@@ -15,15 +15,18 @@ describe("log-node", () => {
     log.error("error")
   })
 
-  // test("should find pattern", function () {
-  //   Logger.setHandlers([
-  //     LoggerNodeHandler({
-  //       level: LogLevel.all,
-  //       filter: "*",
-  //       stack: true,
-  //     }),
-  //   ])
-  //   const log = Logger("stack")
-  //   log.info("find line")
-  // })
+  test("should find pattern", function () {
+    Logger.setHandlers([
+      LoggerNodeHandler({
+        level: LogLevel.all,
+        filter: "*",
+        stack: true,
+      }),
+    ])
+    const log = Logger("stack")
+    log("debug")
+    log.info("info")
+    log.warn("warn")
+    log.error("error")
+  })
 })

@@ -1,24 +1,18 @@
 // Simple demo for node and CommonJS loading
 
-import {
-  Logger,
-  LoggerFileHandler,
-  LoggerNodeHandler,
-  LogLevel,
-  setupEnv,
-} from "zeed"
+import { Logger, setupEnv } from "zeed"
 
-Logger.setHandlers([
-  LoggerFileHandler("zeed.log", {
-    level: LogLevel.debug,
-  }),
-  LoggerNodeHandler({
-    colors: true,
-    padding: 16,
-    nameBrackets: false,
-    levelHelper: true,
-  }),
-])
+// Logger.setHandlers([
+//   LoggerFileHandler("zeed.log", {
+//     level: LogLevel.debug,
+//   }),
+//   LoggerNodeHandler({
+//     colors: true,
+//     padding: 16,
+//     nameBrackets: false,
+//     levelHelper: true,
+//   }),
+// ])
 
 // Read .env file
 

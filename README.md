@@ -52,6 +52,8 @@ Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo`
 
 If you want to set up your own logging behavior or handlers best practice is to have a separate source file where you define those settings on top level. Then import this file as the very first. All other approaches may result in configurations that to not come in time to affect loggers defined in other modules:
 
+<img src=".assets/node-console@2x.png" style="max-width:566px">
+
 ```js
 // logging.js
 

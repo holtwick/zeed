@@ -9,7 +9,10 @@ import {
   LogMessage,
 } from "../common/log-base"
 import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
-import { getSourceLocation } from "../common/log-util"
+import {
+  getSourceLocation,
+  getSourceLocationByPrecedingPattern,
+} from "../common/log-util"
 import { formatMilliseconds, getTimestamp } from "../common/time"
 
 export function isTTY(): boolean {
@@ -167,8 +170,16 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
 
     if (stack) {
-      const depth = typeof stack === "number" ? stack : 3
-      const line = getSourceLocation(depth, true)
+      let line: string = ""
+      if (typeof stack === "boolean") {
+        line = getSourceLocationByPrecedingPattern(
+          ["at Function.LoggerBaseFactory.", "at null.log (", "at log ("],
+          true
+        )
+      } else {
+        const depth = typeof stack === "number" ? stack : 3
+        line = getSourceLocation(depth, true)
+      }
       if (line) {
         args.push(colorString(`(${line})`, COLOR.GRAY))
       }

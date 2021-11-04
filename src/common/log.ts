@@ -1,10 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isBrowser } from "./platform"
-import {
-  LoggerBrowserHandler,
-  LoggerBrowserSetupDebugFactory,
-} from "../browser/log-browser"
+import { LoggerConsoleHandler } from "./log-console"
 import { getGlobalContext } from "./global"
 import { LoggerContext, LoggerContextInterface } from "./log-base"
 
@@ -20,10 +16,7 @@ declare global {
 
 function getLoggerContext() {
   let logger = LoggerContext()
-  if (isBrowser()) {
-    logger.setHandlers([LoggerBrowserHandler()]) // Fallback for previously registered Loggers
-    logger.setFactory(LoggerBrowserSetupDebugFactory({}))
-  }
+  logger.setHandlers([LoggerConsoleHandler()])
   return logger
 }
 

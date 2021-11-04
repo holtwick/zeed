@@ -121,3 +121,19 @@ export function arrayShuffleForce<T>(array: T[]): T[] {
 export function arrayRandomElement<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)]
 }
+
+export function arrayMax<T>(...array: (T | T[])[]): T {
+  // @ts-ignore
+  return arrayFlatten(array).reduce(
+    (acc, value) => (acc != null ? (value > acc ? value : acc) : value),
+    undefined
+  )
+}
+
+export function arrayMin<T>(...array: (T | T[])[]): T {
+  // @ts-ignore
+  return arrayFlatten(array).reduce(
+    (acc, value) => (acc != null ? (value < acc ? value : acc) : value),
+    undefined
+  )
+}

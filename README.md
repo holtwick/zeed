@@ -31,7 +31,7 @@ log.error("Error")
 
 Sample output on a terminal:
 
-<img src=".assets/node-console@2x.png" style="max-width:566px">
+<img src=".assets/node-console@2x.png" width="566" style="max-width:100%">
 
 Sample output in Safari:
 

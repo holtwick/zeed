@@ -4,6 +4,8 @@ import {
   arrayFilterInPlace,
   arrayIntersection,
   arrayIsEqual,
+  arrayMax,
+  arrayMin,
   arrayMinus,
   arrayRemoveElement,
   arrayShuffleForce,
@@ -60,5 +62,12 @@ describe("Array", () => {
 
   it("should shuffle", () => {
     expect(arrayShuffleForce([1, 2, 3])).not.toEqual([1, 2, 3])
+  })
+
+  it("should min/max", () => {
+    expect(arrayMin(1, [2, 3])).toBe(1)
+    expect(arrayMax(1, [2, 3])).toBe(3)
+    expect(arrayMin("1a", ["2b", "3c"])).toBe("1a")
+    expect(arrayMax("1a", ["2b", "3c"])).toBe("3c")
   })
 })

@@ -41,7 +41,7 @@ function pathStripCwd(path: string) {
   }
 
   if (home && path.startsWith(home)) {
-    path = path.substr(home.length + 1)
+    path = "~/" + path.substr(home.length + 1)
   }
 
   return path

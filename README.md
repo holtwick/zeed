@@ -14,20 +14,54 @@ Get started like this:
 npm i zeed
 ```
 
-## Logging
+## Universal Logging
 
 Powerful logging for browser and terminal.
 
 ```js
 import { Logger } from "zeed"
 
-const log = Logger("app")
+const log = Logger("demo")
 
-log("Debug")
-log.info("Log this info")
+log("Hello World")
+log.info("Info")
+log.warn("Warning")
+log.error("Error")
 ```
 
-By default, the most suitable log handlers are used, but it is also possible to set (`Logger.setHandlers([handlers])`) or add (`Logger.registerHandler(handler)`) new log handlers. You can choose from:
+Sample output on a terminal:
+
+<img src=".assets/node-console@2x.png" style="max-width:566px">
+
+Sample output in Safari:
+
+<img src=".assets/safari-console.png" style="max-width:100%">
+
+By default, the most appropriate log handlers are activated. By default, a colorful output is applied for better orientation. Each line has trace info to allow direct jumps back into the code where the log has been issued. Logs can easily be filtered by level.
+
+### Filtering
+
+**By default logs are muted!** Show the logs by applying filters. On the browser enter this an the web inspector console:
+
+```js
+localStorage.zeed = "*"
+```
+
+On node set an environment variable like this
+
+```sh
+ZEED=* node myapp.js
+```
+
+Instead of the `*` more advanced filters can be applied compatible to the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). Instead of `ZEED` variable you may also use `DEBUG`. Please note that `ZEED` will supersede `DEBUG`.
+
+Filtering by level is possible by setting `ZEED_LEVEL`, `LEVEL` or `DEBUG_LEVEL` to set the filter e.g. `ZEED_LEVEL=info` to hide debug logs.
+
+To also write logs to a file you may set `ZEED_LOG` to the file path. All levels will be written to the file, no matter what other filtering has been chosen.
+
+### Log handlers
+
+It is also possible to set (`Logger.setHandlers([handlers])`) or add (`Logger.registerHandler(handler)`) new log handlers. You can choose from:
 
 - `LoggerConsoleHandler(opt)`: Plain basic output via `console` (default) - _(muted by default)_
 - `LoggerBrowserHandler(opt)`: Colorful log entries - _(muted by default)_
@@ -36,38 +70,13 @@ By default, the most suitable log handlers are used, but it is also possible to 
 
 `opt` are general options like `level` for the log level or `filter` for custom filtering (see below). But it can also hold individual settings specific for a log handler.
 
-Output can be filtered by setting `Logger.setFilter(filter)` following the well known [debug syntax](https://github.com/visionmedia/debug#wildcards). For the browser console you can also set like `localStorage.debug = "*"` or for node console like `process.env.DEBUG = "*"` (or put a `DEBUG="*"` in front of the execution call). `process.env.ZEED` and `localStorage.zeed` supersede `DEBUG`. **By default the standard loggers are muted!** Others like file loggers are not.
+Examples for custom loggers are [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
 
-The same applies for the level where you may use `ZEED_LEVEL`, `LEVEL` or `DEBUG_LEVEL` to set the filter e.g. `ZEED_LEVEL=info` to hide debug logs.
-
-Write **custom loggers** e.g. for [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.
+### Global logging context
 
 You can use `Logger` in submodules and Zeed will make sure all logging goes through the same handlers, no matter what bundler is used. With `Logger.setLock(true)` any further changes to handlers, factories and log levels can be forbidden, to ensure no conflicting settings with submodules. You should set up the Logging very early in your main project before loading submodules.
 
-By default, in browsers a special handler is activated, which is closely bound to `console` with the nice effect, that source code references in the web console will point to the line where the log statement has been called. This is an example output on Safari:
-
-<img src=".assets/safari-console.png" style="max-width:100%">
-
 Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
-
-If you want to set up your own logging behavior or handlers best practice is to have a separate source file where you define those settings on top level. Then import this file as the very first. All other approaches may result in configurations that to not come in time to affect loggers defined in other modules:
-
-<img src=".assets/node-console@2x.png" style="max-width:566px">
-
-```js
-// logging.js
-
-import { Logger, LoggerConsoleHandler } from "zeed"
-
-Logger.setHandlers([LoggerConsoleHandler()])
-```
-
-```js
-// main.js or similar
-
-import "./logging"
-import "anyOtherModuleUsingLogger"
-```
 
 > Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog), [consola](https://github.com/unjs/consola) or [winston](https://github.com/winstonjs/winston) to name just a few.
 

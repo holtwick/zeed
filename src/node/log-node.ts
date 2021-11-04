@@ -13,7 +13,7 @@ import {
   getSourceLocation,
   getSourceLocationByPrecedingPattern,
   getStack,
-} from "../common/log-util"
+} from "./log-util"
 import { formatMilliseconds, getTimestamp } from "../common/time"
 
 export function isTTY(): boolean {

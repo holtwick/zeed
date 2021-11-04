@@ -10,7 +10,7 @@ let globalLogger: LoggerContextInterface
 
 declare global {
   interface ZeedGlobalContext {
-    logger?: LoggerContextInterface
+    logger?: any // Should be LoggerContextInterface, but avoid compiler issues this way
   }
 }
 

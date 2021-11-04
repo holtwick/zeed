@@ -28,15 +28,15 @@ describe("currency", () => {
   })
 
   it("should summarize", () => {
-    const v = Currency.avg(0.1, [0.2])
-    expect(v.value).toBe(0.15)
-    expect(v.intValue).toBe(15)
-    expect(v.toJSON()).toBe(0.15)
+    const v = Currency.avg(0.1, ["0.2", currency(0.3)])
+    expect(v.value).toBe(0.2)
+    expect(v.intValue).toBe(20)
+    expect(v.toJSON()).toBe(0.2)
     expect(
       v.format({
         symbol: "",
         precision: 2,
       })
-    ).toBe("0.15")
+    ).toBe("0.20")
   })
 })

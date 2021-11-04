@@ -1,9 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger, LogLevel, sleep } from "../common"
-import { LoggerFileHandler } from "./log-file"
-import { LoggerNodeHandler } from "./log-node"
-import { rmSync, statSync, unlinkSync } from "fs"
+import { Logger, LogLevel } from "../common"
+import { LoggerNodeHandler, loggerStackTraceDebug } from "./log-node"
 
 describe("log-node", () => {
   it("should color log", async () => {
@@ -12,6 +10,7 @@ describe("log-node", () => {
     log("debug")
     log.info("info")
     log.warn("warn")
+    log.info(loggerStackTraceDebug)
     log.error("error")
   })
 
@@ -27,6 +26,7 @@ describe("log-node", () => {
     log("debug")
     log.info("info")
     log.warn("warn")
+    log.info(loggerStackTraceDebug)
     log.error("error")
   })
 })

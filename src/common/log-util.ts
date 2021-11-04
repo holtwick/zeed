@@ -1,5 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { resolve } from "path"
+
 export function getStackLlocationList(stack: string): any[] {
   if (typeof stack !== "string") return []
   // console.log("stack", stack)
@@ -18,7 +20,13 @@ export function getStackLlocationList(stack: string): any[] {
   )
 }
 
+const cwd = resolve(process.cwd())
+const home = process.env?.HOME ? resolve(process.env?.HOME) : ""
+// console.log(`cwd = ${cwd}, home = ${home}}`)
+
 function pathStripCwd(path: string) {
+  // console.log(">", path)
+
   if (path.includes("/node_modules/")) {
     return ""
   }
@@ -28,12 +36,10 @@ function pathStripCwd(path: string) {
     return path.substr(fileURL.length)
   }
 
-  const cwd = process.cwd()
   if (cwd && path.startsWith(cwd)) {
     return path.substr(cwd.length + 1)
   }
 
-  const home = process.env["HOME"]
   if (home && path.startsWith(home)) {
     path = path.substr(home.length + 1)
   }
@@ -66,6 +72,10 @@ export function getSourceLocation(level = 2, stripCwd = true): string {
     line = pathStripCwd(line)
   }
   return line || ""
+}
+
+export function getStack(): string {
+  return new Error().stack || ""
 }
 
 export function getSourceLocationByPrecedingPattern(

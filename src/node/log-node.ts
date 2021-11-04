@@ -12,6 +12,7 @@ import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
 import {
   getSourceLocation,
   getSourceLocationByPrecedingPattern,
+  getStack,
 } from "../common/log-util"
 import { formatMilliseconds, getTimestamp } from "../common/time"
 
@@ -113,6 +114,9 @@ export function colorStringList(
   })
 }
 
+export const loggerStackTraceDebug =
+  "loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485"
+
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     level = undefined,
@@ -169,13 +173,20 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       args.push(`+${diff}`)
     }
 
+    if (msg.messages?.[0] === loggerStackTraceDebug) {
+      console.log(getStack())
+    }
+
     if (stack) {
       let line: string = ""
       if (typeof stack === "boolean") {
         line = getSourceLocationByPrecedingPattern(
-          ["at Function.LoggerBaseFactory.", "at null.log (", "at log ("],
+          ["at Function.", "at null.log (", "at log ("],
           true
         )
+        if (!line) {
+          line = getSourceLocation(0, true)
+        }
       } else {
         const depth = typeof stack === "number" ? stack : 3
         line = getSourceLocation(depth, true)

@@ -78,7 +78,15 @@ You can use `Logger` in submodules and Zeed will make sure all logging goes thro
 
 Loggers can be extended. `const newLog = log.extend("demo")` will append `:demo` to the current namespace.
 
-> Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog), [consola](https://github.com/unjs/consola) or [winston](https://github.com/winstonjs/winston) to name just a few.
+### Traces to source code
+
+Zeed tries to identify the origin in the source code of the log being issued. To get appropriate results in Node environments consider using the Source Map option:
+
+```sh
+node --enable-source-maps myapp.js
+```
+
+> Alternative logging solutions: [debug](https://github.com/visionmedia/debug), [tslog](https://github.com/fullstack-build/tslog), [consola](https://github.com/unjs/consola), [pino](https://getpino.io) or [winston](https://github.com/winstonjs/winston) to name just a few.
 
 ## Promise / async / await utilities
 

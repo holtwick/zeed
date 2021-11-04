@@ -181,9 +181,12 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       let line: string = ""
       if (typeof stack === "boolean") {
         line = getSourceLocationByPrecedingPattern(
-          ["at Function.LoggerBaseFactory.", "at null.log (", "at log ("],
+          ["at Function.", "at null.log (", "at log ("],
           true
         )
+        if (!line) {
+          line = getSourceLocation(0, true)
+        }
       } else {
         const depth = typeof stack === "number" ? stack : 3
         line = getSourceLocation(depth, true)

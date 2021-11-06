@@ -3,7 +3,7 @@
 
 import { arrayFlatten } from "./array"
 
-type CurrencyInput = number | string | Currency
+export type CurrencyInput = number | string | Currency
 
 type CurrencyFormat = (currency?: Currency, opts?: CurrencyOptions) => string
 
@@ -53,12 +53,12 @@ export function currency(
  * Immuteable currency representation
  */
 export class Currency {
-  readonly intValue: number
-  readonly value: number
+  public readonly intValue: number
+  public readonly value: number
   private readonly _settings: CurrencyOptions
   private readonly _precision: number
 
-  constructor(value: CurrencyInput, opts: CurrencyOptions) {
+  constructor(value: CurrencyInput, opts: CurrencyOptions = {}) {
     let settings = Object.assign({}, defaults, opts)
     let precision = pow(settings.precision ?? 2)
     let v = parse(value, settings)

@@ -68,6 +68,11 @@ Array [
 
     expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
 
+    expect(Day.fromString("2000-01-01")?.daysUntil(19871231)).toBe(-4384)
+    expect(Day.fromString("2000-01-01")?.daysUntil("2000-01-31")).toBe(30)
+    expect(Day.fromString("2021-01-01")?.daysUntil("2021-03-01")).toBe(59)
+    expect(Day.fromString("2020-01-01")?.daysUntil("2020-03-01")).toBe(60)
+
     // Following depend on timezone
     // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
     // expect(day2?.days).toEqual(19871230)

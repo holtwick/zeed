@@ -1,5 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { Disposable, DisposerFunction } from "../disposer"
 import { getGlobalContext } from "../global"
 import { Logger } from "../log"
 import { promisify } from "../promise"
@@ -24,7 +25,9 @@ export declare type DefaultListener = {
   [k: string]: (...args: any[]) => any
 }
 
-export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
+export class Emitter<L extends ListenerSignature<L> = DefaultListener>
+  implements Disposable
+{
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
@@ -67,18 +70,12 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
     this.subscribersOnAny.push(fn)
   }
 
-  public on<U extends keyof L>(event: U, listener: L[U]) {
+  public on<U extends keyof L>(event: U, listener: L[U]): DisposerFunction {
     let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
     subscribers.push(listener)
     this.subscribers[event] = subscribers
-    return {
-      /** @deprecated */
-      cleanup: () => {
-        this.off(event, listener)
-      },
-      dispose: () => {
-        this.off(event, listener)
-      },
+    return () => {
+      this.off(event, listener)
     }
   }
 
@@ -88,12 +85,15 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
     }
   }
 
-  public once<U extends keyof L>(event: U, listener: L[U]) {
+  public once<U extends keyof L>(event: U, listener: L[U]): DisposerFunction {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)
       return await promisify(listener(...args))
     }
     this.on(event, onceListener as any)
+    return () => {
+      this.off(event, listener)
+    }
   }
 
   public off<U extends keyof L>(event: U, listener: L[U]): this {
@@ -107,6 +107,11 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener> {
   public removeAllListeners(event?: keyof L): this {
     this.subscribers = {}
     return this
+  }
+
+  dispose() {
+    this.subscribers = {}
+    this.subscribersOnAny = []
   }
 }
 

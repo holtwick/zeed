@@ -2,12 +2,12 @@ import { isPromise } from "../promise"
 
 export const DAY_MS = 1000 * 60 * 60 * 24
 
-export type DayCompatible = number | string | Date | Day
+export type DayInput = number | string | Date | Day
 
 export class Day {
   days: number
 
-  constructor(days?: DayCompatible) {
+  constructor(days?: DayInput) {
     if (typeof days === "number") {
       this.days = days
       return
@@ -52,7 +52,7 @@ export class Day {
     return Day.fromDate(date, true)
   }
 
-  static from(value: DayCompatible, gmt: boolean = false): Day | undefined {
+  static from(value: DayInput, gmt: boolean = false): Day | undefined {
     if (typeof value === "number") {
       return new Day(value)
     } else if (typeof value === "string") {
@@ -110,6 +110,13 @@ export class Day {
     )
   }
 
+  daysUntil(otherDay: DayInput): number {
+    return Math.round(
+      (new Day(otherDay)?.toDateGMT().getTime() - this.toDateGMT().getTime()) /
+        DAY_MS
+    )
+  }
+
   // Shortcuts
 
   yesterday() {
@@ -122,8 +129,8 @@ export class Day {
 }
 
 export async function forEachDay(
-  from: DayCompatible,
-  to: DayCompatible,
+  from: DayInput,
+  to: DayInput,
   handler: (date: Day) => Promise<void> | void
 ) {
   let start = Day.from(from)

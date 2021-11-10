@@ -3,8 +3,10 @@ import { promisify, isPromise } from "./promise"
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
-type Disposer =
-  | Function
+export type DisposerFunction = Function
+
+export type Disposer =
+  | DisposerFunction
   | {
       dispose?: Function | Promise<unknown>
       cleanup?: Function | Promise<unknown> // deprecated, but used often in my old code
@@ -14,25 +16,32 @@ export interface Disposable {
   dispose(): unknown | Promise<unknown>
 }
 
+/** Different kinds of implementations have grown, this should unify them  */
+export async function callDisposer(disposable: Disposer): Promise<void> {
+  if (typeof disposable === "function") {
+    await promisify(disposable())
+  } else if (isPromise(disposable)) {
+    await disposable
+  } else if (typeof disposable.dispose === "function") {
+    await promisify(disposable.dispose())
+  } else if (isPromise(disposable.dispose)) {
+    await disposable.dispose
+  } else if (typeof disposable.cleanup === "function") {
+    await promisify(disposable.cleanup())
+  } else if (isPromise(disposable.cleanup)) {
+    await disposable.cleanup
+  }
+}
+
+// export function disposeFn()
+
 export function useDisposer() {
   let tracked: Disposer[] = []
 
   const untrack = async (disposable: Disposer) => {
     if (tracked.includes(disposable)) {
       arrayFilterInPlace(tracked, (el) => el !== disposable)
-      if (typeof disposable === "function") {
-        await promisify(disposable())
-      } else if (isPromise(disposable)) {
-        await disposable
-      } else if (typeof disposable.dispose === "function") {
-        await promisify(disposable.dispose())
-      } else if (isPromise(disposable.dispose)) {
-        await disposable.dispose
-      } else if (typeof disposable.cleanup === "function") {
-        await promisify(disposable.cleanup())
-      } else if (isPromise(disposable.cleanup)) {
-        await disposable.cleanup
-      }
+      await callDisposer(disposable)
     }
   }
 
@@ -57,7 +66,10 @@ export function useDisposer() {
   })
 }
 
-export function useTimeout(fn: Function, timeout: number = 0) {
+export function useTimeout(
+  fn: Function,
+  timeout: number = 0
+): DisposerFunction {
   let timeoutHandle: any = setTimeout(fn, timeout)
   return () => {
     if (timeoutHandle) {
@@ -67,7 +79,7 @@ export function useTimeout(fn: Function, timeout: number = 0) {
   }
 }
 
-export function useInterval(fn: Function, interval: number) {
+export function useInterval(fn: Function, interval: number): DisposerFunction {
   let intervalHandle: any = setInterval(fn, interval)
   return () => {
     if (intervalHandle) {
@@ -82,7 +94,7 @@ export function useEventListener(
   eventName: string,
   fn: (ev?: any) => void,
   ...args: any[]
-) {
+): DisposerFunction {
   if (emitter == null) return () => {}
 
   if (emitter.on) {

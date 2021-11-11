@@ -3,7 +3,7 @@ import { promisify, isPromise } from "./promise"
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
-export type DisposerFunction = Function
+export type DisposerFunction = () => void | Promise<void>
 
 export type Disposer =
   | DisposerFunction
@@ -13,7 +13,7 @@ export type Disposer =
     }
 
 export interface Disposable {
-  dispose(): unknown | Promise<unknown>
+  dispose(): void | Promise<void>
 }
 
 /** Different kinds of implementations have grown, this should unify them  */
@@ -51,7 +51,7 @@ export function useDisposer() {
     }
   }
 
-  const track = (obj: Disposer) => {
+  const track = (obj: Disposer): DisposerFunction => {
     tracked.unshift(obj) // LIFO
     return () => untrack(obj)
   }

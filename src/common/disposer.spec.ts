@@ -12,7 +12,9 @@ describe("dispose", () => {
         disposeCalls.push(1)
       },
     })
-    disposer.track(() => disposeCalls.push(2))
+    disposer.track(() => {
+      disposeCalls.push(2)
+    })
 
     const x = {
       async dispose() {
@@ -21,7 +23,9 @@ describe("dispose", () => {
     }
     disposer.track(x)
 
-    disposer.track(async () => disposeCalls.push(4))
+    disposer.track(async () => {
+      disposeCalls.push(4)
+    })
     expect(disposeCalls).toEqual([])
     expect(disposer.getSize()).toEqual(4)
 
@@ -54,7 +58,9 @@ describe("dispose", () => {
       dispose = useDisposer()
 
       constructor() {
-        this.dispose.track(() => (x = 2))
+        this.dispose.track(() => {
+          x = 2
+        })
       }
     }
 

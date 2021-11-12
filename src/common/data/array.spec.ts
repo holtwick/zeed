@@ -2,6 +2,7 @@
 
 import {
   arrayFilterInPlace,
+  arrayFlatten,
   arrayIntersection,
   arrayIsEqual,
   arrayMax,
@@ -69,5 +70,18 @@ describe("Array", () => {
     expect(arrayMax(1, [2, 3])).toBe(3)
     expect(arrayMin("1a", ["2b", "3c"])).toBe("1a")
     expect(arrayMax("1a", ["2b", "3c"])).toBe("3c")
+  })
+
+  it("should flatten", () => {
+    expect(arrayFlatten(1, 2, [3, [4, 5]], 6)).toMatchInlineSnapshot(`
+Array [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+]
+`)
   })
 })

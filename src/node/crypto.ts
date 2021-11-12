@@ -7,11 +7,14 @@ declare module NodeJS {
   }
 }
 
-if (
-  typeof globalThis !== "undefined" &&
-  typeof globalThis.crypto === "undefined"
-) {
-  console.log("polyfill")
-  // @ts-ignore
-  globalThis.crypto = webcrypto
+try {
+  if (
+    typeof globalThis !== "undefined" &&
+    typeof globalThis.crypto === "undefined"
+  ) {
+    // @ts-ignore
+    globalThis.crypto = webcrypto
+  }
+} catch (err) {
+  console.warn("Failed to polyfill webcrypto")
 }

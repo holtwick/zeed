@@ -43,14 +43,12 @@ describe("Days", () => {
 
     let list2: any = []
     forEachDay(19991030, 19991102, (x) => list2.push(x.toString()))
-    expect(list2).toMatchInlineSnapshot(`
-Array [
-  "1999-10-30",
-  "1999-10-31",
-  "1999-11-01",
-  "1999-11-02",
-]
-`)
+    expect(list2).toEqual([
+      "1999-10-30",
+      "1999-10-31",
+      "1999-11-01",
+      "1999-11-02",
+    ])
   })
 
   it("should use Day class", () => {
@@ -62,9 +60,9 @@ Array [
     expect(day?.toString("")).toEqual("19871231")
 
     // This only works locally, but not on Github Actions ;)
-    // expect(day?.toDate()).toMatchInlineSnapshot(`1987-12-30T23:00:00.000Z`)
+    // expect(day?.toDate()).toEqual(`1987-12-30T23:00:00.000Z`)
 
-    expect(day?.toDateGMT()).toMatchInlineSnapshot(`1987-12-31T00:00:00.000Z`)
+    expect(day?.toDateGMT()).toEqual(new Date("1987-12-31T00:00:00.000Z"))
 
     expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
 

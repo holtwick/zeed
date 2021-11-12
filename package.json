@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.7.70",
+  "version": "0.7.71",
   "description": "🌱 Simple foundation library",
   "keywords": [
     "foundation",
@@ -52,8 +52,5 @@
     "ts-jest": "^27.0.7",
     "tsup": "^5.5.0",
     "typescript": "^4.4.4"
-  },
-  "dependencies": {
-    "tslib": "^2.3.1"
   }
 }

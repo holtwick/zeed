@@ -36,3 +36,6 @@ export interface ObjectStorage<T = any> {
   clear(): void
   allKeys(): string[]
 }
+
+// https://stackoverflow.com/a/68349501/140927
+export type NestedArray<T> = T | Array<NestedArray<T>>

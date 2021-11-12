@@ -8,7 +8,7 @@
     "node": ">=14.13.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "ZEED=* node index.js"
   },
   "author": "Dirk Holtwick",
   "dependencies": {

@@ -32,3 +32,19 @@ export function toCapitalize(s: string) {
 export function toCapitalizeWords(s: string) {
   return s.replace(/\w\S*/g, toCapitalize)
 }
+
+// export function camelize(str: string) {
+//   return str
+//     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word: string, index: number) =>
+//       index === 0 ? word.toLowerCase() : word.toUpperCase()
+//     )
+//     .replace(/\s+/g, "")
+// }
+
+export function fromCamelCase(str: string, separator: string = "-") {
+  separator = typeof separator === "undefined" ? "_" : separator
+  return str
+    .replace(/([a-z\d])([A-Z])/g, "$1" + separator + "$2")
+    .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, "$1" + separator + "$2")
+    .toLowerCase()
+}

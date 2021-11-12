@@ -1,6 +1,13 @@
 // Simple demo for node and CommonJS loading
 
-import { Logger, setupEnv } from "zeed"
+import {
+  Logger,
+  setupEnv,
+  stringToUInt8Array,
+  digest,
+  toUint8Array,
+  uuid,
+} from "zeed"
 
 // Some basic logging
 
@@ -15,3 +22,8 @@ log.error("Error")
 setupEnv()
 
 log.info("DEMO_SECRET =", process.env.DEMO_SECRET)
+;(async () => {
+  log("uuid", uuid())
+  log("encode", stringToUInt8Array("Hello Wörld").byteLength)
+  log("digest", toUint8Array(await digest("Hello Wörld")).byteLength)
+})()

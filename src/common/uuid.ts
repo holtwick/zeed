@@ -1,25 +1,11 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { randomUint8Array } from "./crypto"
 import { useBase } from "./data/basex"
-import { getGlobal } from "./platform"
 import { getTimestamp } from "./time"
 
 const { encode: encode62, decode: decode62 } = useBase(62)
 const { encode: encode32 } = useBase(32)
-
-const _crypto = getGlobal().crypto || getGlobal()["msCrypto"]
-
-function randomUint8Array(length = 16): Uint8Array {
-  let rands = new Uint8Array(length)
-  if (_crypto && _crypto["getRandomValues"]) {
-    _crypto["getRandomValues"](rands)
-  } else {
-    for (let i = 0; i < length; i++) {
-      rands[i] = Math.floor(Math.random() * 256)
-    }
-  }
-  return rands
-}
 
 // function randomDigit(base = 32) {
 //   if (_crypto && _crypto['getRandomValues']) {

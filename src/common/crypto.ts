@@ -12,14 +12,11 @@ if (globalThis.crypto == null) {
 }
 */
 
-// import { getGlobal } from "./platform"
-// export const crypto: Crypto = getGlobal().crypto || getGlobal()["msCrypto"]
-// export const getRandomValues = crypto?.["getRandomValues"]
-
+// todo: should fallback to node crypto
 export function randomUint8Array(length: number = 16): Uint8Array {
   let randomBytes = new Uint8Array(length)
-  if (crypto?.["getRandomValues"]) {
-    crypto?.["getRandomValues"](randomBytes)
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    crypto.getRandomValues(randomBytes)
   } else {
     for (let i = 0; i < length; i++) {
       // Math.random: "...range 0 to less than 1 (inclusive of 0, but not 1)"

@@ -6,6 +6,7 @@ import {
   stringToUInt8Array,
   digest,
   toUint8Array,
+  uuid,
 } from "zeed"
 
 // Some basic logging
@@ -21,15 +22,8 @@ log.error("Error")
 setupEnv()
 
 log.info("DEMO_SECRET =", process.env.DEMO_SECRET)
-
-// https://nodejs.org/api/webcrypto.html
-import { webcrypto } from "crypto"
-
-if (globalThis.crypto == null) {
-  globalThis.crypto = webcrypto
-}
-
 ;(async () => {
+  log("uuid", uuid())
   log("encode", stringToUInt8Array("Hello Wörld"))
   log("digest", toUint8Array(await digest("Hello Wörld")))
 })()

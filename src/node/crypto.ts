@@ -1,5 +1,5 @@
 // https://nodejs.org/api/webcrypto.html
-import { webcrypto } from "crypto"
+import nodeCrypto from "crypto"
 
 export {}
 
@@ -10,15 +10,14 @@ declare module NodeJS {
 }
 
 try {
-  // const { webcrypto } = require("crypto")
-
   if (
-    webcrypto &&
+    nodeCrypto &&
+    nodeCrypto.webcrypto &&
     typeof globalThis !== "undefined" &&
     typeof globalThis.crypto === "undefined"
   ) {
     // @ts-ignore
-    globalThis.crypto = webcrypto
+    globalThis.crypto = nodeCrypto.webcrypto
   }
 } catch (err) {
   console.warn("Failed to polyfill webcrypto", err)

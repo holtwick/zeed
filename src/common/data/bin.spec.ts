@@ -1,6 +1,12 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { equalBinary, stringToUInt8Array, UInt8ArrayToString } from "./bin"
+import {
+  equalBinary,
+  stringToUInt8Array,
+  UInt8ArrayToString,
+  toHex,
+  toBase64,
+} from "./bin"
 
 describe("bin", () => {
   it("should compare", () => {
@@ -14,52 +20,14 @@ describe("bin", () => {
   it("should text code", () => {
     const sample = "Hello → wörld 👨‍👩‍👧‍👦"
     const encoded = stringToUInt8Array(sample)
-    expect(encoded).toMatchInlineSnapshot(`
-Uint8Array [
-  72,
-  101,
-  108,
-  108,
-  111,
-  32,
-  226,
-  134,
-  146,
-  32,
-  119,
-  195,
-  182,
-  114,
-  108,
-  100,
-  32,
-  240,
-  159,
-  145,
-  168,
-  226,
-  128,
-  141,
-  240,
-  159,
-  145,
-  169,
-  226,
-  128,
-  141,
-  240,
-  159,
-  145,
-  167,
-  226,
-  128,
-  141,
-  240,
-  159,
-  145,
-  166,
-]
-`)
+
+    expect(toBase64([1, 2, 3])).toEqual("AQID")
+    expect(toHex([1, 2, 254])).toEqual("0102fe")
+
+    expect(toBase64(encoded)).toEqual(
+      "SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm"
+    )
+
     expect(UInt8ArrayToString(encoded)).toEqual(sample)
     expect(UInt8ArrayToString(encoded)).not.toEqual(sample + "a")
   })

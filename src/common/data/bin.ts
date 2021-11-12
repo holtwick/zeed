@@ -1,4 +1,4 @@
-export type BinInput = Uint8Array | ArrayBuffer | string
+export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 
 let _textEncoder = new TextEncoder()
 export function stringToUInt8Array(text: string): Uint8Array {
@@ -17,7 +17,39 @@ export function UInt8ArrayToString(bin: Uint8Array): string {
 export function toUint8Array(data: BinInput): Uint8Array {
   if (data instanceof ArrayBuffer) return new Uint8Array(data)
   if (typeof data === "string") return stringToUInt8Array(data)
+  if (data.length) return new Uint8Array(data)
+  // @ts-ignore
   return data
+}
+
+export function toHex(bin: BinInput): string {
+  return [...toUint8Array(bin)]
+    .map((x) => x.toString(16).padStart(2, "0"))
+    .join("")
+}
+
+export function toBase64(bin: BinInput): string {
+  const bytes = toUint8Array(bin)
+  if (typeof Buffer !== "undefined") {
+    return Buffer.from(bytes).toString("base64")
+  }
+  let s = ""
+  for (let i = 0; i < bytes.byteLength; i++) {
+    s += String.fromCharCode(bytes[i])
+  }
+  return btoa(s)
+}
+
+export function toBase64Url(bin: BinInput): string {
+  const bytes = toUint8Array(bin)
+  if (typeof Buffer !== "undefined") {
+    return Buffer.from(bytes).toString("base64url")
+  }
+  let s = ""
+  for (let i = 0; i < bytes.byteLength; i++) {
+    s += String.fromCharCode(bytes[i])
+  }
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_")
 }
 
 /** Compare contents of binary arrays */

@@ -24,6 +24,6 @@ setupEnv()
 log.info("DEMO_SECRET =", process.env.DEMO_SECRET)
 ;(async () => {
   log("uuid", uuid())
-  log("encode", stringToUInt8Array("Hello Wörld"))
-  log("digest", toUint8Array(await digest("Hello Wörld")))
+  log("encode", stringToUInt8Array("Hello Wörld").byteLength)
+  log("digest", toUint8Array(await digest("Hello Wörld")).byteLength)
 })()

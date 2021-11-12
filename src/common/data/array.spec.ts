@@ -73,15 +73,6 @@ describe("Array", () => {
   })
 
   it("should flatten", () => {
-    expect(arrayFlatten(1, 2, [3, [4, 5]], 6)).toMatchInlineSnapshot(`
-Array [
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-]
-`)
+    expect(arrayFlatten(1, 2, [3, [4, 5]], 6)).toEqual([1, 2, 3, 4, 5, 6])
   })
 })

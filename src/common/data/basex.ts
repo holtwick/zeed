@@ -6,6 +6,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
+// "Fast base encoding / decoding of any given alphabet using bitcoin style leading zero compression."
+// "WARNING: This module is NOT RFC3548 compliant, it cannot be used for base16 (hex), base32, or base64 encoding in a standards compliant manner."
+
+import { BinInput, toUint8Array } from "./bin"
 import { Logger } from "../log"
 
 const log = Logger("zeed:basex")
@@ -16,13 +20,17 @@ const alphabets = {
   "11": "0123456789a",
   "16": "0123456789abcdef",
   "32": "0123456789ABCDEFGHJKMNPQRSTVWXYZ",
-  // "32": "ybndrfg8ejkmcpqxot1uwisza345h769", //  (z-base-32)
+  "32-rfc": "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", // https://datatracker.ietf.org/doc/html/rfc4648#section-6
+  "32-hex": "0123456789ABCDEFGHIJKLMNOPQRSTUV", // https://datatracker.ietf.org/doc/html/rfc4648#section-7
+  "32-zbase": "ybndrfg8ejkmcpqxot1uwisza345h769", //  https://en.wikipedia.org/wiki/Base32#z-base-32
   "36": "0123456789abcdefghijklmnopqrstuvwxyz",
   "58": "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
   // "62": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", // The sort order is not kept!
   "62": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
   "64": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+  "64-url": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", // https://datatracker.ietf.org/doc/html/rfc4648#section-5
   "66": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.!~",
+  "85": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~", // https://datatracker.ietf.org/doc/html/rfc1924#section-4.2
 }
 
 export function useBase(alphaOrBase: string | number) {
@@ -55,23 +63,14 @@ export function useBase(alphaOrBase: string | number) {
   const FACTOR = Math.log(BASE) / Math.log(256) // log(BASE) / log(256), rounded up
   const iFACTOR = Math.log(256) / Math.log(BASE) // log(256) / log(BASE), rounded up
 
-  function encode(
-    source: number[] | Uint8Array | ArrayBuffer,
-    padToLength: number = -1
-  ): string {
-    let data: number[] | Uint8Array
-    if (source instanceof ArrayBuffer) {
-      data = new Uint8Array(source)
-    } else {
-      data = source
-    }
-
-    if (data.length === 0) return ""
+  function encode(source: BinInput, padToLength: number = -1): string {
+    let data = toUint8Array(source)
+    if (data.byteLength === 0) return ""
 
     // Skip & count leading zeroes.
     let length = 0
     let pbegin = 0
-    const pend = data.length
+    const pend = data.byteLength
 
     while (pbegin !== pend && data[pbegin] === 0) pbegin++
 
@@ -192,3 +191,4 @@ export const { encode: encodeBase16, decode: decodeBase16 } = useBase(16)
 export const { encode: encodeBase32, decode: decodeBase32 } = useBase(32)
 export const { encode: encodeBase58, decode: decodeBase58 } = useBase(58)
 export const { encode: encodeBase62, decode: decodeBase62 } = useBase(62)
+export const { encode: encodeBase64, decode: decodeBase64 } = useBase(62)

@@ -95,3 +95,15 @@ export function renderMessages(
 ): string {
   return formatMessages(messages, opt).join(" ")
 }
+
+//
+
+// Awesome trick from https://stackoverflow.com/a/5396742/140927
+export function fixBrokenUth8String(brokenString: string): string {
+  try {
+    return decodeURIComponent(escape(brokenString))
+  } catch (e) {
+    // log.debug("fixString failed for", s)
+  }
+  return brokenString
+}

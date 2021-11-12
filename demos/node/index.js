@@ -1,6 +1,12 @@
 // Simple demo for node and CommonJS loading
 
-import { Logger, setupEnv } from "zeed"
+import {
+  Logger,
+  setupEnv,
+  stringToUInt8Array,
+  digest,
+  toUint8Array,
+} from "zeed"
 
 // Some basic logging
 
@@ -15,3 +21,15 @@ log.error("Error")
 setupEnv()
 
 log.info("DEMO_SECRET =", process.env.DEMO_SECRET)
+
+// https://nodejs.org/api/webcrypto.html
+import { webcrypto } from "crypto"
+
+if (globalThis.crypto == null) {
+  globalThis.crypto = webcrypto
+}
+
+;(async () => {
+  log("encode", stringToUInt8Array("Hello Wörld"))
+  log("digest", toUint8Array(await digest("Hello Wörld")))
+})()

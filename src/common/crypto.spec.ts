@@ -1,7 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { randomBytes } from "crypto"
-import { uuid, uuidv4 } from "./uuid"
 import { equalBinary } from "./data/bin"
 
 describe("crypto", () => {

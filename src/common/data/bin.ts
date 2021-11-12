@@ -1,5 +1,16 @@
-export function toUint8Array(data: ArrayBuffer | Uint8Array): Uint8Array {
-  if (!(data instanceof Uint8Array)) return new Uint8Array(data)
+export type BinInput = Uint8Array | ArrayBuffer | string
+
+export function stringToUInt8Array(text: string): Uint8Array {
+  return new TextEncoder().encode(text.normalize("NFC"))
+}
+
+export function UInt8ArrayToString(bin: Uint8Array): string {
+  return new TextDecoder().decode(bin).normalize("NFC")
+}
+
+export function toUint8Array(data: BinInput): Uint8Array {
+  if (data instanceof ArrayBuffer) return new Uint8Array(data)
+  if (typeof data === "string") return stringToUInt8Array(data)
   return data
 }
 

@@ -1,11 +1,17 @@
 export type BinInput = Uint8Array | ArrayBuffer | string
 
+let _textEncoder = new TextEncoder()
 export function stringToUInt8Array(text: string): Uint8Array {
-  return new TextEncoder().encode(text.normalize("NFC"))
+  const textEncoder = _textEncoder ?? (_textEncoder = new TextEncoder())
+  return textEncoder.encode(text.normalize("NFC"))
 }
 
+let _textDecoder = new TextDecoder()
 export function UInt8ArrayToString(bin: Uint8Array): string {
-  return new TextDecoder().decode(bin).normalize("NFC")
+  const textDecoder =
+    _textDecoder ??
+    (_textDecoder = new TextDecoder("utf-8", { ignoreBOM: true }))
+  return textDecoder.decode(bin).normalize("NFC")
 }
 
 export function toUint8Array(data: BinInput): Uint8Array {

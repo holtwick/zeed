@@ -33,3 +33,35 @@ export async function digest(
 ): Promise<ArrayBuffer> {
   return await crypto.subtle.digest(algorithm, toUint8Array(message))
 }
+
+export async function deriveKeyPbkdf2(
+  secret: BinInput,
+  opt: {
+    iterations?: number
+    salt?: BinInput
+  } = {}
+): Promise<CryptoKey> {
+  const secretBuffer = toUint8Array(secret)
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    secretBuffer,
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  )
+  return await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: toUint8Array(opt.salt ?? ""),
+      iterations: opt.iterations ?? 100000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    {
+      name: "AES-GCM",
+      length: 256,
+    },
+    true,
+    ["encrypt", "decrypt"]
+  )
+}

@@ -23,9 +23,15 @@ export function toUint8Array(data: BinInput): Uint8Array {
 }
 
 export function toHex(bin: BinInput): string {
-  return [...toUint8Array(bin)]
-    .map((x) => x.toString(16).padStart(2, "0"))
-    .join("")
+  if (typeof Buffer !== "undefined") {
+    return Buffer.from(toUint8Array(bin)).toString("hex")
+  }
+  const h = "0123456789abcdef"
+  let s = ""
+  for (const v of [...toUint8Array(bin)]) {
+    s += h[v >> 4] + h[v & 15]
+  }
+  return s
 }
 
 export function toBase64(bin: BinInput): string {

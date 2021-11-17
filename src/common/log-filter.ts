@@ -9,33 +9,37 @@ interface NamespaceFilter {
   filter: string
 }
 
-let defaultNamespaceFilter: any =
+export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
+  if (
+    defaultNamespaceFilter === true ||
+    defaultNamespaceFilter === "true" ||
+    defaultNamespaceFilter === "1" ||
+    (typeof defaultNamespaceFilter === "number" && defaultNamespaceFilter !== 0)
+  ) {
+    defaultNamespaceFilter = "*"
+  } else if (
+    defaultNamespaceFilter === false ||
+    defaultNamespaceFilter === "false" ||
+    defaultNamespaceFilter === 0 ||
+    defaultNamespaceFilter === "0" ||
+    defaultNamespaceFilter == null ||
+    defaultNamespaceFilter === "null" ||
+    defaultNamespaceFilter === "undefined"
+  ) {
+    defaultNamespaceFilter = ""
+  } else {
+    defaultNamespaceFilter = String(defaultNamespaceFilter)
+  }
+  return defaultNamespaceFilter
+}
+
+const defaultNamespaceFilter: string = getNamespaceFilterString(
   typeof process !== "undefined"
     ? process.env.ZEED ?? process.env.DEBUG
     : typeof localStorage !== "undefined"
     ? localStorage.zeed ?? localStorage.debug
     : "*"
-
-if (
-  defaultNamespaceFilter === true ||
-  defaultNamespaceFilter === "true" ||
-  defaultNamespaceFilter === "1" ||
-  (typeof defaultNamespaceFilter === "number" && defaultNamespaceFilter !== 0)
-) {
-  defaultNamespaceFilter = "*"
-} else if (
-  defaultNamespaceFilter === false ||
-  defaultNamespaceFilter === "false" ||
-  defaultNamespaceFilter === 0 ||
-  defaultNamespaceFilter === "0" ||
-  defaultNamespaceFilter == null ||
-  defaultNamespaceFilter === "null" ||
-  defaultNamespaceFilter === "undefined"
-) {
-  defaultNamespaceFilter = ""
-} else {
-  defaultNamespaceFilter = String(defaultNamespaceFilter)
-}
+)
 
 /**
  * Filter as described here https://github.com/visionmedia/debug#wildcards

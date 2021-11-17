@@ -1,13 +1,17 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useLevelFilter, useNamespaceFilter } from "./log-filter"
+import {
+  useLevelFilter,
+  useNamespaceFilter,
+  getNamespaceFilterString,
+} from "./log-filter"
 import { LogLevel } from "./log-base"
 
 describe("log-filter", function () {
   test("should match", function () {
     {
       const matches = useNamespaceFilter()
-      expect(matches.filter).toBe(undefined)
+      expect(matches.filter).toBe("")
       expect(matches.accept).toEqual([])
       expect(matches.reject).toEqual([])
       expect(matches("a")).toBe(false)
@@ -59,6 +63,21 @@ describe("log-filter", function () {
       expect(matches("a")).toBe(true)
       expect(matches("b:c")).toBe(true)
     }
+  })
+
+  it("should interprete filter right", () => {
+    expect(getNamespaceFilterString("")).toEqual("")
+    expect(getNamespaceFilterString(0)).toEqual("")
+    expect(getNamespaceFilterString(false)).toEqual("")
+    expect(getNamespaceFilterString("false")).toEqual("")
+    expect(getNamespaceFilterString(null)).toEqual("")
+
+    expect(getNamespaceFilterString("*")).toEqual("*")
+    expect(getNamespaceFilterString(1)).toEqual("*")
+    expect(getNamespaceFilterString(true)).toEqual("*")
+    expect(getNamespaceFilterString("true")).toEqual("*")
+
+    expect(getNamespaceFilterString("a:b")).toEqual("a:b")
   })
 
   it("should filter by level", () => {

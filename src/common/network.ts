@@ -20,25 +20,18 @@ export async function fetchBasic(
     // }
     // log.log('fetch', url, fetchOptions)
     const response = await fetchFn(url, fetchOptions)
-    if (response.status === 200) {
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    if (response.status < 400) {
       return response
     }
     try {
       log.warn(
-        `Fetch of ${url} with ${fetchOptions} returned status ${response.status}`
+        `Fetch of ${url} with ${fetchOptions} returned status=${response.status}`
       )
       log.warn(`Response: ${await response.text()}`)
     } catch (err) {
       log.error("Exception:", err)
-    }
-    if (response.status === 404) {
-      log.error("fetchBasic: Unknown url", url)
-    } else if (response.status >= 400 && response.status < 500) {
-      log.error(
-        `fetchBasic: Authentication error ${response.status} for ${url}`
-      )
-    } else {
-      log.error(`Error loading data. Status ${response.status}: ${url}`)
     }
   } catch (err) {
     log.error("fetchBasic", err)

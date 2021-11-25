@@ -65,3 +65,53 @@ export async function deriveKeyPbkdf2(
     ["encrypt", "decrypt"]
   )
 }
+
+// export async function encrypt(
+//   data: Uint8Array,
+//   key?: CryptoKey
+// ): Promise<Uint8Array> {
+//   if (!key) {
+//     // @ts-ignore
+//     return promise.resolve(data)
+//   }
+//   const iv = crypto.getRandomValues(new Uint8Array(12))
+//   const cipher = await crypto.subtle.encrypt(
+//     {
+//       name: "AES-GCM",
+//       iv,
+//     },
+//     key,
+//     data
+//   )
+//   const encryptedDataEncoder = encoding.createEncoder()
+//   encoding.writeVarString(encryptedDataEncoder, "AES-GCM")
+//   encoding.writeVarUint8Array(encryptedDataEncoder, iv)
+//   encoding.writeVarUint8Array(encryptedDataEncoder, new Uint8Array(cipher))
+//   return encoding.toUint8Array(encryptedDataEncoder)
+// }
+
+// export async function decrypt(
+//   data: Uint8Array,
+//   key?: CryptoKey
+// ): Promise<Uint8Array> {
+//   if (!key) {
+//     // @ts-ignore
+//     return promise.resolve(data)
+//   }
+//   const dataDecoder = decoding.createDecoder(data)
+//   const algorithm = decoding.readVarString(dataDecoder)
+//   if (algorithm !== "AES-GCM") {
+//     promise.reject(error.create("Unknown encryption algorithm"))
+//   }
+//   const iv = decoding.readVarUint8Array(dataDecoder)
+//   const cipher = decoding.readVarUint8Array(dataDecoder)
+//   const data_1 = await crypto.subtle.decrypt(
+//     {
+//       name: "AES-GCM",
+//       iv,
+//     },
+//     key,
+//     cipher
+//   )
+//   return new Uint8Array(data_1)
+// }

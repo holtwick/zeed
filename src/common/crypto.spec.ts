@@ -51,4 +51,23 @@ CryptoKey {
 }
 `)
   })
+
+  // it("should encrypt and decrypt", async () => {
+  //   const key = await deriveKey("secret", "room")
+  //   const keyAlt = await deriveKey("secretAlt", "room")
+  //   let cipher = await encryptJson({ msg: "Hello World" }, key)
+  //   let cipherAlt = await encryptJson({ msg: "Hello World" }, keyAlt)
+  //   expect(cipher.length).toEqual(57)
+  //   expect(cipher).not.toEqual(cipherAlt)
+  //   let res = await decryptJson(cipher, key)
+  //   expect(res).toEqual({ msg: "Hello World" })
+  //   try {
+  //     let resAlt = await decryptJson(cipher, keyAlt)
+  //     fail()
+  //   } catch (err) {}
+  //   try {
+  //     let resAlt = await decryptJson(cipherAlt, key)
+  //     fail()
+  //   } catch (err) {}
+  // })
 })

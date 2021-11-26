@@ -1,21 +1,25 @@
+import { webcrypto } from "crypto"
 import { deriveKeyPbkdf2, randomUint8Array } from "../crypto"
 import { fakeWorkerPair } from "./channel"
 import { CryptoEncoder } from "./encoder"
 import { useMessageHub } from "./messages"
-import { webcrypto } from "crypto"
-import { JsonEncoder } from "."
 
 // @ts-ignore
 globalThis.crypto = webcrypto
 
-interface TestMessages {
-  ping(value: number): number
+type TestMessages1 = {
+  ping(value: number): Promise<number>
+}
+
+type TestMessages2 = {
   aping(value: number | string): Promise<number | string>
 }
 
+type TestMessages = TestMessages1 & TestMessages2
+
 describe("messages", () => {
-  it("should show the magic of proxies ", () => {
-    let p = new Proxy<TestMessages>({} as any, {
+  it("should show the magic of proxies ", async () => {
+    let p = new Proxy<TestMessages1>({} as any, {
       get(target, name) {
         // console.log(target, name)
         return (...args: any) => {
@@ -24,7 +28,7 @@ describe("messages", () => {
         }
       },
     })
-    expect(p.ping(p.ping(2))).toBe(2)
+    expect(await p.ping(await p.ping(2))).toBe(2)
   })
 
   it("should do hub thing", async () => {
@@ -39,13 +43,13 @@ describe("messages", () => {
     const [clientChannel, serverChannel] = fakeWorkerPair()
 
     const serverHub = useMessageHub({ channel: serverChannel, encoder })
-    serverHub.listen<Partial<TestMessages>>({
-      ping(value) {
+    serverHub.listen<TestMessages1>({
+      async ping(value) {
         expect(value).toBe(2)
         return value
       },
     })
-    serverHub.listen<Partial<TestMessages>>({
+    serverHub.listen<TestMessages2>({
       async aping(value) {
         return new Promise((resolve) => setTimeout(() => resolve(value), 500))
       },
@@ -60,7 +64,7 @@ describe("messages", () => {
     expect(x).toBe(1)
     expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
 
-    // client.ping(2)
+    await client.ping(2)
   })
 
   // it("should do basic bridging", async () => {

@@ -56,7 +56,7 @@ export async function deriveKeyPbkdf2(
   return await crypto.subtle.deriveKey(
     {
       name: DEFAULT_DERIVE_ALG,
-      salt: toUint8Array(opt.salt ?? ""),
+      salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
       iterations: opt.iterations ?? 100000,
       hash: DEFAULT_HASH_ALG,
     },
@@ -76,7 +76,7 @@ export async function encrypt(
   data: Uint8Array,
   key: CryptoKey
 ): Promise<Uint8Array> {
-  const iv = crypto.getRandomValues(new Uint8Array(12))
+  const iv = randomUint8Array(12)
   const cipher = await crypto.subtle.encrypt(
     { name: DEFAULT_CRYPTO_ALG, iv },
     key,
@@ -104,10 +104,10 @@ export async function decrypt(
   }
   let iv = data.subarray(2, 2 + 12)
   let cipher = data.subarray(2 + 12, data.length)
-  const data_1 = await crypto.subtle.decrypt(
+  const plain = await crypto.subtle.decrypt(
     { name: DEFAULT_CRYPTO_ALG, iv },
     key,
     cipher
   )
-  return new Uint8Array(data_1)
+  return new Uint8Array(plain)
 }

@@ -1,5 +1,12 @@
+import { deriveKeyPbkdf2, randomUint8Array } from "../crypto"
 import { fakeWorkerPair } from "./channel"
+import { CryptoEncoder } from "./encoder"
 import { useMessageHub } from "./messages"
+import { webcrypto } from "crypto"
+import { JsonEncoder } from "."
+
+// @ts-ignore
+globalThis.crypto = webcrypto
 
 interface TestMessages {
   ping(value: number): number
@@ -91,9 +98,15 @@ describe("messages", () => {
   it("should do hub thing", async () => {
     // expect.assertions(1)
 
+    // Some secret encoder
+    const key = await deriveKeyPbkdf2(randomUint8Array(20))
+    const encoder = new CryptoEncoder(key)
+
+    // const encoder = new JsonEncoder()
+
     const [clientChannel, serverChannel] = fakeWorkerPair()
 
-    const serverHub = useMessageHub({ channel: serverChannel })
+    const serverHub = useMessageHub({ channel: serverChannel, encoder })
     serverHub.listen<Partial<TestMessages>>({
       ping(value) {
         expect(value).toBe(2)
@@ -106,7 +119,7 @@ describe("messages", () => {
       },
     })
 
-    const clientHub = useMessageHub({ channel: clientChannel })
+    const clientHub = useMessageHub({ channel: clientChannel, encoder })
     const client = clientHub.send<TestMessages>()
 
     let x = await client.aping(1)

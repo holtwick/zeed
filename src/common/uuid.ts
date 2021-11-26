@@ -16,12 +16,16 @@ const { encode: encode32 } = useBase(32)
 //   return ((Math.random() * base) | 0).toString(base)
 // }
 
+export function uuidBytes(): Uint8Array {
+  return randomUint8Array(16)
+}
+
 export function uuid(): string {
-  return encode62(randomUint8Array(16), 22)
+  return encode62(uuidBytes(), 22)
 }
 
 export function uuidB32(): string {
-  return encode32(randomUint8Array(16), 26)
+  return encode32(uuidBytes(), 26)
 }
 
 let _unameCounters: Record<string, number> = {}

@@ -7,7 +7,7 @@ export function stringToUInt8Array(text: string): Uint8Array {
 }
 
 let _textDecoder = new TextDecoder()
-export function UInt8ArrayToString(bin: Uint8Array): string {
+export function Uint8ArrayToString(bin: Uint8Array): string {
   const textDecoder =
     _textDecoder ??
     (_textDecoder = new TextDecoder("utf-8", { ignoreBOM: true }))
@@ -72,4 +72,12 @@ export function equalBinary(
     }
   }
   return true
+}
+
+export function jsonToUint8Array(json: any): Uint8Array {
+  return stringToUInt8Array(JSON.stringify(json))
+}
+
+export function Uint8ArrayToJson<T = any>(data: Uint8Array): T {
+  return JSON.parse(Uint8ArrayToString(data))
 }

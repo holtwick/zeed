@@ -1,9 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { jsonToUint8Array, Uint8ArrayToJson } from "."
 import {
   equalBinary,
   stringToUInt8Array,
-  UInt8ArrayToString,
+  Uint8ArrayToString,
   toHex,
   toBase64,
 } from "./bin"
@@ -28,7 +29,107 @@ describe("bin", () => {
       "SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm"
     )
 
-    expect(UInt8ArrayToString(encoded)).toEqual(sample)
-    expect(UInt8ArrayToString(encoded)).not.toEqual(sample + "a")
+    expect(Uint8ArrayToString(encoded)).toEqual(sample)
+    expect(Uint8ArrayToString(encoded)).not.toEqual(sample + "a")
+  })
+
+  it("should encode JSON", () => {
+    const sample = {
+      name: "Hello → wörld 👨‍👩‍👧‍👦",
+      list: [1, false, "test"],
+      num: 1,
+    }
+    const bin = jsonToUint8Array(sample)
+    expect(bin).toMatchInlineSnapshot(`
+Uint8Array [
+  123,
+  34,
+  110,
+  97,
+  109,
+  101,
+  34,
+  58,
+  34,
+  72,
+  101,
+  108,
+  108,
+  111,
+  32,
+  226,
+  134,
+  146,
+  32,
+  119,
+  195,
+  182,
+  114,
+  108,
+  100,
+  32,
+  240,
+  159,
+  145,
+  168,
+  226,
+  128,
+  141,
+  240,
+  159,
+  145,
+  169,
+  226,
+  128,
+  141,
+  240,
+  159,
+  145,
+  167,
+  226,
+  128,
+  141,
+  240,
+  159,
+  145,
+  166,
+  34,
+  44,
+  34,
+  108,
+  105,
+  115,
+  116,
+  34,
+  58,
+  91,
+  49,
+  44,
+  102,
+  97,
+  108,
+  115,
+  101,
+  44,
+  34,
+  116,
+  101,
+  115,
+  116,
+  34,
+  93,
+  44,
+  34,
+  110,
+  117,
+  109,
+  34,
+  58,
+  49,
+  125,
+]
+`)
+    const back = Uint8ArrayToJson(bin)
+    expect(back).toEqual(sample)
   })
 })

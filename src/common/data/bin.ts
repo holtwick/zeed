@@ -1,3 +1,7 @@
+import { Logger } from "../log"
+
+const log = Logger("bin")
+
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 
 let _textEncoder = new TextEncoder()
@@ -75,9 +79,19 @@ export function equalBinary(
 }
 
 export function jsonToUint8Array(json: any): Uint8Array {
-  return stringToUInt8Array(JSON.stringify(json))
+  try {
+    return stringToUInt8Array(JSON.stringify(json))
+  } catch (err) {
+    log.warn("jsonToUint8Array", json)
+    throw err
+  }
 }
 
 export function Uint8ArrayToJson<T = any>(data: Uint8Array): T {
-  return JSON.parse(Uint8ArrayToString(data))
+  try {
+    return JSON.parse(Uint8ArrayToString(data))
+  } catch (err) {
+    log.warn("Uint8ArrayToJson", data)
+    throw err
+  }
 }

@@ -102,10 +102,10 @@ export function useMessageHub(
     }
   }
 
-  const postMessage = (message: Message) => {
+  const postMessage = async (message: Message) => {
     log("enqueue postMessage", message)
     queue.push(message)
-    postNext()
+    await postNext()
   }
 
   const connect = async (newChannel: Channel) => {

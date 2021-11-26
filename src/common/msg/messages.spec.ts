@@ -27,6 +27,42 @@ describe("messages", () => {
     expect(p.ping(p.ping(2))).toBe(2)
   })
 
+  it("should do hub thing", async () => {
+    // expect.assertions(1)
+
+    // Some secret encoder
+    const key = await deriveKeyPbkdf2(randomUint8Array(20))
+    const encoder = new CryptoEncoder(key)
+
+    // const encoder = new JsonEncoder()
+
+    const [clientChannel, serverChannel] = fakeWorkerPair()
+
+    const serverHub = useMessageHub({ channel: serverChannel, encoder })
+    serverHub.listen<Partial<TestMessages>>({
+      ping(value) {
+        expect(value).toBe(2)
+        return value
+      },
+    })
+    serverHub.listen<Partial<TestMessages>>({
+      async aping(value) {
+        return new Promise((resolve) => setTimeout(() => resolve(value), 500))
+      },
+    })
+
+    const clientHub = useMessageHub({ channel: clientChannel, encoder })
+    const client = clientHub.send<TestMessages>()
+
+    let x = await client.aping(1)
+    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
+
+    expect(x).toBe(1)
+    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
+
+    // client.ping(2)
+  })
+
   // it("should do basic bridging", async () => {
   //   // expect.assertions(1)
 
@@ -94,40 +130,4 @@ describe("messages", () => {
 
   //   client.ping(2)
   // })
-
-  it("should do hub thing", async () => {
-    // expect.assertions(1)
-
-    // Some secret encoder
-    const key = await deriveKeyPbkdf2(randomUint8Array(20))
-    const encoder = new CryptoEncoder(key)
-
-    // const encoder = new JsonEncoder()
-
-    const [clientChannel, serverChannel] = fakeWorkerPair()
-
-    const serverHub = useMessageHub({ channel: serverChannel, encoder })
-    serverHub.listen<Partial<TestMessages>>({
-      ping(value) {
-        expect(value).toBe(2)
-        return value
-      },
-    })
-    serverHub.listen<Partial<TestMessages>>({
-      async aping(value) {
-        return new Promise((resolve) => setTimeout(() => resolve(value), 500))
-      },
-    })
-
-    const clientHub = useMessageHub({ channel: clientChannel, encoder })
-    const client = clientHub.send<TestMessages>()
-
-    let x = await client.aping(1)
-    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
-
-    expect(x).toBe(1)
-    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
-
-    client.ping(2)
-  })
 })

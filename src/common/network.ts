@@ -9,6 +9,18 @@ const defaultOptions = {
   redirect: "follow",
 }
 
+// Source https://developer.mozilla.org/de/docs/Web/HTTP/Methods
+export type httpMethod =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "DELETE"
+  | "HEAD"
+  | "CONNECT"
+  | "OPTIONS"
+  | "TRACE"
+  | "PATCH"
+
 export async function fetchBasic(
   url: string,
   fetchOptions: any = {},
@@ -64,7 +76,7 @@ export async function fetchJson(
 
 export function fetchOptionsFormURLEncoded(
   data: Object,
-  method: "GET" | "POST" = "POST"
+  method: httpMethod = "POST"
 ) {
   return {
     method,
@@ -76,10 +88,7 @@ export function fetchOptionsFormURLEncoded(
   }
 }
 
-export function fetchOptionsJson(
-  data: Object,
-  method: "GET" | "POST" = "POST"
-) {
+export function fetchOptionsJson(data: Object, method: httpMethod = "POST") {
   return {
     method,
     ...defaultOptions,

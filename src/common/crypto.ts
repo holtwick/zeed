@@ -1,4 +1,4 @@
-import { BinInput, toUint8Array } from "./data/bin"
+import { BinInput, equalBinary, toUint8Array } from "./data/bin"
 
 /* 
 
@@ -27,9 +27,13 @@ export function randomUint8Array(length: number = 16): Uint8Array {
   return randomBytes
 }
 
+const DEFAULT_HASH_ALG = "SHA-256"
+const DEFAULT_CRYPTO_ALG = "AES-GCM"
+const DEFAULT_DERIVE_ALG = "PBKDF2"
+
 export async function digest(
   message: BinInput,
-  algorithm: AlgorithmIdentifier = "SHA-256"
+  algorithm: AlgorithmIdentifier = DEFAULT_HASH_ALG
 ): Promise<ArrayBuffer> {
   return await crypto.subtle.digest(algorithm, toUint8Array(message))
 }
@@ -45,23 +49,65 @@ export async function deriveKeyPbkdf2(
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
     secretBuffer,
-    "PBKDF2",
+    DEFAULT_DERIVE_ALG,
     false,
     ["deriveKey"]
   )
   return await crypto.subtle.deriveKey(
     {
-      name: "PBKDF2",
+      name: DEFAULT_DERIVE_ALG,
       salt: toUint8Array(opt.salt ?? ""),
       iterations: opt.iterations ?? 100000,
-      hash: "SHA-256",
+      hash: DEFAULT_HASH_ALG,
     },
     keyMaterial,
     {
-      name: "AES-GCM",
+      name: DEFAULT_CRYPTO_ALG,
       length: 256,
     },
     true,
     ["encrypt", "decrypt"]
   )
+}
+
+const MAGIC_ID = new Uint8Array([1, 1])
+
+export async function encrypt(
+  data: Uint8Array,
+  key: CryptoKey
+): Promise<Uint8Array> {
+  const iv = crypto.getRandomValues(new Uint8Array(12))
+  const cipher = await crypto.subtle.encrypt(
+    { name: DEFAULT_CRYPTO_ALG, iv },
+    key,
+    data
+  )
+  const binCypher = new Uint8Array(cipher)
+  const bufferLength = MAGIC_ID.length + iv.length + binCypher.length
+  const buffer = new Uint8Array(bufferLength)
+  let pos = 0
+  buffer.set(MAGIC_ID, pos)
+  pos += MAGIC_ID.length
+  buffer.set(iv, pos)
+  pos += iv.length
+  buffer.set(binCypher, pos)
+  return buffer
+}
+
+export async function decrypt(
+  data: Uint8Array,
+  key: CryptoKey
+): Promise<Uint8Array> {
+  let magic = data.subarray(0, 2)
+  if (!equalBinary(magic, MAGIC_ID)) {
+    return Promise.reject(`Unknown magic ${magic}`)
+  }
+  let iv = data.subarray(2, 2 + 12)
+  let cipher = data.subarray(2 + 12, data.length)
+  const data_1 = await crypto.subtle.decrypt(
+    { name: DEFAULT_CRYPTO_ALG, iv },
+    key,
+    cipher
+  )
+  return new Uint8Array(data_1)
 }

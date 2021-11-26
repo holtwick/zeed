@@ -1,13 +1,22 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { webcrypto } from "crypto"
-import { deriveKeyPbkdf2, digest, randomUint8Array } from "./crypto"
+import { Logger } from "."
+import {
+  decrypt,
+  deriveKeyPbkdf2,
+  digest,
+  encrypt,
+  randomUint8Array,
+} from "./crypto"
 import { equalBinary, toHex } from "./data/bin"
 
 if (globalThis.crypto == null) {
   // @ts-ignore
   globalThis.crypto = webcrypto
 }
+
+const log = Logger("crypto.spec")
 
 describe("crypto", () => {
   it("should not have collisions", () => {
@@ -51,4 +60,45 @@ CryptoKey {
 }
 `)
   })
+
+  it("should raw crypt", async () => {
+    const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]), {
+      salt: new Uint8Array([1, 2, 3]),
+    })
+    const sample = new Uint8Array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
+    const cipher = await encrypt(sample, key)
+    // log("cipher", cipher)
+
+    const bin = await decrypt(cipher, key)
+    expect(equalBinary(sample, bin)).toBe(true)
+
+    const binFix = await decrypt(
+      new Uint8Array([
+        1, 1, 27, 108, 252, 31, 238, 192, 61, 168, 45, 29, 128, 212, 215, 222,
+        205, 105, 178, 193, 150, 36, 24, 216, 180, 75, 168, 133, 37, 25, 124,
+        137, 221, 103, 214, 97, 218, 232, 248, 93,
+      ]),
+      key
+    )
+    expect(binFix).toEqual(sample)
+  })
+
+  // it("should encrypt and decrypt", async () => {
+  //   const key = await deriveKey("secret", "room")
+  //   const keyAlt = await deriveKey("secretAlt", "room")
+  //   let cipher = await encryptJson({ msg: "Hello World" }, key)
+  //   let cipherAlt = await encryptJson({ msg: "Hello World" }, keyAlt)
+  //   expect(cipher.length).toEqual(57)
+  //   expect(cipher).not.toEqual(cipherAlt)
+  //   let res = await decryptJson(cipher, key)
+  //   expect(res).toEqual({ msg: "Hello World" })
+  //   try {
+  //     let resAlt = await decryptJson(cipher, keyAlt)
+  //     fail()
+  //   } catch (err) {}
+  //   try {
+  //     let resAlt = await decryptJson(cipherAlt, key)
+  //     fail()
+  //   } catch (err) {}
+  // })
 })

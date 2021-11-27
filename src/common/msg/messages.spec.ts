@@ -15,6 +15,10 @@ type TestMessages2 = {
   aping(value: number | string): Promise<number | string>
 }
 
+// interface TestMessages2 {
+//   aping(value: number | string): Promise<number | string>
+// }
+
 type TestMessages = TestMessages1 & TestMessages2
 
 describe("messages", () => {

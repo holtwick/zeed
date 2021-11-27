@@ -32,9 +32,11 @@ export type MessagesDefaultMethods<L> = {
 
 export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 
-export type MessageDefinitions = {
-  [key: string]: (...args: any) => Promise<any>
-}
+// export type MessageDefinitions = {
+//   [key: string]: (...args: any) => Promise<any>
+// }
+
+export type MessageDefinitions = Record<any, (...args: any) => Promise<any>>
 
 export type MessageHub = {
   dispose(): void

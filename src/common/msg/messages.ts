@@ -32,11 +32,17 @@ export type MessagesDefaultMethods<L> = {
 
 export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 
+// export type MessageDefinitions = {
+//   [key: string]: (...args: any) => Promise<any>
+// }
+
+export type MessageDefinitions = Record<any, (...args: any) => Promise<any>>
+
 export type MessageHub = {
   dispose(): void
   connect: (newChannel: Channel) => void
-  listen<L extends object>(newHandlers: L): void
-  send<L extends object>(): MessagesMethods<L>
+  listen<L extends MessageDefinitions>(newHandlers: L): void
+  send<L extends MessageDefinitions>(): MessagesMethods<L>
 }
 
 // The async proxy, waiting for a response

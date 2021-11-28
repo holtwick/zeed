@@ -147,3 +147,7 @@ export async function forEachDay(
 export function today(): Day {
   return new Day()
 }
+
+export function day(days?: DayInput): Day {
+  return new Day(days)
+}

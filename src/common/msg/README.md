@@ -89,7 +89,7 @@ useMessages<MyMessages>({
 
 ## Various transports and their properties
 
-<http://developer.mozilla.org/en-US/docs/Web/API/Transferable>
+<https://developer.mozilla.org/en-US/docs/Glossary/Transferable_objects>
 
 - WebSocket: Supports binary channel, see [zerva-websocket](https://github.com/holtwick/zerva-websocket)
 - WebRTC: Supports binary channel

@@ -234,6 +234,8 @@ function format(currency: Currency, settings: CurrencyOptions): string {
     )
 }
 
+// todo: percent calculations
+
 // From https://v2.dinerojs.com/docs/api/formatting/to-unit MIT
 
 export type RoundingMode = (value: number) => number

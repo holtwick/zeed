@@ -135,3 +135,15 @@ export function arrayMin<T>(...array: NestedArray<T>[]): T {
     undefined
   )
 }
+
+export function createArray<T>(
+  size: number = 0,
+  item?: T | ((index: number) => T)
+): T[] {
+  if (size <= 0) return []
+  let arr = new Array(size)
+  for (let i = 0; i < size; i++) {
+    arr[i] = item instanceof Function ? item(i) : item
+  }
+  return arr
+}

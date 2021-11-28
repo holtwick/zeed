@@ -15,6 +15,7 @@ import {
   arraySymmetricDifference,
   arrayToggleInPlace,
   arrayUnion,
+  createArray,
 } from "./array"
 
 describe("Array", () => {
@@ -74,5 +75,14 @@ describe("Array", () => {
 
   it("should flatten", () => {
     expect(arrayFlatten(1, 2, [3, [4, 5]], 6)).toEqual([1, 2, 3, 4, 5, 6])
+  })
+
+  it("should create array", () => {
+    expect(createArray(10, (i) => i + 2)).toEqual([
+      2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+    ])
+    expect(createArray(3)).toEqual([undefined, undefined, undefined])
+    expect(createArray(3, "hello")).toEqual(["hello", "hello", "hello"])
+    expect(createArray()).toEqual([])
   })
 })

@@ -50,11 +50,11 @@ export async function fetchBasic(
   }
 }
 
-export async function fetchJson(
+export async function fetchJson<T = Json>(
   url: string,
   opts: any = {},
   fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
-): Promise<Json | undefined> {
+): Promise<T | undefined> {
   try {
     let res = await fetchBasic(
       url,

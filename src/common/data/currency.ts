@@ -100,7 +100,7 @@ export class Currency {
     )
   }
 
-  multiply(number: number): Currency {
+  multiply(number: CurrencyInput): Currency {
     // todo
     let { intValue, _settings, _precision } = this
     return currency(

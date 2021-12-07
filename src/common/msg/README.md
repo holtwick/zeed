@@ -1,3 +1,7 @@
+---
+lastmod: "2021-12-03T17:39:51.376Z"
+---
+
 # Messaging
 
 Different **parts of an application** or various locations of **services and clients** need to communicate with each other. Event emitter are a proven concept for in-app communication. But pretty soon tasks become more complex or transport for communication is limited or insecure. These tools try to simplify this task.
@@ -5,9 +9,10 @@ Different **parts of an application** or various locations of **services and cli
 We differentiate between the following parts:
 
 - `Emitter`: Classic local event handling
-- `Channel`: Simple `postMessage` interface for basic data transport
-- `Messages`: Layer on to of `Channel`, same interface as `Emitter`
-- `Encoder`: Transform data into a special format for transport like e.g. JSON
+- `Channel`: Simple `postMessage` interface for basic data transport without a protocol
+- `PubSub`: Simple one way messages, similar to `Emitter` but using `Channel` as transport
+- `Messages`: RPC like interface for communication via `Channel`, awaits response from other side
+- `Encoder`: Transform data into a special format for transport like e.g. JSON, encrypted data, etc.
 
 ## Channel
 
@@ -62,27 +67,24 @@ Messages are defined via `interface`. Typescript checks for valid calls:
 
 ```ts
 interface MyMessages {
-  echo(data: any): void
-  pong(data: any): void
+  echo(data: any): Promise<any>
+  pong(data: any): Promise<void>
 }
 ```
 
 Using the messages is easy:
 
 ```ts
-let m = useMessages<MyMessages>({ channel })
-m.echo({ hello: "world" })
+let hub = useMessageHub({ channel }).send<MyMessages>()
+let echoResponse = await hub.echo({ hello: "world" })
 ```
 
 On the receiver part implementation is also straight forward:
 
 ```ts
-useMessages<MyMessages>({
-  channel,
-  handlers: {
-    echo(data) {
-      return data
-    },
+useMessageHub({channel}).listen<MyMessages>({
+  async echo(data) {
+    return data
   }
 )
 ```

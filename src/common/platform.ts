@@ -61,7 +61,7 @@ export function detect(
   info.pwaInstalled =
     // @ts-ignore
     _navigator?.standalone ||
-    _window?.matchMedia("(display-mode: standalone)")?.matches
+    _window?.matchMedia?.("(display-mode: standalone)")?.matches
 
   info.node =
     typeof process !== "undefined" && process?.release?.name === "node"

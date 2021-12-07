@@ -10,3 +10,7 @@ export function randomInt(max = 100, min = 0) {
 export function randomFloat(max = 100, min = 0) {
   return min + Math.random() * (max - min)
 }
+
+export function between(min: number, value: number, max: number): number {
+  return Math.max(min, Math.min(max, value))
+}

@@ -4,14 +4,18 @@ const log = Logger("bin")
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 
-let _textEncoder = new TextEncoder()
+// if (typeof TextEncoder !== "undefined") {
+
+let _textEncoder: TextEncoder | undefined
 export function stringToUInt8Array(text: string): Uint8Array {
+  if (typeof TextEncoder === "undefined") return new Uint8Array()
   const textEncoder = _textEncoder ?? (_textEncoder = new TextEncoder())
   return textEncoder.encode(text.normalize("NFC"))
 }
 
-let _textDecoder = new TextDecoder()
+let _textDecoder: TextDecoder | undefined
 export function Uint8ArrayToString(bin: Uint8Array): string {
+  if (typeof TextDecoder === "undefined") return ""
   const textDecoder =
     _textDecoder ??
     (_textDecoder = new TextDecoder("utf-8", { ignoreBOM: true }))

@@ -9,7 +9,7 @@ import { uname } from "./uuid"
 const log = Logger("zeed:queue")
 
 type QueueTaskResolver = any
-type QueueTask<T = any> = () => Promise<T>
+export type QueueTask<T = any> = () => Promise<T>
 
 interface QueueTaskInfo {
   name: string

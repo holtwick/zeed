@@ -1,4 +1,4 @@
-import { fakeWorkerPair, QueueTask, sortedOrderby } from "."
+import { QueueTask } from "."
 
 interface PoolConfig {
   maxParallel?: number
@@ -20,23 +20,27 @@ export function usePool<T = any>(config: PoolConfig = {}) {
 
   function performNext() {
     if (currentParallel >= maxParallel) return
-    let runningTasks = Object.values(tasks).filter((t) => !t.running)
-    if (runningTasks.length > 0) {
-      let taskInfo = runningTasks.reduce((prev, curr) =>
-        prev.priority > curr.priority ? curr : prev
-      )
+    let waitingTasks = Object.values(tasks).filter((t) => !t.running)
+    if (waitingTasks.length > 0) {
+      let taskInfo: PoolTask<T> | undefined
+      for (let t of waitingTasks) {
+        // fifo
+        if (taskInfo == null || t.priority < taskInfo.priority) {
+          taskInfo = t
+        }
+      }
       if (taskInfo) {
         taskInfo.running = true
         ++currentParallel
         taskInfo
           .task()
           .then((r) => {
-            delete tasks[taskInfo.id]
+            if (taskInfo?.id) delete tasks[taskInfo.id]
             --currentParallel
             performNext()
           })
           .catch((err) => {
-            delete tasks[taskInfo.id]
+            if (taskInfo?.id) delete tasks[taskInfo.id]
             --currentParallel
             performNext()
           })
@@ -46,7 +50,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
 
   function cancel(id: string) {
     let taskInfo = tasks[id]
-    if (!taskInfo.running) {
+    if (taskInfo && taskInfo.running !== true) {
       delete tasks[id]
     }
   }
@@ -67,3 +71,5 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     },
   }
 }
+
+export type Pool = ReturnType<typeof usePool>

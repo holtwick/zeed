@@ -18,6 +18,8 @@ describe("MemStorage", () => {
       expect(db.getItem("c")).toEqual("Again!")
       expect(db.getItem("d")).toBe(undefined)
       expect(db.getItem("d")).toBe(undefined)
+      db.removeItem("a")
+      expect(db.getItem("a")).toBe(undefined)
     }
     // {
     //   const db = new MemStorage()

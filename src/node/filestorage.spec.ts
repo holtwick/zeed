@@ -18,6 +18,9 @@ describe("FileStorage", () => {
       expect(db.getItem("c")).toEqual("Again!")
       expect(db.getItem("d")).toBe(undefined)
       expect(db.getItem("d")).toBe(undefined)
+      db.setItem("e", "xxx")
+      db.removeItem("e")
+      expect(db.getItem("e")).toBe(undefined)
     }
     {
       const db = new FileStorage()

@@ -1,7 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-export const isObject = (obj: any) => obj && typeof obj === "object"
-export const isPrimitive = (obj: any) => Object(obj) !== obj
+import { isObject, isPrimitive } from "./is"
 
 // export function deepClone(obj) {
 //   return cloneDeep(obj)

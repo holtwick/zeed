@@ -40,6 +40,12 @@ export function empty(value: any): boolean {
 export function cloneObject<T>(obj: T): T {
   // Primitives are immutable anyway
   if (Object(obj) !== obj) return obj
-  // Rude but very efficient way to clone
-  return JSON.parse(JSON.stringify(obj))
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/structuredClone
+  // @ts-ignore
+  return typeof structuredClone !== "undefined"
+    ? // @ts-ignore
+      structuredClone(obj)
+    : // Rude but very efficient way to clone
+      JSON.parse(JSON.stringify(obj))
 }

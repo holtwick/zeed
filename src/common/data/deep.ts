@@ -2,63 +2,6 @@
 
 import { isObject, isPrimitive } from "./is"
 
-// export function deepClone(obj) {
-//   return cloneDeep(obj)
-// }
-
-// // https://stackoverflow.com/a/40294058/140927
-// // Handles cyclic references
-// export function deepClone(obj, hash = new WeakMap()) {
-//   return cloneDeep(obj)
-//
-//   // primitives
-//   if (Object(obj) !== obj) {
-//     return obj
-//   }
-//
-//   // cyclic reference
-//   if (hash.has(obj)) {
-//     return hash.get(obj)
-//   }
-//
-//   let result
-//
-//   // primitives as objects like new String(), new Number()
-//   if (
-//     obj instanceof String ||
-//     obj instanceof Number ||
-//     obj instanceof BigInt ||
-//     obj instanceof Boolean ||
-//     obj instanceof Symbol
-//   ) {
-//     result = new obj.constructor(obj.valueOf())
-//     hash.set(obj, result)
-//     return result
-//   }
-//
-//   if (obj instanceof Set) {
-//     result = new Set(obj)
-//   } else if (obj instanceof Map) {
-//     result = new Map(Array.from(obj, ([key, val]) =>
-//       [key, deepClone(val, hash)]))
-//   } else if (obj instanceof Date) {
-//     result = new Date(obj)
-//   } else if (obj instanceof RegExp) {
-//     result = new RegExp(obj.source, obj.flags)
-//   } else if (obj.constructor) {
-//     result = new obj.constructor()
-//   } else {
-//     result = Object.create(null)
-//   }
-//
-//   hash.set(obj, result)
-//
-//   return Object.assign(result, ...Object.keys(obj).map(key => ({
-//       [key]: deepClone(obj[key], hash),
-//     })),
-//   )
-// }
-//
 // // https://stackoverflow.com/a/40294058/140927
 // // Handles cyclic references
 // export function deepClonePrimitives(obj, hash = new WeakMap()) {

@@ -1,5 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { Json } from "../types"
+
 export function size(obj: any) {
   if (obj != null) {
     if (obj.size != null) {
@@ -37,15 +39,33 @@ export function empty(value: any): boolean {
   return true
 }
 
+// Also see common/data/deep.ts
 export function cloneObject<T>(obj: T): T {
   // Primitives are immutable anyway
   if (Object(obj) !== obj) return obj
 
-  // https://developer.mozilla.org/en-US/docs/Web/API/structuredClone
-  // @ts-ignore
-  return typeof structuredClone !== "undefined"
-    ? // @ts-ignore
-      structuredClone(obj)
-    : // Rude but very efficient way to clone
-      JSON.parse(JSON.stringify(obj))
+  // Rude but very efficient way to clone
+  return JSON.parse(JSON.stringify(obj))
 }
+
+// Also see common/data/deep.ts
+export function cloneJsonObject<T = Json>(obj: T): T {
+  // Primitives are immutable anyway
+  if (Object(obj) !== obj) return obj
+
+  // Rude but very efficient way to clone
+  return JSON.parse(JSON.stringify(obj))
+}
+
+// export function cloneStructuredObject<T>(obj: T): T {
+//   // Primitives are immutable anyway
+//   if (Object(obj) !== obj) return obj
+
+//   // https://developer.mozilla.org/en-US/docs/Web/API/structuredClone
+//   // @ts-ignore
+//   return typeof structuredClone !== "undefined"
+//     ? // @ts-ignore
+//       structuredClone(obj)
+//     : // Rude but very efficient way to clone
+//       JSON.parse(JSON.stringify(obj))
+// }

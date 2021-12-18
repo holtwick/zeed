@@ -1,13 +1,13 @@
-export function randomBoolean(bias = 0.25) {
-  return Math.random() < bias ? 0 : 1
+export function randomBoolean(bias = 0.25): boolean {
+  return Math.random() < bias
 }
 
 /** max is not included, min is included */
-export function randomInt(max = 100, min = 0) {
+export function randomInt(max = 100, min = 0): number {
   return min + Math.floor(Math.random() * (max - min))
 }
 
-export function randomFloat(max = 100, min = 0) {
+export function randomFloat(max = 100, min = 0): number {
   return min + Math.random() * (max - min)
 }
 

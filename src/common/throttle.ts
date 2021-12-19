@@ -2,6 +2,11 @@
 // From https://github.com/cowboy/jquery-throttle-debounce
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
+import { Logger } from "./log"
+
+const DEBUG = false
+const log = DEBUG ? Logger("zeed:throttle") : () => {}
+
 interface DebounceOptions {
   delay?: number
   trailing?: boolean
@@ -21,9 +26,10 @@ export function throttle(
   const { delay = 100, trailing = true, leading = true } = opt
 
   let timeoutID: any = 0
-  let cancelled: boolean = false
   let checkpoint = 0
   let visited = 0
+
+  let debugCheckpoint = Date.now()
 
   function clearExistingTimeout() {
     if (timeoutID) {
@@ -37,7 +43,12 @@ export function throttle(
     let self = this
     let elapsed = now - checkpoint
 
-    if (cancelled) return
+    function debugElapsed() {
+      const dnow = Date.now()
+      return `total ${(dnow - debugCheckpoint).toFixed(1)}ms - elapsed ${(
+        dnow - checkpoint
+      ).toFixed(1)}ms - visited ${visited}x`
+    }
 
     function exec() {
       visited = 0
@@ -46,22 +57,40 @@ export function throttle(
     }
 
     // Make sure enough time has passed since last call
-    if (elapsed > delay) {
+    if (elapsed > delay || !timeoutID) {
+      DEBUG && log("elapsed", debugElapsed())
+
+      // Leading execute once immediately
+      if (leading) {
+        if (elapsed > delay) {
+          DEBUG && log("🚀 leading", debugElapsed())
+          exec()
+        } else {
+          ++visited // at least trigger trailing this way
+        }
+      }
+
+      const timeout = elapsed > delay ? delay : delay - elapsed
+      log(`⏱ start timeout with ${timeout.toFixed(1)}ms}`, debugElapsed())
+
       // Prepare for next round
       clearExistingTimeout()
       checkpoint = now
 
-      // Leading execute once immediately
-      if (leading) exec()
-
       // Delay. We should not get here if timeout has not been reached before
       timeoutID = setTimeout(() => {
+        DEBUG && log("⏱ reached timeout", debugElapsed())
+        timeoutID = 0
         // Only execute on trailing or when visited again, but do not twice if leading
-        if (trailing && (!leading || visited > 0)) exec()
-      }, delay)
+        if (trailing && (!leading || visited > 0)) {
+          DEBUG && log("🚀 trailing", debugElapsed())
+          exec()
+        }
+      }, timeout)
     } else {
       // Count visits
       ++visited
+      DEBUG && log("visited", debugElapsed())
     }
   }
 

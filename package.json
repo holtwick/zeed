@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.7.91",
+  "version": "0.7.92",
   "description": "🌱 Simple foundation library",
   "keywords": [
     "foundation",
@@ -39,7 +39,7 @@
     "start": "npm run watch",
     "clean": "rm -rf dist",
     "build": "npm run clean && npm run build:tsup",
-    "build:tsup": "tsup src/index.*.ts --dts --sourcemap --format esm,cjs --keep-names --minify-whitespace",
+    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names --minify",
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm test",
     "test": "jest src --coverage"

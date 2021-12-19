@@ -2,171 +2,203 @@
 // From https://github.com/cowboy/jquery-throttle-debounce
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
+import { Logger } from "./log"
+
+const DEBUG = false
+const log = DEBUG ? Logger("zeed:throttle") : () => {}
+
 interface DebounceOptions {
-  //  A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
   delay?: number
-
-  // Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
-  // throttled-function is being called. If noTrailing is false or unspecified, callback will be executed one final time
-  // after the last throttled-function call. (After the throttled-function has not been called for `delay` milliseconds,
-  // the internal counter is reset).
-  noTrailing?: boolean
-
-  // If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
-  // schedule `callback` to execute after `delay` ms.
-  debounceMode?: boolean
+  trailing?: boolean
+  leading?: boolean
 }
 
 type DebounceFunction = Function & { cancel: () => void; dispose: () => void }
 
-/*
- * Throttle execution of a function. Especially useful for rate limiting
- * execution of handlers on events like resize and scroll.
+/**
+ * A special throttle implementation that tries to distribute execution
+ * in an optimal way.
+ *
+ * For UI usage the function is executed on first occasion (`leading`).
+ * If more calls follow it will again be executed at end (`trailing`).
+ * If the next call is inside the timeframe, it is delayed until `trailing`.
+ * This avoids timewise too close calls.
+ * It is possible to `cancel` the timeout and to `flush` a call, e.g. if
+ * leaving UI situation where a final call is required to write data or similar.
  */
 export function throttle(
   callback: Function,
   opt: DebounceOptions = {}
 ): DebounceFunction {
-  /*
-   * After wrapper has stopped being called, this timeout ensures that
-   * `callback` is executed at the proper times in `throttle` and `end`
-   * debounce modes.
-   */
-  const { delay = 100, noTrailing = false, debounceMode = false } = opt
-  let timeoutID: any
-  let cancelled: boolean = false
+  const { delay = 100, trailing = true, leading = true } = opt
 
-  // Keep track of the last time `callback` was executed.
-  let lastExec = 0
+  let timeoutID: any = 0
+  let checkpoint = 0
+  let visited = 0
 
-  // Function to clear existing timeout
+  let debugCheckpoint = Date.now()
+
   function clearExistingTimeout() {
     if (timeoutID) {
       clearTimeout(timeoutID)
+      timeoutID = undefined
     }
   }
 
-  // Function to cancel next exec
-  function cancel() {
-    clearExistingTimeout()
-    cancelled = true
-  }
-
-  /*
-   * The `wrapper` function encapsulates all of the throttling / debouncing
-   * functionality and when executed will limit the rate at which `callback`
-   * is executed.
-   */
   function wrapper(this: any, ...arguments_: any[]) {
+    const now = Date.now()
     let self = this
-    let elapsed = Date.now() - lastExec
+    let elapsed = now - checkpoint
 
-    if (cancelled) {
-      return
+    function debugElapsed() {
+      const dnow = Date.now()
+      return `total ${(dnow - debugCheckpoint).toFixed(1)}ms - elapsed ${(
+        dnow - checkpoint
+      ).toFixed(1)}ms - visited ${visited}x`
     }
 
-    // Execute `callback` and update the `lastExec` timestamp.
     function exec() {
-      lastExec = Date.now()
+      visited = 0
+      checkpoint = Date.now()
       callback.apply(self, arguments_)
     }
 
-    /*
-     * If `debounceMode` is true (at begin) this is used to clear the flag
-     * to allow future `callback` executions.
-     */
-    function clear() {
-      timeoutID = undefined
-    }
+    // Make sure enough time has passed since last call
+    if (elapsed > delay || !timeoutID) {
+      DEBUG && log("elapsed", debugElapsed())
 
-    if (debounceMode && !timeoutID) {
-      /*
-       * Since `wrapper` is being called for the first time and
-       * `debounceMode` is true (at begin), execute `callback`.
-       */
-      exec()
-    }
+      // Leading execute once immediately
+      if (leading) {
+        if (elapsed > delay) {
+          DEBUG && log("🚀 leading", debugElapsed())
+          exec()
+        } else {
+          ++visited // at least trigger trailing this way
+        }
+      }
 
-    clearExistingTimeout()
+      const timeout = elapsed > delay ? delay : delay - elapsed
+      log(`⏱ start timeout with ${timeout.toFixed(1)}ms}`, debugElapsed())
 
-    if (debounceMode === undefined && elapsed > delay) {
-      /*
-       * In throttle mode, if `delay` time has been exceeded, execute
-       * `callback`.
-       */
-      exec()
-    } else if (noTrailing !== true) {
-      /*
-       * In trailing throttle mode, since `delay` time has not been
-       * exceeded, schedule `callback` to execute `delay` ms after most
-       * recent execution.
-       *
-       * If `debounceMode` is true (at begin), schedule `clear` to execute
-       * after `delay` ms.
-       *
-       * If `debounceMode` is false (at end), schedule `callback` to
-       * execute after `delay` ms.
-       */
-      timeoutID = setTimeout(
-        debounceMode ? clear : exec,
-        debounceMode === undefined ? delay - elapsed : delay
-      )
+      // Prepare for next round
+      clearExistingTimeout()
+      checkpoint = now
+
+      // Delay. We should not get here if timeout has not been reached before
+      timeoutID = setTimeout(() => {
+        DEBUG && log("⏱ reached timeout", debugElapsed())
+        timeoutID = 0
+        // Only execute on trailing or when visited again, but do not twice if leading
+        if (trailing && (!leading || visited > 0)) {
+          DEBUG && log("🚀 trailing", debugElapsed())
+          exec()
+        }
+      }, timeout)
+    } else {
+      // Count visits
+      ++visited
+      DEBUG && log("visited", debugElapsed())
     }
   }
 
-  wrapper.cancel = cancel
-  wrapper.dispose = cancel
+  wrapper.cancel = clearExistingTimeout
+  wrapper.dispose = clearExistingTimeout
 
-  // Return the wrapper function.
+  // wrapper.flush = () => throw 'todo'
+
   return wrapper
 }
 
-/*
- * Debounce execution of a function. Debouncing, unlike throttling,
- * guarantees that a function is only executed a single time, either at the
- * very beginning of a series of calls, or at the very end.
- *
- * @param  {number}   delay -         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
- * @param  {boolean}  [atBegin] -     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
- *                                  after the last debounced-function call. If atBegin is true, callback will be executed only at the first debounced-function call.
- *                                  (After the throttled-function has not been called for `delay` milliseconds, the internal counter is reset).
- * @param  {Function} callback -      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
- *                                  to `callback` when the debounced-function is executed.
- *
- * @returns {Function} A new, debounced function.
- */
+// /**
+//  * Debounce execution of a function. Debouncing, unlike throttling,
+//  * guarantees that a function is only executed a single time, either at the
+//  * very beginning of a series of calls, or at the very end.
+//  */
+// export function debounce(
+//   callback: Function,
+//   opt: DebounceOptions = {}
+// ): DebounceFunction {
+//   opt.debounceMode = true
+//   return throttle(callback, opt)
+// }
 
-export function debounce(
-  callback: Function,
-  opt: DebounceOptions = {}
-): DebounceFunction {
-  opt.debounceMode = true
-  return throttle(callback, opt)
-  // return callback === undefined
-  //   ? throttle(delay, atBegin, false)
-  //   : throttle(delay, callback, atBegin !== false)
-}
+// export function throttleAnimationFrame(callback: Function): DebounceFunction {
+//   let requestId: any
+//   let lastArgs: any
 
-export function throttleAnimationFrame(callback: Function): DebounceFunction {
-  let requestId: any
-  let lastArgs: any
+//   const later = (context: any) => () => {
+//     requestId = undefined
+//     callback.apply(context, lastArgs)
+//   }
 
-  const later = (context: any) => () => {
-    requestId = undefined
-    callback.apply(context, lastArgs)
-  }
+//   const throttled = function (this: any, ...args: any) {
+//     lastArgs = args
+//     if (requestId == null) {
+//       requestId = requestAnimationFrame(later(this))
+//     }
+//   }
 
-  const throttled = function (this: any, ...args: any) {
-    lastArgs = args
-    if (requestId == null) {
-      requestId = requestAnimationFrame(later(this))
-    }
-  }
+//   throttled.cancel = throttled.dispose = () => {
+//     cancelAnimationFrame(requestId)
+//     requestId = undefined
+//   }
 
-  throttled.cancel = throttled.dispose = () => {
-    cancelAnimationFrame(requestId)
-    requestId = undefined
-  }
+//   return throttled
+// }
 
-  return throttled
-}
+// // https://github.com/vueuse/vueuse/blob/main/packages/shared/utils/filters.ts#L103
+
+// /**
+//  * Create an EventFilter that throttle the events
+//  *
+//  * @param delay
+//  * @param [trailing=true]
+//  * @param [leading=true]
+//  */
+// export function throttleFilter(delay: number, trailing = true, leading = true) {
+//   let lastExec = 0
+//   let timer: ReturnType<typeof setTimeout> | undefined
+//   let preventLeading = !leading
+
+//   const clear = () => {
+//     if (timer) {
+//       clearTimeout(timer)
+//       timer = undefined
+//     }
+//   }
+
+//   const filter = (invoke: Function) => {
+//     const now = Date.now()
+//     const elapsed = now - lastExec
+
+//     clear()
+
+//     // delay should be > 0
+//     if (delay <= 0) {
+//       lastExec = now
+//       return invoke()
+//     }
+
+//     // delay reached
+//     if (elapsed > delay) {
+//       lastExec = now
+//       if (preventLeading) preventLeading = false
+//       else invoke()
+//     }
+
+//     if (trailing) {
+//       timer = setTimeout(() => {
+//         lastExec = Date.now()
+//         if (!leading) preventLeading = true
+//         clear()
+//         invoke()
+//       }, delay)
+//     }
+
+//     if (!leading && !timer) {
+//       timer = setTimeout(() => (preventLeading = true), delay)
+//     }
+//   }
+
+//   return filter
+// }

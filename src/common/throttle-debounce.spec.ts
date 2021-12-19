@@ -1,11 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { sleep } from "../common/promise"
-import { throttle } from "./throttle"
+import { sleep } from "./promise"
+import { debounce, throttle } from "./throttle-debounce"
 
 describe("throttle", () => {
   it("should throttle correctly", async () => {
-    // expect.assertions(1)
     let ctr = 0
     expect(ctr).toBe(0)
     const fn = throttle(() => ctr++, { delay: 100 })
@@ -37,5 +36,31 @@ describe("throttle", () => {
     fn.cancel()
     await sleep(100)
     expect(ctr).toBe(3)
+  })
+
+  it("should debounce correctly", async () => {
+    let ctr = 0
+    expect(ctr).toBe(0)
+    const fn = debounce(() => ctr++, { delay: 100 })
+    expect(ctr).toBe(0)
+
+    fn()
+    fn()
+    expect(ctr).toBe(0)
+    await sleep(50)
+    fn()
+    expect(ctr).toBe(0)
+    await sleep(50)
+    fn()
+    expect(ctr).toBe(0)
+    await sleep(50)
+    fn()
+    expect(ctr).toBe(0)
+    await sleep(110)
+    expect(ctr).toBe(1)
+
+    fn()
+    await sleep(110)
+    expect(ctr).toBe(2)
   })
 })

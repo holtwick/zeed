@@ -7,13 +7,19 @@ import { Logger } from "./log"
 const DEBUG = false
 const log = DEBUG ? Logger("zeed:throttle") : () => {}
 
-interface DebounceOptions {
+interface ThrottleOptions {
   delay?: number
   trailing?: boolean
   leading?: boolean
 }
 
-type DebounceFunction = Function & { cancel: () => void; dispose: () => void }
+type ThrottleFunction = Function & { cancel: () => void; dispose: () => void }
+
+interface DebounceOptions {
+  delay?: number
+}
+
+type DebounceFunction = ThrottleFunction
 
 /**
  * A special throttle implementation that tries to distribute execution
@@ -28,8 +34,8 @@ type DebounceFunction = Function & { cancel: () => void; dispose: () => void }
  */
 export function throttle(
   callback: Function,
-  opt: DebounceOptions = {}
-): DebounceFunction {
+  opt: ThrottleOptions = {}
+): ThrottleFunction {
   const { delay = 100, trailing = true, leading = true } = opt
 
   let timeoutID: any = 0
@@ -109,96 +115,34 @@ export function throttle(
   return wrapper
 }
 
-// /**
-//  * Debounce execution of a function. Debouncing, unlike throttling,
-//  * guarantees that a function is only executed a single time, either at the
-//  * very beginning of a series of calls, or at the very end.
-//  */
-// export function debounce(
-//   callback: Function,
-//   opt: DebounceOptions = {}
-// ): DebounceFunction {
-//   opt.debounceMode = true
-//   return throttle(callback, opt)
-// }
+/**
+ * Debounce fits best for filtering a large peak of events.
+ * For UI event filtering throttle is probably a better choice.
+ */
+export function debounce(
+  callback: Function,
+  opt: DebounceOptions = {}
+): DebounceFunction {
+  const { delay = 100 } = opt
+  let timeoutID: any = 0
 
-// export function throttleAnimationFrame(callback: Function): DebounceFunction {
-//   let requestId: any
-//   let lastArgs: any
+  function clearExistingTimeout() {
+    if (timeoutID) {
+      clearTimeout(timeoutID)
+      timeoutID = 0
+    }
+  }
 
-//   const later = (context: any) => () => {
-//     requestId = undefined
-//     callback.apply(context, lastArgs)
-//   }
+  function wrapper(this: any, ...arguments_: any[]) {
+    let self = this
+    clearExistingTimeout()
+    timeoutID = setTimeout(() => {
+      timeoutID = 0
+      callback.apply(self, arguments_)
+    }, delay)
+  }
 
-//   const throttled = function (this: any, ...args: any) {
-//     lastArgs = args
-//     if (requestId == null) {
-//       requestId = requestAnimationFrame(later(this))
-//     }
-//   }
-
-//   throttled.cancel = throttled.dispose = () => {
-//     cancelAnimationFrame(requestId)
-//     requestId = undefined
-//   }
-
-//   return throttled
-// }
-
-// // https://github.com/vueuse/vueuse/blob/main/packages/shared/utils/filters.ts#L103
-
-// /**
-//  * Create an EventFilter that throttle the events
-//  *
-//  * @param delay
-//  * @param [trailing=true]
-//  * @param [leading=true]
-//  */
-// export function throttleFilter(delay: number, trailing = true, leading = true) {
-//   let lastExec = 0
-//   let timer: ReturnType<typeof setTimeout> | undefined
-//   let preventLeading = !leading
-
-//   const clear = () => {
-//     if (timer) {
-//       clearTimeout(timer)
-//       timer = undefined
-//     }
-//   }
-
-//   const filter = (invoke: Function) => {
-//     const now = Date.now()
-//     const elapsed = now - lastExec
-
-//     clear()
-
-//     // delay should be > 0
-//     if (delay <= 0) {
-//       lastExec = now
-//       return invoke()
-//     }
-
-//     // delay reached
-//     if (elapsed > delay) {
-//       lastExec = now
-//       if (preventLeading) preventLeading = false
-//       else invoke()
-//     }
-
-//     if (trailing) {
-//       timer = setTimeout(() => {
-//         lastExec = Date.now()
-//         if (!leading) preventLeading = true
-//         clear()
-//         invoke()
-//       }, delay)
-//     }
-
-//     if (!leading && !timer) {
-//       timer = setTimeout(() => (preventLeading = true), delay)
-//     }
-//   }
-
-//   return filter
-// }
+  wrapper.cancel = clearExistingTimeout
+  wrapper.dispose = clearExistingTimeout
+  return wrapper
+}

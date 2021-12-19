@@ -32,6 +32,10 @@ describe("throttle", () => {
     await sleep(100)
     expect(ctr).toBe(3)
 
-    // expect(ctr).toBe(3)
+    // Cancel
+    fn()
+    fn.cancel()
+    await sleep(100)
+    expect(ctr).toBe(3)
   })
 })

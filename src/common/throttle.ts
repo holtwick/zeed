@@ -16,8 +16,15 @@ interface DebounceOptions {
 type DebounceFunction = Function & { cancel: () => void; dispose: () => void }
 
 /**
- * Throttle execution of a function. Especially useful for rate limiting
- * execution of handlers on events like resize and scroll.
+ * A special throttle implementation that tries to distribute execution
+ * in an optimal way.
+ *
+ * For UI usage the function is executed on first occasion (`leading`).
+ * If more calls follow it will again be executed at end (`trailing`).
+ * If the next call is inside the timeframe, it is delayed until `trailing`.
+ * This avoids timewise too close calls.
+ * It is possible to `cancel` the timeout and to `flush` a call, e.g. if
+ * leaving UI situation where a final call is required to write data or similar.
  */
 export function throttle(
   callback: Function,
@@ -96,6 +103,9 @@ export function throttle(
 
   wrapper.cancel = clearExistingTimeout
   wrapper.dispose = clearExistingTimeout
+
+  // wrapper.flush = () => throw 'todo'
+
   return wrapper
 }
 

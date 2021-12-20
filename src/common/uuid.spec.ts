@@ -7,6 +7,7 @@ import {
   suidDate,
   uname,
   uuid,
+  uuid32bit,
   uuidB32,
   uuidv4,
 } from "./uuid"
@@ -125,5 +126,10 @@ describe("uuid", () => {
       const nextSUID = suid()
       expect(shortSortableId < nextSUID).toBe(true)
     }
+  })
+
+  it("should generate 32bit", () => {
+    expect(uuid32bit()).not.toBe(0)
+    expect(Number.isSafeInteger(uuid32bit())).toBe(true)
   })
 })

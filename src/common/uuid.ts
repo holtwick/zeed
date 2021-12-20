@@ -20,6 +20,8 @@ export function uuidBytes(): Uint8Array {
   return randomUint8Array(16)
 }
 
+export const uuid32bit = () => new Uint32Array(randomUint8Array(4))[0]
+
 export function uuid(): string {
   return encode62(uuidBytes(), 22)
 }

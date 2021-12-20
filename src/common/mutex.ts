@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isPromise } from "util/types"
+import { isPromise } from "./promise"
 
 export type Mutex = (fn: Function, elseFn?: Function) => boolean
 export type AsyncMutex = (fn: Function, elseFn?: Function) => Promise<boolean>

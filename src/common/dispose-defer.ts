@@ -68,6 +68,8 @@ export function useDispose() {
   })
 }
 
+export type UseDispose = ReturnType<typeof useDispose>
+
 /** @deprecated use `useDispose` instead */
 export const useDisposer = useDispose
 
@@ -124,6 +126,8 @@ export function useDefer(
     },
   })
 }
+
+export type UseDefer = ReturnType<typeof useDefer>
 
 export function useTimeout(
   fn: Function,

@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Disposable, DisposerFunction } from "../disposer"
+import { Disposable, DisposerFunction } from "../dispose-defer"
 import { getGlobalContext } from "../global"
 import { Logger } from "../log"
 import { promisify } from "../promise"

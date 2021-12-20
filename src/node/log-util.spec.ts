@@ -5,7 +5,7 @@ import { getSourceLocation, getStackLlocationList } from "./log-util"
 describe("log-util", function () {
   test("should find correct source file line", function () {
     const source = getSourceLocation(1, true)
-    expect(source).toBe("src/node/log-util.spec.ts:7:37")
+    expect(source.startsWith("src/node/log-util.spec.ts:7:")).toBe(true)
   })
 
   test("should parse stack", function () {

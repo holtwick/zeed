@@ -3,7 +3,7 @@ import { promisify, isPromise } from "./promise"
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
-export type DisposerFunction = () => void | Promise<void>
+export type DisposerFunction = () => any | Promise<any>
 
 export type Disposer =
   | DisposerFunction
@@ -17,7 +17,7 @@ export interface Disposable {
 }
 
 /** Different kinds of implementations have grown, this should unify them  */
-export async function callDisposer(disposable: Disposer): Promise<void> {
+async function callDisposer(disposable: Disposer): Promise<void> {
   if (typeof disposable === "function") {
     await promisify(disposable())
   } else if (isPromise(disposable)) {
@@ -35,7 +35,7 @@ export async function callDisposer(disposable: Disposer): Promise<void> {
 
 // export function disposeFn()
 
-export function useDisposer() {
+export function useDispose() {
   let tracked: Disposer[] = []
 
   const untrack = async (disposable: Disposer) => {
@@ -58,10 +58,69 @@ export function useDisposer() {
 
   return Object.assign(dispose, {
     track,
-    untrack,
+    add: track, // ?
+    untrack, // ?
     dispose,
+    exec: dispose, // ?
     getSize() {
       return tracked.length
+    },
+  })
+}
+
+/** @deprecated use `useDispose` instead */
+export const useDisposer = useDispose
+
+export function useDefer(
+  config: {
+    mode?: "lifo" | "fifo"
+  } = {}
+) {
+  const { mode = "fifo" } = config
+  let steps: Disposer[] = []
+
+  /**
+   * Excutes all steps. If all steps are not Promises, they are executed immediately,
+   * otherwise a Promise is returned
+   */
+  const exec = async (expectSync: boolean = false) => {
+    while (steps.length > 0) {
+      let step = steps[0]
+      arrayFilterInPlace(steps, (el) => el !== step)
+      if (typeof step === "function") {
+        let result = step()
+        if (isPromise(result)) {
+          if (expectSync)
+            throw new Error(
+              `Expected sync only function, but found async: ${step}`
+            )
+          await result
+        }
+      } else if (isPromise(step)) {
+        if (expectSync)
+          throw new Error(
+            `Expected sync only function, but found async: ${step}`
+          )
+        await step
+      } else {
+        throw new Error(`Unhandled disposable: ${step}`)
+      }
+    }
+  }
+
+  const add = (obj: Disposer) => {
+    if (mode === "lifo") {
+      steps.unshift(obj)
+    } else {
+      steps.push(obj)
+    }
+  }
+
+  return Object.assign(exec, {
+    add,
+    exec,
+    getSize() {
+      return steps.length
     },
   })
 }

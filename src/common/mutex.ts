@@ -1,8 +1,11 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-export type Mutex = (fn: () => void, elseFn?: () => void) => boolean
+import { isPromise } from "util/types"
 
-export function createMutex(): Mutex {
+export type Mutex = (fn: Function, elseFn?: Function) => boolean
+export type AsyncMutex = (fn: Function, elseFn?: Function) => Promise<boolean>
+
+export function useMutex(): Mutex {
   let token = true
   return (fn, elseFn) => {
     let executed = false
@@ -16,6 +19,27 @@ export function createMutex(): Mutex {
       }
     } else if (elseFn !== undefined) {
       elseFn()
+    }
+    return executed
+  }
+}
+
+export function useAsyncMutex(): AsyncMutex {
+  let token = true
+  return async (fn, elseFn) => {
+    let executed = false
+    if (token) {
+      token = false
+      try {
+        let result = fn()
+        if (isPromise(result)) await result
+        executed = true
+      } finally {
+        token = true
+      }
+    } else if (elseFn !== undefined) {
+      let result = elseFn()
+      if (isPromise(result)) await result
     }
     return executed
   }

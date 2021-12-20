@@ -83,6 +83,16 @@ CryptoKey {
     expect(binFix).toEqual(sample)
   })
 
+  // it("should identify fake decrypt", async () => {
+  //   const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]), {
+  //     salt: new Uint8Array([1, 2, 3]),
+  //   })
+  //   await decrypt(new Uint8Array([2, 2]), key)
+  //   await expect(async () => {
+  //     await decrypt(new Uint8Array([2, 2]), key)
+  //   }).rejects.toThrow()
+  // })
+
   // it("should encrypt and decrypt", async () => {
   //   const key = await deriveKey("secret", "room")
   //   const keyAlt = await deriveKey("secretAlt", "room")

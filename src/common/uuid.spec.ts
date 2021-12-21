@@ -9,6 +9,8 @@ import {
   uuid,
   uuid32bit,
   uuidB32,
+  uuidDecode,
+  uuidEncode,
   uuidv4,
 } from "./uuid"
 import { sleep } from "./promise"
@@ -17,6 +19,13 @@ describe("uuid", () => {
   it("should not certain length", () => {
     expect(uuid().length).toBe(22)
     expect(uuidB32().length).toBe(26)
+  })
+
+  it("should encode/decode", () => {
+    let us = uuid()
+    let ub = uuidDecode(us)
+    expect(ub.length).toBe(16)
+    expect(uuidEncode(ub)).toEqual(us)
   })
 
   it("should not have collisions", () => {

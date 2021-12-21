@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 export function isLocalHost(
-  hostname: string = window.location.hostname
+  hostname: string = globalThis?.location?.hostname ?? ""
 ): boolean {
   return (
     ["localhost", "127.0.0.1", "", "::1", "::"].includes(hostname) ||

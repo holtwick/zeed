@@ -26,6 +26,14 @@ export function uuid(): string {
   return encode62(uuidBytes(), 22)
 }
 
+export function uuidEncode(bytes: Uint8Array): string {
+  return encode62(bytes, 22)
+}
+
+export function uuidDecode(uuid: string): Uint8Array {
+  return decode62(uuid, 16)
+}
+
 export function uuidB32(): string {
   return encode32(uuidBytes(), 26)
 }

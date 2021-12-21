@@ -34,8 +34,10 @@ const DEFAULT_DERIVE_ALG = "PBKDF2"
 export async function digest(
   message: BinInput,
   algorithm: AlgorithmIdentifier = DEFAULT_HASH_ALG
-): Promise<ArrayBuffer> {
-  return await crypto.subtle.digest(algorithm, toUint8Array(message))
+): Promise<Uint8Array> {
+  return toUint8Array(
+    await crypto.subtle.digest(algorithm, toUint8Array(message))
+  )
 }
 
 export async function deriveKeyPbkdf2(

@@ -39,6 +39,42 @@ describe("crypto", () => {
     expect(toHex(await digest("abc"))).toBe(
       "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
     )
+    expect(await digest(new Uint8Array([1, 2, 3]))).toMatchInlineSnapshot(`
+Uint8Array [
+  3,
+  144,
+  88,
+  198,
+  242,
+  192,
+  203,
+  73,
+  44,
+  83,
+  59,
+  10,
+  77,
+  20,
+  239,
+  119,
+  204,
+  15,
+  120,
+  171,
+  204,
+  206,
+  213,
+  40,
+  125,
+  132,
+  161,
+  162,
+  1,
+  28,
+  251,
+  129,
+]
+`)
   })
 
   it("should derive key", async () => {

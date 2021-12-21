@@ -19,6 +19,7 @@ describe("Localhost", () => {
     for (let [domain, result] of Object.entries(samples)) {
       // console.log(domain, result)
       expect(isLocalHost(domain)).toBe(result)
+      expect(isLocalHost() != null).toBe(true)
     }
   })
 })

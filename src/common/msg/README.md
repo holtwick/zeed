@@ -82,7 +82,7 @@ let echoResponse = await hub.echo({ hello: "world" })
 On the receiver part implementation is also straight forward:
 
 ```ts
-useMessageHub({channel}).listen<MyMessages>({
+useMessageHub({ channel }).listen<MyMessages>({
   async echo(data) {
     return data
   }
@@ -99,3 +99,9 @@ useMessageHub({channel}).listen<MyMessages>({
 - WebWorker: Supports ArrayBuffer
 - IFrame
 - BroadcastCannel
+
+## Reference
+
+Other projects I learned from, check them out:
+
+- [birpc](https://github.com/antfu/birpc)

@@ -6,6 +6,16 @@ export interface Encoder {
   decode(data: Uint8Array): Promise<any>
 }
 
+export class NoopEncoder implements Encoder {
+  async encode(data: any): Promise<Uint8Array> {
+    return data
+  }
+
+  async decode(data: Uint8Array): Promise<any> {
+    return data
+  }
+}
+
 export class JsonEncoder implements Encoder {
   async encode(data: any): Promise<Uint8Array> {
     return jsonToUint8Array(data)

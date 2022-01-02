@@ -1,5 +1,10 @@
 import { isPromise } from "../promise"
 
+// See also and alternatives:
+// https://blog.openreplay.com/is-it-time-for-the-javascript-temporal-api
+// https://github.com/iamkun/dayjs
+// https://github.com/date-fns/date-fns
+
 export const DAY_MS = 1000 * 60 * 60 * 24
 
 export type DayInput = number | string | Date | Day

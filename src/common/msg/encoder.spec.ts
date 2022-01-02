@@ -27,6 +27,7 @@ describe("encoder", () => {
     const key = await deriveKeyPbkdf2(randomUint8Array(20))
     const encoder = new CryptoEncoder(key)
     const enc = await encoder.encode(sample)
+    expect(enc).not.toEqual(sample)
     const back = await encoder.decode(enc)
     expect(back).toEqual(sample)
   })

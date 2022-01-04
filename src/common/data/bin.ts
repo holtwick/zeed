@@ -66,6 +66,19 @@ export function toBase64Url(bin: BinInput): string {
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_")
 }
 
+export function fromBase64(s: string): Uint8Array {
+  if (typeof Buffer !== "undefined") {
+    const buf = Buffer.from(s, "base64")
+    return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength)
+  }
+  const a = atob(s)
+  const bytes = new Uint8Array(a.length)
+  for (let i = 0; i < a.length; i++) {
+    bytes[i] = a.charCodeAt(i)
+  }
+  return bytes
+}
+
 /** Compare contents of binary arrays */
 export function equalBinary(
   a: ArrayBuffer | Uint8Array,

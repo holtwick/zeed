@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { jsonToUint8Array, Uint8ArrayToJson } from "."
+import { fromBase64, jsonToUint8Array, Uint8ArrayToJson } from "."
 import {
   equalBinary,
   stringToUInt8Array,
@@ -28,6 +28,61 @@ describe("bin", () => {
     expect(toBase64(encoded)).toEqual(
       "SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm"
     )
+
+    expect(
+      Uint8ArrayToString(
+        fromBase64("SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm")
+      )
+    ).toBe(sample)
+
+    expect(
+      fromBase64("SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm")
+    ).toMatchInlineSnapshot(`
+Uint8Array [
+  72,
+  101,
+  108,
+  108,
+  111,
+  32,
+  226,
+  134,
+  146,
+  32,
+  119,
+  195,
+  182,
+  114,
+  108,
+  100,
+  32,
+  240,
+  159,
+  145,
+  168,
+  226,
+  128,
+  141,
+  240,
+  159,
+  145,
+  169,
+  226,
+  128,
+  141,
+  240,
+  159,
+  145,
+  167,
+  226,
+  128,
+  141,
+  240,
+  159,
+  145,
+  166,
+]
+`)
 
     expect(Uint8ArrayToString(encoded)).toEqual(sample)
     expect(Uint8ArrayToString(encoded)).not.toEqual(sample + "a")

@@ -184,7 +184,7 @@ function parse(
   value: CurrencyInput,
   opts: CurrencyOptions,
   useRounding = true
-): number {
+): number | never {
   let v: any = 0,
     { decimal, errorOnInvalid, precision: decimals, fromCents } = opts,
     precision = pow(decimals),

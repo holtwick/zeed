@@ -95,7 +95,7 @@ export function equalBinary(
   return true
 }
 
-export function jsonToUint8Array(json: any): Uint8Array {
+export function jsonToUint8Array(json: any): Uint8Array | never {
   try {
     return stringToUInt8Array(JSON.stringify(json))
   } catch (err) {
@@ -104,7 +104,7 @@ export function jsonToUint8Array(json: any): Uint8Array {
   }
 }
 
-export function Uint8ArrayToJson<T = any>(data: Uint8Array): T {
+export function Uint8ArrayToJson<T = any>(data: Uint8Array): T | never {
   try {
     return JSON.parse(Uint8ArrayToString(data))
   } catch (err) {

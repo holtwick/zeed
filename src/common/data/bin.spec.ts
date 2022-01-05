@@ -7,6 +7,7 @@ import {
   Uint8ArrayToString,
   toHex,
   toBase64,
+  toUint8Array,
 } from "./bin"
 
 describe("bin", () => {
@@ -186,5 +187,22 @@ Uint8Array [
 `)
     const back = Uint8ArrayToJson(bin)
     expect(back).toEqual(sample)
+  })
+
+  it("should inline string conversions", () => {
+    expect(toUint8Array("abc")).toMatchInlineSnapshot(`
+Uint8Array [
+  97,
+  98,
+  99,
+]
+`)
+    expect(new Uint8Array([1, 2, 3])).toMatchInlineSnapshot(`
+Uint8Array [
+  1,
+  2,
+  3,
+]
+`)
   })
 })

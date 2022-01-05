@@ -14,7 +14,7 @@ function windowsReservedNameRegex() {
   return /^(con|prn|aux|nul|com\d|lpt\d)$/i
 }
 
-export function toValidFilename(string: string) {
+export function toValidFilename(string: string): string | never {
   if (typeof string !== "string") {
     throw new TypeError("Expected a string")
   }

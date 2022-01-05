@@ -4,22 +4,58 @@ const log = Logger("bin")
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 
-// if (typeof TextEncoder !== "undefined") {
+// From https://github.com/dmonad/lib0/blob/main/string.js#L44
 
-let _textEncoder: TextEncoder | undefined
-export function stringToUInt8Array(text: string): Uint8Array {
-  if (typeof TextEncoder === "undefined") return new Uint8Array()
-  const textEncoder = _textEncoder ?? (_textEncoder = new TextEncoder())
-  return textEncoder.encode(text.normalize("NFC"))
+export function _encodeUtf8Polyfill(str: string): Uint8Array {
+  const encodedString = unescape(encodeURIComponent(str))
+  const len = encodedString.length
+  const buf = new Uint8Array(len)
+  for (let i = 0; i < len; i++) {
+    buf[i] = encodedString.codePointAt(i) || 0
+  }
+  return buf
 }
 
-let _textDecoder: TextDecoder | undefined
+export function _decodeUtf8Polyfill(buf: Uint8Array) {
+  let remainingLen = buf.length
+  let encodedString = ""
+  let bufPos = 0
+  while (remainingLen > 0) {
+    const nextLen = remainingLen < 10000 ? remainingLen : 10000
+    const bytes = buf.subarray(bufPos, bufPos + nextLen)
+    bufPos += nextLen
+    // Starting with ES5.1 we can supply a generic array-like object as arguments
+    // @ts-ignore
+    encodedString += String.fromCodePoint.apply(null, bytes)
+    remainingLen -= nextLen
+  }
+  return decodeURIComponent(escape(encodedString))
+}
+
+let _textEncoder: (data: string) => Uint8Array
+
+export function stringToUInt8Array(text: string): Uint8Array {
+  if (_textEncoder == null) {
+    _textEncoder = _encodeUtf8Polyfill
+    if (typeof TextEncoder !== "undefined") {
+      const encoder = new TextEncoder()
+      _textEncoder = (data) => encoder.encode(data)
+    }
+  }
+  return _textEncoder(text.normalize("NFC"))
+}
+
+let _textDecoder: (data: Uint8Array) => string
+
 export function Uint8ArrayToString(bin: Uint8Array): string {
-  if (typeof TextDecoder === "undefined") return ""
-  const textDecoder =
-    _textDecoder ??
-    (_textDecoder = new TextDecoder("utf-8", { ignoreBOM: true }))
-  return textDecoder.decode(bin).normalize("NFC")
+  if (_textDecoder == null) {
+    _textDecoder = _decodeUtf8Polyfill
+    if (typeof TextDecoder !== "undefined") {
+      const decoder = new TextDecoder("utf-8", { ignoreBOM: true })
+      _textDecoder = (data) => decoder.decode(data)
+    }
+  }
+  return _textDecoder(bin).normalize("NFC")
 }
 
 export function toUint8Array(data: BinInput): Uint8Array {

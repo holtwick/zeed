@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { cloneObject, empty, size } from "./utils"
+import { cloneObject, empty, ensureKey, size } from "./utils"
 
 describe("cloneObject", () => {
   it("should clone only non primitives", () => {
@@ -92,5 +92,27 @@ describe("empty", () => {
     expect(empty(null)).toBe(true)
     expect(empty(undefined)).toBe(true)
     expect(empty(NaN)).toBe(true)
+  })
+
+  it("should ensure key", () => {
+    let rooms: any = {}
+    ensureKey(rooms, "a", (r) => ({ r } as any)).x = 1
+    expect(rooms).toMatchInlineSnapshot(`
+Object {
+  "a": Object {
+    "r": "a",
+    "x": 1,
+  },
+}
+`)
+    ensureKey(rooms, "a", (r) => ({ r } as any)).x += 10
+    expect(rooms).toMatchInlineSnapshot(`
+Object {
+  "a": Object {
+    "r": "a",
+    "x": 11,
+  },
+}
+`)
   })
 })

@@ -59,7 +59,6 @@ export function Uint8ArrayToString(bin: Uint8Array): string {
 }
 
 export function toUint8Array(data: BinInput): Uint8Array {
-  if (data instanceof Buffer) return new Uint8Array(data)
   if (data instanceof ArrayBuffer) return new Uint8Array(data)
   if (typeof data === "string") return stringToUInt8Array(data)
   if (data.length) return new Uint8Array(data)

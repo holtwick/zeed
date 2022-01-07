@@ -8,7 +8,8 @@ import { Json } from "../types"
  * ```js
  * function createRoom(room, rooms) { return new Room() }
  * ensureKey(rooms, room, createRoom).enter()
- * ``` */
+ * ```
+ */
 export function ensureKey<T>(
   obj: Record<string, T>,
   key: string,
@@ -16,7 +17,29 @@ export function ensureKey<T>(
 ): T {
   let value = obj[key]
   if (value === undefined) {
-    obj[key] = value = createFn(key, obj)
+    value = createFn(key, obj)
+    obj[key] = value
+  }
+  return value
+}
+
+/**
+ * Call a create function if key does not yet exist on an object. Returns the found or created object. Example:
+ *
+ * ```js
+ * async function fetchItem(id, cache) { ... }
+ * let data = await ensureKey(cache, id, fetchItem)
+ * ```
+ */
+export async function ensureKeyAsync<T>(
+  obj: Record<string, T>,
+  key: string,
+  createFn: (key?: string, obj?: Record<string, T>) => Promise<T>
+): Promise<T> {
+  let value = obj[key]
+  if (value === undefined) {
+    value = await createFn(key, obj)
+    obj[key] = value
   }
   return value
 }

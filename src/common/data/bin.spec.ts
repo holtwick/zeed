@@ -205,4 +205,28 @@ Uint8Array [
 ]
 `)
   })
+
+  it("should toUint8Array", () => {
+    expect(toUint8Array(Buffer.from("abc"))).toMatchInlineSnapshot(`
+Uint8Array [
+  97,
+  98,
+  99,
+]
+`)
+    expect(toUint8Array("abc")).toMatchInlineSnapshot(`
+Uint8Array [
+  97,
+  98,
+  99,
+]
+`)
+    expect(toUint8Array([1, 2, 3])).toMatchInlineSnapshot(`
+Uint8Array [
+  1,
+  2,
+  3,
+]
+`)
+  })
 })

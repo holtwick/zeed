@@ -2,6 +2,25 @@
 
 import { Json } from "../types"
 
+/**
+ * Call a create function if key does not yet exist on an object. Returns the found or created object. Example:
+ *
+ * ```js
+ * function createRoom(room, rooms) { return new Room() }
+ * ensureKey(rooms, room, createRoom).enter()
+ * ``` */
+export function ensureKey<T>(
+  obj: Record<string, T>,
+  key: string,
+  createFn: (key?: string, obj?: Record<string, T>) => T
+): T {
+  let value = obj[key]
+  if (value === undefined) {
+    obj[key] = value = createFn(key, obj)
+  }
+  return value
+}
+
 export function size(obj: any) {
   if (obj != null) {
     if (obj.size != null) {

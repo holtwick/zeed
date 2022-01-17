@@ -1,14 +1,22 @@
+export function getSecureRandom(): number {
+  return crypto.getRandomValues(new Uint32Array(1))[0] / 0xffffffff
+}
+
+export function getSecureRandomIfPossible(): number {
+  return typeof crypto !== "undefined" ? getSecureRandom() : Math.random()
+}
+
 export function randomBoolean(bias = 0.25): boolean {
-  return Math.random() < bias
+  return getSecureRandomIfPossible() < bias
 }
 
 /** max is not included, min is included */
 export function randomInt(max = 100, min = 0): number {
-  return min + Math.floor(Math.random() * (max - min))
+  return min + Math.floor(getSecureRandomIfPossible() * (max - min))
 }
 
 export function randomFloat(max = 100, min = 0): number {
-  return min + Math.random() * (max - min)
+  return min + getSecureRandomIfPossible() * (max - min)
 }
 
 export function between(min: number, value: number, max: number): number {

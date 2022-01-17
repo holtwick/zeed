@@ -1,5 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { getSecureRandomIfPossible } from "../data/math"
 import { Disposable, DisposerFunction } from "../dispose-defer"
 import { getGlobalContext } from "../global"
 import { Logger } from "../log"
@@ -148,7 +149,7 @@ export function lazyListener(
   emitter: any,
   listenerKey?: string
 ): (key?: string, skipUnmatched?: boolean) => Promise<any> {
-  const name = Math.round(Math.random() * 100)
+  const name = Math.round(getSecureRandomIfPossible() * 100)
 
   var events: LazyEvent[] = []
   var lazyResolve: (() => void) | undefined

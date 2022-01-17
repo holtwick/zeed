@@ -1,5 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { getSecureRandomIfPossible } from "./math"
+
 // Get a sort_weight suitable for adding to top of list
 // Original idea https://holtwick.de/en/blog/smart-table-reordering
 
@@ -11,7 +13,7 @@ export function startSortWeight(items: SortableItem[]): number {
   return (
     items.reduce((acc, item) => Math.min(acc, item.sort_weight || 0), 0) -
     1 -
-    Math.random()
+    getSecureRandomIfPossible()
   )
 }
 
@@ -20,7 +22,7 @@ export function endSortWeight(items: SortableItem[]): number {
   return (
     items.reduce((acc, item) => Math.max(acc, item.sort_weight || 0), 0) +
     1 +
-    Math.random()
+    getSecureRandomIfPossible()
   )
 }
 
@@ -55,7 +57,7 @@ export function moveSortWeight(
     return endSortWeight(items)
   }
   const middle = lower + distance / 2
-  const fuzzy = distance * 0.01 * (Math.random() - 0.5) // 1% fuzziness to avoid conflicts
+  const fuzzy = distance * 0.01 * (getSecureRandomIfPossible() - 0.5) // 1% fuzziness to avoid conflicts
   return middle + fuzzy
 }
 

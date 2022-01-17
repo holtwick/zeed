@@ -1,5 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { getSecureRandomIfPossible } from "./math"
 import { NestedArray } from "../types"
 import { cmp } from "./orderby"
 
@@ -91,7 +92,7 @@ export function arrayIsEqual<T>(array1: T[], array2: T[]): boolean {
 }
 
 export function arrayShuffleInPlace<T>(array: T[]): T[] {
-  array.sort(() => (Math.random() > 0.5 ? 1 : -1))
+  array.sort(() => (getSecureRandomIfPossible() > 0.5 ? 1 : -1))
 
   // Alternative https://github.com/sindresorhus/array-shuffle/blob/main/index.js#L8
   // for (let index = array.length - 1; index > 0; index--) {
@@ -117,7 +118,7 @@ export function arrayShuffleForce<T>(array: T[]): T[] {
 }
 
 export function arrayRandomElement<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)]
+  return array[Math.floor(getSecureRandomIfPossible() * array.length)]
 }
 
 export function arrayMax<T>(...array: NestedArray<T>[]): T {

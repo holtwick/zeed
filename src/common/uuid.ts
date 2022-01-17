@@ -7,15 +7,6 @@ import { getTimestamp } from "./time"
 const { encode: encode62, decode: decode62 } = useBase(62)
 const { encode: encode32 } = useBase(32)
 
-// function randomDigit(base = 32) {
-//   if (_crypto && _crypto['getRandomValues']) {
-//     let rands = new Uint8Array(1)
-//     _crypto['getRandomValues'](rands)
-//     return (rands[0] % base).toString(base)
-//   }
-//   return ((Math.random() * base) | 0).toString(base)
-// }
-
 export function uuidBytes(): Uint8Array {
   return randomUint8Array(16)
 }

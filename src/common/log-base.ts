@@ -167,7 +167,8 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     //   console.error(...args)
     // },
 
-    log.assert = function (cond: any, ...messages: any[]) {
+    // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
+    log.assert = function (cond: any, ...messages: any[]): asserts cond {
       if (!cond) {
         if (typeof console !== undefined) {
           if (console.assert) {

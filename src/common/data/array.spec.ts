@@ -52,6 +52,8 @@ describe("Array", () => {
     expect(array).toEqual([4, 6, 8])
     arrayToggleInPlace(array, 2)
     expect(array).toEqual([4, 6, 8, 2])
+    arrayFilterInPlace(array, () => false)
+    expect(array).toEqual([])
   })
 
   it("should compare arrays", () => {

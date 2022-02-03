@@ -71,9 +71,32 @@ describe("Days", () => {
     expect(Day.fromString("2021-01-01")?.daysUntil("2021-03-01")).toBe(59)
     expect(Day.fromString("2020-01-01")?.daysUntil("2020-03-01")).toBe(60)
 
+    expect(Day.from([2022, 12, 31])?.days).toBe(20221231)
+
     // Following depend on timezone
     // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
     // expect(day2?.days).toEqual(19871230)
     // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
+  })
+
+  it("should properties", () => {
+    let d = Day.fromString("2021-12-31")!
+    expect(d.days).toEqual(20211231)
+    expect(d.day).toEqual(31)
+    expect(d.month).toEqual(12)
+    expect(d.year).toEqual(2021)
+  })
+
+  it("should calc months", () => {
+    let d = Day.fromString("2021-12-01")!
+    expect(d.monthOffset(0)?.days).toBe(20211201)
+    expect(d.monthOffset(+1)?.days).toBe(20220101)
+    expect(d.monthOffset(+2)?.days).toBe(20220201)
+    expect(d.monthOffset(+11)?.days).toBe(20221101)
+    expect(d.monthOffset(+24)?.days).toBe(20231201)
+    expect(d.monthOffset(-1)?.days).toBe(20211101)
+    expect(d.monthOffset(-2)?.days).toBe(20211001)
+    expect(d.monthOffset(-11)?.days).toBe(20210101)
+    expect(d.monthOffset(-24)?.days).toBe(20191201)
   })
 })

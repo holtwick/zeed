@@ -7,7 +7,7 @@ import { isPromise } from "../promise"
 
 export const DAY_MS = 1000 * 60 * 60 * 24
 
-export type DayInput = number | string | Date | Day
+export type DayInput = number | string | Date | Day | [number, number, number]
 
 export class Day {
   days: number
@@ -62,6 +62,8 @@ export class Day {
       return new Day(value)
     } else if (typeof value === "string") {
       return Day.fromString(value)
+    } else if (Array.isArray(value) && value.length === 3) {
+      return new Day(value[0] * 10000 + value[1] * 100 + value[2])
     } else if (value instanceof Date) {
       return Day.fromDate(value, gmt)
     } else if (value instanceof Day) {
@@ -105,6 +107,18 @@ export class Day {
     return this.toDate(true)
   }
 
+  get year() {
+    return Math.floor(this.days / 10000)
+  }
+
+  get month() {
+    return Math.floor((this.days / 100) % 100)
+  }
+
+  get day() {
+    return Math.floor(this.days % 100)
+  }
+
   // Calculations
 
   dayOffset(offset: number): Day {
@@ -113,6 +127,16 @@ export class Day {
     return Day.fromDateGMT(
       new Date(this.toDateGMT().getTime() + offset * DAY_MS)
     )
+  }
+
+  /** Very stupid approach, only works for days <= 28 */
+  monthOffset(offset: number): Day {
+    let m = this.month + offset
+    let mm = Math.floor((m - 1) % 12) + 1
+    if (mm === 0) mm = 12
+    let yy = Math.floor((m - 1) / 12)
+    console.log("calc", m, mm, yy, [this.year + yy, mm, this.day])
+    return Day.from([this.year + yy, mm, this.day])!
   }
 
   daysUntil(otherDay: DayInput): number {

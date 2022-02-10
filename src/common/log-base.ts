@@ -73,6 +73,8 @@ export interface LoggerInterface {
   extend(prefix: string): LoggerInterface
 
   factory?: LoggerContextInterface
+
+  label: string
 }
 
 export interface LoggerContextInterface {
@@ -128,6 +130,7 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
       })
     }
 
+    log.label = name
     log.active = true
     log.level = LogLevel.all
 

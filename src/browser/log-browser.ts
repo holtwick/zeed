@@ -183,6 +183,8 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       return LoggerBrowserDebugFactory(name ? `${name}:${subName}` : subName)
     }
 
+    log.label = name
+
     return log
   }
 }

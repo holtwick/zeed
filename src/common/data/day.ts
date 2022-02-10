@@ -9,6 +9,7 @@ export const DAY_MS = 1000 * 60 * 60 * 24
 
 export type DayInput = number | string | Date | Day | [number, number, number]
 
+/** Date represented as positive integer value. Years smaller 0 are not supported.  */
 export class Day {
   days: number
 
@@ -38,14 +39,14 @@ export class Day {
   }
 
   static fromString(dateString: string): Day | undefined {
-    return new Day(+dateString.replace(/[^0-9]/g, ""))
+    return Day.from(+dateString.replace(/[^0-9]/g, ""))
   }
 
   static fromDate(date: Date, gmt: boolean = false): Day {
     return (
       gmt
         ? Day.fromString(date.toISOString().substr(0, 10))
-        : new Day(
+        : Day.from(
             date.getFullYear() * 10000 +
               (date.getMonth() + 1) * 100 +
               date.getDate()
@@ -59,11 +60,14 @@ export class Day {
 
   static from(value: DayInput, gmt: boolean = false): Day | undefined {
     if (typeof value === "number") {
+      if (value < 100) return
       return new Day(value)
     } else if (typeof value === "string") {
       return Day.fromString(value)
     } else if (Array.isArray(value) && value.length === 3) {
-      return new Day(value[0] * 10000 + value[1] * 100 + value[2])
+      const [year, month, day] = value
+      if (month < 1 || month > 12 || day < 1 || day > 31) return
+      return new Day(year * 10000 + month * 100 + day)
     } else if (value instanceof Date) {
       return Day.fromDate(value, gmt)
     } else if (value instanceof Day) {

@@ -69,7 +69,9 @@ describe("Logger", function () {
     logger.setHandlers([LoggerTestHandler])
 
     const log = logger("test")
-    let { info, error, warn, debug, assert } = log
+    let { info, error, warn, debug, assert, label } = log
+
+    expect(label).toBe("test")
 
     debug("Hello")
     info("World")

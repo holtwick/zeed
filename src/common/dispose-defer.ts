@@ -1,5 +1,8 @@
 import { arrayFilterInPlace } from "./data/array"
-import { promisify, isPromise } from "./promise"
+import { Logger } from "./log"
+import { isPromise, promisify } from "./promise"
+
+const log = Logger("dispose")
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
@@ -35,7 +38,13 @@ async function callDisposer(disposable: Disposer): Promise<void> {
 
 // export function disposeFn()
 
-export function useDispose() {
+interface UseDisposeConfig {
+  name?: string
+}
+
+export function useDispose(config?: string | UseDisposeConfig) {
+  const { name } = typeof config === "string" ? { name: config } : config ?? {}
+
   let tracked: Disposer[] = []
 
   const untrack = async (disposable: Disposer) => {
@@ -45,7 +54,9 @@ export function useDispose() {
     }
   }
 
+  /** Dispose all tracked entries */
   const dispose = async () => {
+    if (name) log.debug(`dispose ${name}: ${tracked.length} entries`)
     while (tracked.length > 0) {
       await untrack(tracked[0]) // LIFO
     }

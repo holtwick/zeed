@@ -111,3 +111,18 @@ export function cloneJsonObject<T = Json>(obj: T): T {
 //     : // Rude but very efficient way to clone
 //       JSON.parse(JSON.stringify(obj))
 // }
+
+/** Cache result of a function. Same arguments have to always return the same result in order to get expected optimization! */
+export function memoize<In extends any, Out extends any>(
+  fn: (arg: In) => Out
+): (arg: In) => Out {
+  let cache = new Map<In, Out>()
+  return (n: In): Out => {
+    if (cache.has(n)) {
+      return cache.get(n)!
+    }
+    let result = fn(n)
+    cache.set(n, result)
+    return result
+  }
+}

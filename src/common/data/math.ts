@@ -23,4 +23,14 @@ export function between(min: number, value: number, max: number): number {
   return Math.max(min, Math.min(max, value))
 }
 
+/** See also arraySum */
+export function sum(array: number[]): number {
+  return array.reduce((acc, value) => acc + value, 0)
+}
+
+/** See also arrayAvg */
+export function avg(array: number[]): number {
+  return sum(array) / array.length
+}
+
 // export const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))

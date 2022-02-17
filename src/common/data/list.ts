@@ -20,6 +20,7 @@ export function listQuery<T>(
     .filter((o) => o != null)
 }
 
+// /** Dictionary  */
 export function listGroupBy<T extends Record<string, any>>(
   list: T[],
   key: keyof T

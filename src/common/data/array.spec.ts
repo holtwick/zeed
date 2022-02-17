@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import {
+  arrayAvg,
   arrayFilterInPlace,
   arrayFlatten,
   arrayIntersection,
@@ -12,6 +13,7 @@ import {
   arrayShuffleForce,
   arraySorted,
   arraySortedNumbers,
+  arraySum,
   arraySymmetricDifference,
   arrayToggleInPlace,
   arrayUnion,
@@ -73,6 +75,11 @@ describe("Array", () => {
     expect(arrayMax(1, [2, 3])).toBe(3)
     expect(arrayMin("1a", ["2b", "3c"])).toBe("1a")
     expect(arrayMax("1a", ["2b", "3c"])).toBe("3c")
+  })
+
+  it("should sum/avg", () => {
+    expect(arraySum(1, [2, 3])).toBe(6)
+    expect(arrayAvg(1, [2, 3])).toBe(2)
   })
 
   it("should flatten", () => {

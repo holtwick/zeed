@@ -2,21 +2,30 @@
   "name": "zeed",
   "version": "0.7.113",
   "description": "🌱 Simple foundation library",
+  "license": "MIT",
   "keywords": [
     "foundation",
     "typescript",
     "event",
     "logging"
   ],
+  "author": {
+    "name": "Dirk Holtwick",
+    "email": "dirk.holtwick@gmail.com",
+    "url": "https://holtwick.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holtwick/zeed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/holtwick/zeed/issues"
+  },
   "funding": {
     "type": "GitHub Sponsors ❤",
     "url": "https://github.com/sponsors/holtwick"
   },
-  "license": "MIT",
-  "author": {
-    "name": "Dirk Holtwick",
-    "url": "https://holtwick.de"
-  },
+  "homepage": "https://github.com/holtwick/zeed",
   "type": "module",
   "typings": "dist/index.all.d.ts",
   "exports": {

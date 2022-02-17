@@ -164,6 +164,7 @@ export class Currency {
 
   static zero = new Currency(0)
   static one = new Currency(1)
+  static hundred = new Currency(100)
 
   static sum(...array: (CurrencyInput | CurrencyInput[])[]): Currency {
     return arrayFlatten(array).reduce(

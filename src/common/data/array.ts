@@ -137,6 +137,15 @@ export function arrayMin<T>(...array: NestedArray<T>[]): T {
   )
 }
 
+export function arraySum(...array: NestedArray<number>[]): number {
+  return arrayFlatten(array).reduce((acc, value) => acc + value, 0)
+}
+
+export function arrayAvg(...array: NestedArray<number>[]): number {
+  let flatArray = arrayFlatten(array)
+  return flatArray.reduce((acc, value) => acc + value, 0) / flatArray.length
+}
+
 export function createArray<T>(
   size: number = 0,
   item?: T | ((index: number) => T)

@@ -50,8 +50,9 @@
     "build": "npm run clean && npm run build:tsup",
     "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names",
     "watch": "npm run build:tsup -- --watch",
-    "prepublishOnly": "npm run build && npm test",
-    "test": "jest src --coverage"
+    "prepublishOnly": "npm run build && npm run test:publish",
+    "test": "jest src --coverage",
+    "test:publish": "jest src --detectOpenHandles"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

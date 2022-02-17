@@ -33,6 +33,9 @@ it("basic", async () => {
   expect(Bob.getCount()).toBe(0)
   await new Promise((resolve) => setTimeout(resolve, 1))
   expect(Bob.getCount()).toBe(1)
+
+  channel.port1.close()
+  channel.port2.close()
 })
 
 //

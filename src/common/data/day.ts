@@ -139,7 +139,7 @@ export class Day {
     let mm = Math.floor((m - 1) % 12) + 1
     if (mm === 0) mm = 12
     let yy = Math.floor((m - 1) / 12)
-    console.log("calc", m, mm, yy, [this.year + yy, mm, this.day])
+    // log("calc", m, mm, yy, [this.year + yy, mm, this.day])
     return Day.from([this.year + yy, mm, this.day])!
   }
 

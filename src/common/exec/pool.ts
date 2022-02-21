@@ -1,4 +1,4 @@
-import { QueueTask } from "."
+import { QueueTask } from "./queue"
 
 interface PoolConfig {
   maxParallel?: number

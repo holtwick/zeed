@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { sleep } from "../common/promise"
-import { LogLevel } from "./log-base"
+import { sleep } from "./promise"
+import { LogLevel } from "../log-base"
 import { SerialQueue } from "./queue"
 
 const logLevel = LogLevel.off

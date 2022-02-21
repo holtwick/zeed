@@ -1,5 +1,6 @@
-import { sleep } from "."
 import { usePool } from "./pool"
+import { sleep } from "./promise"
+
 describe("pool", () => {
   it("should execute some", async () => {
     let r: any[] = []

@@ -1,6 +1,6 @@
 import { valueToString } from "../data/convert"
 import { Logger } from "../log"
-import { tryTimeout, isPromise } from "../promise"
+import { tryTimeout, isPromise } from "../exec/promise"
 import { Json } from "../types"
 import { uname, uuid } from "../uuid"
 import { Channel } from "./channel"

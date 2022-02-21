@@ -3,6 +3,7 @@
 export * from "./crypto"
 export * from "./csv"
 export * from "./data"
+export * from "./dispose-defer"
 export * from "./exec"
 export * from "./global"
 export * from "./localhost"

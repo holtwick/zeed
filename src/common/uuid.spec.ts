@@ -13,7 +13,7 @@ import {
   uuidEncode,
   uuidv4,
 } from "./uuid"
-import { sleep } from "./promise"
+import { sleep } from "./exec/promise"
 
 describe("uuid", () => {
   it("should not certain length", () => {

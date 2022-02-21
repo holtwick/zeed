@@ -24,6 +24,8 @@ export interface TaskEvents {
   didStart(max: number): void
   didCancel(): void
   didFinish(): void
+  // didResolve(value: any): void
+  // didReject(error: any): void
   // didPause(max: number): void
 }
 
@@ -33,8 +35,8 @@ export class SerialQueue extends Emitter<TaskEvents> {
   private waitToFinish: TaskResolver[] = []
   private currentTask?: Promise<any>
   private log: LoggerInterface
-  private max: number = 0
-  private resolved: number = 0
+  private countMax: number = 0
+  private countResolved: number = 0
 
   private paused: boolean = false
 
@@ -69,8 +71,8 @@ export class SerialQueue extends Emitter<TaskEvents> {
         break
       }
 
-      if (this.resolved === 0) {
-        this.emit("didStart", this.max)
+      if (this.countResolved === 0) {
+        this.emit("didStart", this.countMax)
       }
 
       const { name, task, resolve } = info
@@ -87,14 +89,14 @@ export class SerialQueue extends Emitter<TaskEvents> {
       resolve(result)
       this.currentTask = undefined
 
-      this.resolved += 1
-      this.emit("didUpdate", this.max, this.resolved)
+      this.countResolved += 1
+      this.emit("didUpdate", this.countMax, this.countResolved)
     }
 
     if (this.queue.length === 0) {
       this.emit("didFinish")
-      this.max = 0
-      this.resolved = 0
+      this.countMax = 0
+      this.countResolved = 0
     }
 
     while (this.waitToFinish.length > 0) {
@@ -121,8 +123,8 @@ export class SerialQueue extends Emitter<TaskEvents> {
         resolve,
       })
 
-      this.max += 1
-      this.emit("didUpdate", this.max, this.resolved)
+      this.countMax += 1
+      this.emit("didUpdate", this.countMax, this.countResolved)
 
       this.performNext()
     })

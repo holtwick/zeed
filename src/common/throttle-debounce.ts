@@ -41,6 +41,7 @@ export function throttle(
   let timeoutID: any = 0
   let checkpoint = 0
   let visited = 0
+  let trailingExec: Function | undefined
 
   let debugCheckpoint = Date.now()
 
@@ -51,7 +52,7 @@ export function throttle(
     }
   }
 
-  function wrapper(this: any, ...arguments_: any[]) {
+  function wrapper(this: any, ...args: any[]) {
     const now = Date.now()
     let self = this
     let elapsed = now - checkpoint
@@ -66,8 +67,10 @@ export function throttle(
     function exec() {
       visited = 0
       checkpoint = Date.now()
-      callback.apply(self, arguments_)
+      callback.apply(self, args)
     }
+
+    trailingExec = exec
 
     // Make sure enough time has passed since last call
     if (elapsed > delay || !timeoutID) {
@@ -84,7 +87,7 @@ export function throttle(
       }
 
       const timeout = elapsed > delay ? delay : delay - elapsed
-      log(`⏱ start timeout with ${timeout.toFixed(1)}ms}`, debugElapsed())
+      log(`⏱ start timeout with ${timeout.toFixed(1)}ms`, debugElapsed())
 
       // Prepare for next round
       clearExistingTimeout()
@@ -97,7 +100,7 @@ export function throttle(
         // Only execute on trailing or when visited again, but do not twice if leading
         if (trailing && (!leading || visited > 0)) {
           DEBUG && log("🚀 trailing", debugElapsed())
-          exec()
+          trailingExec?.()
         }
       }, timeout)
     } else {

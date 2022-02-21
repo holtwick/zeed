@@ -1,7 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+// import { Logger } from "./log"
 import { sleep } from "./promise"
 import { debounce, throttle } from "./throttle-debounce"
+
+// const log = Logger("test-throttle")
 
 describe("throttle", () => {
   it("should throttle correctly", async () => {
@@ -62,5 +65,28 @@ describe("throttle", () => {
     fn()
     await sleep(110)
     expect(ctr).toBe(2)
+  })
+
+  it("should throttle with least args", async () => {
+    let r = 0
+    const fn = throttle(
+      (v: number) => {
+        r = v
+        // log("FN", v)
+      },
+      { delay: 50 }
+    )
+
+    // Exec leading 0ms
+    fn(1)
+    expect(r).toBe(1)
+    fn(2)
+    expect(r).toBe(1)
+    fn(3)
+    fn(4)
+
+    // Now delay is finished and triggers trailing 150ms
+    await sleep(200)
+    expect(r).toBe(4)
   })
 })

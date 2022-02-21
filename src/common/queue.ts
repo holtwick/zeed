@@ -29,12 +29,13 @@ interface SerialQueueEvents {
 /** Guarentee serial execution of tasks. Able to wait, pause, resume and cancel all. */
 export class SerialQueue extends Emitter<SerialQueueEvents> {
   private queue: QueueTaskInfo[] = []
-  private isPaused: boolean = false
   private waitToFinish: QueueTaskResolver[] = []
   private currentTask?: Promise<any>
   private log: LoggerInterface
   private max: number = 0
   private resolved: number = 0
+
+  private paused: boolean = false
 
   name: string
 
@@ -54,12 +55,12 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
       return
     }
 
-    if (this.isPaused) {
+    if (this.paused) {
       this.log(`performNext => skip while is paused`)
       return
     }
 
-    while (this.currentTask == null && !this.isPaused) {
+    while (this.currentTask == null && !this.paused) {
       let info = this.queue.shift()
       this.log(`performNext => ${info?.name}`)
 
@@ -150,28 +151,33 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
   /** Pause execution after current task is finished. */
   async pause() {
     this.log(`pause`)
-    this.isPaused = true
+    this.paused = true
     await this.wait()
   }
 
   /** Resume paused queue. */
   resume() {
     this.log(`resume`)
-    this.isPaused = false
+    this.paused = false
     this.performNext()
   }
 
   /** Wait for all tasks to finish */
   async wait() {
     this.log(`wait`)
-    if (
-      this.currentTask == null &&
-      (this.queue.length === 0 || this.isPaused)
-    ) {
+    if (this.currentTask == null && (this.queue.length === 0 || this.paused)) {
       return
     }
     return new Promise((resolve) => {
       this.waitToFinish.push(resolve)
     })
+  }
+
+  public get isPaused(): boolean {
+    return this.paused
+  }
+
+  public get hasTasks(): boolean {
+    return this.queue.length !== 0
   }
 }

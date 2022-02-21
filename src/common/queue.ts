@@ -69,7 +69,6 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
 
       if (this.resolved === 0) {
         this.emit("didStart", this.max)
-        this.emit("didUpdate", this.max, 0)
       }
 
       const { name, task, resolve } = info
@@ -111,7 +110,7 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
       this.log.info(`immediate execution ${name}`)
       return await task()
     }
-    this.max += 1
+
     this.log(`enqueue ${name}`)
     return new Promise((resolve) => {
       this.queue.push({
@@ -119,6 +118,10 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
         task,
         resolve,
       })
+
+      this.max += 1
+      this.emit("didUpdate", this.max, this.resolved)
+
       this.performNext()
     })
   }

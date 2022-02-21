@@ -103,12 +103,22 @@ describe("queue", () => {
     expect(events).toMatchInlineSnapshot(`
 Array [
   Array [
+    "didUpdate",
+    1,
+    0,
+  ],
+  Array [
     "didStart",
     1,
   ],
   Array [
     "didUpdate",
-    1,
+    2,
+    0,
+  ],
+  Array [
+    "didUpdate",
+    3,
     0,
   ],
   Array [
@@ -170,6 +180,21 @@ Array [
 
     expect(events).toMatchInlineSnapshot(`
 Array [
+  Array [
+    "didUpdate",
+    1,
+    0,
+  ],
+  Array [
+    "didUpdate",
+    2,
+    0,
+  ],
+  Array [
+    "didUpdate",
+    3,
+    0,
+  ],
   Array [
     "didCancel",
     3,

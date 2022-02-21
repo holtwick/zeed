@@ -9,27 +9,28 @@ import { Emitter } from "../msg/emitter"
 
 const log = Logger("zeed:queue")
 
-type QueueTaskResolver = any
-export type QueueTask<T = any> = () => Promise<T>
+type TaskResolver = any
 
-interface QueueTaskInfo {
+export type TaskFn<T = any> = () => Promise<T>
+
+interface TaskInfo {
   name: string
-  task: QueueTask
-  resolve: QueueTaskResolver
+  task: TaskFn
+  resolve: TaskResolver
 }
 
-interface SerialQueueEvents {
+export interface TaskEvents {
   didUpdate(max: number, resolved: number): void
   didStart(max: number): void
-  didCancel(max: number): void
-  didFinish(max: number): void
+  didCancel(): void
+  didFinish(): void
   // didPause(max: number): void
 }
 
 /** Guarentee serial execution of tasks. Able to wait, pause, resume and cancel all. */
-export class SerialQueue extends Emitter<SerialQueueEvents> {
-  private queue: QueueTaskInfo[] = []
-  private waitToFinish: QueueTaskResolver[] = []
+export class SerialQueue extends Emitter<TaskEvents> {
+  private queue: TaskInfo[] = []
+  private waitToFinish: TaskResolver[] = []
   private currentTask?: Promise<any>
   private log: LoggerInterface
   private max: number = 0
@@ -91,7 +92,7 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
     }
 
     if (this.queue.length === 0) {
-      this.emit("didFinish", this.max)
+      this.emit("didFinish")
       this.max = 0
       this.resolved = 0
     }
@@ -103,7 +104,7 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
 
   /** Enqueue task to be executed when all other tasks are done. Except `immediate = true`. */
   async enqueue<T>(
-    task: QueueTask<T>,
+    task: TaskFn<T>,
     opt: { immediate?: boolean; name?: string } = {}
   ): Promise<T> {
     const { immediate = false, name = uname(this.name) } = opt
@@ -129,7 +130,7 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
 
   /** If a task is already performing, execute immediately. Otherwise enqueue as usual. */
   async enqueueReentrant<T>(
-    task: QueueTask<T>,
+    task: TaskFn<T>,
     opt: { name?: string } = {}
   ): Promise<T> {
     return this.enqueue(task, {
@@ -141,7 +142,7 @@ export class SerialQueue extends Emitter<SerialQueueEvents> {
   /** Remove all tasks from queue that are not yet executing. */
   async cancelAll(unblock = true) {
     this.log(`cancelAll`)
-    this.emit("didCancel", this.queue.length)
+    this.emit("didCancel")
     let resolver = this.queue.map((task) => task.resolve)
     this.queue = []
     resolver.forEach((r) => r(undefined))

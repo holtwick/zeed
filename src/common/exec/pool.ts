@@ -1,4 +1,5 @@
-import { QueueTask } from "./queue"
+import { Emitter } from "../msg/emitter"
+import { TaskEvents, TaskFn } from "./queue"
 
 interface PoolConfig {
   maxParallel?: number
@@ -7,12 +8,16 @@ interface PoolConfig {
 interface PoolTask<T> {
   id: string
   priority: number
-  task: QueueTask<T>
+  task: TaskFn<T>
   running: boolean
 }
 
+// todo: barrier
+// todo: dependents
+
 export function usePool<T = any>(config: PoolConfig = {}) {
   const { maxParallel = 3 } = config
+  const events = new Emitter<TaskEvents>()
 
   let currentParallel = 0
   let priority = 0
@@ -49,26 +54,30 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   }
 
   function cancel(id: string) {
+    events.emit("didCancel")
     let taskInfo = tasks[id]
     if (taskInfo && taskInfo.running !== true) {
       delete tasks[id]
     }
   }
 
-  return {
-    cancel,
-    enqueue(id: string, task: QueueTask<T>) {
-      if (tasks[id] == null) {
-        tasks[id] = {
-          id,
-          task,
-          priority: ++priority,
-          running: false,
-        }
-        performNext()
+  function enqueue(id: string, task: TaskFn<T>) {
+    if (tasks[id] == null) {
+      tasks[id] = {
+        id,
+        task,
+        priority: ++priority,
+        running: false,
       }
-      return () => cancel(id)
-    },
+      performNext()
+    }
+    return () => cancel(id)
+  }
+
+  return {
+    events,
+    cancel,
+    enqueue,
   }
 }
 

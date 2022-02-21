@@ -138,7 +138,6 @@ Array [
   ],
   Array [
     "didFinish",
-    3,
   ],
 ]
 `)
@@ -197,11 +196,9 @@ Array [
   ],
   Array [
     "didCancel",
-    3,
   ],
   Array [
     "didFinish",
-    3,
   ],
 ]
 `)

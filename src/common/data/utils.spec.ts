@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { cloneObject, empty, ensureKey, size } from "./utils"
+import { cloneObject, empty, ensureKey, forTimes, size } from "./utils"
 
 describe("cloneObject", () => {
   it("should clone only non primitives", () => {
@@ -113,6 +113,55 @@ Object {
     "x": 11,
   },
 }
+`)
+  })
+
+  it("should repeat forTimes", () => {
+    let l: any = []
+    forTimes(10, (...args) => l.push(args))
+    expect(l).toMatchInlineSnapshot(`
+Array [
+  Array [
+    0,
+    10,
+  ],
+  Array [
+    1,
+    10,
+  ],
+  Array [
+    2,
+    10,
+  ],
+  Array [
+    3,
+    10,
+  ],
+  Array [
+    4,
+    10,
+  ],
+  Array [
+    5,
+    10,
+  ],
+  Array [
+    6,
+    10,
+  ],
+  Array [
+    7,
+    10,
+  ],
+  Array [
+    8,
+    10,
+  ],
+  Array [
+    9,
+    10,
+  ],
+]
 `)
   })
 })

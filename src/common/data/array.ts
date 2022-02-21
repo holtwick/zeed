@@ -146,6 +146,16 @@ export function arrayAvg(...array: NestedArray<number>[]): number {
   return flatArray.reduce((acc, value) => acc + value, 0) / flatArray.length
 }
 
+export function arrayBatches<T>(array: T[], chunckLength: number): T[][] {
+  let chunks = []
+  let i = 0
+  const n = array.length
+  while (i < n) {
+    chunks.push(array.slice(i, (i += chunckLength)))
+  }
+  return chunks
+}
+
 export function createArray<T>(
   size: number = 0,
   item?: T | ((index: number) => T)

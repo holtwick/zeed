@@ -2,6 +2,7 @@
 
 import {
   arrayAvg,
+  arrayBatches,
   arrayFilterInPlace,
   arrayFlatten,
   arrayIntersection,
@@ -93,5 +94,14 @@ describe("Array", () => {
     expect(createArray(3)).toEqual([undefined, undefined, undefined])
     expect(createArray(3, "hello")).toEqual(["hello", "hello", "hello"])
     expect(createArray()).toEqual([])
+  })
+
+  it("should create batches", () => {
+    expect(arrayBatches([1, 2, 3, 4, 5, 6, 7], 2)).toEqual([
+      [1, 2],
+      [3, 4],
+      [5, 6],
+      [7],
+    ])
   })
 })

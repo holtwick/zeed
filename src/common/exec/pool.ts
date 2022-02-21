@@ -88,6 +88,10 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     }
   }
 
+  function cancelAll() {
+    Object.keys(tasks).forEach(cancel)
+  }
+
   function enqueue(id: string, task: TaskFn<T>) {
     if (tasks[id] == null) {
       tasks[id] = {
@@ -105,6 +109,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   return {
     events,
     cancel,
+    cancelAll,
     enqueue,
   }
 }

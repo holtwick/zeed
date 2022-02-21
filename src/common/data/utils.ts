@@ -127,7 +127,7 @@ export function memoize<In extends any, Out extends any>(
   }
 }
 
-/** Repeat `count` times */
+/** Repeat `count` times. Starts with `0` */
 export function forTimes(
   count: number,
   fn: (i: number, count: number) => void

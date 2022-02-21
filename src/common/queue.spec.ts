@@ -73,10 +73,14 @@ describe("queue", () => {
   })
 
   it("should pause", async () => {
-    expect.assertions(2)
+    expect.assertions(3)
 
     let list: any = []
     let queue = new SerialQueue({ logLevel })
+
+    let events: any = []
+    queue.onAny((...args) => events.push(args))
+
     queue.enqueue(async () => {
       await sleep(100)
       list.push("a")
@@ -95,13 +99,49 @@ describe("queue", () => {
     queue.resume()
     await queue.wait()
     expect(list).toEqual(["a", "b", "c"])
+
+    expect(events).toMatchInlineSnapshot(`
+Array [
+  Array [
+    "didStart",
+    1,
+  ],
+  Array [
+    "didUpdate",
+    1,
+    0,
+  ],
+  Array [
+    "didUpdate",
+    3,
+    1,
+  ],
+  Array [
+    "didUpdate",
+    3,
+    2,
+  ],
+  Array [
+    "didUpdate",
+    3,
+    3,
+  ],
+  Array [
+    "didFinish",
+    3,
+  ],
+]
+`)
   })
 
   it("should cancel the rest", async () => {
-    expect.assertions(2)
+    expect.assertions(3)
 
     let list: any = []
     let queue = new SerialQueue({ logLevel })
+
+    let events: any = []
+    queue.onAny((...args) => events.push(args))
 
     await queue.pause()
 
@@ -127,5 +167,18 @@ describe("queue", () => {
 
     await queue.wait()
     expect(list).toEqual([])
+
+    expect(events).toMatchInlineSnapshot(`
+Array [
+  Array [
+    "didCancel",
+    3,
+  ],
+  Array [
+    "didFinish",
+    3,
+  ],
+]
+`)
   })
 })

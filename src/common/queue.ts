@@ -5,6 +5,7 @@
 import { LoggerInterface, LogLevel } from "../common/log-base"
 import { Logger } from "../common/log"
 import { uname } from "./uuid"
+import { Emitter } from "./msg/emitter"
 
 const log = Logger("zeed:queue")
 
@@ -17,22 +18,29 @@ interface QueueTaskInfo {
   resolve: QueueTaskResolver
 }
 
-/** Guarentee serial execution of tasks. Able to wait, pause, resume and cancel all. */
-export class SerialQueue {
-  private queue: QueueTaskInfo[] = []
+interface SerialQueueEvents {
+  didUpdate(max: number, resolved: number): void
+  didStart(max: number): void
+  didCancel(max: number): void
+  didFinish(max: number): void
+  // didPause(max: number): void
+}
 
+/** Guarentee serial execution of tasks. Able to wait, pause, resume and cancel all. */
+export class SerialQueue extends Emitter<SerialQueueEvents> {
+  private queue: QueueTaskInfo[] = []
   private isPaused: boolean = false
   private waitToFinish: QueueTaskResolver[] = []
-
   private currentTask?: Promise<any>
-
   private log: LoggerInterface
+  private max: number = 0
+  private resolved: number = 0
 
   name: string
 
   constructor(opt: { name?: string; logLevel?: LogLevel } = {}) {
+    super()
     const { name = uname("queue"), logLevel } = opt
-
     this.name = name
     this.log = Logger(`zeed:queue:${name}`)
     this.log.level = logLevel ?? LogLevel.off
@@ -59,6 +67,11 @@ export class SerialQueue {
         break
       }
 
+      if (this.resolved === 0) {
+        this.emit("didStart", this.max)
+        this.emit("didUpdate", this.max, 0)
+      }
+
       const { name, task, resolve } = info
       this.currentTask = task()
       let result = undefined
@@ -72,6 +85,15 @@ export class SerialQueue {
 
       resolve(result)
       this.currentTask = undefined
+
+      this.resolved += 1
+      this.emit("didUpdate", this.max, this.resolved)
+    }
+
+    if (this.queue.length === 0) {
+      this.emit("didFinish", this.max)
+      this.max = 0
+      this.resolved = 0
     }
 
     while (this.waitToFinish.length > 0) {
@@ -89,6 +111,7 @@ export class SerialQueue {
       this.log.info(`immediate execution ${name}`)
       return await task()
     }
+    this.max += 1
     this.log(`enqueue ${name}`)
     return new Promise((resolve) => {
       this.queue.push({
@@ -114,6 +137,7 @@ export class SerialQueue {
   /** Remove all tasks from queue that are not yet executing. */
   async cancelAll(unblock = true) {
     this.log(`cancelAll`)
+    this.emit("didCancel", this.queue.length)
     let resolver = this.queue.map((task) => task.resolve)
     this.queue = []
     resolver.forEach((r) => r(undefined))

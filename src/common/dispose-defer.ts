@@ -1,6 +1,6 @@
 import { arrayFilterInPlace } from "./data/array"
+import { isPromise, promisify } from "./exec/promise"
 import { Logger } from "./log"
-import { isPromise, promisify } from "./promise"
 
 const log = Logger("dispose")
 

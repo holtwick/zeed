@@ -2,10 +2,10 @@
 
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-import { LoggerInterface, LogLevel } from "../common/log-base"
-import { Logger } from "../common/log"
-import { uname } from "./uuid"
-import { Emitter } from "./msg/emitter"
+import { LoggerInterface, LogLevel } from "../log-base"
+import { Logger } from "../log"
+import { uname } from "../uuid"
+import { Emitter } from "../msg/emitter"
 
 const log = Logger("zeed:queue")
 

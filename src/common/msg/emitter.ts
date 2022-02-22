@@ -4,7 +4,7 @@ import { getSecureRandomIfPossible } from "../data/math"
 import { Disposable, DisposerFunction } from "../dispose-defer"
 import { getGlobalContext } from "../global"
 import { Logger } from "../log"
-import { promisify } from "../promise"
+import { promisify } from "../exec/promise"
 
 const log = Logger("zeed:emitter")
 

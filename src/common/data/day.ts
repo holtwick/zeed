@@ -1,4 +1,4 @@
-import { isPromise } from "../promise"
+import { isPromise } from "../exec/promise"
 
 // See also and alternatives:
 // https://blog.openreplay.com/is-it-time-for-the-javascript-temporal-api

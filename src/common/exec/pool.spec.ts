@@ -9,34 +9,55 @@ describe("pool", () => {
     let collectedEvents: any = []
     pool.events.onAny((...args) => collectedEvents.push(args))
 
-    pool.enqueue("a", async () => {
-      r.push("a")
-      await sleep(10)
-    })
-    pool.enqueue("b", async () => {
-      r.push("b")
-      await sleep(10)
-    })
-    pool.enqueue("c", async () => {
-      r.push("c")
-      await sleep(10)
-    })
-    pool.enqueue("d", async () => {
-      r.push("d")
-      await sleep(10)
-    })
-    pool.enqueue("d", async () => {
-      r.push("dd")
-      await sleep(10)
-    })
-    pool.enqueue("e", async () => {
-      r.push("e")
-      await sleep(10)
-    })
-    let cancel = pool.enqueue("f", async () => {
-      r.push("f")
-      await sleep(10)
-    })
+    pool.enqueue(
+      async () => {
+        r.push("a")
+        await sleep(10)
+      },
+      { id: "a" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("b")
+        await sleep(10)
+      },
+      { id: "b" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("c")
+        await sleep(10)
+      },
+      { id: "c" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("d")
+        await sleep(10)
+      },
+      { id: "d" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("dd")
+        await sleep(10)
+      },
+      { id: "d" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("e")
+        await sleep(10)
+      },
+      { id: "e" }
+    )
+    let { cancel } = pool.enqueue(
+      async () => {
+        r.push("f")
+        await sleep(10)
+      },
+      { id: "f" }
+    )
     pool.cancel("d")
     cancel()
     expect(r).toMatchInlineSnapshot(`
@@ -45,6 +66,18 @@ Array [
   "b",
 ]
 `)
+
+    let { promise } = pool.enqueue(
+      async () => {
+        r.push("g")
+        await sleep(10)
+        return "g"
+      },
+      { id: "g" }
+    )
+
+    expect(await promise).toBe("g")
+
     await sleep(100)
     expect(r).toMatchInlineSnapshot(`
 Array [
@@ -52,6 +85,7 @@ Array [
   "b",
   "c",
   "e",
+  "g",
 ]
 `)
 
@@ -114,13 +148,18 @@ Array [
     2,
   ],
   Array [
+    "didUpdate",
+    7,
+    2,
+  ],
+  Array [
     "didResolve",
     "a",
     undefined,
   ],
   Array [
     "didUpdate",
-    6,
+    7,
     3,
   ],
   Array [
@@ -134,7 +173,7 @@ Array [
   ],
   Array [
     "didUpdate",
-    6,
+    7,
     4,
   ],
   Array [
@@ -148,8 +187,12 @@ Array [
   ],
   Array [
     "didUpdate",
-    6,
+    7,
     5,
+  ],
+  Array [
+    "didStart",
+    "g",
   ],
   Array [
     "didResolve",
@@ -158,8 +201,18 @@ Array [
   ],
   Array [
     "didUpdate",
+    7,
     6,
-    6,
+  ],
+  Array [
+    "didResolve",
+    "g",
+    "g",
+  ],
+  Array [
+    "didUpdate",
+    7,
+    7,
   ],
   Array [
     "didFinish",

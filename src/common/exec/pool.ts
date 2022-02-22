@@ -1,3 +1,4 @@
+import { uuid } from "../uuid"
 import { Emitter } from "../msg/emitter"
 import { TaskFn } from "./queue"
 
@@ -10,6 +11,7 @@ interface PoolTask<T> {
   priority: number
   task: TaskFn<T>
   running: boolean
+  done?: Function
 }
 
 export interface PoolTaskEvents {
@@ -55,6 +57,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       }
       if (taskInfo) {
         const id = taskInfo.id
+        const done = taskInfo.done
         taskInfo.running = true
         ++currentParallel
         events.emit("didStart", id)
@@ -63,6 +66,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           .then((r) => {
             delete tasks[id]
             events.emit("didResolve", id, r)
+            if (done) done(r)
             --currentParallel
             ++countResolved
             performNext()
@@ -70,6 +74,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           .catch((err) => {
             delete tasks[id]
             events.emit("didReject", id, err)
+            if (done) done()
             --currentParallel
             ++countResolved
             performNext()
@@ -92,7 +97,15 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     Object.keys(tasks).forEach(cancel)
   }
 
-  function enqueue(id: string, task: TaskFn<T>) {
+  function enqueue(
+    task: TaskFn<T>,
+    config: {
+      id?: string
+    } = {}
+  ) {
+    let promise: Promise<any> | undefined
+    let { id } = config
+    if (!id) id = uuid()
     if (tasks[id] == null) {
       tasks[id] = {
         id,
@@ -100,10 +113,16 @@ export function usePool<T = any>(config: PoolConfig = {}) {
         priority: ++priority,
         running: false,
       }
+      promise = new Promise((resolve) => (tasks[id!].done = resolve))
       ++countMax
       performNext()
     }
-    return () => cancel(id)
+    return {
+      id,
+      promise,
+      dispose: () => cancel(id!),
+      cancel: () => cancel(id!),
+    }
   }
 
   return {
@@ -111,6 +130,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     cancel,
     cancelAll,
     enqueue,
+    dispose: cancelAll,
   }
 }
 

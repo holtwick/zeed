@@ -13,13 +13,9 @@ interface ThrottleOptions {
   leading?: boolean
 }
 
-type ThrottleFunction = Function & { cancel: () => void; dispose: () => void }
-
 interface DebounceOptions {
   delay?: number
 }
-
-type DebounceFunction = ThrottleFunction
 
 /**
  * A special throttle implementation that tries to distribute execution
@@ -32,10 +28,10 @@ type DebounceFunction = ThrottleFunction
  * It is possible to `cancel` the timeout and to `flush` a call, e.g. if
  * leaving UI situation where a final call is required to write data or similar.
  */
-export function throttle(
-  callback: Function,
+export function throttle<F extends Function>(
+  callback: F,
   opt: ThrottleOptions = {}
-): ThrottleFunction {
+): F & { cancel: () => void; dispose: () => void } {
   const { delay = 100, trailing = true, leading = true } = opt
 
   let timeoutID: any = 0
@@ -115,17 +111,17 @@ export function throttle(
 
   // wrapper.flush = () => throw 'todo'
 
-  return wrapper
+  return wrapper as any
 }
 
 /**
  * Debounce fits best for filtering a large peak of events.
  * For UI event filtering throttle is probably a better choice.
  */
-export function debounce(
-  callback: Function,
+export function debounce<F extends Function>(
+  callback: F,
   opt: DebounceOptions = {}
-): DebounceFunction {
+): F & { cancel: () => void; dispose: () => void } {
   const { delay = 100 } = opt
   let timeoutID: any = 0
 
@@ -147,5 +143,5 @@ export function debounce(
 
   wrapper.cancel = clearExistingTimeout
   wrapper.dispose = clearExistingTimeout
-  return wrapper
+  return wrapper as any
 }

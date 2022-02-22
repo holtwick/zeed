@@ -316,4 +316,5 @@ Code integrated from other sources:
 - [dotenv](https://github.com/motdotla/dotenv) BSD-2
 - [filenamify](https://github.com/sindresorhus/filenamify) MIT
 - [gravatar](https://github.com/mazondo/gravatarjs/blob/master/gravatar.js) MIT
-- [lib0](https://github.com/dmonad/lib0)
+- [lib0](https://github.com/dmonad/lib0) MIT
+- [birpc](https://github.com/antfu/birpc) MIT

@@ -9,9 +9,11 @@ export function getStackLlocationList(stack: string): any[] {
     stack
       ?.split("\n")
       ?.map((rawLine) => {
-        let m = rawLine.match(/^\s+at.*(\((.*)\)|file:\/\/(.*)$)/)
+        let m = rawLine.match(
+          /^\s+at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/
+        )
         if (m) {
-          let line = m[3] || m[2]
+          let line = m[3] || m[2] || m[4]
           if (line.endsWith(")")) line = line.slice(0, -1)
           return line
         }
@@ -48,9 +50,9 @@ function pathStripCwd(path: string) {
 }
 
 function extractFileInfo(stackLine: string): string {
-  let m = stackLine.match(/^\s*at.*(\((.*)\)|file:\/\/(.*)$)/)
+  let m = stackLine.match(/^\s*at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/)
   if (m) {
-    let line = m[3] || m[2]
+    let line = m[3] || m[2] || m[4]
     if (line.endsWith(")")) line = line.slice(0, -1)
     return line
   }
@@ -68,6 +70,7 @@ function extractFileInfo(stackLine: string): string {
 export function getSourceLocation(level = 2, stripCwd = true): string {
   let stack = new Error().stack || ""
   let line: string | undefined = getStackLlocationList(stack)?.[level]
+  console.log("line", line)
   if (line && stripCwd) {
     line = pathStripCwd(line)
   }

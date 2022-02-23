@@ -61,11 +61,11 @@ describe("pool", () => {
     pool.cancel("d")
     cancel()
     expect(r).toMatchInlineSnapshot(`
-Array [
-  "a",
-  "b",
-]
-`)
+      [
+        "a",
+        "b",
+      ]
+    `)
 
     let { promise } = pool.enqueue(
       async () => {
@@ -80,144 +80,144 @@ Array [
 
     await sleep(100)
     expect(r).toMatchInlineSnapshot(`
-Array [
-  "a",
-  "b",
-  "c",
-  "e",
-  "g",
-]
-`)
+      [
+        "a",
+        "b",
+        "c",
+        "e",
+        "g",
+      ]
+    `)
 
     expect(collectedEvents).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "didUpdate",
-    1,
-    0,
-  ],
-  Array [
-    "didStart",
-    "a",
-  ],
-  Array [
-    "didUpdate",
-    2,
-    0,
-  ],
-  Array [
-    "didStart",
-    "b",
-  ],
-  Array [
-    "didUpdate",
-    3,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    4,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    5,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    6,
-    0,
-  ],
-  Array [
-    "didCancel",
-    "d",
-  ],
-  Array [
-    "didUpdate",
-    6,
-    1,
-  ],
-  Array [
-    "didCancel",
-    "f",
-  ],
-  Array [
-    "didUpdate",
-    6,
-    2,
-  ],
-  Array [
-    "didUpdate",
-    7,
-    2,
-  ],
-  Array [
-    "didResolve",
-    "a",
-    undefined,
-  ],
-  Array [
-    "didUpdate",
-    7,
-    3,
-  ],
-  Array [
-    "didStart",
-    "c",
-  ],
-  Array [
-    "didResolve",
-    "b",
-    undefined,
-  ],
-  Array [
-    "didUpdate",
-    7,
-    4,
-  ],
-  Array [
-    "didStart",
-    "e",
-  ],
-  Array [
-    "didResolve",
-    "c",
-    undefined,
-  ],
-  Array [
-    "didUpdate",
-    7,
-    5,
-  ],
-  Array [
-    "didStart",
-    "g",
-  ],
-  Array [
-    "didResolve",
-    "e",
-    undefined,
-  ],
-  Array [
-    "didUpdate",
-    7,
-    6,
-  ],
-  Array [
-    "didResolve",
-    "g",
-    "g",
-  ],
-  Array [
-    "didUpdate",
-    7,
-    7,
-  ],
-  Array [
-    "didFinish",
-  ],
-]
-`)
+      [
+        [
+          "didUpdate",
+          1,
+          0,
+        ],
+        [
+          "didStart",
+          "a",
+        ],
+        [
+          "didUpdate",
+          2,
+          0,
+        ],
+        [
+          "didStart",
+          "b",
+        ],
+        [
+          "didUpdate",
+          3,
+          0,
+        ],
+        [
+          "didUpdate",
+          4,
+          0,
+        ],
+        [
+          "didUpdate",
+          5,
+          0,
+        ],
+        [
+          "didUpdate",
+          6,
+          0,
+        ],
+        [
+          "didCancel",
+          "d",
+        ],
+        [
+          "didUpdate",
+          6,
+          1,
+        ],
+        [
+          "didCancel",
+          "f",
+        ],
+        [
+          "didUpdate",
+          6,
+          2,
+        ],
+        [
+          "didUpdate",
+          7,
+          2,
+        ],
+        [
+          "didResolve",
+          "a",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          7,
+          3,
+        ],
+        [
+          "didStart",
+          "c",
+        ],
+        [
+          "didResolve",
+          "b",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          7,
+          4,
+        ],
+        [
+          "didStart",
+          "e",
+        ],
+        [
+          "didResolve",
+          "c",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          7,
+          5,
+        ],
+        [
+          "didStart",
+          "g",
+        ],
+        [
+          "didResolve",
+          "e",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          7,
+          6,
+        ],
+        [
+          "didResolve",
+          "g",
+          "g",
+        ],
+        [
+          "didUpdate",
+          7,
+          7,
+        ],
+        [
+          "didFinish",
+        ],
+      ]
+    `)
   })
 })

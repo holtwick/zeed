@@ -5,13 +5,14 @@ import { getSourceLocation, getStackLlocationList } from "./log-util"
 describe("log-util", function () {
   test("should find correct source file line", function () {
     const source = getSourceLocation(1, true)
-    expect(source.startsWith("src/node/log-util.spec.ts:7:")).toBe(true)
+    expect(source.startsWith("src/node/log-util.spec.ts:")).toBe(true)
   })
 
   test("should parse stack", function () {
     const sample = `
     at getSourceLocation (file:///Users/dirk/work/public/zeed/dist/esm/node/log-util.js:13:17)
     at file:///Users/dirk/work/public/zeed/dist/esm/node/log-node.js:105:26
+    at /Users/dirk/work/public/zeed/dist/esm/node/log-node.js:105:26
     at emit (file:///Users/dirk/work/public/zeed/dist/esm/common/log.js:32:33)
     at Function.LoggerBaseFactory.log.info (file:///Users/dirk/work/public/zeed/dist/esm/common/log.js:55:13)
     at file:///Users/dirk/work/public/zeed/demos/logging/index.js:37:5
@@ -22,6 +23,7 @@ describe("log-util", function () {
 `
     expect(getStackLlocationList(sample)).toEqual([
       "/Users/dirk/work/public/zeed/dist/esm/node/log-util.js:13:17",
+      "/Users/dirk/work/public/zeed/dist/esm/node/log-node.js:105:26",
       "/Users/dirk/work/public/zeed/dist/esm/node/log-node.js:105:26",
       "/Users/dirk/work/public/zeed/dist/esm/common/log.js:32:33",
       "/Users/dirk/work/public/zeed/dist/esm/common/log.js:55:13",

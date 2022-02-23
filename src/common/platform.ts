@@ -37,6 +37,7 @@ export function detect(
     browser: false,
     node: false,
     worker: false,
+    test: false,
     jest: false,
     macosNative: false,
     iosNative: false,
@@ -76,6 +77,7 @@ export function detect(
     self instanceof WorkerGlobalScope
   // @ts-ignore
   info.jest = typeof jest !== "undefined" || typeof vitest !== "undefined"
+  info.test = info.jest
 
   info.macosNative = info.wkwebview && info.macos
   info.iosNative = info.wkwebview && info.ios

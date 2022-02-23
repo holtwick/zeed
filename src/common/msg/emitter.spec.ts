@@ -82,6 +82,8 @@ describe("Emitter", () => {
   })
 
   it("should wait on", async () => {
+    expect.assertions(2)
+
     let e1 = new Emitter()
 
     setTimeout(() => {
@@ -91,7 +93,7 @@ describe("Emitter", () => {
     let v = await waitOn(e1, "f")
     expect(v).toBe(1)
 
-    if (platform.jest) {
+    if (platform.test) {
       await expect(waitOn(e1, "x", 10)).rejects.toThrow(
         "Did not response in time"
       )

@@ -70,7 +70,6 @@ function extractFileInfo(stackLine: string): string {
 export function getSourceLocation(level = 2, stripCwd = true): string {
   let stack = new Error().stack || ""
   let line: string | undefined = getStackLlocationList(stack)?.[level]
-  console.log("line", line)
   if (line && stripCwd) {
     line = pathStripCwd(line)
   }

@@ -2,6 +2,10 @@ const RX_WHITESPACE = /\\\s|\s+|#[^\n]*\n?/gm
 const RX_REAL_GROUPS = /\(\?P?<(\w[\w\d_]+)>|\((?!\?(:|\!|=|<=|<\!))/gm
 const RX_LOOK_BEHIND = /^((?:\(\?[\w$]+\))?)\(\?<([=!])([\s\S]*?)\)/gm
 
+import { Logger } from "../log"
+
+const log = Logger("xrx")
+
 export function regExpString(rx: string | RegExp): string {
   return typeof rx === "string" ? rx : rx.source || ""
 }
@@ -34,7 +38,7 @@ export class XRX {
     if (extended) {
       _flags = _flags.replace("x", "")
       _rx = _rx.replace(RX_WHITESPACE, (r) => {
-        // console.log('rp', r)
+        // log('rp', r)
         return r[0] === "\\" ? r : ""
       })
     }
@@ -43,7 +47,7 @@ export class XRX {
     if (!(pattern instanceof RegExp)) {
       let index = 0
       _rx = _rx.replace(RX_REAL_GROUPS, (str, name) => {
-        //console.log('>>>', name)
+        //log('>>>', name)
         index += 1
         if (name) {
           if (
@@ -53,7 +57,7 @@ export class XRX {
           ) {
             this.namedGroups[name] = index
           } else {
-            console.error(`Unallowed or duplicate group name: ${name}`)
+            log.error(`Unallowed or duplicate group name: ${name}`)
           }
           return "("
         }
@@ -139,7 +143,7 @@ export class XRX {
       matches.push(m)
     }
     this.rx.lastIndex = 0
-    // console.log('execAll:', matches)
+    // log('execAll:', matches)
     return matches
   }
 

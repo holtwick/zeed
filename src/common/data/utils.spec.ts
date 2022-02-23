@@ -98,70 +98,70 @@ describe("empty", () => {
     let rooms: any = {}
     ensureKey(rooms, "a", (r) => ({ r } as any)).x = 1
     expect(rooms).toMatchInlineSnapshot(`
-Object {
-  "a": Object {
-    "r": "a",
-    "x": 1,
-  },
-}
-`)
+      {
+        "a": {
+          "r": "a",
+          "x": 1,
+        },
+      }
+    `)
     ensureKey(rooms, "a", (r) => ({ r } as any)).x += 10
     expect(rooms).toMatchInlineSnapshot(`
-Object {
-  "a": Object {
-    "r": "a",
-    "x": 11,
-  },
-}
-`)
+      {
+        "a": {
+          "r": "a",
+          "x": 11,
+        },
+      }
+    `)
   })
 
   it("should repeat forTimes", () => {
     let l: any = []
     forTimes(10, (...args) => l.push(args))
     expect(l).toMatchInlineSnapshot(`
-Array [
-  Array [
-    0,
-    10,
-  ],
-  Array [
-    1,
-    10,
-  ],
-  Array [
-    2,
-    10,
-  ],
-  Array [
-    3,
-    10,
-  ],
-  Array [
-    4,
-    10,
-  ],
-  Array [
-    5,
-    10,
-  ],
-  Array [
-    6,
-    10,
-  ],
-  Array [
-    7,
-    10,
-  ],
-  Array [
-    8,
-    10,
-  ],
-  Array [
-    9,
-    10,
-  ],
-]
-`)
+      [
+        [
+          0,
+          10,
+        ],
+        [
+          1,
+          10,
+        ],
+        [
+          2,
+          10,
+        ],
+        [
+          3,
+          10,
+        ],
+        [
+          4,
+          10,
+        ],
+        [
+          5,
+          10,
+        ],
+        [
+          6,
+          10,
+        ],
+        [
+          7,
+          10,
+        ],
+        [
+          8,
+          10,
+        ],
+        [
+          9,
+          10,
+        ],
+      ]
+    `)
   })
 })

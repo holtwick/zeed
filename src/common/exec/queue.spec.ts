@@ -101,46 +101,46 @@ describe("queue", () => {
     expect(list).toEqual(["a", "b", "c"])
 
     expect(events).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "didUpdate",
-    1,
-    0,
-  ],
-  Array [
-    "didStart",
-    1,
-  ],
-  Array [
-    "didUpdate",
-    2,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    3,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    3,
-    1,
-  ],
-  Array [
-    "didUpdate",
-    3,
-    2,
-  ],
-  Array [
-    "didUpdate",
-    3,
-    3,
-  ],
-  Array [
-    "didFinish",
-  ],
-]
-`)
+      [
+        [
+          "didUpdate",
+          1,
+          0,
+        ],
+        [
+          "didStart",
+          1,
+        ],
+        [
+          "didUpdate",
+          2,
+          0,
+        ],
+        [
+          "didUpdate",
+          3,
+          0,
+        ],
+        [
+          "didUpdate",
+          3,
+          1,
+        ],
+        [
+          "didUpdate",
+          3,
+          2,
+        ],
+        [
+          "didUpdate",
+          3,
+          3,
+        ],
+        [
+          "didFinish",
+        ],
+      ]
+    `)
   })
 
   it("should cancel the rest", async () => {
@@ -178,29 +178,29 @@ Array [
     expect(list).toEqual([])
 
     expect(events).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "didUpdate",
-    1,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    2,
-    0,
-  ],
-  Array [
-    "didUpdate",
-    3,
-    0,
-  ],
-  Array [
-    "didCancel",
-  ],
-  Array [
-    "didFinish",
-  ],
-]
-`)
+      [
+        [
+          "didUpdate",
+          1,
+          0,
+        ],
+        [
+          "didUpdate",
+          2,
+          0,
+        ],
+        [
+          "didUpdate",
+          3,
+          0,
+        ],
+        [
+          "didCancel",
+        ],
+        [
+          "didFinish",
+        ],
+      ]
+    `)
   })
 })

@@ -3,6 +3,7 @@
 import { platform } from "../platform"
 import { waitOn, sleep } from "../exec/promise"
 import { Emitter, getGlobalEmitter, lazyListener } from "./emitter"
+import { vi } from "vitest"
 
 declare global {
   interface ZeedGlobalEmitter {
@@ -145,7 +146,7 @@ describe("Emitter", () => {
   })
 
   it("should mock events", async () => {
-    let fn = jest.fn()
+    let fn = vi.fn()
 
     let e = new Emitter()
 
@@ -160,7 +161,7 @@ describe("Emitter", () => {
   })
 
   it("should work with global listener", async () => {
-    let fn = jest.fn()
+    let fn = vi.fn()
 
     let e = getGlobalEmitter()
 

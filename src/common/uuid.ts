@@ -5,7 +5,7 @@ import { useBase } from "./data/basex"
 import { getTimestamp } from "./time"
 
 const { encode: encode62, decode: decode62 } = useBase(62)
-const { encode: encode32 } = useBase(32)
+const { encode: encode32, decode: decode32 } = useBase(32)
 
 export function uuidBytes(): Uint8Array {
   return randomUint8Array(16)
@@ -27,6 +27,14 @@ export function uuidDecode(uuid: string): Uint8Array {
 
 export function uuidB32(): string {
   return encode32(uuidBytes(), 26)
+}
+
+export function uuid32Encode(bytes: Uint8Array): string {
+  return encode32(bytes, 26)
+}
+
+export function uuid32Decode(uuid: string): Uint8Array {
+  return decode32(uuid, 16)
 }
 
 let _unameCounters: Record<string, number> = {}

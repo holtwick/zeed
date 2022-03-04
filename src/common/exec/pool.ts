@@ -54,11 +54,19 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   let priority = 0
   let tasks: Record<string, PoolTask<T>> = {}
 
-  const [allFinishedPromise, allFinishedResolve] = createPromise()
+  // const [allFinishedPromise, allFinishedResolve] = createPromise()
+
+  async function waitFinishAll() {
+    if (countMax > 0) {
+      const [promise, resolve] = createPromise()
+      events.once("didFinish", resolve)
+      return promise
+    }
+  }
 
   function didFinish() {
     events.emit("didFinish")
-    allFinishedResolve(countMax)
+    // allFinishedResolve(countMax)
     countMax = 0
     countResolved = 0
   }
@@ -192,7 +200,8 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     cancelAll,
     enqueue,
     dispose: cancelAll,
-    allFinishedPromise,
+    // allFinishedPromise,
+    waitFinishAll,
   }
 }
 

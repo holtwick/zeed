@@ -84,7 +84,7 @@ describe("pool", () => {
 
     expect(await promise).toBe("g")
 
-    await pool.allFinishedPromise
+    await pool.waitFinishAll()
 
     expect(r).toMatchInlineSnapshot(`
       [

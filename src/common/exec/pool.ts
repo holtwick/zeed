@@ -19,7 +19,12 @@ interface PoolTask<T> {
 }
 
 export interface PoolTaskEvents {
-  didUpdate(max: number, resolved: number): void
+  didUpdate(
+    max: number,
+    resolved: number,
+    presentMax: number,
+    presentResolved: number
+  ): void
   didStart(id: string): void
   didCancel(id: string): void
   didFinish(): void
@@ -46,8 +51,24 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     countResolved = 0
   }
 
+  function didUpdate() {
+    let presentMax = 0
+    let presentResolved = 0
+    for (const { max, resolved } of Object.values(tasks)) {
+      presentMax += max
+      presentResolved += Math.min(max, resolved)
+    }
+    events.emit(
+      "didUpdate",
+      countMax,
+      countResolved,
+      presentMax,
+      presentResolved
+    )
+  }
+
   function performNext() {
-    events.emit("didUpdate", countMax, countResolved)
+    didUpdate()
     if (countMax > 0 && countMax === countResolved) didFinish()
     if (currentParallel >= maxParallel) return
     let waitingTasks = Object.values(tasks).filter((t) => !t.running)
@@ -59,29 +80,35 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           taskInfo = t
         }
       }
-      if (taskInfo) {
+      if (taskInfo != null) {
         const id = taskInfo.id
         const done = taskInfo.done
         taskInfo.running = true
         ++currentParallel
         events.emit("didStart", id)
+
+        const taskFinished = () => {
+          if (taskInfo) {
+            taskInfo.resolved = taskInfo.max
+          }
+          --currentParallel
+          ++countResolved
+          performNext()
+        }
+
         taskInfo
           .task(taskInfo)
           .then((r) => {
             delete tasks[id]
             events.emit("didResolve", id, r)
-            if (done) done(r)
-            --currentParallel
-            ++countResolved
-            performNext()
+            done(r)
+            taskFinished()
           })
           .catch((err) => {
             delete tasks[id]
             events.emit("didReject", id, err)
-            if (done) done()
-            --currentParallel
-            ++countResolved
-            performNext()
+            done()
+            taskFinished()
           })
       }
     }
@@ -93,7 +120,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       delete tasks[id]
       ++countResolved
       events.emit("didCancel", id)
-      events.emit("didUpdate", countMax, countResolved)
+      didUpdate()
     }
   }
 
@@ -109,8 +136,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   ) {
     let done: any
     let promise: Promise<any> = new Promise((resolve) => (done = resolve))
-    let { id } = config
-    if (!id) id = uuid()
+    let id = config.id ?? uuid()
     if (tasks[id] == null) {
       tasks[id] = {
         id,
@@ -127,8 +153,8 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     return {
       id,
       promise,
-      dispose: () => cancel(id!),
-      cancel: () => cancel(id!),
+      dispose: () => cancel(id),
+      cancel: () => cancel(id),
     }
   }
 

@@ -17,11 +17,17 @@ describe("pool", () => {
       { id: "a" }
     )
     pool.enqueue(
-      async () => {
+      async (taskInfo) => {
+        //info.setProgress(0, 5)
         r.push("b")
+        taskInfo.setResolved(2)
+        await sleep(1)
+        taskInfo.incResolved()
+        await sleep(1)
+        taskInfo.incResolved()
         await sleep(10)
       },
-      { id: "b" }
+      { id: "b", max: 5 }
     )
     pool.enqueue(
       async () => {
@@ -42,7 +48,7 @@ describe("pool", () => {
         r.push("dd")
         await sleep(10)
       },
-      { id: "d" }
+      { id: "dd" }
     )
     pool.enqueue(
       async () => {
@@ -58,7 +64,7 @@ describe("pool", () => {
       },
       { id: "f" }
     )
-    pool.cancel("d")
+    pool.cancel("dd")
     cancel()
     expect(r).toMatchInlineSnapshot(`
       [
@@ -84,6 +90,7 @@ describe("pool", () => {
         "a",
         "b",
         "c",
+        "d",
         "e",
         "g",
       ]
@@ -95,6 +102,8 @@ describe("pool", () => {
           "didUpdate",
           1,
           0,
+          1,
+          0,
         ],
         [
           "didStart",
@@ -104,6 +113,8 @@ describe("pool", () => {
           "didUpdate",
           2,
           0,
+          6,
+          0,
         ],
         [
           "didStart",
@@ -111,32 +122,56 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
+          2,
+          0,
+          6,
+          2,
+        ],
+        [
+          "didUpdate",
           3,
           0,
+          7,
+          2,
         ],
         [
           "didUpdate",
           4,
           0,
+          8,
+          2,
         ],
         [
           "didUpdate",
           5,
           0,
+          9,
+          2,
         ],
         [
           "didUpdate",
           6,
           0,
-        ],
-        [
-          "didCancel",
-          "d",
+          10,
+          2,
         ],
         [
           "didUpdate",
-          6,
+          7,
+          0,
+          11,
+          2,
+        ],
+        [
+          "didCancel",
+          "dd",
+        ],
+        [
+          "didUpdate",
+          7,
           1,
+          11,
+          3,
         ],
         [
           "didCancel",
@@ -144,13 +179,31 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
-          6,
+          7,
           2,
+          11,
+          4,
         ],
         [
           "didUpdate",
-          7,
+          8,
           2,
+          12,
+          4,
+        ],
+        [
+          "didUpdate",
+          8,
+          2,
+          12,
+          5,
+        ],
+        [
+          "didUpdate",
+          8,
+          2,
+          12,
+          6,
         ],
         [
           "didResolve",
@@ -159,8 +212,10 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
-          7,
+          8,
           3,
+          12,
+          7,
         ],
         [
           "didStart",
@@ -173,12 +228,14 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
-          7,
+          8,
           4,
+          12,
+          8,
         ],
         [
           "didStart",
-          "e",
+          "d",
         ],
         [
           "didResolve",
@@ -187,8 +244,26 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
-          7,
+          8,
           5,
+          12,
+          9,
+        ],
+        [
+          "didStart",
+          "e",
+        ],
+        [
+          "didResolve",
+          "d",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          8,
+          6,
+          12,
+          10,
         ],
         [
           "didStart",
@@ -201,8 +276,10 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
+          8,
           7,
-          6,
+          12,
+          11,
         ],
         [
           "didResolve",
@@ -211,8 +288,10 @@ describe("pool", () => {
         ],
         [
           "didUpdate",
-          7,
-          7,
+          8,
+          8,
+          12,
+          12,
         ],
         [
           "didFinish",

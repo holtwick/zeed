@@ -1,6 +1,13 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isPromise, promisify, sleep, timeout, timeoutReached } from "./promise"
+import {
+  createPromise,
+  isPromise,
+  promisify,
+  sleep,
+  timeout,
+  timeoutReached,
+} from "./promise"
 
 describe("Promises", () => {
   async function demo() {
@@ -35,5 +42,14 @@ describe("Promises", () => {
       500
     )
     expect(r2).toBe(123)
+  })
+
+  it("should create promise", async () => {
+    const [promise, resolve] = createPromise()
+    setTimeout(() => {
+      resolve(5)
+    }, 50)
+    let result = await promise
+    expect(result).toEqual(5)
   })
 })

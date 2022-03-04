@@ -4,6 +4,15 @@ import { Logger } from "../log"
 
 const { warn } = Logger("zeed:promise")
 
+export function createPromise<T>(): [Promise<T>, any, any] {
+  let resolve, reject
+  let promise = new Promise<T>((_resolve, _reject) => {
+    resolve = _resolve
+    reject = _reject
+  })
+  return [promise, resolve, reject]
+}
+
 /** Sleep for `milliSeconds`. Example 1s: `await sleep(1000)` */
 export async function sleep(milliSeconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliSeconds))
@@ -132,7 +141,6 @@ export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
 /** This is exactly what Prose.resolve(x) is supposed to be: return a Promise no matter what type x is */
 export function promisify<T>(value: Promise<T> | T): Promise<T> {
   return Promise.resolve(value)
-  // return isPromise(value) ? value : Promise.resolve(value)
 }
 
 // // https://github.com/unjs/items-promise

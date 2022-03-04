@@ -1,5 +1,6 @@
 import { Emitter } from "../msg/emitter"
 import { uuid } from "../uuid"
+import { createPromise } from "./promise"
 
 interface PoolConfig {
   maxParallel?: number
@@ -53,8 +54,11 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   let priority = 0
   let tasks: Record<string, PoolTask<T>> = {}
 
+  const [allFinishedPromise, allFinishedResolve] = createPromise()
+
   function didFinish() {
     events.emit("didFinish")
+    allFinishedResolve(countMax)
     countMax = 0
     countResolved = 0
   }
@@ -188,6 +192,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     cancelAll,
     enqueue,
     dispose: cancelAll,
+    allFinishedPromise,
   }
 }
 

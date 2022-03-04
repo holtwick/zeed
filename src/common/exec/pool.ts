@@ -1,17 +1,21 @@
-import { uuid } from "../uuid"
 import { Emitter } from "../msg/emitter"
+import { uuid } from "../uuid"
 import { TaskFn } from "./queue"
 
 interface PoolConfig {
   maxParallel?: number
 }
 
+type PoolTaskFn<T = any> = (taskInfo?: PoolTask<T>) => Promise<T>
+
 interface PoolTask<T> {
-  id: string
-  priority: number
-  task: TaskFn<T>
+  readonly id: string
+  readonly task: PoolTaskFn<T>
+  readonly done: Function
   running: boolean
-  done?: Function
+  priority: number
+  max: number
+  resolved: number
 }
 
 export interface PoolTaskEvents {
@@ -62,7 +66,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
         ++currentParallel
         events.emit("didStart", id)
         taskInfo
-          .task()
+          .task(taskInfo)
           .then((r) => {
             delete tasks[id]
             events.emit("didResolve", id, r)
@@ -103,7 +107,8 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       id?: string
     } = {}
   ) {
-    let promise: Promise<any> | undefined
+    let done: any
+    let promise: Promise<any> = new Promise((resolve) => (done = resolve))
     let { id } = config
     if (!id) id = uuid()
     if (tasks[id] == null) {
@@ -112,8 +117,10 @@ export function usePool<T = any>(config: PoolConfig = {}) {
         task,
         priority: ++priority,
         running: false,
+        max: 1,
+        resolved: 0,
+        done,
       }
-      promise = new Promise((resolve) => (tasks[id!].done = resolve))
       ++countMax
       performNext()
     }

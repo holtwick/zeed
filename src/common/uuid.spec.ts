@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { useBase } from "./data/basex"
+import { sleep } from "./exec/promise"
 import {
   suid,
   suidBytesDate,
@@ -8,12 +9,14 @@ import {
   uname,
   uuid,
   uuid32bit,
+  uuid32Decode,
+  uuid32Encode,
   uuidB32,
+  uuidBytes,
   uuidDecode,
   uuidEncode,
   uuidv4,
 } from "./uuid"
-import { sleep } from "./exec/promise"
 
 describe("uuid", () => {
   it("should not certain length", () => {
@@ -140,5 +143,19 @@ describe("uuid", () => {
   it("should generate 32bit", () => {
     expect(uuid32bit()).not.toBe(0)
     expect(Number.isSafeInteger(uuid32bit())).toBe(true)
+  })
+
+  it("should encode / decode 32", () => {
+    const bytes = uuidBytes()
+    const b32 = uuid32Encode(bytes)
+    expect(b32).toHaveLength(26)
+    expect(uuid32Decode(b32)).toEqual(bytes)
+  })
+
+  it("should encode / decode 62", () => {
+    const bytes = uuidBytes()
+    const b62 = uuidEncode(bytes)
+    expect(b62).toHaveLength(22)
+    expect(uuidDecode(b62)).toEqual(bytes)
   })
 })

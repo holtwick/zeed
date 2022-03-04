@@ -1,20 +1,19 @@
 import { Emitter } from "../msg/emitter"
 import { uuid } from "../uuid"
-import { TaskFn } from "./queue"
 
 interface PoolConfig {
   maxParallel?: number
 }
 
-type PoolTaskFn<T = any> = (taskInfo?: PoolTask<T>) => Promise<T>
+export type PoolTaskFn<T = any> = (taskInfo?: PoolTask<T>) => Promise<T>
 
-enum PoolTaskState {
+export enum PoolTaskState {
   waiting,
   running,
   finished,
 }
 
-interface PoolTask<T> {
+export interface PoolTask<T> {
   readonly id: string
   readonly task: PoolTaskFn<T>
   readonly done: Function

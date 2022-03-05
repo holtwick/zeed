@@ -34,3 +34,8 @@ export function avg(array: number[]): number {
 }
 
 // export const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
+
+// https://www.noulakaz.net/2007/03/18/a-regular-expression-to-check-for-prime-numbers/
+/** Fancy prime number check ;) */
+export const isPrimeRX = (val: number) =>
+  !/^1?$|^(11+?)\1+$/.test("1".repeat(val))

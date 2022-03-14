@@ -25,6 +25,13 @@ export interface PoolTask<T> {
   priority: number
   max: number
   resolved: number
+  result?: T
+}
+
+export enum PoolTaskIdConflictResolution {
+  replace,
+  memoize,
+  error,
 }
 
 export interface PoolTaskEvents {
@@ -110,8 +117,9 @@ export function usePool<T = any>(config: PoolConfig = {}) {
         ++currentParallel
         events.emit("didStart", id)
 
-        const taskFinished = () => {
+        const taskFinished = (result?: T) => {
           if (taskInfo) {
+            taskInfo.result = result
             taskInfo.state = PoolTaskState.finished
             taskInfo.resolved = taskInfo.max
           }
@@ -125,7 +133,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           .then((r) => {
             done(r)
             events.emit("didResolve", id, r)
-            taskFinished()
+            taskFinished(r)
           })
           .catch((err) => {
             done()
@@ -156,36 +164,61 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       id?: string
       max?: number
       resolved?: number
+      idConflictResolution?: PoolTaskIdConflictResolution
     } = {}
   ) {
     let done: any
     let promise: Promise<any> = new Promise((resolve) => (done = resolve))
     let id = config.id ?? uuid()
-    if (tasks[id] == null) {
-      tasks[id] = {
-        id,
-        task,
-        priority: ++priority,
-        state: PoolTaskState.waiting,
-        max: config.max ?? 1,
-        resolved: config.resolved ?? 0,
-        done,
-        setMax(max) {
-          tasks[id].max = max
-          didUpdate()
-        },
-        setResolved(max) {
-          tasks[id].resolved = max
-          didUpdate()
-        },
-        incResolved(inc = 1) {
-          tasks[id].resolved += inc
-          didUpdate()
-        },
+
+    if (tasks[id] != null) {
+      const resolution =
+        config.idConflictResolution ?? PoolTaskIdConflictResolution.memoize
+
+      if (resolution === PoolTaskIdConflictResolution.replace) {
+        cancel(id)
+      } else if (resolution === PoolTaskIdConflictResolution.memoize) {
+        let runningTask = tasks[id]
+        return {
+          id,
+          promise: (async () => {
+            if (runningTask.state === PoolTaskState.finished) {
+              return tasks[id].result
+            }
+            // todo: wait for task to finish
+          })(),
+          dispose: () => cancel(id),
+          cancel: () => cancel(id),
+        }
+      } else {
+        throw new Error(`Pool task with id=${id} already exists!`)
       }
-      ++countMax
-      performNext()
     }
+
+    tasks[id] = {
+      id,
+      task,
+      priority: ++priority,
+      state: PoolTaskState.waiting,
+      max: config.max ?? 1,
+      resolved: config.resolved ?? 0,
+      done,
+      setMax(max) {
+        tasks[id].max = max
+        didUpdate()
+      },
+      setResolved(max) {
+        tasks[id].resolved = max
+        didUpdate()
+      },
+      incResolved(inc = 1) {
+        tasks[id].resolved += inc
+        didUpdate()
+      },
+    }
+    ++countMax
+    performNext()
+
     return {
       id,
       promise,

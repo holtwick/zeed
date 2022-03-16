@@ -13,6 +13,10 @@ export type DayInput = number | string | Date | Day | [number, number, number]
 export class Day {
   days: number
 
+  get value() {
+    return this.days
+  }
+
   constructor(days?: DayInput) {
     if (typeof days === "number") {
       this.days = days
@@ -183,4 +187,8 @@ export function today(): Day {
 
 export function day(days?: DayInput): Day {
   return new Day(days)
+}
+
+export function dateStringToDays(dateString: string): number {
+  return Day.fromDate(new Date(dateString)).days
 }

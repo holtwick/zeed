@@ -37,5 +37,11 @@ export function avg(array: number[]): number {
 
 // https://www.noulakaz.net/2007/03/18/a-regular-expression-to-check-for-prime-numbers/
 /** Fancy prime number check ;) */
-export const isPrimeRX = (val: number) =>
-  !/^1?$|^(11+?)\1+$/.test("1".repeat(val))
+export function isPrimeRX(value: number): boolean {
+  return !/^1?$|^(11+?)\1+$/.test("1".repeat(value))
+}
+
+export function isPrime(value: number): boolean {
+  for (var i = 2; i < value; i++) if (value % i === 0) return false
+  return value > 1
+}

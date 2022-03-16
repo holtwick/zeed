@@ -22,7 +22,7 @@ export type httpMethod =
   | "PATCH"
 
 export async function fetchBasic(
-  url: string,
+  url: string | URL,
   fetchOptions: any = {},
   fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
 ): Promise<Response | undefined> {
@@ -31,7 +31,7 @@ export async function fetchBasic(
     //   fetchOptions.headers = new Headers(fetchOptions.headers)
     // }
     // log.log('fetch', url, fetchOptions)
-    const response = await fetchFn(url, fetchOptions)
+    const response = await fetchFn(String(url), fetchOptions)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
     if (response.status < 400) {
@@ -51,7 +51,7 @@ export async function fetchBasic(
 }
 
 export async function fetchJson<T = Json>(
-  url: string,
+  url: string | URL,
   opts: any = {},
   fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
 ): Promise<T | undefined> {
@@ -101,7 +101,7 @@ export function fetchOptionsJson(data: Object, method: httpMethod = "POST") {
 }
 
 export async function fetchText(
-  url: string,
+  url: string | URL,
   opts: any = {},
   fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
 ): Promise<string | undefined> {

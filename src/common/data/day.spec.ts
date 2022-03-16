@@ -1,4 +1,4 @@
-import { Day, forEachDay, today } from "./day"
+import { dateStringToDays, Day, forEachDay } from "./day"
 
 describe("Days", () => {
   it("Day Simple Approach", () => {
@@ -98,5 +98,12 @@ describe("Days", () => {
     expect(d.monthOffset(-2)?.days).toBe(20211001)
     expect(d.monthOffset(-11)?.days).toBe(20210101)
     expect(d.monthOffset(-24)?.days).toBe(20191201)
+  })
+
+  it("should parse date string", () => {
+    expect(new Date("2019-08-05T13:14:31.000Z").toISOString()).toEqual(
+      "2019-08-05T13:14:31.000Z"
+    )
+    expect(dateStringToDays("2019-08-05T13:14:31.000Z")).toBe(20190805)
   })
 })

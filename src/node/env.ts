@@ -30,8 +30,7 @@ function parse(src: string, options: csvOptions = {}) {
   let obj: Record<string, string> = {}
 
   // convert Buffers before splitting into lines and processing
-  src
-    .toString()
+  String(src)
     .split(NEWLINES_MATCH)
     .forEach(function (line, idx) {
       // matching "KEY' and 'VAL' in 'KEY=VAL'

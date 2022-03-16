@@ -39,7 +39,7 @@ export function useBase(alphaOrBase: string | number) {
     ALPHABET = alphaOrBase
   } else {
     // @ts-ignore
-    ALPHABET = alphabets[alphaOrBase.toString()]
+    ALPHABET = alphabets[String(alphaOrBase)]
     if (ALPHABET == null) throw new Error(`Unknown base ${alphaOrBase}`)
   }
 

@@ -36,9 +36,7 @@ export function encodeQuery(data: Record<string, any>) {
       for (let v of value) {
         if (v != null) {
           pairs.push(
-            encodeURIComponent(key) +
-              "=" +
-              encodeURIComponent(v.toString() || "")
+            encodeURIComponent(key) + "=" + encodeURIComponent(String(v))
           )
         }
       }

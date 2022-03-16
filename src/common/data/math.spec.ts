@@ -1,5 +1,5 @@
 import { webcrypto } from "crypto"
-import { getSecureRandom, isPrimeRX, randomBoolean } from "./math"
+import { getSecureRandom, isPrime, isPrimeRX, randomBoolean } from "./math"
 
 if (globalThis.crypto == null) {
   // @ts-ignore
@@ -27,7 +27,7 @@ describe("math", () => {
     expect(sum / 1000).toBeLessThan(0.2)
   })
 
-  it("should recog primes", () => {
+  it("should recog primes rx", () => {
     expect(isPrimeRX(1)).toBe(false)
     expect(isPrimeRX(2)).toBe(true)
     expect(isPrimeRX(3)).toBe(true)
@@ -39,5 +39,19 @@ describe("math", () => {
     expect(isPrimeRX(9)).toBe(false)
     expect(isPrimeRX(10)).toBe(false)
     expect(isPrimeRX(11)).toBe(true)
+  })
+
+  it("should recog primes", () => {
+    expect(isPrime(1)).toBe(false)
+    expect(isPrime(2)).toBe(true)
+    expect(isPrime(3)).toBe(true)
+    expect(isPrime(4)).toBe(false)
+    expect(isPrime(5)).toBe(true)
+    expect(isPrime(6)).toBe(false)
+    expect(isPrime(7)).toBe(true)
+    expect(isPrime(8)).toBe(false)
+    expect(isPrime(9)).toBe(false)
+    expect(isPrime(10)).toBe(false)
+    expect(isPrime(11)).toBe(true)
   })
 })

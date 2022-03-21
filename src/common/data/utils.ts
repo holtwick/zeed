@@ -128,11 +128,13 @@ export function memoize<In extends any, Out extends any>(
 }
 
 /** Repeat `count` times. Starts with `0` */
-export function forTimes(
+export function forTimes<T = undefined>(
   count: number,
-  fn: (i: number, count: number) => void
-) {
+  fn: (i: number, count: number) => T
+): T[] {
+  let result = []
   for (let i = 0; i < count; i++) {
-    fn(i, count)
+    result.push(fn(i, count))
   }
+  return result
 }

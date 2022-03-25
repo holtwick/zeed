@@ -26,6 +26,7 @@ export interface PoolTask<T> {
   max: number
   resolved: number
   result?: T
+  payload?: unknown
 }
 
 export enum PoolTaskIdConflictResolution {
@@ -158,13 +159,14 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     Object.keys(tasks).forEach(cancel)
   }
 
-  function enqueue(
+  function enqueue<P>(
     task: PoolTaskFn<T>,
     config: {
       id?: string
       max?: number
       resolved?: number
       idConflictResolution?: PoolTaskIdConflictResolution
+      payload?: P
     } = {}
   ) {
     let done: any
@@ -203,6 +205,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       max: config.max ?? 1,
       resolved: config.resolved ?? 0,
       done,
+      payload: config.payload,
       setMax(max) {
         tasks[id].max = max
         didUpdate()

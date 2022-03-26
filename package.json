@@ -52,7 +52,7 @@
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
     "coverage": "vitest src --global --run --coverage",
-    "test": "vitest src --global",
+    "test": "vitest src --global --run",
     "test:publish": "vitest src --global --run"
   },
   "devDependencies": {

@@ -47,22 +47,23 @@ export function useDispose(config?: string | UseDisposeConfig) {
 
   let tracked: Disposer[] = []
 
-  const untrack = async (disposable: Disposer) => {
-    if (tracked.includes(disposable)) {
+  const untrack = async (disposable: Disposer): Promise<void> => {
+    if (disposable != null && tracked.includes(disposable)) {
       arrayFilterInPlace(tracked, (el) => el !== disposable)
       await callDisposer(disposable)
     }
   }
 
   /** Dispose all tracked entries */
-  const dispose = async () => {
+  const dispose = async (): Promise<void> => {
     if (name) log.debug(`dispose ${name}: ${tracked.length} entries`)
     while (tracked.length > 0) {
       await untrack(tracked[0]) // LIFO
     }
   }
 
-  const track = (obj: Disposer): DisposerFunction => {
+  const track = (obj?: Disposer): DisposerFunction | undefined => {
+    if (obj == null) return
     tracked.unshift(obj) // LIFO
     return () => untrack(obj)
   }

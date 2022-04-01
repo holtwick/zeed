@@ -26,22 +26,24 @@ export declare type DefaultListener = {
   [k: string]: (...args: any[]) => any
 }
 
-export class Emitter<L extends ListenerSignature<L> = DefaultListener>
-  implements Disposable
+export class Emitter<
+  RemoteListener extends ListenerSignature<RemoteListener> = DefaultListener,
+  LocalListener extends ListenerSignature<LocalListener> = RemoteListener
+> implements Disposable
 {
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
-  call: L = new Proxy<L>({} as any, {
+  call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
       (target: any, name: any) =>
       (...args: any): any =>
         this.emit(name, ...args),
   })
 
-  public async emit<U extends keyof L>(
+  public async emit<U extends keyof RemoteListener>(
     event: U,
-    ...args: Parameters<L[U]>
+    ...args: Parameters<RemoteListener[U]>
   ): Promise<boolean> {
     let ok = false
     try {
@@ -71,7 +73,10 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener>
     this.subscribersOnAny.push(fn)
   }
 
-  public on<U extends keyof L>(event: U, listener: L[U]): DisposerFunction {
+  public on<U extends keyof LocalListener>(
+    event: U,
+    listener: LocalListener[U]
+  ): DisposerFunction {
     let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
     subscribers.push(listener)
     this.subscribers[event] = subscribers
@@ -80,13 +85,16 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener>
     }
   }
 
-  public onCall(handlers: Partial<L>) {
+  public onCall(handlers: Partial<LocalListener>) {
     for (const [name, handler] of Object.entries(handlers)) {
       this.on(name as any, handler as any)
     }
   }
 
-  public once<U extends keyof L>(event: U, listener: L[U]): DisposerFunction {
+  public once<U extends keyof LocalListener>(
+    event: U,
+    listener: LocalListener[U]
+  ): DisposerFunction {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)
       return await promisify(listener(...args))
@@ -97,7 +105,10 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener>
     }
   }
 
-  public off<U extends keyof L>(event: U, listener: L[U]): this {
+  public off<U extends keyof LocalListener>(
+    event: U,
+    listener: LocalListener[U]
+  ): this {
     // log("off", key)
     this.subscribers[event] = (this.subscribers[event] || []).filter(
       (f: any) => listener && f !== listener
@@ -105,7 +116,7 @@ export class Emitter<L extends ListenerSignature<L> = DefaultListener>
     return this
   }
 
-  public removeAllListeners(event?: keyof L): this {
+  public removeAllListeners(): this {
     this.subscribers = {}
     return this
   }

@@ -22,6 +22,7 @@ describe("dispose", () => {
       },
     }
     dispose.track(x)
+    dispose.track() // ignore
 
     dispose.track(async () => {
       disposeCalls.push(4)

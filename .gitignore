@@ -10,3 +10,4 @@ dist-ssr
 *.log
 src/common/msg/channel-wkwebview.ts
 coverage
+_archive

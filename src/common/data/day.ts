@@ -137,6 +137,14 @@ export class Day {
     )
   }
 
+  monthStart(): Day {
+    return Day.from([this.year, this.month, 1])!
+  }
+
+  yearStart(): Day {
+    return Day.from([this.year, 1, 1])!
+  }
+
   /** Very stupid approach, only works for days <= 28 */
   monthOffset(offset: number): Day {
     let m = this.month + offset

@@ -1,19 +1,22 @@
 export type DecimalInput = number | string
 
-export function decimal(value: DecimalInput, precision: number = 2): number {
-  return +(+value).toFixed(precision)
+export function decimal(
+  value: DecimalInput,
+  decimalPlaces: number = 2
+): number {
+  return +(+value).toFixed(decimalPlaces)
 }
 
 export function decimalFromCents(
   value: DecimalInput,
-  precision: number = 2
+  decimalPlaces: number = 2
 ): number {
-  return +(+value / Math.pow(10, precision)).toFixed(precision)
+  return +(+value / Math.pow(10, decimalPlaces)).toFixed(decimalPlaces)
 }
 
 export function decimalCentsPart(
   value: DecimalInput,
-  precision: number = 2
+  decimalPlaces: number = 2
 ): number {
-  return precision * (decimal(value, precision) % 1)
+  return decimalPlaces * (decimal(value, decimalPlaces) % 1)
 }

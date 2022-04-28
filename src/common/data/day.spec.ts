@@ -106,4 +106,10 @@ describe("Days", () => {
     )
     expect(dateStringToDays("2019-08-05T13:14:31.000Z")).toBe(20190805)
   })
+
+  it("should start", () => {
+    let d = Day.fromString("2021-12-31")!
+    expect(d.yearStart().days).toBe(20210101)
+    expect(d.monthStart().days).toBe(20211201)
+  })
 })

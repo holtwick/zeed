@@ -1,4 +1,4 @@
-import { decimal, decimalFromCents } from "./decimal"
+import { decimal, decimalFromCents, decimalToCents } from "./decimal"
 
 describe("currency", () => {
   it("should proove basic idea", () => {
@@ -22,6 +22,7 @@ describe("currency", () => {
     expect(decimal(0.126, 1)).toBe(0.1)
     expect(decimal(0.126, 0)).toBe(0)
     expect(decimalFromCents(123)).toBe(1.23)
+    expect(decimalToCents(1.23)).toBe(123)
 
     {
       const v = decimal(0.3 - 0.1)

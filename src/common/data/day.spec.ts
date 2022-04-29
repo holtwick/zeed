@@ -1,4 +1,16 @@
-import { dateStringToDays, Day, forEachDay } from "./day"
+import {
+  dateStringToDays,
+  Day,
+  dayDiff,
+  dayFromDate,
+  dayFromString,
+  dayMonthStart,
+  dayOffset,
+  dayToParts,
+  dayToString,
+  dayYearStart,
+  forEachDay,
+} from "./day"
 
 describe("Days", () => {
   it("Day Simple Approach", () => {
@@ -52,31 +64,60 @@ describe("Days", () => {
   })
 
   it("should use Day class", () => {
-    let day = Day.from(new Date("1987-12-31T00:02:03"))
-    expect(day?.days).toEqual(19871231)
-    expect(day?.dayOffset(+1).days).toEqual(19880101)
-    expect(day?.dayOffset(-1).days).toEqual(19871230)
-    expect(day?.toString()).toEqual("1987-12-31")
-    expect(day?.toString("")).toEqual("19871231")
+    {
+      let day = Day.from(new Date("1987-12-31T00:02:03"))
+      expect(day?.days).toEqual(19871231)
+      expect(day?.dayOffset(+1).days).toEqual(19880101)
+      expect(day?.dayOffset(-1).days).toEqual(19871230)
+      expect(day?.toString()).toEqual("1987-12-31")
+      expect(day?.toString("")).toEqual("19871231")
 
-    // This only works locally, but not on Github Actions ;)
-    // expect(day?.toDate()).toEqual(`1987-12-30T23:00:00.000Z`)
+      // This only works locally, but not on Github Actions ;)
+      // expect(day?.toDate()).toEqual(`1987-12-30T23:00:00.000Z`)
 
-    expect(day?.toDateGMT()).toEqual(new Date("1987-12-31T00:00:00.000Z"))
+      expect(day?.toDateGMT()).toEqual(new Date("1987-12-31T00:00:00.000Z"))
 
-    expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
+      expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
 
-    expect(Day.fromString("2000-01-01")?.daysUntil(19871231)).toBe(-4384)
-    expect(Day.fromString("2000-01-01")?.daysUntil("2000-01-31")).toBe(30)
-    expect(Day.fromString("2021-01-01")?.daysUntil("2021-03-01")).toBe(59)
-    expect(Day.fromString("2020-01-01")?.daysUntil("2020-03-01")).toBe(60)
+      expect(Day.fromString("2000-01-01")?.daysUntil(19871231)).toBe(-4384)
+      expect(Day.fromString("2000-01-01")?.daysUntil("2000-01-31")).toBe(30)
+      expect(Day.fromString("2021-01-01")?.daysUntil("2021-03-01")).toBe(59)
+      expect(Day.fromString("2020-01-01")?.daysUntil("2020-03-01")).toBe(60)
 
-    expect(Day.from([2022, 12, 31])?.days).toBe(20221231)
+      expect(Day.from([2022, 12, 31])?.days).toBe(20221231)
 
-    // Following depend on timezone
-    // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
-    // expect(day2?.days).toEqual(19871230)
-    // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
+      // Following depend on timezone
+      // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
+      // expect(day2?.days).toEqual(19871230)
+      // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
+    }
+    {
+      let day = dayFromDate(new Date("1987-12-31T00:02:03"))
+      expect(day).toEqual(19871231)
+      expect(dayOffset(day, +1)).toEqual(19880101)
+      expect(dayOffset(day, -1)).toEqual(19871230)
+      expect(dayToString(day)).toEqual("1987-12-31")
+      expect(dayToString(day, "")).toEqual("19871231")
+
+      // This only works locally, but not on Github Actions ;)
+      // expect(day?.toDate()).toEqual(`1987-12-30T23:00:00.000Z`)
+
+      // expect(day?.toDateGMT()).toEqual(new Date("1987-12-31T00:00:00.000Z"))
+
+      // expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
+
+      expect(dayDiff(20000101, 19871231)).toBe(-4384)
+      expect(dayDiff(20000101, 20000131)).toBe(30)
+      expect(dayDiff(20210101, 20210301)).toBe(59)
+      expect(dayDiff(20200101, 20200301)).toBe(60)
+
+      // expect(Day.from([2022, 12, 31])?.days).toBe(20221231)
+
+      // Following depend on timezone
+      // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
+      // expect(day2?.days).toEqual(19871230)
+      // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
+    }
   })
 
   it("should properties", () => {
@@ -88,16 +129,43 @@ describe("Days", () => {
   })
 
   it("should calc months", () => {
-    let d = Day.fromString("2021-12-01")!
-    expect(d.monthOffset(0)?.days).toBe(20211201)
-    expect(d.monthOffset(+1)?.days).toBe(20220101)
-    expect(d.monthOffset(+2)?.days).toBe(20220201)
-    expect(d.monthOffset(+11)?.days).toBe(20221101)
-    expect(d.monthOffset(+24)?.days).toBe(20231201)
-    expect(d.monthOffset(-1)?.days).toBe(20211101)
-    expect(d.monthOffset(-2)?.days).toBe(20211001)
-    expect(d.monthOffset(-11)?.days).toBe(20210101)
-    expect(d.monthOffset(-24)?.days).toBe(20191201)
+    {
+      let d = Day.fromString("2021-12-01")!
+      expect(d.monthOffset(0)?.days).toBe(20211201)
+      expect(d.monthOffset(+1)?.days).toBe(20220101)
+      expect(d.monthOffset(+2)?.days).toBe(20220201)
+      expect(d.monthOffset(+11)?.days).toBe(20221101)
+      expect(d.monthOffset(+24)?.days).toBe(20231201)
+      expect(d.monthOffset(-1)?.days).toBe(20211101)
+      expect(d.monthOffset(-2)?.days).toBe(20211001)
+      expect(d.monthOffset(-11)?.days).toBe(20210101)
+      expect(d.monthOffset(-24)?.days).toBe(20191201)
+    }
+    {
+      let d = dayFromString("1999-12-31")!
+      expect(d).toMatchInlineSnapshot("19991231")
+      expect(dayToParts(d)).toMatchInlineSnapshot(`
+        [
+          1999,
+          12,
+          31,
+        ]
+      `)
+      expect(dayMonthStart(d)).toMatchInlineSnapshot("19991201")
+      expect(dayMonthStart(d, +1)).toMatchInlineSnapshot("20000101")
+      expect(dayMonthStart(d, +2)).toMatchInlineSnapshot("20000201")
+      expect(dayMonthStart(d, +11)).toMatchInlineSnapshot("20001101")
+      expect(dayMonthStart(d, +12)).toMatchInlineSnapshot("20001201")
+      expect(dayMonthStart(d, +24)).toMatchInlineSnapshot("20011201")
+      expect(dayMonthStart(d, -1)).toMatchInlineSnapshot("19991101")
+      expect(dayMonthStart(d, -2)).toMatchInlineSnapshot("19991001")
+      expect(dayMonthStart(d, -11)).toMatchInlineSnapshot("19990101")
+      expect(dayMonthStart(d, -24)).toMatchInlineSnapshot("19971201")
+
+      expect(dayYearStart(d)).toMatchInlineSnapshot("19990101")
+      expect(dayYearStart(d, -10)).toMatchInlineSnapshot("19890101")
+      expect(dayYearStart(d, +10)).toMatchInlineSnapshot("20090101")
+    }
   })
 
   it("should parse date string", () => {

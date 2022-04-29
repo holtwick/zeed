@@ -15,6 +15,13 @@ export function decimalFromCents(
   return +(+value / Math.pow(10, decimalPlaces)).toFixed(decimalPlaces)
 }
 
+export function decimalToCents(
+  value: DecimalInput,
+  decimalPlaces: number = 2
+): number {
+  return Math.round(+value * Math.pow(10, decimalPlaces))
+}
+
 export function decimalCentsPart(
   value: DecimalInput,
   decimalPlaces: number = 2

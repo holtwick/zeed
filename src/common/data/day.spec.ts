@@ -1,4 +1,11 @@
-import { dateStringToDays, Day, forEachDay } from "./day"
+import {
+  dateStringToDays,
+  Day,
+  dayFromString,
+  dayMonthStart,
+  dayToParts,
+  forEachDay,
+} from "./day"
 
 describe("Days", () => {
   it("Day Simple Approach", () => {
@@ -88,16 +95,39 @@ describe("Days", () => {
   })
 
   it("should calc months", () => {
-    let d = Day.fromString("2021-12-01")!
-    expect(d.monthOffset(0)?.days).toBe(20211201)
-    expect(d.monthOffset(+1)?.days).toBe(20220101)
-    expect(d.monthOffset(+2)?.days).toBe(20220201)
-    expect(d.monthOffset(+11)?.days).toBe(20221101)
-    expect(d.monthOffset(+24)?.days).toBe(20231201)
-    expect(d.monthOffset(-1)?.days).toBe(20211101)
-    expect(d.monthOffset(-2)?.days).toBe(20211001)
-    expect(d.monthOffset(-11)?.days).toBe(20210101)
-    expect(d.monthOffset(-24)?.days).toBe(20191201)
+    {
+      let d = Day.fromString("2021-12-01")!
+      expect(d.monthOffset(0)?.days).toBe(20211201)
+      expect(d.monthOffset(+1)?.days).toBe(20220101)
+      expect(d.monthOffset(+2)?.days).toBe(20220201)
+      expect(d.monthOffset(+11)?.days).toBe(20221101)
+      expect(d.monthOffset(+24)?.days).toBe(20231201)
+      expect(d.monthOffset(-1)?.days).toBe(20211101)
+      expect(d.monthOffset(-2)?.days).toBe(20211001)
+      expect(d.monthOffset(-11)?.days).toBe(20210101)
+      expect(d.monthOffset(-24)?.days).toBe(20191201)
+    }
+    {
+      let d = dayFromString("1999-12-31")!
+      expect(d).toMatchInlineSnapshot("19991231")
+      expect(dayToParts(d)).toMatchInlineSnapshot(`
+        [
+          1999,
+          12,
+          31,
+        ]
+      `)
+      expect(dayMonthStart(d, 0)).toMatchInlineSnapshot("19991201")
+      expect(dayMonthStart(d, +1)).toMatchInlineSnapshot("20000101")
+      expect(dayMonthStart(d, +2)).toMatchInlineSnapshot("20000201")
+      expect(dayMonthStart(d, +11)).toMatchInlineSnapshot("20001101")
+      expect(dayMonthStart(d, +12)).toMatchInlineSnapshot("20001201")
+      expect(dayMonthStart(d, +24)).toMatchInlineSnapshot('20011201')
+      expect(dayMonthStart(d, -1)).toMatchInlineSnapshot("19991101")
+      expect(dayMonthStart(d, -2)).toMatchInlineSnapshot("19991001")
+      expect(dayMonthStart(d, -11)).toMatchInlineSnapshot("19990101")
+      expect(dayMonthStart(d, -24)).toMatchInlineSnapshot('19971201')
+    }
   })
 
   it("should parse date string", () => {

@@ -7,11 +7,21 @@ import { isPromise } from "../exec/promise"
 
 export const DAY_MS = 86400000 // 1000 * 60 * 60 * 24
 
-export type DayInput = number | string | Date | Day | [number, number, number]
+export type DayValue = number
+export type DayInput =
+  | DayValue
+  | number
+  | string
+  | Date
+  | Day
+  | [number, number, number]
 
-/** Date represented as positive integer value. Years smaller 0 are not supported.  */
+/**
+ * Date represented as positive integer value. Years smaller 0 are not supported.
+ * @deprecated
+ */
 export class Day {
-  days: number
+  days: DayValue
 
   get value() {
     return this.days
@@ -193,6 +203,7 @@ export function today(): Day {
   return new Day()
 }
 
+/** @deprecated */
 export function day(days?: DayInput): Day {
   return new Day(days)
 }
@@ -202,8 +213,6 @@ export function dateStringToDays(dateString: string): number {
 }
 
 // Functional Variant
-
-export type DayValue = number
 
 export function dayYear(day: DayValue): DayValue {
   return Math.floor(day / 10000)
@@ -261,6 +270,17 @@ export function dayFromTimestamp(ms: number, gmt: boolean = true): DayValue {
   return dayFromDate(new Date(ms), gmt)
 }
 
+export function dayToString(day: DayValue, sep: string = "-") {
+  let baseString = String(day)
+  return (
+    baseString.slice(0, 4) +
+    sep +
+    baseString.slice(4, 6) +
+    sep +
+    baseString.slice(6, 8)
+  )
+}
+
 export function dayFromParts(
   year: number,
   month: number,
@@ -271,8 +291,10 @@ export function dayFromParts(
 }
 
 export function dayFromString(value: string): DayValue | undefined {
-  const string = value.replace(/[^0-9]/g, "").slice(0, 8)
-  if (string.length === 8) return +value
+  const string = String(value)
+    .replace(/[^0-9]/g, "")
+    .slice(0, 8)
+  if (string.length === 8) return +string
 }
 
 export function dayMonthStart(day: DayValue, offset: number = 0): DayValue {
@@ -280,9 +302,9 @@ export function dayMonthStart(day: DayValue, offset: number = 0): DayValue {
   let month = dayMonth(day)
   if (offset !== 0) {
     month += offset
+    year += Math.floor((month - 1) / 12)
     month = Math.floor((month - 1) % 12) + 1
     if (month === 0) month = 12
-    year += Math.floor((month - 1) / 12)
   }
   return dayFromParts(year, month, 1)!
 }

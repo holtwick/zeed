@@ -232,7 +232,7 @@ export function dayToParts(day: DayValue): [number, number, number] {
 
 export function dayToDate(day: DayValue, gmt: boolean = false): Date {
   return gmt
-    ? new Date(`${day.toString()}T00:00:00.000Z`)
+    ? new Date(`${dayToString(day)}T00:00:00.000Z`)
     : new Date(
         day / 10000, // year
         ((day / 100) % 100) - 1, // month
@@ -321,5 +321,5 @@ export function dayOffset(day: DayValue, offset: number): DayValue {
 }
 
 export function dayDiff(left: DayValue, right: DayValue): number {
-  return Math.round(dayToTimestamp(right) - dayToTimestamp(left) / DAY_MS)
+  return Math.round((dayToTimestamp(right) - dayToTimestamp(left)) / DAY_MS)
 }

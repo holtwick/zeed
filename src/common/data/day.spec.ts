@@ -1,6 +1,4 @@
 import {
-  dateStringToDays,
-  Day,
   dayDiff,
   dayFromDate,
   dayFromString,
@@ -9,8 +7,8 @@ import {
   dayToParts,
   dayToString,
   dayYearStart,
-  forEachDay,
 } from "./day"
+import { dateStringToDays, Day, forEachDay } from "./day-legacy"
 
 describe("Days", () => {
   it("Day Simple Approach", () => {

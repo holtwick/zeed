@@ -8,13 +8,14 @@ import { isPromise } from "../exec/promise"
 export const DAY_MS = 86400000 // 1000 * 60 * 60 * 24
 
 export type DayValue = number
+
 export type DayInput =
   | DayValue
   | number
   | string
   | Date
   | Day
-  | [number, number, number]
+  | [number, number?, number?]
 
 /**
  * Date represented as positive integer value. Years smaller 0 are not supported.
@@ -244,6 +245,25 @@ export function dayFromToday(): DayValue {
   return dayFromDate(new Date())
 }
 
+export function dayFromAny(
+  value: DayInput,
+  gmt: boolean = false
+): DayValue | undefined {
+  if (typeof value === "number") {
+    if (value < 100) return
+    return value
+  } else if (typeof value === "string") {
+    return dayFromString(value)
+  } else if (Array.isArray(value) && value.length === 3) {
+    const [year, month, day] = value
+    return dayFromParts(year, month, day)
+  } else if (value instanceof Date) {
+    return dayFromDate(value, gmt)
+  } else if (value instanceof Day) {
+    return value.days
+  }
+}
+
 export function dayToDateGMT(day: DayValue): Date {
   return dayToDate(day, true)
 }
@@ -283,8 +303,8 @@ export function dayToString(day: DayValue, sep: string = "-") {
 
 export function dayFromParts(
   year: number,
-  month: number,
-  day: number
+  month: number = 1,
+  day: number = 1
 ): DayValue | undefined {
   if (month < 1 || month > 12 || day < 1 || day > 31) return
   return year * 10000 + month * 100 + day

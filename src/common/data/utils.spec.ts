@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { cloneObject, empty, ensureKey, forTimes, size } from "./utils"
+import { cloneObject, empty, ensureKey, forTimes, memoize, size } from "./utils"
 
 describe("cloneObject", () => {
   it("should clone only non primitives", () => {
@@ -163,5 +163,19 @@ describe("empty", () => {
         ],
       ]
     `)
+  })
+
+  it("should memoize", () => {
+    let ctr = 1
+
+    // this is intentionally WRONG! usually should have same result with same args.
+    const fn = memoize((inc: number) => {
+      ctr += inc
+      return ctr
+    })
+
+    expect(fn(10)).toBe(11)
+    expect(fn(10)).toBe(11)
+    expect(ctr).toBe(11)
   })
 })

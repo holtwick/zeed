@@ -72,7 +72,7 @@ describe("Order by", () => {
     ])
   })
 
-  it("should sort by", () => {
+  it("should sort by2", () => {
     const values = [
       {
         group: 1,

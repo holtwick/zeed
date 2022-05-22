@@ -83,7 +83,7 @@ describe("dispose", () => {
     expect(stack).toEqual(["c", "b", "a"])
   })
 
-  it("should defer lifo", async () => {
+  it("should defer fifo", async () => {
     let stack: string[] = []
     const defer = useDefer({ mode: "fifo" })
     defer.add(() => stack.push("a"))

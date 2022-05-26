@@ -1,4 +1,4 @@
-import { mkdir, rm, stat } from "node:fs/promises"
+import { mkdir, rm, stat, readFile, writeFile } from "node:fs/promises"
 import { join as joinPath } from "node:path"
 
 export async function exists(path: string): Promise<boolean> {
@@ -25,3 +25,18 @@ export async function removeFolder(...parts: string[]): Promise<string> {
   }
   return path
 }
+
+export async function readText(
+  ...parts: string[]
+): Promise<string | undefined> {
+  const path = joinPath(...parts)
+  if (await exists(path)) {
+    return await readFile(path, "utf-8")
+  }
+}
+
+export async function writeText(path: string, content: string): Promise<void> {
+  await writeFile(path, content, "utf-8")
+}
+
+// todo: writeBinary, readBinary

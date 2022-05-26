@@ -7,16 +7,18 @@ import {
 } from "./log-filter"
 import { LogLevel } from "./log-base"
 
-describe("log-filter", function () {
-  test("should match", function () {
-    {
-      const matches = useNamespaceFilter()
-      expect(matches.filter).toBe("")
-      expect(matches.accept).toEqual([])
-      expect(matches.reject).toEqual([])
-      expect(matches("a")).toBe(false)
-      expect(matches("b:c")).toBe(false)
-    }
+describe("log-filter", () => {
+  test("should match", () => {
+    // {
+    //   // This one depends on the calling tester, therefore not deterministic
+    //
+    //   const matches = useNamespaceFilter()
+    //   expect(matches.filter).toBe("")
+    //   expect(matches.accept).toEqual([])
+    //   expect(matches.reject).toEqual([])
+    //   expect(matches("a")).toBe(false)
+    //   expect(matches("b:c")).toBe(false)
+    // }
     {
       const matches = useNamespaceFilter("a")
       expect(matches.filter).toBe("a")

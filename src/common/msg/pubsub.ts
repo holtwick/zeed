@@ -69,8 +69,8 @@ export class PubSub<
     ...args: Parameters<L[U]>
   ): Promise<boolean> {
     try {
-      if (this.debug) this.log(`emit(${event})`, event)
-      else this.log(`emit(${event})`, args.length)
+      if (this.debug) this.log(`emit(${String(event)})`, event)
+      else this.log(`emit(${String(event)})`, args.length)
       if (!this.channel.isConnected) {
         this.log.warn("channel not connected")
         return false
@@ -79,7 +79,7 @@ export class PubSub<
       this.channel.postMessage(data)
       return true
     } catch (err) {
-      this.log.warn(`emit(${event})`, err)
+      this.log.warn(`emit(${String(event)})`, err)
     }
     return false
   }

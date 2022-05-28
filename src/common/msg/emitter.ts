@@ -39,7 +39,8 @@ export class Emitter<
 {
   subscribers: any = {}
   subscribersOnAny: any[] = []
-  dispose: UseDispose
+
+  dispose = useDispose("emitter")
 
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
@@ -53,8 +54,6 @@ export class Emitter<
     ...args: Parameters<RemoteListener[U]>
   ): Promise<boolean> {
     let ok = false
-
-    this.dispose = useDispose("emitter")
 
     this.dispose.add(() => {
       this.subscribers = {}

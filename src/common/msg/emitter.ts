@@ -1,10 +1,16 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getSecureRandomIfPossible } from "../data/math"
-import { Disposable, DisposerFunction } from "../dispose-defer"
+import {
+  Disposable,
+  DisposerFunction,
+  useDispose,
+  UseDispose,
+} from "../dispose-defer"
 import { getGlobalContext } from "../global"
 import { Logger } from "../log"
 import { promisify } from "../exec/promise"
+import { runInThisContext } from "node:vm"
 
 const log = Logger("zeed:emitter")
 
@@ -33,6 +39,7 @@ export class Emitter<
 {
   subscribers: any = {}
   subscribersOnAny: any[] = []
+  dispose: UseDispose
 
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
@@ -46,6 +53,14 @@ export class Emitter<
     ...args: Parameters<RemoteListener[U]>
   ): Promise<boolean> {
     let ok = false
+
+    this.dispose = useDispose("emitter")
+
+    this.dispose.add(() => {
+      this.subscribers = {}
+      this.subscribersOnAny = []
+    })
+
     try {
       let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
       // log.debug("emit", this?.constructor?.name, event, ...args, subscribers)
@@ -119,11 +134,6 @@ export class Emitter<
   public removeAllListeners(): this {
     this.subscribers = {}
     return this
-  }
-
-  dispose() {
-    this.subscribers = {}
-    this.subscribersOnAny = []
   }
 }
 

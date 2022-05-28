@@ -45,6 +45,9 @@ type RPCMessage = [
   string | undefined | null // method
 ]
 
+const defaultSerialize = (i: any) => i
+const defaultDeserialize = defaultSerialize
+
 export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
   functions: LocalFunctions,
   options: RPCOptions<RemoteFunctions>
@@ -53,8 +56,8 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
     post,
     on,
     eventNames = [],
-    serialize = (i) => i,
-    deserialize = (i) => i,
+    serialize = defaultSerialize,
+    deserialize = defaultDeserialize,
   } = options
 
   const rpcPromiseMap = new Map<
@@ -67,11 +70,15 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
     const [mode, args, id, method] = msg
     if (mode === RPCMode.request || mode === RPCMode.event) {
       let result, error: any
-      try {
-        // @ts-expect-error
-        result = await functions[method](...args)
-      } catch (e) {
-        error = String(e)
+      if (method != null) {
+        try {
+          // @ts-expect-error
+          result = await functions[method](...args)
+        } catch (e) {
+          error = String(e)
+        }
+      } else {
+        error = "Method implementation missing"
       }
       if (mode === RPCMode.request && id) {
         if (error) {
@@ -82,8 +89,10 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
       }
     } else if (id) {
       const promise = rpcPromiseMap.get(id)
-      if (mode === RPCMode.reject) promise?.reject(args)
-      else promise?.resolve(args)
+      if (promise != null) {
+        if (mode === RPCMode.reject) promise.reject(args)
+        else promise.resolve(args)
+      }
       rpcPromiseMap.delete(id)
     }
   })

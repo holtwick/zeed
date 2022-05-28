@@ -1,16 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getSecureRandomIfPossible } from "../data/math"
-import {
-  Disposable,
-  DisposerFunction,
-  useDispose,
-  UseDispose,
-} from "../dispose-defer"
+import { Disposable, DisposerFunction, useDispose } from "../dispose-defer"
 import { getGlobalContext } from "../global"
 import { Logger } from "../log"
 import { promisify } from "../exec/promise"
-import { runInThisContext } from "node:vm"
 
 const log = Logger("zeed:emitter")
 

@@ -16,7 +16,7 @@ export type Disposer =
     }
 
 export interface Disposable {
-  dispose(): void | Promise<void>
+  dispose(): UseDispose // void | Promise<void>
 }
 
 /** Different kinds of implementations have grown, this should unify them  */

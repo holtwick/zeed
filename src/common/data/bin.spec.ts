@@ -8,6 +8,7 @@ import {
   toHex,
   toBase64,
   toUint8Array,
+  joinToUint8Array,
 } from "./bin"
 
 describe("bin", () => {
@@ -228,5 +229,31 @@ Uint8Array [
   3,
 ]
 `)
+  })
+
+  it("should join bins", () => {
+    let result = joinToUint8Array([new Uint8Array([1, 2, 3]), "abc"])
+    expect(result).toMatchInlineSnapshot(`
+      Uint8Array [
+        1,
+        2,
+        3,
+        97,
+        98,
+        99,
+      ]
+    `)
+
+    let result2 = joinToUint8Array(new Uint8Array([1, 2, 3]), "abc")
+    expect(result2).toMatchInlineSnapshot(`
+      Uint8Array [
+        1,
+        2,
+        3,
+        97,
+        98,
+        99,
+      ]
+    `)
   })
 })

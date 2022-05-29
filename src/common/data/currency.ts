@@ -5,8 +5,6 @@ import { arrayFlatten } from "./array"
 
 export type CurrencyInput = number | string | Currency
 
-type CurrencyFormat = (currency?: Currency, opts?: CurrencyOptions) => string
-
 interface CurrencyOptions {
   symbol?: string
   separator?: string
@@ -17,7 +15,7 @@ interface CurrencyOptions {
   useVedic?: boolean
   pattern?: string
   negativePattern?: string
-  format?: CurrencyFormat
+  format?: (currency?: Currency, opts?: CurrencyOptions) => string
   fromCents?: boolean
   groups?: RegExp
 }

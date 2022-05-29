@@ -66,6 +66,22 @@ export function toUint8Array(data: BinInput): Uint8Array {
   return data
 }
 
+export function joinToUint8Array(...args: BinInput[] | BinInput[][]) {
+  let length = 0
+  const bins = args.flat(1).map((d) => {
+    const b = toUint8Array(d)
+    length += b.length
+    return b
+  })
+  let bin = new Uint8Array(length)
+  let cursor = 0
+  for (let b of bins) {
+    bin.set(b, cursor)
+    cursor += b.length
+  }
+  return bin
+}
+
 export function toHex(bin: BinInput): string {
   if (typeof Buffer !== "undefined") {
     return Buffer.from(toUint8Array(bin)).toString("hex")

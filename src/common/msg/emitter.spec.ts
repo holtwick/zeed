@@ -172,7 +172,7 @@ describe("Emitter", () => {
     e.on("b", fn)
 
     await e.emit("a", 1)
-    await getGlobalEmitter().emit("b", 1)
+    await getGlobalEmitter().emit("b", 2)
 
     expect(fn).toBeCalledTimes(3)
     expect(fn.mock).toMatchInlineSnapshot(`
@@ -185,7 +185,7 @@ describe("Emitter", () => {
             1,
           ],
           [
-            1,
+            2,
           ],
         ],
         "instances": [
@@ -194,12 +194,12 @@ describe("Emitter", () => {
           undefined,
         ],
         "invocationCallOrder": [
-          1,
-          2,
-          3,
+          4,
+          5,
+          6,
         ],
         "lastCall": [
-          1,
+          2,
         ],
         "results": [
           {

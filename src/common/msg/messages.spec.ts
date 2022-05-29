@@ -1,6 +1,6 @@
 import { webcrypto } from "crypto"
 import { deriveKeyPbkdf2, randomUint8Array } from "../crypto"
-import { fakeWorkerPair } from "./channel"
+import { createLocalChannelPair } from "./channel"
 import { CryptoEncoder } from "./encoder"
 import { useMessageHub } from "./messages"
 
@@ -44,7 +44,7 @@ describe("messages", () => {
 
     // const encoder = new JsonEncoder()
 
-    const [clientChannel, serverChannel] = fakeWorkerPair()
+    const [clientChannel, serverChannel] = createLocalChannelPair()
 
     const serverHub = useMessageHub({ channel: serverChannel, encoder })
     serverHub.listen<TestMessages1>({
@@ -74,7 +74,7 @@ describe("messages", () => {
   // it("should do basic bridging", async () => {
   //   // expect.assertions(1)
 
-  //   const [clientChannel, serverChannel] = fakeWorkerPair()
+  //   const [clientChannel, serverChannel] = createLocalChannelPair()
 
   //   useMessages<TestMessages>({
   //     channel: serverChannel,
@@ -105,7 +105,7 @@ describe("messages", () => {
   // it("should connect later", async () => {
   //   // expect.assertions(1)
 
-  //   const [clientChannel, serverChannel] = fakeWorkerPair()
+  //   const [clientChannel, serverChannel] = createLocalChannelPair()
 
   //   const server = useMessages<TestMessages>({
   //     handlers: {

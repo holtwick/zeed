@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { Logger } from "../log"
-import { fakeWorkerPair } from "./channel"
+import { createLocalChannelPair } from "./channel"
 import { usePubSub } from "./pubsub"
 
 const log = Logger("test:connection")
@@ -14,7 +14,7 @@ describe("connection", () => {
   it("should send and receive messages", async () => {
     expect.assertions(3)
 
-    let [f1, f2] = fakeWorkerPair()
+    let [f1, f2] = createLocalChannelPair()
 
     let c1 = usePubSub<SampleProtocol>({ channel: f1 })
     let c2 = usePubSub<SampleProtocol>({ channel: f2 })
@@ -41,7 +41,7 @@ describe("connection", () => {
   it("should send and receive messages - alternative syntax", async () => {
     expect.assertions(3)
 
-    let [f1, f2] = fakeWorkerPair()
+    let [f1, f2] = createLocalChannelPair()
 
     let c1 = usePubSub<SampleProtocol>({ channel: f1 })
     let c2 = usePubSub<SampleProtocol>({ channel: f2 })

@@ -69,7 +69,7 @@ export function toUint8Array(data: BinInput): Uint8Array {
 export function joinToUint8Array(...args: BinInput[] | BinInput[][]) {
   let length = 0
   const bins = args.flat(1).map((d) => {
-    const b = toUint8Array(d)
+    const b = toUint8Array(d as BinInput)
     length += b.length
     return b
   })

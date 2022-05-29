@@ -48,7 +48,7 @@ export class LocalChannel extends Channel {
   }
 }
 
-export function fakeWorkerPair(): [LocalChannel, LocalChannel] {
+export function createLocalChannelPair(): [LocalChannel, LocalChannel] {
   let w1 = new LocalChannel()
   let w2 = new LocalChannel()
 

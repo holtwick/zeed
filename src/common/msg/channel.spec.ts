@@ -1,37 +1,16 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { Logger } from "../log"
-import { fakeWorkerPair, LocalChannel } from "./channel"
+import { createLocalChannelPair } from "./channel"
 
 const log = Logger("test:channel")
-
-// class FakeSimpleChannel implements SimpleChannel {
-//   _other?: FakeSimpleChannel
-//   _fn?: (data: any) => void
-
-//   _onmessage(data: any) {
-//     this._fn?.(data)
-//   }
-
-//   subscribeData(fn: (data: any) => void) {
-//     this._fn = fn
-//   }
-
-//   publishData(data: any) {
-//     setTimeout(() => {
-//       this._other?._onmessage(data)
-//     }, 0)
-//   }
-
-//   async cleanup() {}
-// }
 
 describe("Channel", () => {
   it("should fake", (done) => {
     // log.info("done", done.toSource())
     expect.assertions(1)
 
-    let [f1, f2] = fakeWorkerPair()
+    let [f1, f2] = createLocalChannelPair()
 
     f1.on("message", (ev) => {
       expect(ev.data).toBe("123")

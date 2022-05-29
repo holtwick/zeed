@@ -175,5 +175,47 @@ describe("Emitter", () => {
     await getGlobalEmitter().emit("b", 1)
 
     expect(fn).toBeCalledTimes(3)
+    expect(fn.mock).toMatchInlineSnapshot(`
+      {
+        "calls": [
+          [
+            1,
+          ],
+          [
+            1,
+          ],
+          [
+            1,
+          ],
+        ],
+        "instances": [
+          undefined,
+          undefined,
+          undefined,
+        ],
+        "invocationCallOrder": [
+          1,
+          2,
+          3,
+        ],
+        "lastCall": [
+          1,
+        ],
+        "results": [
+          {
+            "type": "return",
+            "value": undefined,
+          },
+          {
+            "type": "return",
+            "value": undefined,
+          },
+          {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    `)
   })
 })

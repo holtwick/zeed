@@ -6,6 +6,7 @@ import { Logger } from "../common/log"
 
 const log = Logger("zeed:gravatar")
 
+/** @deprecated Due to privacy concerns. Prefer local or custom solutions. */
 function gravatar(
   email: string,
   options: { size?: any; backup?: any; secure?: any; rating?: any }

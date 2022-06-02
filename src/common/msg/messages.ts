@@ -58,6 +58,14 @@ export const createPromiseProxy = <P extends object>(
     },
   })
 
+/**
+ * RPC
+ *
+ * Features:
+ * - Waits for connection
+ * - Retries after fail
+ * - Timeouts
+ */
 export function useMessageHub(
   opt: {
     name?: string

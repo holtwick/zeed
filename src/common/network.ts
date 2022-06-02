@@ -56,6 +56,18 @@ export type httpMethod =
   | "TRACE"
   | "PATCH"
 
+export function parseBasicAuth(url: string) {
+  let m = /:\/\/([^@]*)@/gi.exec(url)
+  if (m && m[1]) {
+    let [username, password] = m[1].split(":", 2)
+    return {
+      url: url.replace(m[1] + "@", ""),
+      username,
+      password,
+    }
+  }
+}
+
 /** Simplified `fetch` that returns `undefined` on non 200 status */
 export async function fetchBasic(
   url: string | URL,
@@ -65,6 +77,16 @@ export async function fetchBasic(
   try {
     if (isArray(fetchOptions)) {
       fetchOptions = deepMerge({}, ...arrayFlatten(fetchOptions))
+    }
+
+    let auth = parseBasicAuth(String(url))
+    if (auth) {
+      url = auth.url
+      fetchOptions = deepMerge(
+        {},
+        fetchOptions,
+        fetchOptionsBasicAuth(auth.username, auth.password)
+      )
     }
 
     // if (fetchOptions.headers != null && !(fetchOptions.headers instanceof Headers)) {

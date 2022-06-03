@@ -164,3 +164,49 @@ export function Uint8ArrayToJson<T = any>(data: Uint8Array): T | never {
     throw err
   }
 }
+
+// https://gist.github.com/igorgatis/d294fe714a4f523ac3a3
+export function Uint8ArrayToHexDump(
+  buffer: Uint8Array | ArrayBuffer | String | Array<number>,
+  blockSize?: number
+) {
+  if (typeof buffer === "string") {
+    console.log("buffer is string")
+    //do nothing
+  } else if (buffer instanceof ArrayBuffer && buffer.byteLength !== undefined) {
+    console.log("buffer is ArrayBuffer")
+    buffer = String.fromCharCode.apply(
+      String,
+      [].slice.call(new Uint8Array(buffer))
+    )
+  } else if (Array.isArray(buffer)) {
+    console.log("buffer is Array")
+    buffer = String.fromCharCode.apply(String, buffer)
+  } else if (buffer.constructor === Uint8Array) {
+    console.log("buffer is Uint8Array")
+    buffer = String.fromCharCode.apply(String, [].slice.call(buffer))
+  } else {
+    console.log("Error: buffer is unknown...")
+    return false
+  }
+
+  blockSize = blockSize || 16
+  var lines = []
+  var hex = "0123456789ABCDEF"
+  for (var b = 0; b < buffer.length; b += blockSize) {
+    var block = buffer.slice(b, Math.min(b + blockSize, buffer.length))
+    var addr = ("0000" + b.toString(16)).slice(-4)
+    var codes = block
+      .split("")
+      .map((ch: any) => {
+        var code = ch.charCodeAt(0)
+        return " " + hex[(0xf0 & code) >> 4] + hex[0x0f & code]
+      })
+      .join("")
+    codes += "   ".repeat(blockSize - block.length)
+    var chars = block.replace(/[\x00-\x1F\x20]/g, ".")
+    chars += " ".repeat(blockSize - block.length)
+    lines.push(addr + " " + codes + "  " + chars)
+  }
+  return lines.join("\n")
+}

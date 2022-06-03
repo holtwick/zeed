@@ -89,10 +89,17 @@ export async function fetchBasic(
       )
     }
 
-    // if (fetchOptions.headers != null && !(fetchOptions.headers instanceof Headers)) {
-    //   fetchOptions.headers = new Headers(fetchOptions.headers)
-    // }
-    // log.log('fetch', url, fetchOptions)
+    if (
+      // @ts-ignore
+      fetchOptions.headers != null &&
+      // @ts-ignore
+      !(fetchOptions.headers instanceof Headers)
+    ) {
+      // @ts-ignore
+      fetchOptions.headers = new Headers(fetchOptions.headers)
+    }
+
+    log("fetch", url, fetchOptions)
     const response = await fetchFn(String(url), fetchOptions as RequestInit)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status

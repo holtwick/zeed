@@ -3,12 +3,13 @@
 import { fromBase64, jsonToUint8Array, Uint8ArrayToJson } from "."
 import {
   equalBinary,
-  stringToUInt8Array,
-  Uint8ArrayToString,
-  toHex,
-  toBase64,
-  toUint8Array,
   joinToUint8Array,
+  stringToUInt8Array,
+  toBase64,
+  toHex,
+  toUint8Array,
+  Uint8ArrayToHexDump,
+  Uint8ArrayToString,
 } from "./bin"
 
 describe("bin", () => {
@@ -254,6 +255,18 @@ Uint8Array [
         98,
         99,
       ]
+    `)
+  })
+
+  it("should dump", () => {
+    let data = new Uint8Array([
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 97, 98, 99, 14, 15, 16, 17, 18,
+      19, 20,
+    ])
+    let hex = Uint8ArrayToHexDump(data)
+    expect(hex).toMatchInlineSnapshot(`
+      "0000  01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 61 62 63  .............abc
+      0010  0E 0F 10 11 12 13 14                             .......         "
     `)
   })
 })

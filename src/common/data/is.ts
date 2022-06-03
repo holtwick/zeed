@@ -51,3 +51,7 @@ export function isBoolean(obj: unknown): obj is boolean {
 export function isNullOrUndefined(obj: unknown): obj is null | undefined {
   return obj == null
 }
+
+export function isUint8Array(obj: unknown): obj is Uint8Array {
+  return isObject(obj) && obj.constructor.name === "Uint8Array"
+}

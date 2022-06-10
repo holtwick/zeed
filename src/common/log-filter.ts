@@ -112,11 +112,10 @@ const defaultLevelFilter: any =
 
 export function parseLogLevel(filter: LogLevelAliasType): LogLevel {
   if (filter === false) return LogLevel.off
+  if (typeof filter === "number") return filter as number
   if (typeof filter === "string") {
     const l = LogLevelAlias[filter.toLocaleLowerCase().trim()]
     if (l != null) return l
-  } else if (typeof filter === "number") {
-    return filter as number
   }
   return LogLevel.all
 }

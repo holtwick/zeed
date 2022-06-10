@@ -21,12 +21,13 @@ export function composeOrderby(field: string, asc: boolean = true): string {
 }
 
 // Classic compare function with direction flag
-export function cmp(a: any, b: any, asc: boolean = true): number {
+export function cmp(a: any, b: any, asc: boolean = true): -1 | 0 | 1 {
   const aa = a || 0
   const bb = b || 0
   return aa > bb ? (asc ? 1 : -1) : aa < bb ? (asc ? -1 : 1) : 0
 }
 
+// todo: support localeCompare()
 export function sortedOrderby<T>(values: T[], ...orderby: string[]): T[] {
   if (orderby.length > 0) {
     let orderByList = orderby.map(parseOrderby)

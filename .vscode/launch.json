@@ -1,0 +1,39 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Node Logging",
+      "type": "node",
+      "request": "launch",
+      "env": {
+        "ZEED": "*",
+        "ZEED_COLOR": "0",
+        "LEVEL": "*"
+      },
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/demos/logging/",
+      "program": "./index.js",
+      "console": "internalConsole",
+      "outputCapture": "std"
+    },
+    {
+      "name": "NPM Logging",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "env": {
+        "ZEED": "*",
+        "ZEED_COLOR": "1",
+        "LEVEL": "*"
+      },
+      "runtimeArgs": ["start"],
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/demos/logging/",
+      "console": "internalConsole",
+      "outputCapture": "std"
+    }
+  ]
+}

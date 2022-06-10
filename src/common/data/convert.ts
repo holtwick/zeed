@@ -61,6 +61,7 @@ export const toInt = valueToInteger
 export const toString = valueToString
 export const toBool = valueToBoolean
 
+import { Uint8ArrayToHexDump } from "./bin"
 // Strings
 
 import { jsonStringify } from "./json"
@@ -77,6 +78,9 @@ export function formatMessages(
   const { trace = true, pretty = true } = opt
   return messages.map((obj) => {
     if (obj && typeof obj === "object") {
+      if (pretty && (obj instanceof Uint8Array || obj instanceof ArrayBuffer)) {
+        return "\n" + Uint8ArrayToHexDump(obj) + "\n"
+      }
       if (obj instanceof Error) {
         if (!trace) {
           return `${obj.name || "Error"}: ${obj.message}`

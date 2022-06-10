@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import tty from "tty"
-import { renderMessages } from "../common/data/convert"
+import { renderMessages, valueToBoolean } from "../common/data/convert"
 import {
   LogHandler,
   LogHandlerOptions,
@@ -16,8 +16,11 @@ import {
 } from "./log-util"
 import { formatMilliseconds, getTimestamp } from "../common/time"
 
-export function isTTY(): boolean {
+function shouldUseColor(): boolean {
   try {
+    if (process.env.ZEED_COLOR != null) {
+      return valueToBoolean(process.env.ZEED_COLOR, false)
+    }
     return tty.isatty(process.stdout.fd)
   } catch (err) {}
   return false
@@ -38,10 +41,8 @@ let namespaces: Record<string, any> = {}
 
 let time = getTimestamp()
 
-const useColors = tty.isatty(process.stderr.fd)
-
 function log(...args: any[]) {
-  return process.stderr.write(renderMessages(args) + "\n")
+  process.stdout.write(renderMessages(args) + "\n")
 }
 
 // export const BOLD = Symbol()
@@ -121,7 +122,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     level = undefined,
     filter = undefined,
-    colors = isTTY(),
+    colors = shouldUseColor(),
     levelHelper = true,
     nameBrackets = true,
     padding = 0,
@@ -157,7 +158,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       displayName = displayName.padEnd(fill, " ")
     }
 
-    if (colors && useColors) {
+    if (colors) {
       const c = ninfo.color
       args = [colorString(displayName, c) + ` | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
       if (msg.level === LogLevel.warn) {
@@ -195,29 +196,35 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
         args.push(colorString(`(${line})`, COLOR.GRAY))
       }
     }
+    const sep = "|"
+    const charLevel = "."
+
     switch (msg.level) {
       case LogLevel.info:
-        if (levelHelper) args[0] = `I|*   ` + args[0]
+        if (levelHelper) args[0] = `I${sep}${charLevel}   ` + args[0]
         log(...args)
         break
       case LogLevel.warn:
         if (levelHelper)
           args[0] =
-            (colors && useColors
-              ? colorString(`W|**  `, COLOR.ORANGE)
-              : `W|**  `) + args[0]
+            (colors
+              ? colorString(`W${sep}${charLevel}${charLevel}  `, COLOR.ORANGE)
+              : `W${sep}${charLevel}${charLevel}  `) + args[0]
         log(...args)
         break
       case LogLevel.error:
         if (levelHelper)
           args[0] =
-            (colors && useColors
-              ? colorString(`E|*** `, COLOR.RED)
-              : `E|*** `) + args[0]
+            (colors
+              ? colorString(
+                  `E${sep}${charLevel}${charLevel}${charLevel} `,
+                  COLOR.RED
+                )
+              : `E${sep}${charLevel}${charLevel}${charLevel} `) + args[0]
         log(...args)
         break
       default:
-        if (levelHelper) args[0] = `D|    ` + args[0]
+        if (levelHelper) args[0] = `D${sep}    ` + args[0]
         log(...args)
         break
     }

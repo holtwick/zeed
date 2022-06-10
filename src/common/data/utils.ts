@@ -76,7 +76,7 @@ export function empty(value: any): boolean {
       }
     }
   } catch (err) {
-    console.error("Failed to check if empty for", value, err)
+    console.warn("Failed to check if empty for", value, err)
   }
   return true
 }

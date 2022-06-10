@@ -171,22 +171,22 @@ export function Uint8ArrayToHexDump(
   blockSize?: number
 ) {
   if (typeof buffer === "string") {
-    console.log("buffer is string")
+    // log("buffer is string")
     //do nothing
   } else if (buffer instanceof ArrayBuffer && buffer.byteLength !== undefined) {
-    console.log("buffer is ArrayBuffer")
+    // log("buffer is ArrayBuffer")
     buffer = String.fromCharCode.apply(
       String,
       [].slice.call(new Uint8Array(buffer))
     )
   } else if (Array.isArray(buffer)) {
-    console.log("buffer is Array")
+    // log("buffer is Array")
     buffer = String.fromCharCode.apply(String, buffer)
   } else if (buffer.constructor === Uint8Array) {
-    console.log("buffer is Uint8Array")
+    // log("buffer is Uint8Array")
     buffer = String.fromCharCode.apply(String, [].slice.call(buffer))
   } else {
-    console.log("Error: buffer is unknown...")
+    // log("Error: buffer is unknown...")
     return false
   }
 

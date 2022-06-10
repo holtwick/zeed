@@ -1,10 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-// import { Logger } from "./log"
 import { sleep } from "./promise"
 import { debounce, throttle } from "./throttle-debounce"
-
-// const log = Logger("test-throttle")
 
 describe("throttle", () => {
   it("should throttle correctly", async () => {

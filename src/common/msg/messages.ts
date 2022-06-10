@@ -1,6 +1,7 @@
 import { valueToString } from "../data/convert"
+import { isPromise, tryTimeout } from "../exec/promise"
 import { Logger } from "../log"
-import { tryTimeout, isPromise } from "../exec/promise"
+import { LogLevelAliasType } from "../log-base"
 import { Json } from "../types"
 import { uname, uuid } from "../uuid"
 import { Channel } from "./channel"
@@ -74,6 +75,7 @@ export function useMessageHub(
     retryAfter?: number
     ignoreUnhandled?: boolean
     debug?: boolean
+    logLevel?: LogLevelAliasType
   } = {}
 ): MessageHub {
   let {
@@ -81,9 +83,10 @@ export function useMessageHub(
     encoder = new JsonEncoder(),
     retryAfter = 1000,
     ignoreUnhandled = true,
+    logLevel = false,
   } = opt
 
-  const log = Logger(name)
+  const log = Logger(name, logLevel)
 
   let handlers = {}
   let channel: Channel | undefined

@@ -7,8 +7,6 @@ import { Logger } from "../log"
 import { uname } from "../uuid"
 import { Emitter } from "../msg/emitter"
 
-const log = Logger("zeed:queue")
-
 type TaskResolver = any
 
 export type TaskFn<T = any> = () => Promise<T>
@@ -46,8 +44,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
     super()
     const { name = uname("queue"), logLevel } = opt
     this.name = name
-    this.log = Logger(`zeed:queue:${name}`)
-    this.log.level = logLevel ?? LogLevel.off
+    this.log = Logger(`zeed:queue:${name}`, logLevel ?? LogLevel.off)
   }
 
   private async performNext() {
@@ -83,7 +80,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
         result = await this.currentTask
         this.log(`finished task ${name} with result =`, result)
       } catch (err) {
-        log.warn("Error performing task", err)
+        this.log.warn("Error performing task", err)
       }
 
       resolve(result)

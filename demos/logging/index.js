@@ -2,18 +2,6 @@
 
 import { Logger, setupEnv } from "zeed"
 
-// Logger.setHandlers([
-//   LoggerFileHandler("zeed.log", {
-//     level: LogLevel.debug,
-//   }),
-//   LoggerNodeHandler({
-//     colors: true,
-//     padding: 16,
-//     nameBrackets: false,
-//     levelHelper: true,
-//   }),
-// ])
-
 // Read .env file
 
 setupEnv()
@@ -36,4 +24,11 @@ setupEnv()
   log.info("Info")
   log.warn("Warning")
   log.error("Error")
+
+  log("Some binary data", new Uint8Array(1, 2, 3, 99, 100, 101))
 }
+
+console.log("Hello World")
+console.info("Info")
+console.warn("Warning")
+console.error("Error")

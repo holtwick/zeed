@@ -34,7 +34,7 @@ export class Emitter<
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
-  dispose = useDispose("emitter")
+  dispose = useDispose()
 
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:

@@ -4,6 +4,7 @@ import {
   useLevelFilter,
   useNamespaceFilter,
   getNamespaceFilterString,
+  parseLogLevel,
 } from "./log-filter"
 import { LogLevel } from "./log-base"
 
@@ -101,5 +102,13 @@ describe("log-filter", () => {
       expect(levelFilter(LogLevel.warn)).toBe(true)
       expect(levelFilter(LogLevel.error)).toBe(true)
     }
+  })
+
+  it("should identify log level", () => {
+    expect(parseLogLevel(false)).toEqual(LogLevel.off)
+    expect(parseLogLevel("info")).toEqual(LogLevel.info)
+    expect(parseLogLevel(LogLevel.error)).toEqual(LogLevel.error)
+    expect(parseLogLevel(true)).toEqual(LogLevel.all)
+    expect(parseLogLevel(2)).toEqual(LogLevel.warn)
   })
 })

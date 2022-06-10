@@ -153,4 +153,26 @@ describe("Logger", function () {
       },
     ])
   })
+
+  test("should fake log", function () {
+    let messages: LogMessage[] = []
+    let logger = LoggerContext()
+
+    function LoggerTestHandler(msg: LogMessage) {
+      messages.push(msg)
+    }
+
+    logger.setHandlers([LoggerTestHandler])
+
+    let log = logger("test", false)
+    let { info, error, warn, debug, assert } = log
+
+    log("Simple") // shortcut
+    debug("Hello")
+    info("World")
+    warn("is on")
+    error("Fire")
+
+    expect(messages).toEqual([])
+  })
 })

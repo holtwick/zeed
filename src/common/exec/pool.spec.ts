@@ -20,11 +20,11 @@ describe("pool", () => {
       async (taskInfo) => {
         //info.setProgress(0, 5)
         r.push("b")
-        taskInfo.setResolved(2)
+        taskInfo?.setResolved(2)
         await sleep(1)
-        taskInfo.incResolved()
+        taskInfo?.incResolved()
         await sleep(1)
-        taskInfo.incResolved()
+        taskInfo?.incResolved()
         await sleep(10)
       },
       { id: "b", max: 5 }

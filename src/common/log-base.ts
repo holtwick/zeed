@@ -2,7 +2,7 @@
 
 import { deepEqual } from "./data/deep"
 import { LoggerConsoleHandler } from "./log-console"
-import { useNamespaceFilter } from "./log-filter"
+import { parseLogLevel, useNamespaceFilter } from "./log-filter"
 
 export enum LogLevel {
   all = -1,
@@ -34,6 +34,9 @@ export const LogLevelAlias: Record<string, LogLevel> = {
   off: LogLevel.off,
   "-": LogLevel.off,
 }
+
+export type LogLevelAliasKey = keyof typeof LogLevelAlias
+export type LogLevelAliasType = LogLevel | boolean | LogLevelAliasKey
 
 export interface LogMessage {
   level: LogLevel
@@ -78,7 +81,7 @@ export interface LoggerInterface {
 }
 
 export interface LoggerContextInterface {
-  (name?: string): LoggerInterface
+  (name?: string, level?: LogLevelAliasType): LoggerInterface
   registerHandler(handler: LogHandler): void
   setFilter(namespaces: string): void
   setHandlers(handlers?: (LogHandler | undefined | null)[]): void
@@ -105,7 +108,22 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
   let logLock = false
   let logFactory = LoggerBaseFactory
 
-  function LoggerBaseFactory(name: string = ""): LoggerInterface {
+  function LoggerBaseFactory(
+    name: string = "",
+    level?: LogLevelAliasType
+  ): LoggerInterface {
+    function log(...messages: any[]) {
+      emit({
+        name,
+        messages,
+        level: LogLevel.debug,
+      })
+    }
+
+    log.label = name
+    log.active = true
+    log.level = parseLogLevel(level ?? LogLevel.all)
+
     log.extend = function (prefix: string): LoggerInterface {
       return logFactory(name ? `${name}:${prefix}` : prefix)
     }
@@ -121,18 +139,6 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
         }
       }
     }
-
-    function log(...messages: any[]) {
-      emit({
-        name,
-        messages,
-        level: LogLevel.debug,
-      })
-    }
-
-    log.label = name
-    log.active = true
-    log.level = LogLevel.all
 
     log.debug = function (...messages: any[]) {
       emit({
@@ -229,8 +235,11 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     return log
   }
 
-  function Logger(name: string = ""): LoggerInterface {
-    return logFactory(name)
+  function Logger(
+    name: string = "",
+    level?: LogLevelAliasType
+  ): LoggerInterface {
+    return logFactory(name, level)
   }
 
   Logger.registerHandler = function (handler: LogHandler) {

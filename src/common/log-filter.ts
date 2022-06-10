@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { LogLevel, LogLevelAlias } from "./log-base"
+import { LogLevel, LogLevelAlias, LogLevelAliasType } from "./log-base"
 
 interface NamespaceFilter {
   (name: string): boolean
@@ -110,15 +110,20 @@ const defaultLevelFilter: any =
     ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
     : undefined
 
-export function useLevelFilter(
-  filter: string | number = defaultLevelFilter
-): (level: LogLevel) => boolean {
-  let filterLevel: LogLevel = LogLevel.all
+export function parseLogLevel(filter: LogLevelAliasType): LogLevel {
+  if (filter === false) return LogLevel.off
   if (typeof filter === "string") {
     const l = LogLevelAlias[filter.toLocaleLowerCase().trim()]
-    if (l != null) filterLevel = l
+    if (l != null) return l
   } else if (typeof filter === "number") {
-    filterLevel = filter as number
+    return filter as number
   }
+  return LogLevel.all
+}
+
+export function useLevelFilter(
+  filter: string | number | boolean | LogLevelAliasType = defaultLevelFilter
+): (level: LogLevel) => boolean {
+  const filterLevel = parseLogLevel(filter)
   return (level) => level >= filterLevel
 }

@@ -1,3 +1,0 @@
-{
-  "jestrunner.jestCommand": "ZEED=* LOG=zeed.log pnpx vitest --globals"
-}

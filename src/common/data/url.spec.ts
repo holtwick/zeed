@@ -1,4 +1,3 @@
-import { executionAsyncId } from "async_hooks"
 import { linkifyPlainText, toHumanReadableUrl } from "./url"
 
 describe("url", () => {

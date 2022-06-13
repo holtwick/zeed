@@ -2,65 +2,6 @@
 
 import { isObject, isPrimitive } from "./is"
 
-// // https://stackoverflow.com/a/40294058/140927
-// // Handles cyclic references
-// export function deepClonePrimitives(obj, hash = new WeakMap()) {
-//
-//   // primitives
-//   if (Object(obj) !== obj) {
-//     // log('Primitive', obj)
-//     return obj
-//   }
-//
-//   // cyclic reference
-//   if (hash.has(obj)) {
-//     return hash.get(obj)
-//   }
-//
-//   let result
-//
-//   // primitives as objects like new String(), new Number()
-//   if (
-//     obj instanceof String ||
-//     obj instanceof Number ||
-//     obj instanceof BigInt ||
-//     obj instanceof Boolean ||
-//     obj instanceof Symbol
-//   ) {
-//     result = new obj.constructor(obj.valueOf())
-//     // hash.set(obj, result)
-//     return result
-//   }
-//
-//   // log('Obj', obj)
-//
-//   if (obj instanceof Set) {
-//     result = new Set(obj)
-//   } else if (obj instanceof Map) {
-//     result = new Map(Array.from(obj, ([key, val]) => [key, deepClonePrimitives(val, hash)]))
-//   } else if (obj instanceof Date) {
-//     result = new Date(obj)
-//   } else if (obj instanceof RegExp) {
-//     result = new RegExp(obj.source, obj.flags)
-//   } else if (Array.isArray(obj)) {
-//     result = Array.from(obj, val => deepClonePrimitives(val, hash))
-//   } else if (obj.constructor) {
-//     result = new obj.constructor()
-//     log('bj object', result)
-//   } else if (obj instanceof Function || typeof obj === 'function') {
-//     log('Keep object', obj, Object.getPrototypeOf(obj))
-//     result = obj
-//   } else {
-//     result = Object.create(null)
-//   }
-//
-//   hash.set(obj, result)
-//
-//   return Object.assign(result, ...Object.keys(obj).map(key => ({
-//     [key]: deepClonePrimitives(obj[key], hash),
-//   })))
-// }
-
 export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   // if both x and y are null or undefined and exactly the same
   if (a === b) {
@@ -159,3 +100,62 @@ export function deepMerge(target: any, ...sources: any[]) {
 
   return target
 }
+
+// // https://stackoverflow.com/a/40294058/140927
+// // Handles cyclic references
+// export function deepClonePrimitives(obj, hash = new WeakMap()) {
+//
+//   // primitives
+//   if (Object(obj) !== obj) {
+//     // log('Primitive', obj)
+//     return obj
+//   }
+//
+//   // cyclic reference
+//   if (hash.has(obj)) {
+//     return hash.get(obj)
+//   }
+//
+//   let result
+//
+//   // primitives as objects like new String(), new Number()
+//   if (
+//     obj instanceof String ||
+//     obj instanceof Number ||
+//     obj instanceof BigInt ||
+//     obj instanceof Boolean ||
+//     obj instanceof Symbol
+//   ) {
+//     result = new obj.constructor(obj.valueOf())
+//     // hash.set(obj, result)
+//     return result
+//   }
+//
+//   // log('Obj', obj)
+//
+//   if (obj instanceof Set) {
+//     result = new Set(obj)
+//   } else if (obj instanceof Map) {
+//     result = new Map(Array.from(obj, ([key, val]) => [key, deepClonePrimitives(val, hash)]))
+//   } else if (obj instanceof Date) {
+//     result = new Date(obj)
+//   } else if (obj instanceof RegExp) {
+//     result = new RegExp(obj.source, obj.flags)
+//   } else if (Array.isArray(obj)) {
+//     result = Array.from(obj, val => deepClonePrimitives(val, hash))
+//   } else if (obj.constructor) {
+//     result = new obj.constructor()
+//     log('bj object', result)
+//   } else if (obj instanceof Function || typeof obj === 'function') {
+//     log('Keep object', obj, Object.getPrototypeOf(obj))
+//     result = obj
+//   } else {
+//     result = Object.create(null)
+//   }
+//
+//   hash.set(obj, result)
+//
+//   return Object.assign(result, ...Object.keys(obj).map(key => ({
+//     [key]: deepClonePrimitives(obj[key], hash),
+//   })))
+// }

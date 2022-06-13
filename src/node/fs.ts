@@ -1,5 +1,14 @@
 import { mkdir, rm, stat, readFile, writeFile } from "node:fs/promises"
-import { join as joinPath } from "node:path"
+import { join as joinPath, normalize, resolve } from "node:path"
+
+export function toHumanReadableFilePath(path: string) {
+  const p = normalize(path)
+  const h = process.env.HOME
+  if (h && p.startsWith(h)) {
+    return "~" + p.slice(h.length)
+  }
+  return p
+}
 
 export async function exists(path: string): Promise<boolean> {
   try {

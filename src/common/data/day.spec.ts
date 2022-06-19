@@ -178,4 +178,10 @@ describe("Days", () => {
     expect(d.yearStart().days).toBe(20210101)
     expect(d.monthStart().days).toBe(20211201)
   })
+
+  it("should dayFromString", () => {
+    expect(dayFromString("20121030")).toEqual(20121030)
+    expect(dayFromString("2012-10-30T12:00:00Z")).toEqual(20121030)
+    expect(dayFromString("fasfasdf sadf ")).toEqual(undefined)
+  })
 })

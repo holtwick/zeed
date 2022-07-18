@@ -9,13 +9,15 @@ describe("args.spec", () => {
       "-o",
       "string",
       "--some=test",
+      "--some-number=123",
       '--some-one="empty string"',
     ])
     expect(result).toMatchInlineSnapshot(`
       {
         "--on": true,
-        "--some-one=\\"empty string\\"": true,
-        "--some=test": true,
+        "--some": "test",
+        "--some-number": "123",
+        "--some-one": "\\"empty string\\"",
         "-i": true,
         "-o": "string",
         "file": true,

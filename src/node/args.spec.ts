@@ -6,22 +6,30 @@ describe("args.spec", () => {
       args: [
         "file",
         "--on",
+        "-?",
         "-i",
         "-o",
         "string",
+        "free",
         "--some=test",
         "--some=test2",
         "--some-more=test3",
         "--some-number=123",
         '--some-one="empty string"',
       ],
+      boolean: ["help", "on", "i"],
       alias: {
         some: ["some-more"],
+        help: ["h", "?"],
       },
     })
     expect(result).toMatchInlineSnapshot(`
       {
-        "file": true,
+        "_": [
+          "file",
+          "free",
+        ],
+        "help": true,
         "i": true,
         "o": "string",
         "on": true,

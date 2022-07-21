@@ -1,11 +1,13 @@
 // Inspired by https://github.com/kof/node-argsparser/blob/master/lib/argsparser.js
 
-import { toCamelCase } from "../common"
+import { cursorTo } from "node:readline"
+import { currency, toCamelCase } from "../common"
 
 interface ParseConfig {
   args?: string[]
   alias?: Record<string, string[]>
   normalize?: (value: string) => string
+  boolean?: string | string[]
 }
 
 export function parseArgs(config: ParseConfig = {}) {
@@ -13,6 +15,7 @@ export function parseArgs(config: ParseConfig = {}) {
     args = process.argv.slice(1),
     alias = {},
     normalize = toCamelCase,
+    boolean = [],
   } = config
 
   let nameToAlias = Object.entries(alias).reduce((map, curr) => {
@@ -24,43 +27,46 @@ export function parseArgs(config: ParseConfig = {}) {
     return map
   }, {} as any)
 
-  let opts: Record<string, any> = {}
+  let opts: Record<string, any> = {
+    _: [],
+  }
+
   let curSwitch: string | undefined
 
-  for (let arg of args) {
-    let value: any = arg
-
-    if (/^--?/.test(arg) || curSwitch == null) {
-      curSwitch = arg.replace(/^--?/, "")
-
-      if (arg.includes("=")) {
-        let [name, valuePart] = curSwitch.split("=", 2)
-        curSwitch = name.trim()
-        value = valuePart.trim()
-      } else {
-        value = true
-      }
-
-      curSwitch = normalize(curSwitch)
-      curSwitch = nameToAlias[curSwitch] ?? curSwitch
+  function setOpt(name: string, value: any) {
+    if (opts[name] == null) {
+      opts[name] = value
+    } else if (typeof opts[name] === "boolean") {
+      opts[name] = value
+    } else if (Array.isArray(opts[name])) {
+      opts[name].push(value)
+    } else {
+      opts[name] = [opts[name], value]
     }
+  }
 
-    if (curSwitch != null) {
-      if (arg === "false") {
-        value = false
-      } else if (arg === "true") {
-        value = true
+  let argList = [...args]
+  let arg: string | undefined
+  while ((arg = argList.shift())) {
+    let value: any
+    if (/^--?/.test(arg)) {
+      let key = arg.replace(/^--?/, "")
+      if (arg.includes("=")) {
+        let [name, valuePart] = key.split("=", 2)
+        key = name.trim()
+        value = valuePart.trim()
       }
 
-      if (opts[curSwitch] == null) {
-        opts[curSwitch] = value
-      } else if (typeof opts[curSwitch] === "boolean") {
-        opts[curSwitch] = value
-      } else if (Array.isArray(opts[curSwitch])) {
-        opts[curSwitch].push(value)
+      key = normalize(key)
+      key = nameToAlias[key] ?? key
+
+      if (boolean.includes(key)) {
+        setOpt(key, true)
       } else {
-        opts[curSwitch] = [opts[curSwitch], value]
+        setOpt(key, value ?? argList.shift() ?? "")
       }
+    } else {
+      opts._.push(arg)
     }
   }
 

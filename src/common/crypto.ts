@@ -18,6 +18,7 @@ export function randomUint8Array(length: number = 16): Uint8Array {
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     crypto.getRandomValues(randomBytes)
   } else {
+    // hack: not state of the art secure
     // throw "crypto.getRandomValues is required"
     for (let i = 0; i < length; i++) {
       // Math.random: "...range 0 to less than 1 (inclusive of 0, but not 1)"

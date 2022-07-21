@@ -14,10 +14,13 @@ describe("args.spec", () => {
         "--some=test",
         "--some=test2",
         "--some-more=test3",
+        "--some-list=listItem",
         "--some-number=123",
         '--some-one="empty string"',
       ],
-      boolean: ["help", "on", "i"],
+      booleanArgs: ["help", "on", "i"],
+      listArgs: ["someList"],
+      numberArgs: ["someNumber"],
       alias: {
         some: ["some-more"],
         help: ["h", "?"],
@@ -38,7 +41,10 @@ describe("args.spec", () => {
           "test2",
           "test3",
         ],
-        "someNumber": "123",
+        "someList": [
+          "listItem",
+        ],
+        "someNumber": 123,
         "someOne": "\\"empty string\\"",
       }
     `)

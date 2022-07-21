@@ -1,13 +1,14 @@
 // Inspired by https://github.com/kof/node-argsparser/blob/master/lib/argsparser.js
 
-import { cursorTo } from "node:readline"
-import { currency, toCamelCase } from "../common"
+import { toCamelCase } from "../common/data/camelcase"
 
 interface ParseConfig {
   args?: string[]
   alias?: Record<string, string[]>
   normalize?: (value: string) => string
-  boolean?: string | string[]
+  booleanArgs?: string | string[]
+  listArgs?: string | string[]
+  numberArgs?: string | string[]
 }
 
 export function parseArgs(config: ParseConfig = {}) {
@@ -15,7 +16,9 @@ export function parseArgs(config: ParseConfig = {}) {
     args = process.argv.slice(1),
     alias = {},
     normalize = toCamelCase,
-    boolean = [],
+    booleanArgs = [],
+    listArgs = [],
+    numberArgs = [],
   } = config
 
   let nameToAlias = Object.entries(alias).reduce((map, curr) => {
@@ -30,8 +33,6 @@ export function parseArgs(config: ParseConfig = {}) {
   let opts: Record<string, any> = {
     _: [],
   }
-
-  let curSwitch: string | undefined
 
   function setOpt(name: string, value: any) {
     if (opts[name] == null) {
@@ -56,14 +57,24 @@ export function parseArgs(config: ParseConfig = {}) {
         key = name.trim()
         value = valuePart.trim()
       }
-
       key = normalize(key)
       key = nameToAlias[key] ?? key
-
-      if (boolean.includes(key)) {
+      if (booleanArgs.includes(key)) {
         setOpt(key, true)
       } else {
-        setOpt(key, value ?? argList.shift() ?? "")
+        value = value ?? argList.shift() ?? ""
+        if (numberArgs.includes(key)) {
+          value = Number(value ?? 0)
+        }
+        if (listArgs.includes(key)) {
+          if (Array.isArray(opts[key])) {
+            opts[key].push(value)
+          } else {
+            opts[key] = [value]
+          }
+        } else {
+          setOpt(key, value)
+        }
       }
     } else {
       opts._.push(arg)

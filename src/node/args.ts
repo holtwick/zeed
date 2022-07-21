@@ -3,17 +3,17 @@
 import { toCamelCase } from "../common"
 
 interface ParseConfig {
+  args?: string[]
   alias?: Record<string, string[]>
+  normalize?: (value: string) => string
 }
 
-export function parseArgs(
-  args?: string[],
-  alias: Record<string, string[]> = {}
-) {
-  let opts: Record<string, any> = {}
-  let curSwitch: string | undefined
-
-  const normalize = toCamelCase
+export function parseArgs(config: ParseConfig = {}) {
+  const {
+    args = process.argv.slice(1),
+    alias = {},
+    normalize = toCamelCase,
+  } = config
 
   let nameToAlias = Object.entries(alias).reduce((map, curr) => {
     let [name, values] = curr
@@ -24,7 +24,8 @@ export function parseArgs(
     return map
   }, {} as any)
 
-  args = args ?? process.argv
+  let opts: Record<string, any> = {}
+  let curSwitch: string | undefined
 
   for (let arg of args) {
     let value: any = arg

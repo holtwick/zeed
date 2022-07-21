@@ -2,8 +2,8 @@ import { parseArgs } from "./args"
 
 describe("args.spec", () => {
   it("should parse correctly", async () => {
-    let result = parseArgs(
-      [
+    let result = parseArgs({
+      args: [
         "file",
         "--on",
         "-i",
@@ -15,10 +15,10 @@ describe("args.spec", () => {
         "--some-number=123",
         '--some-one="empty string"',
       ],
-      {
+      alias: {
         some: ["some-more"],
-      }
-    )
+      },
+    })
     expect(result).toMatchInlineSnapshot(`
       {
         "file": true,

@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "🌱 Simple foundation library",
   "license": "MIT",
   "keywords": [
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/holtwick/zeed",
   "type": "module",
   "typings": "dist/index.all.d.ts",
-  "sideEffects": false,
+  "sideEffects": true,
   "exports": {
     ".": {
       "browser": "./dist/index.browser.js",
@@ -50,7 +50,7 @@
     "clean": "rm -rf dist",
     "check": "tsc --noEmit -p tsconfig.json",
     "build": "npm run clean && npm run build:tsup",
-    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names --treeshake",
+    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names --treeshake --splitting",
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
     "coverage": "vitest src --global --run --coverage",

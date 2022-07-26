@@ -50,7 +50,7 @@
     "clean": "rm -rf dist",
     "check": "tsc --noEmit -p tsconfig.json",
     "build": "npm run clean && npm run build:tsup",
-    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names",
+    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names --treeshake",
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
     "coverage": "vitest src --global --run --coverage",

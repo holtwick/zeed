@@ -18,13 +18,12 @@ import { formatMilliseconds, getTimestamp } from "../common/time"
 
 function shouldUseColor(): boolean {
   try {
-    if (process.env.ZEED_COLOR != null) {
-      return valueToBoolean(process.env.ZEED_COLOR, false)
-    }
-    return tty.isatty(process.stdout.fd)
+    return valueToBoolean(process.env.ZEED_COLOR, tty.isatty(process.stdout.fd))
   } catch (err) {}
   return false
 }
+
+const defaultUseColor: boolean = shouldUseColor()
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -122,7 +121,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     level = undefined,
     filter = undefined,
-    colors = shouldUseColor(),
+    colors = defaultUseColor,
     levelHelper = true,
     nameBrackets = true,
     padding = 0,

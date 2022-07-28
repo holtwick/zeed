@@ -5,6 +5,7 @@ import {
   LoggerBrowserSetupDebugFactory,
 } from "./log-browser"
 
+// todo sideffects
 if (isBrowser()) {
   Logger.setHandlers([LoggerBrowserHandler()]) // Fallback for previously registered Loggers
   Logger.setFactory(LoggerBrowserSetupDebugFactory({}))

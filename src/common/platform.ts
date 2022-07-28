@@ -21,6 +21,7 @@ export function getGlobal(): any {
     : Function("return this;")()
 }
 
+// todo sideffects
 const _navigator = getNavigator()
 const _window = getWindow()
 

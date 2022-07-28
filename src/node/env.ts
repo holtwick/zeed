@@ -2,11 +2,10 @@
 
 // Adopted from https://github.com/motdotla/dotenv BSD-2
 
-import { Logger } from "../common/log"
-import { LogLevel } from "../common/log-base"
-
 import fs from "fs"
 import { resolve } from "path"
+import { Logger } from "../common/log"
+import { LogLevel } from "../common/log-base"
 
 const log = Logger("zeed:env")
 

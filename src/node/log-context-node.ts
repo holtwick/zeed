@@ -20,4 +20,5 @@ function setupLogContextNode() {
   Logger.setHandlers(handlers)
 }
 
+// todo sideffects
 setupLogContextNode()

@@ -1,5 +1,5 @@
-import { mkdir, rm, stat, readFile, writeFile } from "node:fs/promises"
-import { join as joinPath, normalize, resolve } from "node:path"
+import { mkdir, readFile, rm, stat, writeFile } from "node:fs/promises"
+import { join as joinPath, normalize } from "node:path"
 
 export function toHumanReadableFilePath(path: string) {
   const p = normalize(path)

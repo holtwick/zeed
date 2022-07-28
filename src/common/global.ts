@@ -8,6 +8,7 @@ interface ZeedGlobalIntegration {
   _zeedGlobal?: ZeedGlobalContext
 }
 
+// todo sideffects
 function _global(): ZeedGlobalIntegration {
   if (typeof self !== "undefined") return self as ZeedGlobalIntegration
   if (typeof window !== "undefined") return window as ZeedGlobalIntegration

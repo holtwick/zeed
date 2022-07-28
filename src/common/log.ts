@@ -22,13 +22,13 @@ function getLoggerContext() {
 
 // todo sideffects
 try {
-  let _global = getGlobalContext()
-  if (_global != null) {
-    if (_global?.logger == null) {
+  let gcontext = getGlobalContext()
+  if (gcontext != null) {
+    if (gcontext?.logger == null) {
       globalLogger = getLoggerContext()
-      _global.logger = globalLogger
+      gcontext.logger = globalLogger
     } else {
-      globalLogger = _global.logger
+      globalLogger = gcontext.logger
     }
   } else {
     globalLogger = getLoggerContext()
@@ -36,8 +36,5 @@ try {
 } catch (e) {
   globalLogger = getLoggerContext()
 }
-
-// /** @deprecated Use `Logger` instead, it is global as well */
-// export const GlobalLogger = globalLogger
 
 export const Logger = globalLogger

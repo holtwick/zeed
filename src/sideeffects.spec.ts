@@ -12,6 +12,9 @@ async function compileTS(path: string): Promise<any> {
     minify: false,
     treeShaking: true,
     write: false,
+    define: {
+      "process.env.DUMMY": "true",
+    },
   }
   let result = await build(buildConfig)
 
@@ -35,28 +38,8 @@ describe("sideeffects.spec", () => {
     expect(result).toMatchInlineSnapshot(`
       "\\"use strict\\";
 
-      // src/common/global.ts
-      function _global() {
-        if (typeof self !== \\"undefined\\")
-          return self;
-        if (typeof window !== \\"undefined\\")
-          return window;
-        if (typeof global !== \\"undefined\\")
-          return global;
-        if (typeof globalThis !== \\"undefined\\")
-          return globalThis;
-        throw new Error(\\"unable to locate global object\\");
-      }
-      function getGlobalContext() {
-        let gcontext = _global();
-        if (gcontext._zeedGlobal == null) {
-          gcontext._zeedGlobal = {};
-        }
-        return gcontext._zeedGlobal;
-      }
-
       // src/sideeffects.ts
-      console.log(\\"test\\", getGlobalContext());
+      console.log(\\"test\\");
       "
     `)
   })

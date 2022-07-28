@@ -6,7 +6,11 @@ import {
 } from "./log-browser"
 
 // todo sideffects
-if (isBrowser()) {
-  Logger.setHandlers([LoggerBrowserHandler()]) // Fallback for previously registered Loggers
-  Logger.setFactory(LoggerBrowserSetupDebugFactory({}))
+export function setupBrowserLog() {
+  if (isBrowser()) {
+    Logger.setHandlers([LoggerBrowserHandler()]) // Fallback for previously registered Loggers
+    Logger.setFactory(LoggerBrowserSetupDebugFactory({}))
+  }
 }
+
+setupBrowserLog()

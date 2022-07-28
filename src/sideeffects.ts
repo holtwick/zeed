@@ -1,2 +1,5 @@
 import { getGlobalContext } from "./common/global"
-console.log("test", getGlobalContext())
+// import "./common/global"
+console.log("test") // , getGlobalContext())
+
+// import { perform } from "./sideeffects.sub"

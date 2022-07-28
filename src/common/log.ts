@@ -1,8 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { LoggerConsoleHandler } from "./log-console"
 import { getGlobalContext } from "./global"
 import { LoggerContext, LoggerContextInterface } from "./log-base"
+import { LoggerConsoleHandler } from "./log-console"
 
 // Global logger to guarantee all submodules use the same logger instance
 

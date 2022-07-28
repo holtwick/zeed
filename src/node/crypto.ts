@@ -9,6 +9,7 @@ declare module NodeJS {
   }
 }
 
+// todo sideffects
 try {
   if (
     nodeCrypto &&

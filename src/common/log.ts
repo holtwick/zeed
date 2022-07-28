@@ -20,6 +20,7 @@ function getLoggerContext() {
   return logger
 }
 
+// todo sideffects
 try {
   let _global = getGlobalContext()
   if (_global != null) {

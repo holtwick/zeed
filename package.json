@@ -6,8 +6,12 @@
   "keywords": [
     "foundation",
     "typescript",
-    "event",
-    "logging"
+    "eventemitter",
+    "logging",
+    "kit",
+    "lib",
+    "utils",
+    "zeed"
   ],
   "author": {
     "name": "Dirk Holtwick",
@@ -27,19 +31,19 @@
   },
   "homepage": "https://github.com/holtwick/zeed",
   "type": "module",
-  "typings": "dist/index.all.d.ts",
   "sideEffects": true,
   "exports": {
     ".": {
-      "types": "./dist/dist/index.all.d.ts",
+      "types": "./dist/index.all.d.ts",
       "browser": "./dist/index.browser.js",
       "require": "./dist/index.node.cjs",
       "node": "./dist/index.node.js",
       "default": "./dist/index.browser.js"
     }
   },
-  "module": "dist/index.browser.js",
   "main": "dist/index.node.cjs",
+  "module": "dist/index.browser.js",
+  "types": "dist/index.all.d.ts",
   "files": [
     "dist"
   ],
@@ -51,7 +55,7 @@
     "clean": "rm -rf dist",
     "check": "tsc --noEmit -p tsconfig.json",
     "build": "npm run clean && npm run build:tsup",
-    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --keep-names",
+    "build:tsup": "tsup src/index.*.ts --format esm,cjs --dts --sourcemap --minify --keep-names",
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
     "coverage": "vitest src --global --run --coverage",

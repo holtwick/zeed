@@ -19,7 +19,7 @@ const useColors = supportsColors()
 
 let namespaces: Record<string, any> = {}
 
-let time = getTimestamp()
+let time = getTimestamp() // todo sideffects
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {

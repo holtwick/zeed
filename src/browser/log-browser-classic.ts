@@ -14,7 +14,7 @@ let namespaces: Record<string, any> = {}
 
 let time = getTimestamp()
 
-const useColors = supportsColors()
+const useColors = supportsColors() // todo sideffects
 
 /** @deprecated */
 export function LoggerBrowserClassicHandler(

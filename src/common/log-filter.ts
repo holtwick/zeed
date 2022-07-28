@@ -33,6 +33,7 @@ export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
   return defaultNamespaceFilter
 }
 
+// todo sideffects
 const defaultNamespaceFilter: string = getNamespaceFilterString(
   typeof process !== "undefined"
     ? process.env.ZEED ?? process.env.DEBUG
@@ -103,6 +104,7 @@ export function useNamespaceFilter(
   return fn as NamespaceFilter
 }
 
+// todo sideffects
 const defaultLevelFilter: any =
   typeof process !== "undefined"
     ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL

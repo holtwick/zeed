@@ -38,6 +38,7 @@ function selectColor(namespace: string) {
 
 let namespaces: Record<string, any> = {}
 
+// todo sideffects
 let time = getTimestamp()
 
 function log(...args: any[]) {

@@ -158,4 +158,40 @@ describe("uuid", () => {
     expect(b62).toHaveLength(22)
     expect(uuidDecode(b62)).toEqual(bytes)
   })
+
+  it("should encode / decode 62 from string", () => {
+    const id = uuid()
+    expect(id).toHaveLength(22)
+    const b62 = uuidDecode(id)
+    expect(b62).toHaveLength(16)
+    expect(uuidEncode(b62)).toEqual(id)
+  })
+
+  it("should encode / decode 62 by example", () => {
+    const id = "78MQbFaILcblSYA7WS2OGE"
+    expect(id).toHaveLength(22)
+    const b62 = uuidDecode(id)
+    expect(b62).toHaveLength(16)
+    expect(b62).toMatchInlineSnapshot(`
+      Uint8Array [
+        234,
+        109,
+        230,
+        115,
+        91,
+        247,
+        195,
+        211,
+        119,
+        255,
+        157,
+        220,
+        65,
+        184,
+        26,
+        190,
+      ]
+    `)
+    expect(uuidEncode(b62)).toMatchInlineSnapshot('"78MQbFaILcblSYA7WS2OGE"')
+  })
 })

@@ -11,6 +11,7 @@ interface ThrottleOptions {
   delay?: number
   trailing?: boolean
   leading?: boolean
+  // todo force execution on dispose
 }
 
 interface DebounceOptions {
@@ -31,7 +32,11 @@ interface DebounceOptions {
 export function throttle<F extends Function>(
   callback: F,
   opt: ThrottleOptions = {}
-): F & { cancel: () => void; dispose: () => void } {
+): F & {
+  cancel: () => void
+  dispose: () => void
+  // todo force execution
+} {
   const { delay = 100, trailing = true, leading = true } = opt
 
   let timeoutID: any = 0

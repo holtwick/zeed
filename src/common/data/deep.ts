@@ -82,7 +82,7 @@ export function deepMerge(target: any, ...sources: any[]) {
       target = {}
     }
 
-    if (source == null) continue
+    if (source == null || !isObject(source)) continue
 
     Object.keys(source).forEach((key) => {
       const targetValue = target[key]

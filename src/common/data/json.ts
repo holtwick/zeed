@@ -4,7 +4,7 @@ const _sortedReplacer = (key: string, value: any) =>
   value instanceof Object && !(value instanceof Array)
     ? Object.keys(value)
         .sort()
-        .filter((key) => value[key] != null) // Remove null and undefined
+        // .filter((key) => value[key] != null) // Remove null and undefined
         .reduce((sorted: any, key: string) => {
           // Sorted copy
           sorted[key] = value[key]

@@ -27,23 +27,23 @@ describe("network", () => {
     `)
   })
 
-  it("should do a test call", async () => {
-    let text = await fetchJson(
-      "https://user:123@httpbin.org/basic-auth/user/123"
-    )
-    expect(text).toMatchInlineSnapshot(`
-      {
-        "authenticated": true,
-        "user": "user",
-      }
-    `)
+  // it("should do a test call", async () => {
+  //   let text = await fetchJson(
+  //     "https://user:123@httpbin.org/basic-auth/user/123"
+  //   )
+  //   expect(text).toMatchInlineSnapshot(`
+  //     {
+  //       "authenticated": true,
+  //       "user": "user",
+  //     }
+  //   `)
 
-    let post = await fetchJson(
-      "https://httpbin.org/post",
-      fetchOptionsJson({ a: 1 }, "POST")
-    )
+  //   let post = await fetchJson(
+  //     "https://httpbin.org/post",
+  //     fetchOptionsJson({ a: 1 }, "POST")
+  //   )
 
-    // @ts-ignore
-    expect(post?.data).toMatchInlineSnapshot('"{\\"a\\":1}"')
-  })
+  //   // @ts-ignore
+  //   expect(post?.data).toMatchInlineSnapshot('"{\\"a\\":1}"')
+  // })
 })

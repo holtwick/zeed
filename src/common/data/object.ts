@@ -1,12 +1,13 @@
-import { isArray } from "./is"
+import { isArray, isObject } from "./is"
 
-export function objectMap(
-  obj: object,
+export function objectMap<T = any>(
+  obj: any,
   fn: (
     key: string,
     value: any
   ) => [key: string, value: any] | any | undefined | null
-): object {
+): Record<string, T> {
+  if (!isObject(obj)) return {}
   return Object.fromEntries(
     Object.entries(obj)
       .map(([k, v]) => {

@@ -1,5 +1,11 @@
 import { webcrypto } from "crypto"
-import { getSecureRandom, isPrime, isPrimeRX, randomBoolean } from "./math"
+import {
+  getSecureRandom,
+  isPrime,
+  isPrimeRX,
+  randomBoolean,
+  seededRandom,
+} from "./math"
 
 if (globalThis.crypto == null) {
   // @ts-ignore
@@ -53,5 +59,27 @@ describe("math", () => {
     expect(isPrime(9)).toBe(false)
     expect(isPrime(10)).toBe(false)
     expect(isPrime(11)).toBe(true)
+  })
+
+  it("should not be random", () => {
+    expect([
+      seededRandom(),
+      seededRandom(),
+      seededRandom(),
+      seededRandom(),
+      seededRandom(),
+      seededRandom(),
+      seededRandom(),
+    ]).toMatchInlineSnapshot(`
+      [
+        0.5494555898491084,
+        0.2751200274348422,
+        0.6800540123456791,
+        0.9710476680384088,
+        0.5030392661179699,
+        0.5568930041152264,
+        0.4505101165980796,
+      ]
+    `)
   })
 })

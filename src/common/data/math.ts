@@ -45,3 +45,15 @@ export function isPrime(value: number): boolean {
   for (var i = 2; i < value; i++) if (value % i === 0) return false
   return value > 1
 }
+
+// http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+// https://softwareengineering.stackexchange.com/questions/260969/original-source-of-seed-9301-49297-233280-random-algorithm
+
+let _seed = 6
+
+/** Deterministic random */
+export function seededRandom(max: number = 0, min: number = 1, seed?: number) {
+  _seed = ((seed ?? _seed) * 9301 + 49297) % 233280
+  const rnd = _seed / 233280
+  return min + rnd * (max - min)
+}

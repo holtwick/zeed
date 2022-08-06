@@ -5,7 +5,7 @@ export function objectMap<T = any>(
   fn: (
     key: string,
     value: any
-  ) => [key: string, value: any] | any | undefined | null
+  ) => [key: string, value: T] | T | undefined | null
 ): Record<string, T> {
   if (!isObject(obj)) return {}
   return Object.fromEntries(

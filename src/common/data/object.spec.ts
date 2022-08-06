@@ -6,7 +6,7 @@ describe("object.spec", () => {
       a: 1,
       b: 2,
     }
-    expect(objectMap(sample, (k, v) => v + 10)).toMatchInlineSnapshot(`
+    expect(objectMap<number>(sample, (k, v) => v + 10)).toMatchInlineSnapshot(`
       {
         "a": 11,
         "b": 12,

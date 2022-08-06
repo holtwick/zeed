@@ -20,21 +20,26 @@ function getLoggerContext() {
   return logger
 }
 
-// todo sideffects
-try {
-  let gcontext = getGlobalContext()
-  if (gcontext != null) {
-    if (gcontext?.logger == null) {
+export function getGlobalLogger(): LoggerContextInterface {
+  if (globalLogger == null) {
+    try {
+      let gcontext = getGlobalContext()
+      if (gcontext != null) {
+        if (gcontext?.logger == null) {
+          globalLogger = getLoggerContext()
+          gcontext.logger = globalLogger
+        } else {
+          globalLogger = gcontext.logger
+        }
+      } else {
+        globalLogger = getLoggerContext()
+      }
+    } catch (e) {
       globalLogger = getLoggerContext()
-      gcontext.logger = globalLogger
-    } else {
-      globalLogger = gcontext.logger
     }
-  } else {
-    globalLogger = getLoggerContext()
   }
-} catch (e) {
-  globalLogger = getLoggerContext()
+  return globalLogger
 }
 
-export const Logger = globalLogger
+// todo sideffects
+export let Logger = getGlobalLogger()

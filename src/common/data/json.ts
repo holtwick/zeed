@@ -1,5 +1,27 @@
 // From https://github.com/moll/json-stringify-safe License ISC
 
+const _sortedReplacer = (key: string, value: any) =>
+  value instanceof Object && !(value instanceof Array)
+    ? Object.keys(value)
+        .sort()
+        // .filter((key) => value[key] != null) // Remove null and undefined
+        .reduce((sorted: any, key: string) => {
+          // Sorted copy
+          sorted[key] = value[key]
+          return sorted
+        }, {})
+    : value
+
+// https://gist.github.com/davidfurlong/463a83a33b70a3b6618e97ec9679e490
+export function jsonStringifySorted(
+  obj: any,
+  indent: number | undefined = undefined
+) {
+  return JSON.stringify(obj, _sortedReplacer, indent)
+}
+
+//
+
 type EntryProcessor = (key: string, value: any) => any
 
 function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
@@ -22,6 +44,8 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
       if (~stack.indexOf(value)) value = cycleReplacer?.call(this, key, value)
     } else stack.push(value)
 
+    value = _sortedReplacer(key, value)
+
     return replacer == null ? value : replacer.call(this, key, value)
   }
 }
@@ -29,7 +53,7 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
 /**
  * Similar to JSON.stringify but can handle circular references
  */
-export function jsonStringify(
+export function jsonStringifySafe(
   obj: any,
   replacer?: EntryProcessor | null,
   spaces?: string | number | null,
@@ -38,6 +62,8 @@ export function jsonStringify(
   // @ts-ignore
   return JSON.stringify(obj, serializer(replacer, cycleReplacer), spaces)
 }
+
+export const jsonStringify = jsonStringifySafe
 
 //
 

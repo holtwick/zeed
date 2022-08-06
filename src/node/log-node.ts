@@ -45,26 +45,16 @@ function log(...args: any[]) {
   process.stdout.write(renderMessages(args) + "\n")
 }
 
-// export const BOLD = Symbol()
-// export const UNBOLD = Symbol()
-// export const BLUE = Symbol()
-// export const GREY = Symbol()
-// export const GREEN = Symbol()
-// export const RED = Symbol()
-// export const PURPLE = Symbol()
-// export const ORANGE = Symbol()
-// export const UNCOLOR = Symbol()
-
 // const _browserStyleMap = {
-//   [BOLD]: pair.create("font-weight", "bold"),
-//   [UNBOLD]: pair.create("font-weight", "normal"),
-//   [BLUE]: pair.create("color", "blue"),
-//   [GREEN]: pair.create("color", "green"),
-//   [GREY]: pair.create("color", "grey"),
-//   [RED]: pair.create("color", "red"),
-//   [PURPLE]: pair.create("color", "purple"),
-//   [ORANGE]: pair.create("color", "orange"), // not well supported in chrome when debugging node with inspector - TODO: deprecate
-//   [UNCOLOR]: pair.create("color", "black"),
+//   [BOLD]: { "font-weight": "bold" },
+//   [UNBOLD]: { "font-weight": "normal" },
+//   [BLUE]: { color: "blue" },
+//   [GREEN]: { color: "green" },
+//   [GREY]: { color: "grey" },
+//   [RED]: { color: "red" },
+//   [PURPLE]: { color: "purple" },
+//   [ORANGE]: { color: "orange" },
+//   [UNCOLOR]: { color: "black" },
 // }
 
 const TTY_STYLE = {
@@ -90,12 +80,12 @@ enum COLOR {
 
 const colorEnd = "\u001B[0m"
 
-export function colorString(value: string, colorCode: number) {
+export function colorString(text: string, colorCode: number) {
   const colorStart =
     colorCode === COLOR.ORANGE
       ? TTY_STYLE.ORANGE
       : "\u001B[3" + (colorCode < 8 ? colorCode : "8;5;" + colorCode) + "m"
-  return `${colorStart}${value}${colorEnd}`
+  return `${colorStart}${text}${colorEnd}`
 }
 
 export function colorStringList(

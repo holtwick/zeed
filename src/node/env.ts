@@ -87,7 +87,18 @@ export function valueToPath(value?: any, defaultValue = ""): string {
 
 export const toPath = valueToPath
 
-// Populates process.env from .env file
+export function getEnvVariableRelaxed(
+  name: string,
+  env = process.env
+): string | undefined {
+  if (env[name] != null) return env[name]
+  name = name.toLowerCase()
+  for (let [k, v] of Object.entries(env)) {
+    if (k.toLowerCase() === name) return v
+  }
+}
+
+/** Populates process.env from .env file. */
 export function setupEnv(options: csvOptions = {}) {
   const dotenvPath: string =
     options?.path ?? toPath(options?.filename ?? ".env")

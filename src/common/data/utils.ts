@@ -134,6 +134,20 @@ export function memoize<In extends any, Out extends any>(
   }
 }
 
+export function memoizeAsync<In extends any, Out extends Promise<any>>(
+  fn: (arg: In) => Out
+): (arg: In) => Promise<Out> {
+  let cache = new Map<In, Out>()
+  return async (n: In): Promise<Out> => {
+    if (cache.has(n)) {
+      return cache.get(n)!
+    }
+    let result = await fn(n)
+    cache.set(n, result)
+    return result
+  }
+}
+
 /** Repeat `count` times. Starts with `0` */
 export function forTimes<T = undefined>(
   count: number,

@@ -1,6 +1,15 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { cloneObject, empty, ensureKey, forTimes, memoize, size } from "./utils"
+import {
+  cloneObject,
+  empty,
+  ensureKey,
+  forTimes,
+  memoize,
+  memoizeAsync,
+  size,
+} from "./utils"
+import { sleep } from "../exec"
 
 describe("cloneObject", () => {
   it("should clone only non primitives", () => {
@@ -176,6 +185,21 @@ describe("empty", () => {
 
     expect(fn(10)).toBe(11)
     expect(fn(10)).toBe(11)
+    expect(ctr).toBe(11)
+  })
+
+  it("should memoize async", async () => {
+    let ctr = 1
+
+    // this is intentionally WRONG! usually should have same result with same args.
+    const fn = memoizeAsync(async (inc: number) => {
+      await sleep(10)
+      ctr += inc
+      return ctr
+    })
+
+    expect(await fn(10)).toBe(11)
+    expect(await fn(10)).toBe(11)
     expect(ctr).toBe(11)
   })
 })

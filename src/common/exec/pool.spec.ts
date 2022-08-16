@@ -300,4 +300,191 @@ describe("pool", () => {
       ]
     `)
   })
+
+  it("should respect group", async () => {
+    let r: any[] = []
+    const pool = usePool({ maxParallel: 3 })
+
+    let collectedEvents: any = []
+    pool.events.onAny((...args) => collectedEvents.push(args))
+
+    pool.enqueue(
+      async () => {
+        r.push("ga")
+        await sleep(10)
+      },
+      { id: "ga", group: "x" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("gb")
+        await sleep(10)
+      },
+      { id: "gb", group: "x" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("gc")
+        await sleep(10)
+      },
+      { id: "gc", group: "x" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("1")
+        await sleep(10)
+      },
+      { id: "1" }
+    )
+    pool.enqueue(
+      async () => {
+        r.push("2")
+        await sleep(10)
+      },
+      { id: "2" }
+    )
+
+    expect(r).toMatchInlineSnapshot(`
+      [
+        "ga",
+        "1",
+        "2",
+      ]
+    `)
+
+    await pool.waitFinishAll()
+
+    expect(r).toMatchInlineSnapshot(`
+      [
+        "ga",
+        "1",
+        "2",
+        "gb",
+        "gc",
+      ]
+    `)
+
+    expect(collectedEvents).toMatchInlineSnapshot(`
+      [
+        [
+          "didUpdate",
+          1,
+          0,
+          1,
+          0,
+        ],
+        [
+          "didStart",
+          "ga",
+        ],
+        [
+          "didUpdate",
+          2,
+          0,
+          2,
+          0,
+        ],
+        [
+          "didUpdate",
+          3,
+          0,
+          3,
+          0,
+        ],
+        [
+          "didUpdate",
+          4,
+          0,
+          4,
+          0,
+        ],
+        [
+          "didStart",
+          "1",
+        ],
+        [
+          "didUpdate",
+          5,
+          0,
+          5,
+          0,
+        ],
+        [
+          "didStart",
+          "2",
+        ],
+        [
+          "didResolve",
+          "ga",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          5,
+          1,
+          5,
+          1,
+        ],
+        [
+          "didStart",
+          "gb",
+        ],
+        [
+          "didResolve",
+          "1",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          5,
+          2,
+          5,
+          2,
+        ],
+        [
+          "didResolve",
+          "2",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          5,
+          3,
+          5,
+          3,
+        ],
+        [
+          "didResolve",
+          "gb",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          5,
+          4,
+          5,
+          4,
+        ],
+        [
+          "didStart",
+          "gc",
+        ],
+        [
+          "didResolve",
+          "gc",
+          undefined,
+        ],
+        [
+          "didUpdate",
+          5,
+          5,
+          5,
+          5,
+        ],
+        [
+          "didFinish",
+        ],
+      ]
+    `)
+  })
 })

@@ -185,7 +185,8 @@ describe("empty", () => {
 
     expect(fn(10)).toBe(11)
     expect(fn(10)).toBe(11)
-    expect(ctr).toBe(11)
+    expect(fn(1)).toBe(12)
+    expect(ctr).toBe(12)
   })
 
   it("should memoize async", async () => {
@@ -200,6 +201,7 @@ describe("empty", () => {
 
     expect(await fn(10)).toBe(11)
     expect(await fn(10)).toBe(11)
-    expect(ctr).toBe(11)
+    expect(await fn(1)).toBe(12)
+    expect(ctr).toBe(12)
   })
 })

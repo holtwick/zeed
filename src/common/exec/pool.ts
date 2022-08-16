@@ -14,6 +14,7 @@ export enum PoolTaskState {
   finished,
 }
 
+/** Task */
 export interface PoolTask<T> {
   readonly id: string
   readonly task: PoolTaskFn<T>
@@ -23,6 +24,8 @@ export interface PoolTask<T> {
   readonly incResolved: (inc?: number) => void
   state: PoolTaskState
   priority: number
+  /** Same groups are executed only one at a time */
+  group?: string
   max: number
   resolved: number
   result?: T
@@ -30,8 +33,11 @@ export interface PoolTask<T> {
 }
 
 export enum PoolTaskIdConflictResolution {
+  /** Tasks with same `id` are replaced. Last wins */
   replace,
+  /** Tasks with same `id` ??? */
   memoize,
+  /** Tasks with same `id` throw error */
   error,
 }
 
@@ -106,6 +112,20 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     if (waitingTasks.length > 0) {
       let taskInfo: PoolTask<T> | undefined
       for (let t of waitingTasks) {
+        // Skip task if one of same group is running.
+        // Forces serialized execution for subgroup of tasks.
+        if (
+          t.group != null &&
+          Object.values(tasks).some(
+            (tt) =>
+              tt.state === PoolTaskState.running &&
+              tt.id !== t.id &&
+              tt.group === t.group
+          )
+        ) {
+          continue
+        }
+
         // fifo
         if (taskInfo == null || t.priority < taskInfo.priority) {
           taskInfo = t
@@ -165,6 +185,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       id?: string
       max?: number
       resolved?: number
+      group?: string
       idConflictResolution?: PoolTaskIdConflictResolution
       payload?: P
     } = {}
@@ -180,6 +201,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       if (resolution === PoolTaskIdConflictResolution.replace) {
         cancel(id)
       } else if (resolution === PoolTaskIdConflictResolution.memoize) {
+        // todo ???
         let runningTask = tasks[id]
         return {
           id,
@@ -201,6 +223,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       id,
       task,
       priority: ++priority,
+      group: config.group,
       state: PoolTaskState.waiting,
       max: config.max ?? 1,
       resolved: config.resolved ?? 0,

@@ -134,16 +134,17 @@ export function memoize<In extends any, Out extends any>(
   }
 }
 
-export function memoizeAsync<In extends any, Out extends Promise<any>>(
-  fn: (arg: In) => Out
-): (arg: In) => Promise<Out> {
-  let cache = new Map<In, Out>()
-  return async (n: In): Promise<Out> => {
-    if (cache.has(n)) {
-      return cache.get(n)!
+export function memoizeAsync<In extends any[], Out extends Promise<any>>(
+  fn: (...arg: In) => Out
+): (...arg: In) => Promise<Out> {
+  let cache = new Map<string, Out>()
+  return async (...n: In): Promise<Out> => {
+    let key = JSON.stringify(n)
+    if (cache.has(key)) {
+      return cache.get(key)!
     }
-    let result = await fn(n)
-    cache.set(n, result)
+    let result = await fn(...n)
+    cache.set(key, result)
     return result
   }
 }

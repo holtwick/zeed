@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepStripUndefined, deepMerge } from "./deep"
+import { deepStripUndefinedInPlace, deepMerge } from "./deep"
 
 describe("Deep", () => {
   // it('should clone simple', () => {
@@ -170,7 +170,29 @@ describe("Deep", () => {
       },
     }
 
-    expect(deepStripUndefined(sample)).toMatchInlineSnapshot(`
+    // Haha, this is simpler :) But not working in lists
+    expect(JSON.stringify(sample, null, 2)).toMatchInlineSnapshot(`
+      "{
+        \\"hello\\": {
+          \\"world\\": -1,
+          \\"null1\\": null,
+          \\"sea\\": \\"none\\"
+        },
+        \\"other\\": [
+          {
+            \\"fish\\": 8
+          },
+          null,
+          null,
+          \\"Hello\\"
+        ],
+        \\"before\\": {
+          \\"magic\\": 666
+        }
+      }"
+    `)
+
+    expect(deepStripUndefinedInPlace(sample)).toMatchInlineSnapshot(`
       {
         "before": {
           "magic": 666,

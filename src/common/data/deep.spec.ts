@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepMerge } from "./deep"
+import { deepStripUndefined, deepMerge } from "./deep"
 
 describe("Deep", () => {
   // it('should clone simple', () => {
@@ -146,4 +146,49 @@ describe("Deep", () => {
   //   // expect(a.one.sample === b.one.sample).toBe(true)
   //   // expect(a.one.sample.a === b.one.sample.a).toBe(true)
   // })
+
+  it("should strip undefined", () => {
+    let sample = {
+      hello: {
+        world: -1,
+        null1: null,
+        undefined1: undefined,
+        sea: "none",
+      },
+      undefined1: undefined,
+      other: [
+        {
+          fish: 8,
+          undefined1: undefined,
+        },
+        undefined,
+        null,
+        "Hello",
+      ],
+      before: {
+        magic: 666,
+      },
+    }
+
+    expect(deepStripUndefined(sample)).toMatchInlineSnapshot(`
+      {
+        "before": {
+          "magic": 666,
+        },
+        "hello": {
+          "null1": null,
+          "sea": "none",
+          "world": -1,
+        },
+        "other": [
+          {
+            "fish": 8,
+            "undefined1": undefined,
+          },
+          null,
+          "Hello",
+        ],
+      }
+    `)
+  })
 })

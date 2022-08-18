@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isObject, isPrimitive } from "./is"
+import { isArray, isObject, isPrimitive, isRecord } from "./is"
 
 export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   // if both x and y are null or undefined and exactly the same
@@ -74,6 +74,33 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   }
 
   return true
+}
+
+/** Strip properties with value `undefined` */
+export function deepStripUndefined(a: any, hash = new WeakSet()) {
+  // Cyclic
+  if (hash.has(a)) return
+  if (!isPrimitive(a)) hash.add(a)
+
+  if (isRecord(a)) {
+    for (let p in a) {
+      if (!a.hasOwnProperty(p)) continue
+      if (a[p] === undefined) {
+        delete a[p]
+        continue
+      }
+      deepStripUndefined(a[p], hash)
+    }
+  } else if (isArray(a)) {
+    for (var i = a.length - 1; i >= 0; i--) {
+      if (a[i] === undefined) {
+        a.splice(i, 1)
+      }
+    }
+  }
+  // else ignore
+
+  return a
 }
 
 export function deepMerge(target: any, ...sources: any[]) {

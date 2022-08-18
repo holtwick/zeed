@@ -76,8 +76,8 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   return true
 }
 
-/** Strip properties with value `undefined` */
-export function deepStripUndefined(a: any, hash = new WeakSet()) {
+/** Strip properties with value `undefined` in place */
+export function deepStripUndefinedInPlace(a: any, hash = new WeakSet()) {
   // Cyclic
   if (hash.has(a)) return
   if (!isPrimitive(a)) hash.add(a)
@@ -89,7 +89,7 @@ export function deepStripUndefined(a: any, hash = new WeakSet()) {
         delete a[p]
         continue
       }
-      deepStripUndefined(a[p], hash)
+      deepStripUndefinedInPlace(a[p], hash)
     }
   } else if (isArray(a)) {
     for (var i = a.length - 1; i >= 0; i--) {

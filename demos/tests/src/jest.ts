@@ -2,7 +2,7 @@ import { Buffer } from "buffer"
 import { fn } from "jest-mock"
 import { deepEqual, isPromise, Logger } from "zeed"
 
-const log = Logger("jest")
+const log = Logger("zeed:jest")
 
 let context: any = {}
 

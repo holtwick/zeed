@@ -1,13 +1,5 @@
 import "cross-fetch/polyfill"
-import { Logger } from "./log"
-import {
-  fetchJson,
-  fetchOptionsJson,
-  fetchText,
-  parseBasicAuth,
-} from "./network"
-
-const log = Logger("network")
+import { fetchText, parseBasicAuth } from "./network"
 
 describe("network", () => {
   it("should fetch", async () => {

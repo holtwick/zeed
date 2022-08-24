@@ -4,7 +4,7 @@ const RX_LOOK_BEHIND = /^((?:\(\?[\w$]+\))?)\(\?<([=!])([\s\S]*?)\)/gm
 
 import { Logger } from "../log"
 
-const log = Logger("xrx")
+const log = Logger("zeed:xrx")
 
 export function regExpString(rx: string | RegExp): string {
   return typeof rx === "string" ? rx : rx.source || ""

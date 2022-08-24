@@ -2,7 +2,7 @@ import { arrayFilterInPlace } from "./data/array"
 import { isPromise, promisify } from "./exec/promise"
 import { Logger } from "./log"
 
-const log = Logger("dispose")
+const log = Logger("zeed:dispose")
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 

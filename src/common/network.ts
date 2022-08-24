@@ -1,9 +1,9 @@
-import { Json } from "./types"
-import { Logger } from "./log"
-import { encodeQuery } from "./data/url"
 import { arrayFlatten, deepMerge, isArray, toBase64 } from "./data"
+import { encodeQuery } from "./data/url"
+import { Logger } from "./log"
+import { Json } from "./types"
 
-const log = Logger("network")
+const log = Logger("zeed:network")
 
 type fetchOptionType = {
   /** Returns the cache mode associated with request, which is a string indicating how the request will interact with the browser's cache when fetching. */
@@ -99,7 +99,7 @@ export async function fetchBasic(
       fetchOptions.headers = new Headers(fetchOptions.headers)
     }
 
-    log("fetch", url, fetchOptions)
+    // log("fetch", url, fetchOptions)
     const response = await fetchFn(String(url), fetchOptions as RequestInit)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status

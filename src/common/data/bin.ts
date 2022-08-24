@@ -1,6 +1,6 @@
 import { Logger } from "../log"
 
-const log = Logger("bin")
+const log = Logger("zeed:bin")
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 

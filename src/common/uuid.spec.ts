@@ -14,7 +14,9 @@ import {
   uuidB32,
   uuidBytes,
   uuidDecode,
+  uuidDecodeV4,
   uuidEncode,
+  uuidEncodeV4,
   uuidv4,
 } from "./uuid"
 
@@ -192,6 +194,10 @@ describe("uuid", () => {
         190,
       ]
     `)
-    expect(uuidEncode(b62)).toMatchInlineSnapshot('"78MQbFaILcblSYA7WS2OGE"')
+    expect(uuidEncode(b62)).toEqual("78MQbFaILcblSYA7WS2OGE")
+
+    let uv4 = uuidEncodeV4(b62)
+    expect(uv4).toEqual("ea6de673-5bf7-c3d3-77ff9ddc41b81abe")
+    expect(uuidDecodeV4(uv4)).toEqual(b62)
   })
 })

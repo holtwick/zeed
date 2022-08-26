@@ -94,6 +94,12 @@ export function toHex(bin: BinInput): string {
   return s
 }
 
+export function fromHex(hexString: string): Uint8Array {
+  return Uint8Array.from(
+    hexString.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
+  )
+}
+
 export function toBase64(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== "undefined") {

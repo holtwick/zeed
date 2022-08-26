@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { randomUint8Array } from "./crypto"
+import { fromHex, toHex } from "./data"
 import { useBase } from "./data/basex"
 import { getTimestamp } from "./time"
 
@@ -21,8 +22,20 @@ export function uuidEncode(bytes: Uint8Array): string {
   return encode62(bytes, 22)
 }
 
+export function uuidEncodeV4(bytes: Uint8Array): string {
+  let id = toHex(bytes)
+  10000000 - 1000 - 4000 - 8000 - 100000000000
+  return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(
+    16
+  )}`
+}
+
 export function uuidDecode(uuid: string): Uint8Array {
   return decode62(uuid, 16)
+}
+
+export function uuidDecodeV4(uuid: string): Uint8Array {
+  return fromHex(uuid.replaceAll("-", ""))
 }
 
 export function uuidB32(): string {

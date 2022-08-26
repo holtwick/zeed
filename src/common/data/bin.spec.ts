@@ -3,6 +3,7 @@
 import { fromBase64, jsonToUint8Array, Uint8ArrayToJson } from "."
 import {
   equalBinary,
+  fromHex,
   joinToUint8Array,
   stringToUInt8Array,
   toBase64,
@@ -27,6 +28,13 @@ describe("bin", () => {
 
     expect(toBase64([1, 2, 3])).toEqual("AQID")
     expect(toHex([1, 2, 254])).toEqual("0102fe")
+    expect(fromHex("0102fe")).toMatchInlineSnapshot(`
+      Uint8Array [
+        1,
+        2,
+        254,
+      ]
+    `)
 
     expect(toBase64(encoded)).toEqual(
       "SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm"

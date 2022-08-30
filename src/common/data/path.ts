@@ -14,12 +14,14 @@ function windowsReservedNameRegex() {
   return /^(con|prn|aux|nul|com\d|lpt\d)$/i
 }
 
-export function toValidFilename(string: string): string | never {
+/** Ensure a valid file name. Unsupported characters get a `replacement`, default: `_` */
+export function toValidFilename(
+  string: string,
+  replacement: string = "_"
+): string | never {
   if (typeof string !== "string") {
     throw new TypeError("Expected a string")
   }
-
-  const replacement = "_"
 
   if (
     filenameReservedRegex().test(replacement) &&

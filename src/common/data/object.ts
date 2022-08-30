@@ -1,5 +1,6 @@
 import { isArray, isObject } from "./is"
 
+/** Like `.map()` for object. Return new key and value or `undefined` to delete. */
 export function objectMap<T = any>(
   obj: any,
   fn: (
@@ -20,3 +21,17 @@ export function objectMap<T = any>(
       .filter((v) => v != null)
   )
 }
+
+/** Merge right into left object. If dispose is defined, it will be combined. Left can be a complex object i.e. a insantiated class. */
+export function objectMergeDisposable<A, B>(a: A, b: B): A & B {
+  // @ts-ignore
+  if (b.dispose && a.dispose) {
+    // @ts-ignore
+    b.dispose.add(a.dispose)
+  }
+  return Object.assign(a, b)
+}
+
+// export function objectMerge<A, B>(a: A, b: B): A & B {
+//   return Object.assign({}, a, b)
+// }

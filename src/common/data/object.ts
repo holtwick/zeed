@@ -23,7 +23,10 @@ export function objectMap<T = any>(
 }
 
 /** Merge right into left object. If dispose is defined, it will be combined. Left can be a complex object i.e. a insantiated class. */
-export function objectMergeDisposable<A, B>(a: A, b: B): A & B {
+export function objectMergeDisposable<A extends object, B extends object>(
+  a: A,
+  b: B
+): A & B {
   // @ts-ignore
   if (b.dispose && a.dispose) {
     // @ts-ignore

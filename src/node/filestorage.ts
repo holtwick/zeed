@@ -107,7 +107,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
         return value
       }
     } catch (err) {
-      log.warn("getItem error", err)
+      // log.warn("getItem error", err)
       this.store[key] = null // do not retry next time
     }
   }

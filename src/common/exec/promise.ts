@@ -164,3 +164,17 @@ export function promisify<T>(value: Promise<T> | T): Promise<T> {
 // export async function parallel(tasks: any[], fn: any): Promise<any[]> {
 //   return Promise.all(tasks.map((task) => fn(task)))
 // }
+
+//
+
+/**
+ *  Like ReturnType but for async functions.
+ *  From https://www.jpwilliams.dev/how-to-unpack-the-return-type-of-a-promise-in-typescript
+ */
+export type AsyncReturnType<T extends (...args: any) => any> = T extends (
+  ...args: any
+) => Promise<infer U>
+  ? U
+  : T extends (...args: any) => infer U
+  ? U
+  : any

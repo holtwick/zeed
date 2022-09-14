@@ -71,25 +71,25 @@ Uint8Array [
 `)
   })
 
-  it("should derive key", async () => {
-    const key = await deriveKeyPbkdf2("hello")
-    expect(key).toMatchInlineSnapshot(`
-      CryptoKey {
-        Symbol(kKeyObject): SecretKeyObject {
-          Symbol(kKeyType): "secret",
-        },
-        Symbol(kAlgorithm): Object {
-          "length": 256,
-          "name": "AES-GCM",
-        },
-        Symbol(kExtractable): true,
-        Symbol(kKeyUsages): Array [
-          "encrypt",
-          "decrypt",
-        ],
-      }
-    `)
-  })
+  // it("should derive key", async () => {
+  //   const key = await deriveKeyPbkdf2("hello")
+  //   expect(key).toMatchInlineSnapshot(`
+  //     CryptoKey {
+  //       Symbol(kKeyObject): SecretKeyObject {
+  //         Symbol(kKeyType): "secret",
+  //       },
+  //       Symbol(kAlgorithm): Object {
+  //         "length": 256,
+  //         "name": "AES-GCM",
+  //       },
+  //       Symbol(kExtractable): true,
+  //       Symbol(kKeyUsages): Array [
+  //         "encrypt",
+  //         "decrypt",
+  //       ],
+  //     }
+  //   `)
+  // })
 
   it("should raw crypt", async () => {
     const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]), {

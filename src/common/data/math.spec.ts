@@ -65,7 +65,7 @@ describe("math", () => {
       seededRandom(),
       seededRandom(),
     ]).toMatchInlineSnapshot(`
-      [
+      Array [
         0.5494555898491084,
         0.2751200274348422,
         0.6800540123456791,

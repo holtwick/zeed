@@ -25,45 +25,45 @@ describe("log-memory", () => {
     assert(false, "Fatal")
 
     expect(messages).toMatchInlineSnapshot(`
-      [
-        {
+      Array [
+        Object {
           "level": 0,
-          "messages": [
+          "messages": Array [
             "Simple",
           ],
           "name": "test",
         },
-        {
+        Object {
           "level": 0,
-          "messages": [
+          "messages": Array [
             "Hello",
           ],
           "name": "test",
         },
-        {
+        Object {
           "level": 1,
-          "messages": [
+          "messages": Array [
             "World",
           ],
           "name": "test",
         },
-        {
+        Object {
           "level": 2,
-          "messages": [
+          "messages": Array [
             "is on",
           ],
           "name": "test",
         },
-        {
+        Object {
           "level": 3,
-          "messages": [
+          "messages": Array [
             "Fire",
           ],
           "name": "test",
         },
-        {
+        Object {
           "level": 2,
-          "messages": [
+          "messages": Array [
             "Fatal",
           ],
           "name": "test",

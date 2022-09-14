@@ -11,7 +11,7 @@ describe("network", () => {
   it("should parse basic auth", () => {
     let url = "https://user:pass@example.com/?x=1"
     expect(parseBasicAuth(url)).toMatchInlineSnapshot(`
-      {
+      Object {
         "password": "pass",
         "url": "https://example.com/?x=1",
         "username": "user",

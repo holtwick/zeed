@@ -11,14 +11,12 @@
     "buffer": "^6.0.3",
     "expect": "^29.0.3",
     "jest-mock": "^29.0.3",
-    "vue": "^3.2.39",
-    "zeed": "link:../.."
+    "pretty-format": "^29.0.3",
+    "vue": "^3.2.39"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.1.0",
     "@vue/compiler-sfc": "^3.2.39",
-    "@vuedx/typecheck": "^0.7.5",
-    "@vuedx/typescript-plugin-vue": "^0.7.5",
     "typescript": "^4.8.3",
     "vite": "^3.1.0"
   }

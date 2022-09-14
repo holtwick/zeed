@@ -78,12 +78,12 @@ Uint8Array [
         Symbol(kKeyObject): SecretKeyObject {
           Symbol(kKeyType): "secret",
         },
-        Symbol(kAlgorithm): {
+        Symbol(kAlgorithm): Object {
           "length": 256,
           "name": "AES-GCM",
         },
         Symbol(kExtractable): true,
-        Symbol(kKeyUsages): [
+        Symbol(kKeyUsages): Array [
           "encrypt",
           "decrypt",
         ],

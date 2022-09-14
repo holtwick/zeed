@@ -143,7 +143,7 @@ describe("Days", () => {
       let d = dayFromString("1999-12-31")!
       expect(d).toMatchInlineSnapshot("19991231")
       expect(dayToParts(d)).toMatchInlineSnapshot(`
-        [
+        Array [
           1999,
           12,
           31,

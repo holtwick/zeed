@@ -36,7 +36,7 @@ describe("Channel", () => {
     f1.postMessage("abc")
 
     expect(fn.mock.calls.map((c: any) => c[0].data)).toMatchInlineSnapshot(`
-      [
+      Array [
         "123",
         "abc",
       ]

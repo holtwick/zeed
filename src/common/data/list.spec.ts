@@ -15,8 +15,8 @@ describe("list", () => {
         [(e) => ((e.age += 1), e)]
       )
     ).toMatchInlineSnapshot(`
-      [
-        {
+      Array [
+        Object {
           "age": 23,
           "id": 1,
           "title": "aaa",
@@ -24,23 +24,23 @@ describe("list", () => {
       ]
     `)
     expect(listGroupBy(sampleList, "age")).toMatchInlineSnapshot(`
-      {
-        "22": [
-          {
+      Object {
+        "22": Array [
+          Object {
             "age": 22,
             "id": 2,
             "title": "bbb",
           },
         ],
-        "23": [
-          {
+        "23": Array [
+          Object {
             "age": 23,
             "id": 1,
             "title": "aaa",
           },
         ],
-        "33": [
-          {
+        "33": Array [
+          Object {
             "age": 33,
             "id": 3,
             "title": "agga",
@@ -49,7 +49,7 @@ describe("list", () => {
       }
     `)
     expect(listDistinctUnion(sampleList, "age")).toMatchInlineSnapshot(`
-      [
+      Array [
         23,
         22,
         33,

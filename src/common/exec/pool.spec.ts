@@ -67,7 +67,7 @@ describe("pool", () => {
     pool.cancel("dd")
     cancel()
     expect(r).toMatchInlineSnapshot(`
-      [
+      Array [
         "a",
         "b",
       ]
@@ -87,7 +87,7 @@ describe("pool", () => {
     await pool.waitFinishAll()
 
     expect(r).toMatchInlineSnapshot(`
-      [
+      Array [
         "a",
         "b",
         "c",
@@ -98,203 +98,203 @@ describe("pool", () => {
     `)
 
     expect(collectedEvents).toMatchInlineSnapshot(`
-      [
-        [
+      Array [
+        Array [
           "didUpdate",
           1,
           0,
           1,
           0,
         ],
-        [
+        Array [
           "didStart",
           "a",
         ],
-        [
+        Array [
           "didUpdate",
           2,
           0,
           6,
           0,
         ],
-        [
+        Array [
           "didStart",
           "b",
         ],
-        [
+        Array [
           "didUpdate",
           2,
           0,
           6,
           2,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           0,
           7,
           2,
         ],
-        [
+        Array [
           "didUpdate",
           4,
           0,
           8,
           2,
         ],
-        [
+        Array [
           "didUpdate",
           5,
           0,
           9,
           2,
         ],
-        [
+        Array [
           "didUpdate",
           6,
           0,
           10,
           2,
         ],
-        [
+        Array [
           "didUpdate",
           7,
           0,
           11,
           2,
         ],
-        [
+        Array [
           "didCancel",
           "dd",
         ],
-        [
+        Array [
           "didUpdate",
           7,
           1,
           11,
           3,
         ],
-        [
+        Array [
           "didCancel",
           "f",
         ],
-        [
+        Array [
           "didUpdate",
           7,
           2,
           11,
           4,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           2,
           12,
           4,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           2,
           12,
           5,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           2,
           12,
           6,
         ],
-        [
+        Array [
           "didResolve",
           "a",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           3,
           12,
           7,
         ],
-        [
+        Array [
           "didStart",
           "c",
         ],
-        [
+        Array [
           "didResolve",
           "b",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           4,
           12,
           8,
         ],
-        [
+        Array [
           "didStart",
           "d",
         ],
-        [
+        Array [
           "didResolve",
           "c",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           5,
           12,
           9,
         ],
-        [
+        Array [
           "didStart",
           "e",
         ],
-        [
+        Array [
           "didResolve",
           "d",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           6,
           12,
           10,
         ],
-        [
+        Array [
           "didStart",
           "g",
         ],
-        [
+        Array [
           "didResolve",
           "e",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           8,
           7,
           12,
           11,
         ],
-        [
+        Array [
           "didResolve",
           "g",
           "g",
         ],
-        [
+        Array [
           "didUpdate",
           8,
           8,
           12,
           12,
         ],
-        [
+        Array [
           "didFinish",
         ],
       ]
@@ -345,7 +345,7 @@ describe("pool", () => {
     )
 
     expect(r).toMatchInlineSnapshot(`
-      [
+      Array [
         "ga",
         "1",
         "2",
@@ -355,7 +355,7 @@ describe("pool", () => {
     await pool.waitFinishAll()
 
     expect(r).toMatchInlineSnapshot(`
-      [
+      Array [
         "ga",
         "1",
         "2",
@@ -365,123 +365,123 @@ describe("pool", () => {
     `)
 
     expect(collectedEvents).toMatchInlineSnapshot(`
-      [
-        [
+      Array [
+        Array [
           "didUpdate",
           1,
           0,
           1,
           0,
         ],
-        [
+        Array [
           "didStart",
           "ga",
         ],
-        [
+        Array [
           "didUpdate",
           2,
           0,
           2,
           0,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           0,
           3,
           0,
         ],
-        [
+        Array [
           "didUpdate",
           4,
           0,
           4,
           0,
         ],
-        [
+        Array [
           "didStart",
           "1",
         ],
-        [
+        Array [
           "didUpdate",
           5,
           0,
           5,
           0,
         ],
-        [
+        Array [
           "didStart",
           "2",
         ],
-        [
+        Array [
           "didResolve",
           "ga",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           5,
           1,
           5,
           1,
         ],
-        [
+        Array [
           "didStart",
           "gb",
         ],
-        [
+        Array [
           "didResolve",
           "1",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           5,
           2,
           5,
           2,
         ],
-        [
+        Array [
           "didResolve",
           "2",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           5,
           3,
           5,
           3,
         ],
-        [
+        Array [
           "didResolve",
           "gb",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           5,
           4,
           5,
           4,
         ],
-        [
+        Array [
           "didStart",
           "gc",
         ],
-        [
+        Array [
           "didResolve",
           "gc",
           undefined,
         ],
-        [
+        Array [
           "didUpdate",
           5,
           5,
           5,
           5,
         ],
-        [
+        Array [
           "didFinish",
         ],
       ]

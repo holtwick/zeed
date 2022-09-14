@@ -1,6 +1,7 @@
+import { format } from "pretty-format"
 import { Buffer } from "buffer"
 import { fn } from "jest-mock"
-import { deepEqual, isPromise, Logger } from "zeed"
+import { deepEqual, isPromise, Logger } from "../../../src/index.browser"
 
 const log = Logger("zeed:jest")
 
@@ -94,6 +95,26 @@ export function it(title: string, fn: any) {
   })
 }
 
+// test.todo = function () {
+//   /* just skip */
+// }
+
+describe.todo = function () {
+  /* just skip */
+}
+
+// describe.only = function () {
+//   /* just skip */
+// }
+
+it.todo = function () {
+  /* just skip */
+}
+
+function formatPretty(s: any) {
+  return format(s).trim()
+}
+
 function expect(actual: any) {
   function test(ok: boolean, expected: any) {
     if (ok) {
@@ -107,14 +128,37 @@ function expect(actual: any) {
 
   let matchers = {
     toBe: (expected: any) => expected === actual,
-    toEqual: (expected: any) => deepEqual(expected, actual),
+    toEqual: (expected: any) => deepEqual(expected, actual), // formatPretty(expected) === formatPretty(actual),
     toBeNull: () => actual == null,
     toBeTruthy: () => actual == true,
+    toBeFalsy: () => actual == false,
     toBeGreaterThan: (expected: number) => expected < actual,
     toBeLessThan: (expected: number) => expected > actual,
     toContain: (expected: any) => actual.includes(expected),
     toHaveLength: (expected: any) => actual.length === expected,
-    // toMatchInlineSnapshot:
+    toMatchInlineSnapshot: (expected: string) => {
+      let actualPretty = formatPretty(actual)
+      let extectedPretty = expected
+      let lines = expected.split(/\n/)
+      if (lines.length > 1) {
+        let padding = lines[1].length - lines[1].trimStart().length
+        extectedPretty = lines
+          .map((l) => l.substring(padding))
+          .join("\n")
+          .trim()
+      }
+      let cmpActualPretty = actualPretty
+        .trim()
+        .split("\n")
+        .map((l) => l.trim())
+        .join("\n")
+      let cmpExpectedPretty = extectedPretty
+        .trim()
+        .split("\n")
+        .map((l) => l.trim())
+        .join("\n")
+      return cmpActualPretty === cmpExpectedPretty
+    },
   }
 
   let obj: any = {

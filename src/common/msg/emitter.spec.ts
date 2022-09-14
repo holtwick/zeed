@@ -176,41 +176,41 @@ describe("Emitter", () => {
 
     expect(fn).toBeCalledTimes(3)
     expect(fn.mock).toMatchInlineSnapshot(`
-      {
-        "calls": [
-          [
+      Object {
+        "calls": Array [
+          Array [
             1,
           ],
-          [
+          Array [
             1,
           ],
-          [
+          Array [
             2,
           ],
         ],
-        "instances": [
+        "instances": Array [
           undefined,
           undefined,
           undefined,
         ],
-        "invocationCallOrder": [
+        "invocationCallOrder": Array [
           4,
           5,
           6,
         ],
-        "lastCall": [
+        "lastCall": Array [
           2,
         ],
-        "results": [
-          {
+        "results": Array [
+          Object {
             "type": "return",
             "value": undefined,
           },
-          {
+          Object {
             "type": "return",
             "value": undefined,
           },
-          {
+          Object {
             "type": "return",
             "value": undefined,
           },

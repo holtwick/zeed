@@ -59,7 +59,7 @@
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
     "coverage": "vitest --run --coverage",
-    "test": "vitest --run",
+    "test": "vitest",
     "test:publish": "vitest --run"
   },
   "devDependencies": {

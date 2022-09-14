@@ -252,7 +252,9 @@ Object.assign(window, {
 // //   })
 // // })
 
-setTimeout(async () => {
-  console.log("load all")
-  await import("./test-unit-all")
-}, 50)
+// setTimeout(async () => {
+//   console.log("load all")
+//   await import("./test-unit-all")
+// }, 50)
+
+import("../../../src/common/platform.spec")

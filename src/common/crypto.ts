@@ -1,17 +1,5 @@
 import { BinInput, equalBinary, toUint8Array } from "./data/bin"
 
-/* 
-
-// Web Crypto polyfill for node 15+:
-// https://nodejs.org/api/webcrypto.html
-
-import { webcrypto } from "crypto"
-
-if (globalThis.crypto == null) {
-  globalThis.crypto = webcrypto
-}
-*/
-
 // todo: should fallback to node crypto
 export function randomUint8Array(length: number = 16): Uint8Array {
   let randomBytes = new Uint8Array(length)

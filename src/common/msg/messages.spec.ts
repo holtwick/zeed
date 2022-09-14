@@ -1,11 +1,7 @@
-import { webcrypto } from "crypto"
 import { deriveKeyPbkdf2, randomUint8Array } from "../crypto"
 import { createLocalChannelPair } from "./channel"
 import { CryptoEncoder } from "./encoder"
 import { useMessageHub } from "./messages"
-
-// @ts-ignore
-globalThis.crypto = webcrypto
 
 type TestMessages1 = {
   ping(value: number): Promise<number>

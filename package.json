@@ -58,9 +58,9 @@
     "build:tsup": "tsup src/index.all.ts --dts-only && tsup src/index.browser.ts src/index.node.ts --format esm,cjs --dts --sourcemap --minify --keep-names",
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
-    "coverage": "vitest src --global --run --coverage",
-    "test": "vitest src --globals --run",
-    "test:publish": "vitest src --globals --run"
+    "coverage": "vitest --run --coverage",
+    "test": "vitest --run",
+    "test:publish": "vitest --run"
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",

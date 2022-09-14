@@ -22,7 +22,7 @@ describe("cloneObject", () => {
       const sample = { hello: "world" }
       expect(cloneObject(sample) === sample).toBe(false)
       expect(cloneObject(sample)).toEqual(sample)
-      expect(sample === { hello: "world" }).toBe(false)
+      // expect(sample === { hello: "world" }).toBe(false)
       expect(cloneObject(sample)).toEqual({ hello: "world" })
     }
   })

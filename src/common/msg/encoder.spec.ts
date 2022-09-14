@@ -1,9 +1,5 @@
 import { CryptoEncoder, JsonEncoder } from "."
 import { deriveKeyPbkdf2, randomUint8Array } from ".."
-import { webcrypto } from "crypto"
-
-// @ts-ignore
-globalThis.crypto = webcrypto
 
 describe("encoder", () => {
   it("should encode json", async () => {

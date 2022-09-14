@@ -12,10 +12,10 @@ declare module NodeJS {
 // todo sideffects
 try {
   if (
-    nodeCrypto &&
-    nodeCrypto.webcrypto &&
     typeof globalThis !== "undefined" &&
-    typeof globalThis.crypto === "undefined"
+    typeof globalThis.crypto === "undefined" &&
+    nodeCrypto &&
+    nodeCrypto.webcrypto
   ) {
     // @ts-ignore
     globalThis.crypto = nodeCrypto.webcrypto

@@ -1,4 +1,3 @@
-import { webcrypto } from "crypto"
 import {
   getSecureRandom,
   isPrime,
@@ -6,11 +5,6 @@ import {
   randomBoolean,
   seededRandom,
 } from "./math"
-
-if (globalThis.crypto == null) {
-  // @ts-ignore
-  globalThis.crypto = webcrypto
-}
 
 describe("math", () => {
   it("should not have collisions", () => {

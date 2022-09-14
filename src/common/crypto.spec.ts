@@ -1,6 +1,5 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { webcrypto } from "crypto"
 import { Logger } from "."
 import {
   decrypt,
@@ -10,11 +9,6 @@ import {
   randomUint8Array,
 } from "./crypto"
 import { equalBinary, toHex } from "./data/bin"
-
-if (globalThis.crypto == null) {
-  // @ts-ignore
-  globalThis.crypto = webcrypto
-}
 
 const log = Logger("crypto.spec")
 

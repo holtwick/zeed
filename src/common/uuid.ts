@@ -70,7 +70,7 @@ const pattern = "10000000-1000-4000-8000-100000000000" // String([1e7] + -1e3 + 
 
 export const uuidv4 =
   typeof crypto !== "undefined" && crypto.randomUUID != null
-    ? crypto.randomUUID
+    ? crypto.randomUUID()
     : () =>
         pattern.replace(/[018]/g, (c: any) =>
           (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16)

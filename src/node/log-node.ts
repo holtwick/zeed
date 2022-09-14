@@ -23,7 +23,7 @@ function shouldUseColor(): boolean {
   return false
 }
 
-const defaultUseColor: boolean = shouldUseColor()
+let defaultUseColor: boolean | undefined
 
 const colors = [6, 2, 3, 4, 5, 1]
 
@@ -38,8 +38,7 @@ function selectColor(namespace: string) {
 
 let namespaces: Record<string, any> = {}
 
-// todo sideffects
-let time = getTimestamp()
+let time: number | undefined
 
 function log(...args: any[]) {
   process.stdout.write(renderMessages(args) + "\n")
@@ -109,6 +108,12 @@ export const loggerStackTraceDebug =
   "loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485"
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
+  if (defaultUseColor == null) {
+    defaultUseColor = shouldUseColor()
+  }
+  if (time == null) {
+    time = getTimestamp()
+  }
   const {
     level = undefined,
     filter = undefined,
@@ -134,7 +139,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       }
       namespaces[name] = ninfo
     }
-    const diff = formatMilliseconds(timeNow - time)
+    const diff = formatMilliseconds(timeNow - time!)
 
     let args: string[]
 

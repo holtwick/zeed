@@ -27,8 +27,8 @@ describe("args.spec", () => {
       },
     })
     expect(result).toMatchInlineSnapshot(`
-      {
-        "_": [
+      Object {
+        "_": Array [
           "file",
           "free",
         ],
@@ -36,12 +36,12 @@ describe("args.spec", () => {
         "i": true,
         "o": "string",
         "on": true,
-        "some": [
+        "some": Array [
           "test",
           "test2",
           "test3",
         ],
-        "someList": [
+        "someList": Array [
           "listItem",
         ],
         "someNumber": 123,

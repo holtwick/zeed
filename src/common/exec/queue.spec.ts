@@ -101,42 +101,42 @@ describe("queue", () => {
     expect(list).toEqual(["a", "b", "c"])
 
     expect(events).toMatchInlineSnapshot(`
-      [
-        [
+      Array [
+        Array [
           "didUpdate",
           1,
           0,
         ],
-        [
+        Array [
           "didStart",
           1,
         ],
-        [
+        Array [
           "didUpdate",
           2,
           0,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           0,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           1,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           2,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           3,
         ],
-        [
+        Array [
           "didFinish",
         ],
       ]
@@ -178,26 +178,26 @@ describe("queue", () => {
     expect(list).toEqual([])
 
     expect(events).toMatchInlineSnapshot(`
-      [
-        [
+      Array [
+        Array [
           "didUpdate",
           1,
           0,
         ],
-        [
+        Array [
           "didUpdate",
           2,
           0,
         ],
-        [
+        Array [
           "didUpdate",
           3,
           0,
         ],
-        [
+        Array [
           "didCancel",
         ],
-        [
+        Array [
           "didFinish",
         ],
       ]

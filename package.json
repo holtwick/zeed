@@ -1,6 +1,6 @@
 {
   "name": "zeed",
-  "version": "0.8.24",
+  "version": "0.8.25",
   "description": "🌱 Simple foundation library",
   "license": "MIT",
   "keywords": [
@@ -59,7 +59,7 @@
     "watch": "npm run build:tsup -- --watch",
     "prepublishOnly": "npm run build && npm run test:publish",
     "coverage": "vitest --run --coverage",
-    "test": "vitest --run",
+    "test": "vitest",
     "test:publish": "vitest --run"
   },
   "devDependencies": {

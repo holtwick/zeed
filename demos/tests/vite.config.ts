@@ -8,7 +8,11 @@ export default defineConfig({
       "@": "../../src",
     },
   },
+  optimizeDeps: {
+    exclude: ["tty"],
+  },
   server: {
+    cors: true,
     fs: {
       // Allow serving files from one level up to the project root
       allow: ["../.."],

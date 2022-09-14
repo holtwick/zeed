@@ -193,17 +193,17 @@ describe("Deep", () => {
     `)
 
     expect(deepStripUndefinedInPlace(sample)).toMatchInlineSnapshot(`
-      {
-        "before": {
+      Object {
+        "before": Object {
           "magic": 666,
         },
-        "hello": {
+        "hello": Object {
           "null1": null,
           "sea": "none",
           "world": -1,
         },
-        "other": [
-          {
+        "other": Array [
+          Object {
             "fish": 8,
             "undefined1": undefined,
           },

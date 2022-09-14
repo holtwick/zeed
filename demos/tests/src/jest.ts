@@ -1,6 +1,7 @@
+import { format } from "pretty-format"
 import { Buffer } from "buffer"
 import { fn } from "jest-mock"
-import { deepEqual, isPromise, Logger } from "zeed"
+import { deepEqual, isPromise, Logger } from "../../../src/index.browser"
 
 const log = Logger("zeed:jest")
 
@@ -94,6 +95,26 @@ export function it(title: string, fn: any) {
   })
 }
 
+// test.todo = function () {
+//   /* just skip */
+// }
+
+describe.todo = function () {
+  /* just skip */
+}
+
+// describe.only = function () {
+//   /* just skip */
+// }
+
+it.todo = function () {
+  /* just skip */
+}
+
+function formatPretty(s: any) {
+  return format(s).trim()
+}
+
 function expect(actual: any) {
   function test(ok: boolean, expected: any) {
     if (ok) {
@@ -107,14 +128,37 @@ function expect(actual: any) {
 
   let matchers = {
     toBe: (expected: any) => expected === actual,
-    toEqual: (expected: any) => deepEqual(expected, actual),
+    toEqual: (expected: any) => deepEqual(expected, actual), // formatPretty(expected) === formatPretty(actual),
     toBeNull: () => actual == null,
     toBeTruthy: () => actual == true,
+    toBeFalsy: () => actual == false,
     toBeGreaterThan: (expected: number) => expected < actual,
     toBeLessThan: (expected: number) => expected > actual,
     toContain: (expected: any) => actual.includes(expected),
     toHaveLength: (expected: any) => actual.length === expected,
-    // toMatchInlineSnapshot:
+    toMatchInlineSnapshot: (expected: string) => {
+      let actualPretty = formatPretty(actual)
+      let extectedPretty = expected
+      let lines = expected.split(/\n/)
+      if (lines.length > 1) {
+        let padding = lines[1].length - lines[1].trimStart().length
+        extectedPretty = lines
+          .map((l) => l.substring(padding))
+          .join("\n")
+          .trim()
+      }
+      let cmpActualPretty = actualPretty
+        .trim()
+        .split("\n")
+        .map((l) => l.trim())
+        .join("\n")
+      let cmpExpectedPretty = extectedPretty
+        .trim()
+        .split("\n")
+        .map((l) => l.trim())
+        .join("\n")
+      return cmpActualPretty === cmpExpectedPretty
+    },
   }
 
   let obj: any = {
@@ -164,46 +208,53 @@ Object.assign(window, {
 
 // Actual tests
 
-import("../../../src/common/localhost.spec")
+// import("../../../src/common/localhost.spec")
 
-import("../../../src/common/data/array.spec")
-import("../../../src/common/data/basex.spec")
-import("../../../src/common/data/bin.spec")
-import("../../../src/common/data/camelcase.spec")
-import("../../../src/common/data/day.spec")
-import("../../../src/common/data/decimal.spec")
-import("../../../src/common/data/deep.spec")
-import("../../../src/common/data/is.spec")
-import("../../../src/common/data/json.spec")
-import("../../../src/common/data/list.spec")
-import("../../../src/common/data/math.spec")
-import("../../../src/common/data/object.spec")
-import("../../../src/common/data/rounding.spec")
-import("../../../src/common/data/sortable.spec")
-import("../../../src/common/data/url.spec")
-import("../../../src/common/data/utils.spec")
-import("../../../src/common/data/xrx.spec")
-
-// import("../../../src/common/msg/channel.spec")
-// import("../../../src/common/data/convert.spec")
-// // import("../../../src/common/emitter.spec")
-// import("../../../src/common/log-filter.spec")
-// // import("../../../src/common/log-util.spec")
-// import("../../../src/common/log.spec")
-// // import("../../../src/common/msg/mq.spec")
-// import("../../../src/common/exec/mutex.spec")
-// import("../../../src/common/data/orderby.spec")
-// // import("../../../src/common/platform.spec")
-// // import("../../../src/common/promises.spec")
-// // import("../../../src/common/queue.spec")
+// import("../../../src/common/data/array.spec")
+// import("../../../src/common/data/basex.spec")
+// import("../../../src/common/data/bin.spec")
+// import("../../../src/common/data/camelcase.spec")
+// import("../../../src/common/data/day.spec")
+// import("../../../src/common/data/decimal.spec")
+// import("../../../src/common/data/deep.spec")
+// import("../../../src/common/data/is.spec")
+// import("../../../src/common/data/json.spec")
+// import("../../../src/common/data/list.spec")
+// import("../../../src/common/data/math.spec")
+// import("../../../src/common/data/object.spec")
+// import("../../../src/common/data/rounding.spec")
 // import("../../../src/common/data/sortable.spec")
+// import("../../../src/common/data/url.spec")
 // import("../../../src/common/data/utils.spec")
-// import("../../../src/common/uuid.spec")
+// import("../../../src/common/data/xrx.spec")
 
-// describe("Stack", () => {
-//   it("should find correct line", () => {
-//     const line = getSourceLocation(0)
-//     log("stack", new Error().stack)
-//     expect(line).toBe("")
-//   })
-// })
+// // import("../../../src/common/msg/channel.spec")
+// // import("../../../src/common/data/convert.spec")
+// // // import("../../../src/common/emitter.spec")
+// // import("../../../src/common/log-filter.spec")
+// // // import("../../../src/common/log-util.spec")
+// // import("../../../src/common/log.spec")
+// // // import("../../../src/common/msg/mq.spec")
+// // import("../../../src/common/exec/mutex.spec")
+// // import("../../../src/common/data/orderby.spec")
+// // // import("../../../src/common/platform.spec")
+// // // import("../../../src/common/promises.spec")
+// // // import("../../../src/common/queue.spec")
+// // import("../../../src/common/data/sortable.spec")
+// // import("../../../src/common/data/utils.spec")
+// // import("../../../src/common/uuid.spec")
+
+// // describe("Stack", () => {
+// //   it("should find correct line", () => {
+// //     const line = getSourceLocation(0)
+// //     log("stack", new Error().stack)
+// //     expect(line).toBe("")
+// //   })
+// // })
+
+setTimeout(async () => {
+  console.log("load all")
+  await import("./test-unit-all")
+}, 50)
+
+// import("../../../src/common/platform.spec")

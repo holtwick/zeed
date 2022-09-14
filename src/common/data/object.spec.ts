@@ -9,14 +9,14 @@ describe("object.spec", () => {
       b: 2,
     }
     expect(objectMap<number>(sample, (k, v) => v + 10)).toMatchInlineSnapshot(`
-      {
+      Object {
         "a": 11,
         "b": 12,
       }
     `)
     expect(objectMap(sample, (k, v) => [k + "_" + v, k]))
       .toMatchInlineSnapshot(`
-        {
+        Object {
           "a_1": "a",
           "b_2": "b",
         }

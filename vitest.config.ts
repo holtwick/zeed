@@ -5,9 +5,9 @@ export default defineConfig({
   test: {
     setupFiles: ["test-setup.ts"],
     include: ["./src/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    // snapshotFormat: {
-    //   printBasicPrototype: true,
-    // },
+    snapshotFormat: {
+      printBasicPrototype: true,
+    },
     root: "./src",
     globals: true,
   },

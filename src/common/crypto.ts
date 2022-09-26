@@ -49,7 +49,7 @@ export async function deriveKeyPbkdf2(
     {
       name: DEFAULT_DERIVE_ALG,
       salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
-      iterations: opt.iterations ?? 100000,
+      iterations: opt.iterations || 100000,
       hash: DEFAULT_HASH_ALG,
     },
     keyMaterial,

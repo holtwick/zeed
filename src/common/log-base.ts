@@ -122,7 +122,7 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
 
     log.label = name
     log.active = true
-    log.level = parseLogLevel(level ?? LogLevel.all)
+    log.level = parseLogLevel(level != null ? level : LogLevel.all)
 
     log.extend = function (prefix: string): LoggerInterface {
       return logFactory(name ? `${name}:${prefix}` : prefix)

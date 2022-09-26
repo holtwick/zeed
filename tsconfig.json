@@ -17,6 +17,6 @@
     "types": ["node", "vitest/globals"],
     "allowJs": true
   },
-  "include": ["src/**/*", "test-setup.ts"],
+  "include": ["src/**/*", "vitest-setup.ts"],
   "exclude": ["node_modules", "dist", "src/**/*.spec.ts"]
 }

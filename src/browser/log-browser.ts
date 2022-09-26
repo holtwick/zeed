@@ -57,7 +57,7 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
       args = [`%c${name}%c \t%s %c+${diff}`]
       args.push(`color:${ninfo.color}; ${styleBold}`)
       args.push(styleDefault)
-      args.push(msg.messages?.[0] ?? "")
+      args.push(msg.messages?.[0] == null ? "" : msg.messages?.[0])
       args.push(`color:${ninfo.color};`)
       args.push(...msg.messages.slice(1))
     } else {
@@ -97,7 +97,7 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
 }
 
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
-  const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
+  const filter = opt.filter || localStorage.zeed || localStorage.debug
 
   /// The trick is, that console called directly provides a reference to the source code.
   /// For the regular implementation this information is lost. But this approach has other

@@ -39,7 +39,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   constructor(opt: FileStorageOptions = {}) {
     this.dirname = resolve(process.cwd(), opt.path || ".fileStorage")
     this.pretty = !!opt.pretty
-    this.extension = opt.extension ?? ".json"
+    this.extension = opt.extension || ".json"
 
     if (opt.extension && !this.extension.startsWith(".")) {
       this.extension = "." + this.extension
@@ -47,7 +47,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
     this.extensionLength = this.extension.length
 
     this.objectToString =
-      opt.objectToString ??
+      opt.objectToString ||
       ((data: any): string => {
         return this.pretty
           ? JSON.stringify(data, null, 2)
@@ -55,7 +55,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
       })
 
     this.objectFromString =
-      opt.objectFromString ??
+      opt.objectFromString ||
       ((data: string) => {
         try {
           return JSON.parse(data)
@@ -64,7 +64,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
         }
       })
 
-    this.keyToFilename = opt.keyToFilename ?? toValidFilename
+    this.keyToFilename = opt.keyToFilename || toValidFilename
   }
 
   setItem(key: string, value: T): void {

@@ -38,3 +38,7 @@ export function objectMergeDisposable<A extends object, B extends object>(
 // export function objectMerge<A, B>(a: A, b: B): A & B {
 //   return Object.assign({}, a, b)
 // }
+
+export function objectIsEmpty(obj: object) {
+  return Object.keys(obj).length <= 0
+}

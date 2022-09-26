@@ -23,7 +23,7 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
     this.name = opt.name
     this.prefix = `${opt.name}$`
     this.objectToString =
-      opt.objectToString ??
+      opt.objectToString ||
       ((data: any): string => {
         return this.pretty
           ? JSON.stringify(data, null, 2)
@@ -31,7 +31,7 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
       })
 
     this.objectFromString =
-      opt.objectFromString ??
+      opt.objectFromString ||
       ((data: string) => {
         try {
           return JSON.parse(data)

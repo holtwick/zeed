@@ -18,5 +18,5 @@
     "allowJs": true
   },
   "include": ["src/**/*", "vitest-setup.ts"],
-  "exclude": ["node_modules", "dist", "src/**/*.spec.ts"]
+  "exclude": ["_archive", "node_modules", "dist", "src/**/*.spec.ts"]
 }

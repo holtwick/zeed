@@ -2,6 +2,7 @@
 
 import { Json, ObjectStorage } from "../common/types"
 import { Logger } from "../common/log"
+import { jsonStringifySafe } from "../common/data/json"
 
 const log = Logger("zeed:localstorage")
 
@@ -23,15 +24,15 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
     this.name = opt.name
     this.prefix = `${opt.name}$`
     this.objectToString =
-      opt.objectToString ||
+      opt.objectToString ??
       ((data: any): string => {
         return this.pretty
-          ? JSON.stringify(data, null, 2)
-          : JSON.stringify(data)
+          ? jsonStringifySafe(data, null, 2)
+          : jsonStringifySafe(data)
       })
 
     this.objectFromString =
-      opt.objectFromString ||
+      opt.objectFromString ??
       ((data: string) => {
         try {
           return JSON.parse(data)

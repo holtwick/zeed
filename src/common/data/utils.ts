@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { Json } from "../types"
+import { jsonStringifySafe } from "./json"
 
 /**
  * Call a create function if key does not yet exist on an object. Returns the found or created object. Example:
@@ -87,7 +88,7 @@ export function cloneObject<T>(obj: T): T {
   if (Object(obj) !== obj) return obj
 
   // Rude but very efficient way to clone
-  return JSON.parse(JSON.stringify(obj))
+  return JSON.parse(jsonStringifySafe(obj))
 }
 
 // Also see common/data/deep.ts
@@ -96,7 +97,7 @@ export function cloneJsonObject<T = Json>(obj: T): T {
   if (Object(obj) !== obj) return obj
 
   // Rude but very efficient way to clone
-  return JSON.parse(JSON.stringify(obj))
+  return JSON.parse(jsonStringifySafe(obj))
 }
 
 // export function cloneStructuredObject<T>(obj: T): T {
@@ -139,7 +140,7 @@ export function memoizeAsync<In extends any[], Out extends Promise<any>>(
 ): (...arg: In) => Promise<Out> {
   let cache = new Map<string, Out>()
   return async (...n: In): Promise<Out> => {
-    let key = JSON.stringify(n)
+    let key = jsonStringifySafe(n)
     if (cache.has(key)) {
       return cache.get(key)!
     }

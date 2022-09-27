@@ -36,9 +36,9 @@ export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
 // todo sideffects
 const defaultNamespaceFilter: string = getNamespaceFilterString(
   typeof process !== "undefined"
-    ? process.env.ZEED || process.env.DEBUG
+    ? process.env.ZEED ?? process.env.DEBUG
     : typeof localStorage !== "undefined"
-    ? localStorage.zeed || localStorage.debug
+    ? localStorage.zeed ?? localStorage.debug
     : "*"
 )
 
@@ -107,9 +107,9 @@ export function useNamespaceFilter(
 // todo sideffects
 const defaultLevelFilter: any =
   typeof process !== "undefined"
-    ? process.env.ZEED_LEVEL || process.env.LEVEL || process.env.DEBUG_LEVEL
+    ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL
     : typeof localStorage !== "undefined"
-    ? localStorage.zeed_level || localStorage.level || localStorage.debug_level
+    ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
     : undefined
 
 export function parseLogLevel(filter: LogLevelAliasType): LogLevel {

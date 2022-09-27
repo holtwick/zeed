@@ -12,7 +12,7 @@ function setupLogContextNode() {
     }),
   ]
 
-  let logFilePath = process.env.ZEED_LOG || process.env.LOG
+  let logFilePath = process.env.ZEED_LOG ?? process.env.LOG
   if (logFilePath) {
     handlers.unshift(LoggerFileHandler(toPath(logFilePath)))
   }

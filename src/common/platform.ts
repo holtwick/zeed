@@ -11,7 +11,7 @@ export function getNavigator(): any | undefined {
 }
 
 export function getGlobal(): any {
-  return getWindow() ||
+  return getWindow() ??
     // @ts-ignore
     typeof WorkerGlobalScope !== "undefined"
     ? // @ts-ignore

@@ -1,8 +1,27 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepStripUndefinedInPlace, deepMerge } from "./deep"
+import { Logger } from "../../index.log"
+import { deepEqual, deepMerge, deepStripUndefinedInPlace } from "./deep"
+
+const log = Logger("test:deep")
 
 describe("Deep", () => {
+  it("should deep without self reference", () => {
+    let sample: any = {
+      a: 1,
+    }
+    sample.b = sample
+    let sample2: any = {
+      a: 1,
+    }
+    sample2.b = sample2
+
+    log("sample", sample)
+
+    // false because cyclic
+    expect(deepEqual(sample, sample2)).toBe(false)
+  })
+
   // it('should clone simple', () => {
   //   let a = {
   //     hello: {

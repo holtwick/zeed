@@ -1,4 +1,10 @@
-import { arrayFlatten, deepMerge, isArray, toBase64 } from "./data"
+import {
+  arrayFlatten,
+  deepMerge,
+  isArray,
+  jsonStringifySafe,
+  toBase64,
+} from "./data"
 import { encodeQuery } from "./data/url"
 import { Logger } from "./log"
 import { Json } from "./types"
@@ -196,7 +202,7 @@ export function fetchOptionsJson(
       "Content-Type": "application/json; charset=utf-8",
       // Accept: "application/json",
     },
-    body: JSON.stringify(data),
+    body: jsonStringifySafe(data),
   }
 }
 

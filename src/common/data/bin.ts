@@ -1,4 +1,5 @@
 import { Logger } from "../log"
+import { jsonStringifySafe } from "./json"
 
 const log = Logger("zeed:bin")
 
@@ -155,7 +156,7 @@ export function equalBinary(
 
 export function jsonToUint8Array(json: any): Uint8Array | never {
   try {
-    return stringToUInt8Array(JSON.stringify(json))
+    return stringToUInt8Array(jsonStringifySafe(json))
   } catch (err) {
     log.warn("jsonToUint8Array", json)
     throw err

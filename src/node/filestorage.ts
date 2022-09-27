@@ -9,6 +9,7 @@ import {
   writeFileSync,
 } from "fs"
 import { dirname, resolve } from "path"
+import { jsonStringifySafe } from "../common/data/json"
 import { toValidFilename } from "../common/data/path"
 import { cloneObject } from "../common/data/utils"
 import { Logger } from "../common/log"
@@ -50,8 +51,8 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
       opt.objectToString ||
       ((data: any): string => {
         return this.pretty
-          ? JSON.stringify(data, null, 2)
-          : JSON.stringify(data)
+          ? jsonStringifySafe(data, null, 2)
+          : jsonStringifySafe(data)
       })
 
     this.objectFromString =

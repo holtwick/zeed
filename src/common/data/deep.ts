@@ -11,7 +11,7 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   // Cyclic
   if (hash.has(b)) {
     // console.log('cyclic')
-    return true
+    return false
   }
 
   if (!isPrimitive(b)) {
@@ -104,6 +104,7 @@ export function deepStripUndefinedInPlace(a: any, hash = new WeakSet()) {
 }
 
 export function deepMerge(target: any, ...sources: any[]) {
+  // todo cyclic protection
   for (let source of sources) {
     if (!isObject(target)) {
       target = {}

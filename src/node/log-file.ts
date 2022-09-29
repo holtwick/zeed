@@ -9,18 +9,17 @@ import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
 let namespaces: Record<string, any> = {}
 
 export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
-  const { level = LogLevel.all, filter = "*" } = opt
+  const { level = undefined, filter = undefined } = opt
   path = resolve(process.cwd(), path)
   mkdirSync(dirname(path), { recursive: true })
   var stream = createWriteStream(path, { flags: "a" })
-  // stream.end()
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
     if (!matchesLevel(msg.level)) return
     if (!matchesNamespace(msg.name)) return
 
-    const time = new Date().toISOString()
+    const timeNow = new Date().toISOString()
     let name = msg.name || ""
     let ninfo = namespaces[name || ""]
     if (ninfo == null) {
@@ -38,16 +37,16 @@ export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
 
     switch (msg.level) {
       case LogLevel.info:
-        write(time, `I|*  `, ...args)
+        write(timeNow, `I|*  `, ...args)
         break
       case LogLevel.warn:
-        write(time, `W|** `, ...args)
+        write(timeNow, `W|** `, ...args)
         break
       case LogLevel.error:
-        write(time, `E|***`, ...args)
+        write(timeNow, `E|***`, ...args)
         break
       default:
-        write(time, `D|   `, ...args)
+        write(timeNow, `D|   `, ...args)
         break
     }
   }

@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { rmSync, statSync, unlinkSync } from "fs"
-import { Logger, sleep } from "../common"
+import { Logger, LogLevel, sleep } from "../common"
 import { LoggerFileHandler } from "./log-file"
 
 describe("Log File", () => {
@@ -11,7 +11,12 @@ describe("Log File", () => {
 
   it("should write log", async () => {
     const path = __dirname + "/tmp/test.log"
-    Logger.setHandlers([LoggerFileHandler(path)])
+    Logger.setHandlers([
+      LoggerFileHandler(path, {
+        level: LogLevel.all,
+        filter: "*",
+      }),
+    ])
     const log = Logger("test")
     log("debug")
     log.info("info")

@@ -40,14 +40,6 @@ const rounding = (value: number, increment: number) =>
 const groupRegex = /(\d)(?=(\d{3})+\b)/g
 const vedicRegex = /(\d)(?=(\d\d)+\d\b)/g
 
-/** @deprecated use decimal() instead */
-export function currency(
-  value: CurrencyInput,
-  opts: CurrencyOptions = {}
-): Currency {
-  return new Currency(value, opts)
-}
-
 /**
  * Immuteable currency representation
  * @deprecated use decimal() instead
@@ -233,4 +225,12 @@ function format(currency: Currency, settings: CurrencyOptions): string {
       "#",
       dollars.replace(groups, "$1" + separator) + (cents ? decimal + cents : "")
     )
+}
+
+/** @deprecated use decimal() instead */
+export function currency(
+  value: CurrencyInput,
+  opts: CurrencyOptions = {}
+): Currency {
+  return new Currency(value, opts)
 }

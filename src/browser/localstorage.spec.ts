@@ -4,8 +4,8 @@ export {}
 // import { isBrowser } from "../common/platform"
 // import { LocalStorage } from "./localStorage"
 
-describe("LocalStorage", () => {
-  it("should store data and read it again", () => {
+describe('LocalStorage', () => {
+  it('should store data and read it again', () => {
     // if (isBrowser()) {
     //   {
     //     const db = new LocalStorage({ name: "test" })

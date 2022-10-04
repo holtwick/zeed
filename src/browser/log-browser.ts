@@ -1,44 +1,50 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepEqual } from "../common/data/deep"
-import {
-  LoggerInterface,
+/* eslint-disable no-console */
+
+import { deepEqual } from '../common/data/deep'
+import type {
   LogHandler,
   LogHandlerOptions,
-  LogLevel,
   LogMessage,
-} from "../common/log-base"
-import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
-import { formatMilliseconds, getTimestamp } from "../common/time"
-import { selectColor, supportsColors } from "./log-colors"
+  LoggerInterface,
+} from '../common/log-base'
+import {
+  LogLevel,
+} from '../common/log-base'
+import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
+import { formatMilliseconds, getTimestamp } from '../common/time'
+import { selectColor, supportsColors } from './log-colors'
 
-const styleFont = `font-family: "JetBrains Mono", Menlo; font-size: 11px;`
+const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
 const styleDefault = `${styleFont}`
 const styleBold = `font-weight: 600; ${styleFont}`
 const useColors = supportsColors()
 
-let namespaces: Record<string, any> = {}
+const namespaces: Record<string, any> = {}
 
-let time = getTimestamp() // todo sideffects
+const time = getTimestamp() // todo sideffects
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     filter = undefined,
     level = undefined,
     colors = true,
-    levelHelper = false,
-    nameBrackets = true,
+    // levelHelper = false,
+    // nameBrackets = true,
     padding = 16,
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
-    if (!matchesLevel(msg.level)) return
-    if (!matchesNamespace(msg.name)) return
+    if (!matchesLevel(msg.level))
+      return
+    if (!matchesNamespace(msg.name))
+      return
 
     const timeNow = getTimestamp()
-    let name = msg.name || ""
-    let ninfo = namespaces[name || ""]
+    let name = msg.name || ''
+    let ninfo = namespaces[name || '']
     if (ninfo == null) {
       ninfo = {
         color: selectColor(name),
@@ -49,18 +55,18 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     const diff = formatMilliseconds(timeNow - time)
     let args: string[]
 
-    if (padding > 0) {
-      name = name.padEnd(16, " ")
-    }
+    if (padding > 0)
+      name = name.padEnd(16, ' ')
 
     if (colors && useColors) {
       args = [`%c${name}%c \t%s %c+${diff}`]
       args.push(`color:${ninfo.color}; ${styleBold}`)
       args.push(styleDefault)
-      args.push(msg.messages?.[0] ?? "")
+      args.push(msg.messages?.[0] ?? '')
       args.push(`color:${ninfo.color};`)
       args.push(...msg.messages.slice(1))
-    } else {
+    }
+    else {
       args = [name, ...msg.messages, `+${diff}`]
     }
 
@@ -77,19 +83,23 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
 
     switch (msg.level) {
       case LogLevel.info:
-        if (opt.levelHelper) args[0] = `I|*   ` + args[0]
+        if (opt.levelHelper)
+          args[0] = `I|*   ${args[0]}`
         console.info(...args)
         break
       case LogLevel.warn:
-        if (opt.levelHelper) args[0] = `W|**  ` + args[0]
+        if (opt.levelHelper)
+          args[0] = `W|**  ${args[0]}`
         console.warn(...args)
         break
       case LogLevel.error:
-        if (opt.levelHelper) args[0] = `E|*** ` + args[0]
+        if (opt.levelHelper)
+          args[0] = `E|*** ${args[0]}`
         console.error(...args)
         break
       default:
-        if (opt.levelHelper) args[0] = `D|    ` + args[0]
+        if (opt.levelHelper)
+          args[0] = `D|    ${args[0]}`
         console.debug(...args)
         break
     }
@@ -103,24 +113,24 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   /// For the regular implementation this information is lost. But this approach has other
   /// drawbacks, therefore only use it in the Browser when actively debugging.
   return function LoggerBrowserDebugFactory(
-    name: string = ""
+    name = '',
   ): LoggerInterface {
     let log: LoggerInterface
 
     const matches = useNamespaceFilter(filter)
 
     if (matches(name)) {
-      let fixedArgs = []
+      const fixedArgs = []
       if (useColors) {
         const color = selectColor(name)
-        fixedArgs.push(`%c${name.padEnd(16, " ")}%c \t%s`)
+        fixedArgs.push(`%c${name.padEnd(16, ' ')}%c \t%s`)
         fixedArgs.push(`color:${color}; ${styleBold}`)
         fixedArgs.push(styleDefault)
-      } else {
+      }
+      else {
         fixedArgs.push(`[${name}] \t%s`)
       }
 
-      // @ts-ignore
       // console.previous = {
       //   debug: console.debug,
       //   info: console.info,
@@ -138,14 +148,14 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       log.assert = console.assert.bind(console)
 
       log.assertEqual = function (value: any, expected: any, ...args: any[]) {
-        let equal = deepEqual(value, expected)
+        const equal = deepEqual(value, expected)
         if (!equal) {
           log.assert(
             equal,
             `Assert did fail. Expected ${expected} got ${value}`,
             expected,
             value,
-            ...args
+            ...args,
           )
         }
       }
@@ -155,18 +165,19 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
         expected: any,
         ...args: any[]
       ) {
-        let equal = deepEqual(value, expected)
+        const equal = deepEqual(value, expected)
         if (equal) {
           log.assert(
             equal,
             `Assert did fail. Expected ${expected} not to be equal with ${value}`,
             expected,
             value,
-            ...args
+            ...args,
           )
         }
       }
-    } else {
+    }
+    else {
       const noop = () => {}
       log = noop as LoggerInterface
       log.debug = noop
@@ -190,8 +201,8 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
 }
 
 /** @deprecated This output is default for initial use of Logger in browser environments. */
-export function activateConsoleDebug(opt: LogHandlerOptions = {}) {
-  console.info("activateConsoleDebug is activated by default in browsers")
+export function activateConsoleDebug(_opt: LogHandlerOptions = {}) {
+  console.info('activateConsoleDebug is activated by default in browsers')
   //   Logger.setHandlers([LoggerBrowserHandler(opt)]) // Fallback for previously registered Loggers
   //   Logger.setFactory(LoggerBrowserSetupDebugFactory(opt))
 }

@@ -1,13 +1,14 @@
-import { deriveKeyPbkdf2, randomUint8Array } from "../crypto"
-import { createLocalChannelPair } from "./channel"
-import { CryptoEncoder } from "./encoder"
-import { useMessageHub } from "./messages"
+import { deriveKeyPbkdf2, randomUint8Array } from '../crypto'
+import { createLocalChannelPair } from './channel'
+import { CryptoEncoder } from './encoder'
+import type { MessageDefinitions } from './messages'
+import { useMessageHub } from './messages'
 
-type TestMessages1 = {
+interface TestMessages1 extends MessageDefinitions {
   ping(value: number): Promise<number>
 }
 
-type TestMessages2 = {
+interface TestMessages2 extends MessageDefinitions {
   aping(value: number | string): Promise<number | string>
 }
 
@@ -17,10 +18,10 @@ type TestMessages2 = {
 
 type TestMessages = TestMessages1 & TestMessages2
 
-describe("messages", () => {
-  it("should show the magic of proxies ", async () => {
-    let p = new Proxy<TestMessages1>({} as any, {
-      get(target, name) {
+describe('messages', () => {
+  it('should show the magic of proxies ', async () => {
+    const p = new Proxy<TestMessages1>({} as any, {
+      get(_target, _name) {
         // console.log(target, name)
         return (...args: any) => {
           // console.log(name, args)
@@ -31,7 +32,7 @@ describe("messages", () => {
     expect(await p.ping(await p.ping(2))).toBe(2)
   })
 
-  it("should do hub thing", async () => {
+  it('should do hub thing', async () => {
     // expect.assertions(1)
 
     // Some secret encoder
@@ -51,18 +52,18 @@ describe("messages", () => {
     })
     serverHub.listen<TestMessages2>({
       async aping(value) {
-        return new Promise((resolve) => setTimeout(() => resolve(value), 500))
+        return new Promise(resolve => setTimeout(() => resolve(value), 500))
       },
     })
 
     const clientHub = useMessageHub({ channel: clientChannel, encoder })
     const client = clientHub.send<TestMessages>()
 
-    let x = await client.aping(1)
-    let y = await client.aping("Hällo W👨‍👩‍👧‍👦rld")
+    const x = await client.aping(1)
+    const y = await client.aping('Hällo W👨‍👩‍👧‍👦rld')
 
     expect(x).toBe(1)
-    expect(y).toBe("Hällo W👨‍👩‍👧‍👦rld")
+    expect(y).toBe('Hällo W👨‍👩‍👧‍👦rld')
 
     await client.ping(2)
   })

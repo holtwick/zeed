@@ -1,6 +1,6 @@
-import { Emitter } from "../msg/emitter"
-import { uuid } from "../uuid"
-import { createPromise } from "./promise"
+import { Emitter } from '../msg/emitter'
+import { uuid } from '../uuid'
+import { createPromise } from './promise'
 
 interface PoolConfig {
   maxParallel?: number
@@ -66,20 +66,20 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   let countResolved = 0
   let currentParallel = 0
   let priority = 0
-  let tasks: Record<string, PoolTask<T>> = {}
+  const tasks: Record<string, PoolTask<T>> = {}
 
   // const [allFinishedPromise, allFinishedResolve] = createPromise()
 
   async function waitFinishAll() {
     if (countMax > 0) {
       const [promise, resolve] = createPromise()
-      events.once("didFinish", resolve)
+      events.once('didFinish', resolve)
       return promise
     }
   }
 
   function didFinish() {
-    events.emit("didFinish")
+    events.emit('didFinish')
     // allFinishedResolve(countMax)
     countMax = 0
     countResolved = 0
@@ -90,53 +90,53 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     let presentResolved = 0
     for (const { max, resolved, state } of Object.values(tasks)) {
       presentMax += max
-      presentResolved +=
-        state === PoolTaskState.finished ? max : Math.min(max, resolved)
+      presentResolved
+        += state === PoolTaskState.finished ? max : Math.min(max, resolved)
     }
     events.emit(
-      "didUpdate",
+      'didUpdate',
       countMax,
       countResolved,
       presentMax,
-      presentResolved
+      presentResolved,
     )
   }
 
   function performNext() {
     didUpdate()
-    if (countMax > 0 && countMax === countResolved) didFinish()
-    if (currentParallel >= maxParallel) return
-    let waitingTasks = Object.values(tasks).filter(
-      (t) => t.state === PoolTaskState.waiting
+    if (countMax > 0 && countMax === countResolved)
+      didFinish()
+    if (currentParallel >= maxParallel)
+      return
+    const waitingTasks = Object.values(tasks).filter(
+      t => t.state === PoolTaskState.waiting,
     )
     if (waitingTasks.length > 0) {
       let taskInfo: PoolTask<T> | undefined
-      for (let t of waitingTasks) {
+      for (const t of waitingTasks) {
         // Skip task if one of same group is running.
         // Forces serialized execution for subgroup of tasks.
         if (
-          t.group != null &&
-          Object.values(tasks).some(
-            (tt) =>
-              tt.state === PoolTaskState.running &&
-              tt.id !== t.id &&
-              tt.group === t.group
+          t.group != null
+          && Object.values(tasks).some(
+            tt =>
+              tt.state === PoolTaskState.running
+              && tt.id !== t.id
+              && tt.group === t.group,
           )
-        ) {
+        )
           continue
-        }
 
         // fifo
-        if (taskInfo == null || t.priority < taskInfo.priority) {
+        if (taskInfo == null || t.priority < taskInfo.priority)
           taskInfo = t
-        }
       }
       if (taskInfo != null) {
         const id = taskInfo.id
         const done = taskInfo.done
         taskInfo.state = PoolTaskState.running
         ++currentParallel
-        events.emit("didStart", id)
+        events.emit('didStart', id)
 
         const taskFinished = (result?: T) => {
           if (taskInfo) {
@@ -153,12 +153,12 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           .task(taskInfo)
           .then((r) => {
             done(r)
-            events.emit("didResolve", id, r)
+            events.emit('didResolve', id, r)
             taskFinished(r)
           })
           .catch((err) => {
             done()
-            events.emit("didReject", id, err)
+            events.emit('didReject', id, err)
             taskFinished()
           })
       }
@@ -166,11 +166,11 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   }
 
   function cancel(id: string) {
-    let taskInfo = tasks[id]
+    const taskInfo = tasks[id]
     if (taskInfo && taskInfo.state === PoolTaskState.waiting) {
       tasks[id].state = PoolTaskState.finished
       ++countResolved
-      events.emit("didCancel", id)
+      events.emit('didCancel', id)
       didUpdate()
     }
   }
@@ -188,33 +188,35 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       group?: string
       idConflictResolution?: PoolTaskIdConflictResolution
       payload?: P
-    } = {}
+    } = {},
   ) {
     let done: any
-    let promise: Promise<any> = new Promise((resolve) => (done = resolve))
-    let id = config.id ?? uuid()
+    const promise: Promise<any> = new Promise(resolve => (done = resolve))
+    const id = config.id ?? uuid()
 
     if (tasks[id] != null) {
-      const resolution =
-        config.idConflictResolution ?? PoolTaskIdConflictResolution.memoize
+      const resolution
+        = config.idConflictResolution ?? PoolTaskIdConflictResolution.memoize
 
       if (resolution === PoolTaskIdConflictResolution.replace) {
         cancel(id)
-      } else if (resolution === PoolTaskIdConflictResolution.memoize) {
+      }
+      else if (resolution === PoolTaskIdConflictResolution.memoize) {
         // todo ???
-        let runningTask = tasks[id]
+        const runningTask = tasks[id]
         return {
           id,
           promise: (async () => {
-            if (runningTask.state === PoolTaskState.finished) {
+            if (runningTask.state === PoolTaskState.finished)
               return tasks[id].result
-            }
+
             // todo: wait for task to finish
           })(),
           dispose: () => cancel(id),
           cancel: () => cancel(id),
         }
-      } else {
+      }
+      else {
         throw new Error(`Pool task with id=${id} already exists!`)
       }
     }

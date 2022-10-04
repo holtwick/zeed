@@ -1,9 +1,9 @@
-// @ts-ignore
+import * as crypto from 'crypto'
+
+// @ts-expect-error Workaround
 globalThis.isNodeTestEnv = true
 
-import { webcrypto } from "crypto"
-
 if (globalThis.crypto == null) {
-  // @ts-ignore
-  globalThis.crypto = webcrypto
+  // @ts-expect-error Workaround
+  globalThis.crypto = crypto.webcrypto
 }

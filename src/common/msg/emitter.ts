@@ -1,12 +1,13 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getSecureRandomIfPossible } from "../data/math"
-import { Disposable, DisposerFunction, useDispose } from "../dispose-defer"
-import { getGlobalContext } from "../global"
-import { Logger } from "../log"
-import { promisify } from "../exec/promise"
+import { getSecureRandomIfPossible } from '../data/math'
+import type { Disposable, DisposerFunction } from '../dispose-defer'
+import { useDispose } from '../dispose-defer'
+import { getGlobalContext } from '../global'
+import { Logger } from '../log'
+import { promisify } from '../exec/promise'
 
-const log = Logger("zeed:emitter")
+const log = Logger('zeed:emitter')
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void
@@ -22,15 +23,14 @@ export declare type ListenerSignature<L> = {
   [E in keyof L]: (...args: any[]) => any
 }
 
-export declare type DefaultListener = {
+export declare interface DefaultListener {
   [k: string]: (...args: any[]) => any
 }
 
 export class Emitter<
   RemoteListener extends ListenerSignature<RemoteListener> = DefaultListener,
-  LocalListener extends ListenerSignature<LocalListener> = RemoteListener
-> implements Disposable
-{
+  LocalListener extends ListenerSignature<LocalListener> = RemoteListener,
+> implements Disposable {
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
@@ -39,8 +39,8 @@ export class Emitter<
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
       (target: any, name: any) =>
-      (...args: any): any =>
-        this.emit(name, ...args),
+        (...args: any): any =>
+          this.emit(name, ...args),
   })
 
   public async emit<U extends keyof RemoteListener>(
@@ -55,24 +55,27 @@ export class Emitter<
     })
 
     try {
-      let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
+      const subscribers = (this.subscribers[event] || []) as EmitterHandler[]
       // log.debug("emit", this?.constructor?.name, event, ...args, subscribers)
 
-      this.subscribersOnAny.forEach((fn) => fn(event, ...args))
+      this.subscribersOnAny.forEach(fn => fn(event, ...args))
 
       if (subscribers.length > 0) {
-        let all = subscribers.map((fn) => {
+        const all = subscribers.map((fn) => {
           try {
             return promisify(fn(...args))
-          } catch (err) {
-            log.warn("emit warning:", err)
           }
-        })
+          catch (err) {
+            log.warn('emit warning:', err)
+          }
+          return null
+        }).filter(fn => fn != null)
         ok = true
         await Promise.all(all)
       }
-    } catch (err) {
-      log.error("emit exception", err)
+    }
+    catch (err) {
+      log.error('emit exception', err)
     }
     return ok
   }
@@ -83,9 +86,9 @@ export class Emitter<
 
   public on<U extends keyof LocalListener>(
     event: U,
-    listener: LocalListener[U]
+    listener: LocalListener[U],
   ): DisposerFunction {
-    let subscribers = (this.subscribers[event] || []) as EmitterHandler[]
+    const subscribers = (this.subscribers[event] || []) as EmitterHandler[]
     subscribers.push(listener)
     this.subscribers[event] = subscribers
     return () => {
@@ -94,14 +97,13 @@ export class Emitter<
   }
 
   public onCall(handlers: Partial<LocalListener>) {
-    for (const [name, handler] of Object.entries(handlers)) {
+    for (const [name, handler] of Object.entries(handlers))
       this.on(name as any, handler as any)
-    }
   }
 
   public once<U extends keyof LocalListener>(
     event: U,
-    listener: LocalListener[U]
+    listener: LocalListener[U],
   ): DisposerFunction {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)
@@ -115,11 +117,11 @@ export class Emitter<
 
   public off<U extends keyof LocalListener>(
     event: U,
-    listener: LocalListener[U]
+    listener: LocalListener[U],
   ): this {
     // log("off", key)
     this.subscribers[event] = (this.subscribers[event] || []).filter(
-      (f: any) => listener && f !== listener
+      (f: any) => listener && f !== listener,
     )
     return this
   }
@@ -161,15 +163,15 @@ interface LazyEvent {
 
 export function lazyListener(
   emitter: any,
-  listenerKey?: string
+  listenerKey?: string,
 ): (key?: string, skipUnmatched?: boolean) => Promise<any> {
   const name = Math.round(getSecureRandomIfPossible() * 100)
 
-  var events: LazyEvent[] = []
-  var lazyResolve: (() => void) | undefined
+  const events: LazyEvent[] = []
+  let lazyResolve: (() => void) | undefined
 
   const incoming = (key: string, obj: any) => {
-    let ev = { key, obj }
+    const ev = { key, obj }
     // debug(name, "  lazy push", ev)
     events.push(ev)
     lazyResolve && lazyResolve()
@@ -180,24 +182,28 @@ export function lazyListener(
       emitter.on(listenerKey, (obj: any) => {
         incoming(listenerKey, obj)
       })
-    } else if (emitter.addEventListener) {
+    }
+    else if (emitter.addEventListener) {
       emitter.addEventListener(listenerKey, (obj: any) => {
         incoming(listenerKey, obj)
       })
-    } else {
-      log.error(name, "Cannot listen to key")
     }
-  } else {
+    else {
+      log.error(name, 'Cannot listen to key')
+    }
+  }
+  else {
     if (emitter.onAny) {
       emitter.onAny((key: string, obj: any) => {
         incoming(key, obj)
       })
-    } else {
-      log.error(name, "cannot listen to all for", emitter)
+    }
+    else {
+      log.error(name, 'cannot listen to all for', emitter)
     }
   }
 
-  let on = (key?: string, skipUnmatched: boolean = true): Promise<any> => {
+  const on = (key?: string, skipUnmatched = true): Promise<any> => {
     return new Promise((resolve, reject) => {
       if (!key) {
         key = listenerKey
@@ -212,17 +218,18 @@ export function lazyListener(
       lazyResolve = () => {
         // debug(name, "lazy resolve", key, listenerKey, events)
         while (events.length > 0) {
-          let ev = <LazyEvent>events.shift()
+          const ev = <LazyEvent>events.shift()
           // debug(name, "  lazy analyze", ev)
           if (ev.key === key) {
             lazyResolve = undefined
             resolve(ev.obj)
-          } else {
+          }
+          else {
             if (skipUnmatched) {
               log.warn(name, `Unhandled event ${key} with value: ${ev.obj}`)
               continue
             }
-            reject(`Expected ${key}, but found ${ev.key} with value=${ev.obj}`)
+            reject(new Error(`Expected ${key}, but found ${ev.key} with value=${ev.obj}`))
             log.error(name, `Unhandled event ${key} with value: ${ev.obj}`)
           }
           break

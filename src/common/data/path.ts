@@ -1,8 +1,10 @@
 // https://github.com/sindresorhus/filenamify/blob/main/filenamify.js
 
+/* eslint-disable no-control-regex */
+
 const MAX_FILENAME_LENGTH = 100
 
-const reControlChars = /[\u0000-\u001F\u0080-\u009F]/g // eslint-disable-line no-control-regex
+const reControlChars = /[\u0000-\u001F\u0080-\u009F]/g
 const reRelativePath = /^\.+/
 const reTrailingPeriods = /\.+$/
 
@@ -17,18 +19,17 @@ function windowsReservedNameRegex() {
 /** Ensure a valid file name. Unsupported characters get a `replacement`, default: `_` */
 export function toValidFilename(
   string: string,
-  replacement: string = "_"
+  replacement = '_',
 ): string | never {
-  if (typeof string !== "string") {
-    throw new TypeError("Expected a string")
-  }
+  if (typeof string !== 'string')
+    throw new TypeError('Expected a string')
 
   if (
-    filenameReservedRegex().test(replacement) &&
-    reControlChars.test(replacement)
+    filenameReservedRegex().test(replacement)
+    && reControlChars.test(replacement)
   ) {
     throw new Error(
-      "Replacement string cannot contain reserved filename characters"
+      'Replacement string cannot contain reserved filename characters',
     )
   }
 
@@ -36,7 +37,7 @@ export function toValidFilename(
     .replace(filenameReservedRegex(), replacement)
     .replace(reControlChars, replacement)
     .replace(reRelativePath, replacement)
-    .replace(reTrailingPeriods, "")
+    .replace(reTrailingPeriods, '')
 
   string = windowsReservedNameRegex().test(string)
     ? string + replacement

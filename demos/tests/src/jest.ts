@@ -1,9 +1,13 @@
-import { format } from "pretty-format"
-import { Buffer } from "buffer"
-import { fn } from "jest-mock"
-import { deepEqual, isPromise, Logger } from "../../../src/index.browser"
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
+/* eslint-disable eqeqeq */
 
-const log = Logger("zeed:jest")
+import { Buffer } from 'buffer'
+import { format } from 'pretty-format'
+import { fn } from 'jest-mock'
+import { Logger, deepEqual, isPromise } from '../../../src/index.browser'
+
+const log = Logger('zeed:jest')
 
 let context: any = {}
 
@@ -18,66 +22,65 @@ export async function describe(title: string, fn: any) {
   }
 
   try {
-    let r = fn.call(context)
+    const r = fn.call(context)
 
-    if (isPromise(r)) {
+    if (isPromise(r))
       await r
-    }
-  } catch (err) {
+  }
+  catch (err) {
     context.fails += 1
-    log.warn("Exception:", err)
+    log.warn('Exception:', err)
   }
 
-  if (context.beforeAll) {
+  if (context.beforeAll)
     context.beforeAll()
-  }
 
-  for (let it of context.its) {
+  for (const it of context.its) {
     log(`... ${it.title}`)
 
     try {
       perfomedAssertions = 0
       expectAssertions = -1
 
-      var rdone
-      var done = (value: any) => log.error("Did not set up done() correctly")
-      if (it.fn.length > 0) {
-        rdone = new Promise((r) => (done = r))
-      }
+      let rdone
+      let done = (_value: any) => log.error('Did not set up done() correctly')
+      if (it.fn.length > 0)
+        rdone = new Promise(resolve => (done = resolve))
 
-      let r = it.fn.call(null, done)
+      const r = it.fn.call(null, done)
 
-      if (rdone || isPromise(r)) {
-        log(`      #async`)
-      } else if (expectAssertions > 0) {
-        log.warn("If expecting assertions, the test should be async.")
-      }
+      if (rdone || isPromise(r))
+        log('      #async')
+      else if (expectAssertions > 0)
+        log.warn('If expecting assertions, the test should be async.')
 
-      if (expectAssertions > 0) log(`      #expect=${expectAssertions}`)
+      if (expectAssertions > 0)
+        log(`      #expect=${expectAssertions}`)
 
-      if (rdone) await rdone
-      if (isPromise(r)) await r
+      if (rdone)
+        await rdone
+      if (isPromise(r))
+        await r
 
       if (expectAssertions >= 0 && perfomedAssertions !== expectAssertions) {
         log.warn(
-          `Expected ${expectAssertions} assertions, got ${perfomedAssertions}. ${title}/${it.title}`
+          `Expected ${expectAssertions} assertions, got ${perfomedAssertions}. ${title}/${it.title}`,
         )
       }
-    } catch (err) {
+    }
+    catch (err) {
       context.fails += 1
-      log.warn("Exception:", err)
+      log.warn('Exception:', err)
     }
   }
 
-  if (context.afterAll) {
+  if (context.afterAll)
     context.afterAll()
-  }
 
-  if (context.fails > 0) {
+  if (context.fails > 0)
     alert(`${context.fails} tests did fail in ${title}`)
-  } else {
+  else
     log.info(`All ${context.its.length} tests of ${title} passed!`)
-  }
 }
 
 export function beforeAll(fn: any) {
@@ -120,13 +123,14 @@ function expect(actual: any) {
     if (ok) {
       // log("OK - Passed Test")
       perfomedAssertions += 1
-    } else {
+    }
+    else {
       log.warn(`Fail: got ${actual} expected ${expected}`)
       context.fails += 1
     }
   }
 
-  let matchers = {
+  const matchers = {
     toBe: (expected: any) => expected === actual,
     toEqual: (expected: any) => deepEqual(expected, actual), // formatPretty(expected) === formatPretty(actual),
     toBeNull: () => actual == null,
@@ -137,31 +141,31 @@ function expect(actual: any) {
     toContain: (expected: any) => actual.includes(expected),
     toHaveLength: (expected: any) => actual.length === expected,
     toMatchInlineSnapshot: (expected: string) => {
-      let actualPretty = formatPretty(actual)
+      const actualPretty = formatPretty(actual)
       let extectedPretty = expected
-      let lines = expected.split(/\n/)
+      const lines = expected.split(/\n/)
       if (lines.length > 1) {
-        let padding = lines[1].length - lines[1].trimStart().length
+        const padding = lines[1].length - lines[1].trimStart().length
         extectedPretty = lines
-          .map((l) => l.substring(padding))
-          .join("\n")
+          .map(l => l.substring(padding))
+          .join('\n')
           .trim()
       }
-      let cmpActualPretty = actualPretty
+      const cmpActualPretty = actualPretty
         .trim()
-        .split("\n")
-        .map((l) => l.trim())
-        .join("\n")
-      let cmpExpectedPretty = extectedPretty
+        .split('\n')
+        .map(l => l.trim())
+        .join('\n')
+      const cmpExpectedPretty = extectedPretty
         .trim()
-        .split("\n")
-        .map((l) => l.trim())
-        .join("\n")
+        .split('\n')
+        .map(l => l.trim())
+        .join('\n')
       return cmpActualPretty === cmpExpectedPretty
     },
   }
 
-  let obj: any = {
+  const obj: any = {
     not: {},
   }
 
@@ -194,7 +198,6 @@ function expect(actual: any) {
 
 expect.assertions = (count: number) => (expectAssertions = count)
 
-// @ts-ignore
 Object.assign(window, {
   expect,
   it,
@@ -253,8 +256,8 @@ Object.assign(window, {
 // // })
 
 setTimeout(async () => {
-  console.log("load all")
-  await import("./test-unit-all")
+  console.log('load all')
+  await import('./test-unit-all')
 }, 50)
 
 // import("../../../src/common/platform.spec")

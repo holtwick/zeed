@@ -1,11 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json } from "../types"
-import { Logger } from "../log"
-import { ObjectStorage } from "../types"
-import { cloneObject } from "../data/utils"
+import { cloneObject } from '../data/utils'
+import type { Json, ObjectStorage } from '../types'
 
-const log = Logger("zeed:memstorage")
+// const log = Logger('zeed:memstorage')
 
 export interface MemStorageOptions {
   objectFromString?: (data: string) => any
@@ -18,7 +16,7 @@ export class MemStorage<T = Json> implements ObjectStorage<T> {
   // private objectFromString: (data: string) => any
   // private objectToString: (data: any) => string
 
-  constructor(opt: MemStorageOptions = {}) {
+  constructor(_opt: MemStorageOptions = {}) {
     // this.objectToString =
     //   opt.objectToString ??
     //   ((data: any): string => {
@@ -43,9 +41,7 @@ export class MemStorage<T = Json> implements ObjectStorage<T> {
   }
 
   getItem(key: string): T | undefined {
-    if (this.store.hasOwnProperty(key)) {
-      return cloneObject(this.store[key])
-    }
+    return cloneObject(this.store[key])
   }
 
   removeItem(key: string): void {

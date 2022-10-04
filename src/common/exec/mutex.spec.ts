@@ -1,11 +1,11 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useMutex, useAsyncMutex } from "./mutex"
+import { useAsyncMutex, useMutex } from './mutex'
 
-describe("mutex", () => {
-  it("should mutex", () => {
+describe('mutex', () => {
+  it('should mutex', () => {
     let ctr = 0
-    let m = useMutex()
+    const m = useMutex()
     m(() => {
       ++ctr
       m(
@@ -15,18 +15,18 @@ describe("mutex", () => {
             () => {
               ++ctr
             },
-            () => (ctr += 10) // never reached
+            () => (ctr += 10), // never reached
           )
         },
-        () => (ctr += 10)
+        () => (ctr += 10),
       )
     })
     expect(ctr).toBe(11)
   })
 
-  it("should async mutex", async () => {
+  it('should async mutex', async () => {
     let ctr = 0
-    let m = useAsyncMutex()
+    const m = useAsyncMutex()
     await m(async () => {
       ++ctr
       await m(
@@ -36,10 +36,10 @@ describe("mutex", () => {
             async () => {
               ++ctr
             },
-            async () => (ctr += 10) // never reached
+            async () => (ctr += 10), // never reached
           )
         },
-        async () => (ctr += 10)
+        async () => (ctr += 10),
       )
     })
     expect(ctr).toBe(11)

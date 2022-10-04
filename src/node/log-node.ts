@@ -1,25 +1,28 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import tty from "tty"
-import { renderMessages, valueToBoolean } from "../common/data/convert"
-import {
+import tty from 'tty'
+import { renderMessages, valueToBoolean } from '../common/data/convert'
+import type {
   LogHandler,
   LogHandlerOptions,
-  LogLevel,
   LogMessage,
-} from "../common/log-base"
-import { useLevelFilter, useNamespaceFilter } from "../common/log-filter"
+} from '../common/log-base'
+import {
+  LogLevel,
+} from '../common/log-base'
+import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
+import { formatMilliseconds, getTimestamp } from '../common/time'
 import {
   getSourceLocation,
   getSourceLocationByPrecedingPattern,
   getStack,
-} from "./log-util"
-import { formatMilliseconds, getTimestamp } from "../common/time"
+} from './log-util'
 
 function shouldUseColor(): boolean {
   try {
     return valueToBoolean(process.env.ZEED_COLOR, tty.isatty(process.stdout.fd))
-  } catch (err) {}
+  }
+  catch (err) {}
   return false
 }
 
@@ -36,12 +39,12 @@ function selectColor(namespace: string) {
   return colors[Math.abs(hash) % colors.length]
 }
 
-let namespaces: Record<string, any> = {}
+const namespaces: Record<string, any> = {}
 
 let time: number | undefined
 
 function log(...args: any[]) {
-  process.stdout.write(renderMessages(args) + "\n")
+  process.stdout.write(`${renderMessages(args)}\n`)
 }
 
 // const _browserStyleMap = {
@@ -57,15 +60,15 @@ function log(...args: any[]) {
 // }
 
 const TTY_STYLE = {
-  BOLD: "\u001b[1m",
-  UNBOLD: "\u001b[2m",
-  RED: "\u001b[31m",
-  GREEN: "\u001b[32m",
-  BLUE: "\u001b[34m",
-  PURPLE: "\u001b[35m",
-  GRAY: "\u001b[37m",
-  ORANGE: "\u001b[38;5;208m",
-  UNCOLOR: "\u001b[0m",
+  BOLD: '\u001B[1m',
+  UNBOLD: '\u001B[2m',
+  RED: '\u001B[31m',
+  GREEN: '\u001B[32m',
+  BLUE: '\u001B[34m',
+  PURPLE: '\u001B[35m',
+  GRAY: '\u001B[37m',
+  ORANGE: '\u001B[38;5;208m',
+  UNCOLOR: '\u001B[0m',
 }
 
 enum COLOR {
@@ -77,23 +80,24 @@ enum COLOR {
   ORANGE = 8,
 }
 
-const colorEnd = "\u001B[0m"
+const colorEnd = '\u001B[0m'
 
 export function colorString(text: string, colorCode: number) {
-  const colorStart =
-    colorCode === COLOR.ORANGE
+  const colorStart
+    = colorCode === COLOR.ORANGE
       ? TTY_STYLE.ORANGE
-      : "\u001B[3" + (colorCode < 8 ? colorCode : "8;5;" + colorCode) + "m"
+      : `\u001B[3${colorCode < 8 ? colorCode : `8;5;${colorCode}`}m`
   return `${colorStart}${text}${colorEnd}`
 }
 
 export function colorStringList(
   list: Array<any>,
   style: string,
-  bold: boolean = true
+  bold = true,
 ) {
   return list.map((value) => {
-    if (typeof value !== "string") return value
+    if (typeof value !== 'string')
+      return value
     let start = style
     let end = colorEnd
     if (bold) {
@@ -104,16 +108,16 @@ export function colorStringList(
   })
 }
 
-export const loggerStackTraceDebug =
-  "loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485"
+export const loggerStackTraceDebug
+  = 'loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485'
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
-  if (defaultUseColor == null) {
+  if (defaultUseColor == null)
     defaultUseColor = shouldUseColor()
-  }
-  if (time == null) {
+
+  if (time == null)
     time = getTimestamp()
-  }
+
   const {
     level = undefined,
     filter = undefined,
@@ -127,11 +131,13 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
-    if (!matchesLevel(msg.level)) return
-    if (!matchesNamespace(msg.name)) return
+    if (!matchesLevel(msg.level))
+      return
+    if (!matchesNamespace(msg.name))
+      return
     const timeNow = getTimestamp()
-    let name = msg.name || ""
-    let ninfo = namespaces[name || ""]
+    const name = msg.name || ''
+    let ninfo = namespaces[name || '']
     if (ninfo == null) {
       ninfo = {
         color: selectColor(name),
@@ -145,81 +151,84 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
 
     let displayName = nameBrackets ? `[${name}]` : name
 
-    if (padding > 0) {
-      displayName = displayName.padStart(padding, " ")
-    }
+    if (padding > 0)
+      displayName = displayName.padStart(padding, ' ')
 
-    if (fill > 0) {
-      displayName = displayName.padEnd(fill, " ")
-    }
+    if (fill > 0)
+      displayName = displayName.padEnd(fill, ' ')
 
     if (colors) {
       const c = ninfo.color
-      args = [colorString(displayName, c) + ` | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
-      if (msg.level === LogLevel.warn) {
+      args = [`${colorString(displayName, c)} | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
+      if (msg.level === LogLevel.warn)
         args.push(...colorStringList(msg.messages, TTY_STYLE.ORANGE))
-      } else if (msg.level === LogLevel.error) {
+      else if (msg.level === LogLevel.error)
         args.push(...colorStringList(msg.messages, TTY_STYLE.RED))
-      } else {
+      else
         args.push(...msg.messages)
-      }
+
       args.push(colorString(`+${diff}`, c))
-    } else {
+    }
+    else {
       args = [displayName, ...msg.messages]
       args.push(`+${diff}`)
     }
 
     if (msg.messages?.[0] === loggerStackTraceDebug) {
+      // eslint-disable-next-line no-console
       console.log(getStack())
     }
 
     if (stack) {
-      let line: string = ""
-      if (typeof stack === "boolean") {
+      let line = ''
+      if (typeof stack === 'boolean') {
         line = getSourceLocationByPrecedingPattern(
-          ["at Function.", "at null.log (", "at log ("],
-          true
+          ['at Function.', 'at null.log (', 'at log ('],
+          true,
         )
-        if (!line) {
+        if (!line)
           line = getSourceLocation(0, true)
-        }
-      } else {
-        const depth = typeof stack === "number" ? stack : 3
+      }
+      else {
+        const depth = typeof stack === 'number' ? stack : 3
         line = getSourceLocation(depth, true)
       }
-      if (line) {
+      if (line)
         args.push(colorString(`(${line})`, COLOR.GRAY))
-      }
     }
-    const sep = "|"
-    const charLevel = "."
+    const sep = '|'
+    const charLevel = '.'
 
     switch (msg.level) {
       case LogLevel.info:
-        if (levelHelper) args[0] = `I${sep}${charLevel}   ` + args[0]
+        if (levelHelper)
+          args[0] = `I${sep}${charLevel}   ${args[0]}`
         log(...args)
         break
       case LogLevel.warn:
-        if (levelHelper)
-          args[0] =
-            (colors
+        if (levelHelper) {
+          args[0]
+            = (colors
               ? colorString(`W${sep}${charLevel}${charLevel}  `, COLOR.ORANGE)
               : `W${sep}${charLevel}${charLevel}  `) + args[0]
+        }
         log(...args)
         break
       case LogLevel.error:
-        if (levelHelper)
-          args[0] =
-            (colors
+        if (levelHelper) {
+          args[0]
+            = (colors
               ? colorString(
                   `E${sep}${charLevel}${charLevel}${charLevel} `,
-                  COLOR.RED
-                )
+                  COLOR.RED,
+              )
               : `E${sep}${charLevel}${charLevel}${charLevel} `) + args[0]
+        }
         log(...args)
         break
       default:
-        if (levelHelper) args[0] = `D${sep}    ` + args[0]
+        if (levelHelper)
+          args[0] = `D${sep}    ${args[0]}`
         log(...args)
         break
     }

@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json } from "../types"
-import { jsonStringifySafe } from "./json"
+import type { Json } from '../types'
+import { jsonStringifySafe } from './json'
 
 /**
  * Call a create function if key does not yet exist on an object. Returns the found or created object. Example:
@@ -14,7 +14,7 @@ import { jsonStringifySafe } from "./json"
 export function ensureKey<T>(
   obj: Record<string, T>,
   key: string,
-  createFn: (key?: string, obj?: Record<string, T>) => T
+  createFn: (key?: string, obj?: Record<string, T>) => T,
 ): T {
   let value = obj[key]
   if (value === undefined) {
@@ -35,7 +35,7 @@ export function ensureKey<T>(
 export async function ensureKeyAsync<T>(
   obj: Record<string, T>,
   key: string,
-  createFn: (key?: string, obj?: Record<string, T>) => Promise<T>
+  createFn: (key?: string, obj?: Record<string, T>) => Promise<T>,
 ): Promise<T> {
   let value = obj[key]
   if (value === undefined) {
@@ -47,12 +47,12 @@ export async function ensureKeyAsync<T>(
 
 export function size(obj: any) {
   if (obj != null) {
-    if (obj.size != null) {
+    if (obj.size != null)
       return obj.size
-    }
-    if (obj.length != null) {
+
+    if (obj.length != null)
       return obj.length
-    }
+
     return Object.keys(obj).length
   }
   return 0
@@ -66,18 +66,18 @@ export function last<T>(array?: T[]): T | undefined {
 export function empty(value: any): boolean {
   try {
     if (value != null) {
-      if (Array.isArray(value)) {
+      if (Array.isArray(value))
         return value.length <= 0
-      } else if (typeof value === "string") {
+      else if (typeof value === 'string')
         return value.length <= 0
-      } else if (value?.size != null) {
+      else if (value?.size != null)
         return value.size <= 0
-      } else {
+      else
         return Object.keys(value).length <= 0
-      }
     }
-  } catch (err) {
-    console.warn("Failed to check if empty for", value, err)
+  }
+  catch (err) {
+    console.warn('Failed to check if empty for', value, err)
   }
   return true
 }
@@ -85,7 +85,8 @@ export function empty(value: any): boolean {
 // Also see common/data/deep.ts
 export function cloneObject<T>(obj: T): T {
   // Primitives are immutable anyway
-  if (Object(obj) !== obj) return obj
+  if (Object(obj) !== obj)
+    return obj
 
   // Rude but very efficient way to clone
   return JSON.parse(jsonStringifySafe(obj))
@@ -94,7 +95,8 @@ export function cloneObject<T>(obj: T): T {
 // Also see common/data/deep.ts
 export function cloneJsonObject<T = Json>(obj: T): T {
   // Primitives are immutable anyway
-  if (Object(obj) !== obj) return obj
+  if (Object(obj) !== obj)
+    return obj
 
   // Rude but very efficient way to clone
   return JSON.parse(jsonStringifySafe(obj))
@@ -121,30 +123,30 @@ export function cloneJsonObject<T = Json>(obj: T): T {
  * square(2) // == 2
  * ```
  */
-export function memoize<In extends any, Out extends any>(
-  fn: (arg: In) => Out
+export function memoize<In, Out>(
+  fn: (arg: In) => Out,
 ): (arg: In) => Out {
-  let cache = new Map<In, Out>()
+  const cache = new Map<In, Out>()
   return (n: In): Out => {
-    if (cache.has(n)) {
+    if (cache.has(n))
       return cache.get(n)!
-    }
-    let result = fn(n)
+
+    const result = fn(n)
     cache.set(n, result)
     return result
   }
 }
 
 export function memoizeAsync<In extends any[], Out extends Promise<any>>(
-  fn: (...arg: In) => Out
+  fn: (...arg: In) => Out,
 ): (...arg: In) => Promise<Out> {
-  let cache = new Map<string, Out>()
+  const cache = new Map<string, Out>()
   return async (...n: In): Promise<Out> => {
-    let key = jsonStringifySafe(n)
-    if (cache.has(key)) {
+    const key = jsonStringifySafe(n)
+    if (cache.has(key))
       return cache.get(key)!
-    }
-    let result = await fn(...n)
+
+    const result = await fn(...n)
     cache.set(key, result)
     return result
   }
@@ -153,11 +155,11 @@ export function memoizeAsync<In extends any[], Out extends Promise<any>>(
 /** Repeat `count` times. Starts with `0` */
 export function forTimes<T = undefined>(
   count: number,
-  fn: (i: number, count: number) => T
+  fn: (i: number, count: number) => T,
 ): T[] {
-  let result = []
-  for (let i = 0; i < count; i++) {
+  const result = []
+  for (let i = 0; i < count; i++)
     result.push(fn(i, count))
-  }
+
   return result
 }

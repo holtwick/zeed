@@ -1,8 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getSecureRandomIfPossible } from "./math"
-import { NestedArray } from "../types"
-import { cmp } from "./orderby"
+/* eslint-disable no-cond-assign */
+
+import type { NestedArray } from '../types'
+import { getSecureRandomIfPossible } from './math'
+import { cmp } from './orderby'
 
 export function arrayUnique<T>(x: T[]): T[] {
   return x.filter((n: any, index: any) => x.indexOf(n) === index)
@@ -50,7 +52,8 @@ export function arrayRemoveElement<T>(arr: T[], el: T): T[] {
 
 /** Only have it once in the set */
 export function arraySetElement<T>(arr: T[], el: T): T[] {
-  if (!arr.includes(el)) arr.push(el)
+  if (!arr.includes(el))
+    arr.push(el)
   return arr
 }
 
@@ -62,8 +65,9 @@ export function arrayFilterInPlace<T>(array: T[], fn: (el: T) => boolean): T[] {
 
 // via https://stackoverflow.com/a/49587869 and Erwin
 export function arrayToggleInPlace<T>(array: T[], el: T): T[] {
-  const index = array.findIndex((e) => e === el)
-  if (index >= 0) array.splice(index, 1)
+  const index = array.findIndex(e => e === el)
+  if (index >= 0)
+    array.splice(index, 1)
   else array.push(el)
   return array
 }
@@ -75,7 +79,7 @@ export function arrayEmptyInPlace<T>(array: T[]): T[] {
 
 export function arraySorted<T>(
   arr: Iterable<T> | ArrayLike<T>,
-  cond: ((a: T, b: T) => number) | undefined = cmp
+  cond: ((a: T, b: T) => number) | undefined = cmp,
 ): T[] {
   return Array.from(arr).sort(cond)
 }
@@ -86,8 +90,8 @@ export function arraySortedNumbers(arr: number[]): number[] {
 
 export function arrayIsEqual<T>(array1: T[], array2: T[]): boolean {
   return (
-    array1.length === array2.length &&
-    array1.every((value, index) => value === array2[index])
+    array1.length === array2.length
+    && array1.every((value, index) => value === array2[index])
   )
 }
 
@@ -96,8 +100,8 @@ export function arrayShuffleInPlace<T>(array: T[]): T[] {
 
   // Alternative https://github.com/sindresorhus/array-shuffle/blob/main/index.js#L8
   // for (let index = array.length - 1; index > 0; index--) {
-  // 	const newIndex = Math.floor(Math.random() * (index + 1));
-  // 	[array[index], array[newIndex]] = [array[newIndex], array[index]];
+  //   const newIndex = Math.floor(Math.random() * (index + 1));
+  //   [array[index], array[newIndex]] = [array[newIndex], array[index]];
   // }
 
   return array
@@ -112,7 +116,8 @@ export function arrayShuffleForce<T>(array: T[]): T[] {
   while (array.length > 1) {
     const copy = Array.from(array)
     arrayShuffleInPlace(copy)
-    if (!arrayIsEqual(array, copy)) return copy
+    if (!arrayIsEqual(array, copy))
+      return copy
   }
   return array
 }
@@ -122,18 +127,18 @@ export function arrayRandomElement<T>(array: T[]): T {
 }
 
 export function arrayMax<T>(...array: NestedArray<T>[]): T {
-  // @ts-ignore
+  // @ts-expect-error xxx
   return arrayFlatten(array).reduce(
     (acc, value) => (acc != null ? (value > acc ? value : acc) : value),
-    undefined
+    undefined,
   )
 }
 
 export function arrayMin<T>(...array: NestedArray<T>[]): T {
-  // @ts-ignore
+  // @ts-expect-error xxx
   return arrayFlatten(array).reduce(
     (acc, value) => (acc != null ? (value < acc ? value : acc) : value),
-    undefined
+    undefined,
   )
 }
 
@@ -142,28 +147,29 @@ export function arraySum(...array: NestedArray<number>[]): number {
 }
 
 export function arrayAvg(...array: NestedArray<number>[]): number {
-  let flatArray = arrayFlatten(array)
+  const flatArray = arrayFlatten(array)
   return flatArray.reduce((acc, value) => acc + value, 0) / flatArray.length
 }
 
 export function arrayBatches<T>(array: T[], chunckLength: number): T[][] {
-  let chunks = []
+  const chunks = []
   let i = 0
   const n = array.length
-  while (i < n) {
+  while (i < n)
     chunks.push(array.slice(i, (i += chunckLength)))
-  }
+
   return chunks
 }
 
 export function createArray<T>(
-  size: number = 0,
-  item?: T | ((index: number) => T)
+  size = 0,
+  item?: T | ((index: number) => T),
 ): T[] {
-  if (size <= 0) return []
-  let arr = new Array(size)
-  for (let i = 0; i < size; i++) {
+  if (size <= 0)
+    return []
+  const arr = new Array(size)
+  for (let i = 0; i < size; i++)
     arr[i] = item instanceof Function ? item(i) : item
-  }
+
   return arr
 }

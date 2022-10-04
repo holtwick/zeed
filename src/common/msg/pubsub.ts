@@ -1,8 +1,10 @@
-import { Logger } from "../log"
-import { uname } from "../uuid"
-import { Channel } from "./channel"
-import { DefaultListener, Emitter, ListenerSignature } from "./emitter"
-import { Encoder, JsonEncoder } from "./encoder"
+import { Logger } from '../log'
+import { uname } from '../uuid'
+import type { Channel } from './channel'
+import type { DefaultListener, ListenerSignature } from './emitter'
+import { Emitter } from './emitter'
+import type { Encoder } from './encoder'
+import { JsonEncoder } from './encoder'
 
 interface PubSubConfig {
   channel: Channel
@@ -12,7 +14,7 @@ interface PubSubConfig {
 }
 
 export class PubSub<
-  L extends ListenerSignature<L> = DefaultListener
+  L extends ListenerSignature<L> = DefaultListener,
 > extends Emitter<L> {
   name: string
   channel: Channel
@@ -27,26 +29,26 @@ export class PubSub<
   constructor(opt: PubSubConfig) {
     super()
 
-    let { name, encoder = new JsonEncoder(), channel, debug = false } = opt
+    const { name, encoder = new JsonEncoder(), channel, debug = false } = opt
 
     this.channel = channel
     this.encoder = encoder
     this.debug = debug
 
-    this.name = name ?? this.channel.id ?? uname("pubsub")
+    this.name = name ?? this.channel.id ?? uname('pubsub')
     this.log = Logger(`${this.shortId}`)
 
     if (this.debug) {
-      this.channel.on("connect", () => {
-        this.log("channel connected")
+      this.channel.on('connect', () => {
+        this.log('channel connected')
       })
-      this.channel.on("disconnect", () => {
-        this.log("channel disconnected")
+      this.channel.on('disconnect', () => {
+        this.log('channel disconnected')
       })
     }
 
-    this.channel.on("message", async ({ data }) => {
-      let info = await this.encoder.decode(data)
+    this.channel.on('message', async ({ data }) => {
+      const info = await this.encoder.decode(data)
       if (this.debug)
         this.log(`channel message, event=${info?.event}, info=`, info)
       else this.log(`channel message, event=${info?.event}`)
@@ -69,16 +71,18 @@ export class PubSub<
     ...args: Parameters<L[U]>
   ): Promise<boolean> {
     try {
-      if (this.debug) this.log(`emit(${String(event)})`, event)
+      if (this.debug)
+        this.log(`emit(${String(event)})`, event)
       else this.log(`emit(${String(event)})`, args.length)
       if (!this.channel.isConnected) {
-        this.log.warn("channel not connected")
+        this.log.warn('channel not connected')
         return false
       }
       const data = await this.encoder.encode({ event, args })
       this.channel.postMessage(data)
       return true
-    } catch (err) {
+    }
+    catch (err) {
       this.log.warn(`emit(${String(event)})`, err)
     }
     return false
@@ -89,7 +93,7 @@ export class PubSub<
 }
 
 export function usePubSub<L extends ListenerSignature<L> = DefaultListener>(
-  opt: PubSubConfig
+  opt: PubSubConfig,
 ) {
   return new PubSub<L>(opt)
 }

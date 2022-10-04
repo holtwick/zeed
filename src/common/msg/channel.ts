@@ -1,8 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 // import { Logger } from "../log"
-import { uuid } from "../uuid"
-import { Emitter } from "./emitter"
+import { uuid } from '../uuid'
+import { Emitter } from './emitter'
 
 // const log = Logger("zeed:channel")
 
@@ -40,17 +40,17 @@ export class LocalChannel extends Channel {
   other?: LocalChannel
 
   postMessage(data: any) {
-    this.other?.emit("message", {
+    this.other?.emit('message', {
       data, // : cloneObject(data),
-      origin: "local",
+      origin: 'local',
       lastEventId: uuid(),
     })
   }
 }
 
 export function createLocalChannelPair(): [LocalChannel, LocalChannel] {
-  let w1 = new LocalChannel()
-  let w2 = new LocalChannel()
+  const w1 = new LocalChannel()
+  const w2 = new LocalChannel()
 
   w1.other = w2
   w2.other = w1

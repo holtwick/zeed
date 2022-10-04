@@ -5,25 +5,23 @@ export type MapperFunction<T> = (o: T) => any
 export function listQuery<T>(
   list: T[],
   filters: FilterFunction<T>[],
-  mappers: MapperFunction<T>[] = []
+  mappers: MapperFunction<T>[] = [],
 ): T | any[] {
   return list
-    .filter((o) => {
-      return !filters.some((a) => !a(o))
-    })
+    .filter((o: T) => !filters.some(a => !a(o)))
     .map((o) => {
-      for (const m of mappers) {
+      for (const m of mappers)
         o = m(o)
-      }
+
       return o
     })
-    .filter((o) => o != null)
+    .filter(o => o != null)
 }
 
 // /** Dictionary  */
 export function listGroupBy<T extends Record<string, any>>(
   list: T[],
-  key: keyof T
+  key: keyof T,
 ): Record<string, T[]> {
   return list.reduce((result: any, currentValue: T) => {
     const groupValue = String(currentValue[key])
@@ -34,12 +32,12 @@ export function listGroupBy<T extends Record<string, any>>(
 
 export function listDistinctUnion<T extends Record<string, any>>(
   list: T[],
-  key: keyof T
+  key: keyof T,
 ): any[] {
   return Array.from(
     list.reduce(
       (result: Set<any>, currentValue: T) => result.add(currentValue[key]),
-      new Set()
-    )
+      new Set(),
+    ),
   )
 }

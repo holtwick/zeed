@@ -1,9 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { randomUint8Array } from "./crypto"
-import { fromHex, toHex } from "./data"
-import { useBase } from "./data/basex"
-import { getTimestamp } from "./time"
+import { randomUint8Array } from './crypto'
+import { fromHex, toHex } from './data'
+import { useBase } from './data/basex'
+import { getTimestamp } from './time'
 
 const { encode: encode62, decode: decode62 } = useBase(62)
 const { encode: encode32, decode: decode32 } = useBase(32)
@@ -23,10 +23,10 @@ export function uuidEncode(bytes: Uint8Array): string {
 }
 
 export function uuidEncodeV4(bytes: Uint8Array): string {
-  let id = toHex(bytes)
-  10000000 - 1000 - 4000 - 8000 - 100000000000
+  const id = toHex(bytes)
+  // 10000000 - 1000 - 4000 - 8000 - 100000000000
   return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(
-    16
+    16,
   )}`
 }
 
@@ -35,7 +35,7 @@ export function uuidDecode(uuid: string): Uint8Array {
 }
 
 export function uuidDecodeV4(uuid: string): Uint8Array {
-  return fromHex(uuid.replaceAll("-", ""))
+  return fromHex(uuid.replaceAll('-', ''))
 }
 
 export function uuidB32(): string {
@@ -50,12 +50,12 @@ export function uuid32Decode(uuid: string): Uint8Array {
   return decode32(uuid, 16)
 }
 
-let _unameCounters: Record<string, number> = {}
+const _unameCounters: Record<string, number> = {}
 
-export function uname(name: string = "id"): string {
-  if (_unameCounters[name] == null) {
+export function uname(name = 'id'): string {
+  if (_unameCounters[name] == null)
     _unameCounters[name] = 0
-  }
+
   return `${name}-${_unameCounters[name]++}`
 }
 
@@ -66,14 +66,14 @@ export function qid(): string {
 }
 
 // https://stackoverflow.com/a/2117523/140927
-const pattern = "10000000-1000-4000-8000-100000000000" // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
+const pattern = '10000000-1000-4000-8000-100000000000' // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
 
-export const uuidv4 =
-  typeof crypto !== "undefined" && crypto.randomUUID != null
+export const uuidv4
+  = typeof crypto !== 'undefined' && crypto.randomUUID != null
     ? crypto.randomUUID.bind(crypto)
     : () =>
         pattern.replace(/[018]/g, (c: any) =>
-          (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16)
+          (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16),
         )
 
 // https://github.com/segmentio/ksuid
@@ -93,10 +93,10 @@ const ReferenceDateInMS = 1600000000000
 // 6 bytes will stay valid until end of time: new Date(1622505600000 + 0xffffffffffff) === Date Sun Jan 01 10941 06:31:50 GMT+0100 (Central European Standard Time)
 
 function longToByteArray(long: number) {
-  var byteArray = new Uint8Array([0, 0, 0, 0, 0, 0])
+  const byteArray = new Uint8Array([0, 0, 0, 0, 0, 0])
   const bytes = byteArray.length - 1
-  for (var index = 0; index < byteArray.length; index++) {
-    var byte = long & 0xff
+  for (let index = 0; index < byteArray.length; index++) {
+    const byte = long & 0xFF
     byteArray[bytes - index] = byte
     long = (long - byte) / 256
   }
@@ -126,9 +126,9 @@ export function suidDate(id: string): Date {
 
 export function suidBytesDate(id: Uint8Array): Date {
   return new Date(
-    ReferenceDateInMS +
-      id.slice(0, 6).reduce((acc, byte) => {
+    ReferenceDateInMS
+      + id.slice(0, 6).reduce((acc, byte) => {
         return acc * 256 + byte
-      }, 0)
+      }, 0),
   )
 }

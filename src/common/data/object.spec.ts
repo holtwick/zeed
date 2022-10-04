@@ -1,9 +1,9 @@
-import { useDispose } from "../dispose-defer"
-import { Emitter } from "../msg/emitter"
-import { objectMap, objectMergeDisposable } from "./object"
+import { useDispose } from '../dispose-defer'
+import { Emitter } from '../msg/emitter'
+import { objectMap, objectMergeDisposable } from './object'
 
-describe("object.spec", () => {
-  it("should map it", async () => {
+describe('object.spec', () => {
+  it('should map it', async () => {
     const sample = {
       a: 1,
       b: 2,
@@ -14,7 +14,7 @@ describe("object.spec", () => {
         "b": 12,
       }
     `)
-    expect(objectMap(sample, (k, v) => [k + "_" + v, k]))
+    expect(objectMap(sample, (k, v) => [`${k}_${v}`, k]))
       .toMatchInlineSnapshot(`
         Object {
           "a_1": "a",
@@ -23,9 +23,9 @@ describe("object.spec", () => {
       `)
   })
 
-  it("should merge", async () => {
-    let emitter = new Emitter()
-    let obj = {
+  it('should merge', async () => {
+    const emitter = new Emitter()
+    const obj = {
       dispose: useDispose(),
       f() {
         return 42
@@ -33,10 +33,10 @@ describe("object.spec", () => {
     }
     let x = 1
     obj.dispose.add(() => x++)
-    let m = objectMergeDisposable(emitter, obj)
+    const m = objectMergeDisposable(emitter, obj)
     expect(m.f()).toBe(42)
-    m.on("a", () => x++)
-    m.emit("a")
+    m.on('a', () => x++)
+    m.emit('a')
     expect(x).toBe(2)
     await m.dispose()
     expect(x).toBe(3)

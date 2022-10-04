@@ -1,19 +1,20 @@
-import { valueToString } from "../data/convert"
-import { isPromise, tryTimeout } from "../exec/promise"
-import { Logger } from "../log"
-import { LogLevelAliasType } from "../log-base"
-import { Json } from "../types"
-import { uname, uuid } from "../uuid"
-import { Channel } from "./channel"
-import { Encoder, JsonEncoder } from "./encoder"
+import { valueToString } from '../data/convert'
+import { isPromise, tryTimeout } from '../exec/promise'
+import { Logger } from '../log'
+import type { LogLevelAliasType } from '../log-base'
+import type { Json } from '../types'
+import { uname, uuid } from '../uuid'
+import type { Channel } from './channel'
+import type { Encoder } from './encoder'
+import { JsonEncoder } from './encoder'
 
-export type MessageAction = {
+export interface MessageAction {
   name: string
   id: string
   args?: Json[]
 }
 
-export type MessageResult = {
+export interface MessageResult {
   id: string
   result?: Json
   error?: { stack?: string; name: string; message: string }
@@ -21,11 +22,11 @@ export type MessageResult = {
 
 export type Message = MessageAction | MessageResult
 
-export type MessagesOptions = {
+export interface MessagesOptions {
   timeout?: number
 }
 
-export type MessagesDefaultMethods<L> = {
+export interface MessagesDefaultMethods<L> {
   dispose(): void
   connect?(channel: Channel): void
   options(opt: MessagesOptions): L
@@ -39,7 +40,7 @@ export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 
 export type MessageDefinitions = Record<any, (...args: any) => Promise<any>>
 
-export type MessageHub = {
+export interface MessageHub {
   dispose(): void
   connect: (newChannel: Channel) => void
   listen<L extends MessageDefinitions>(newHandlers: L): void
@@ -50,14 +51,15 @@ export type MessageHub = {
 export const createPromiseProxy = <P extends object>(
   fn: (name: string, args: any[], opt: any) => Promise<unknown>,
   opt: MessagesOptions,
-  predefinedMethods: any = {}
+  predefinedMethods: any = {},
 ): P =>
-  new Proxy<P>(predefinedMethods, {
-    get: (target: any, name: any) => {
-      if (name in target) return target[name]
-      return (...args: any): any => fn(name, args, opt)
-    },
-  })
+    new Proxy<P>(predefinedMethods, {
+      get: (target: any, name: any) => {
+        if (name in target)
+          return target[name]
+        return (...args: any): any => fn(name, args, opt)
+      },
+    })
 
 /**
  * RPC
@@ -76,10 +78,10 @@ export function useMessageHub(
     ignoreUnhandled?: boolean
     debug?: boolean
     logLevel?: LogLevelAliasType
-  } = {}
+  } = {},
 ): MessageHub {
-  let {
-    name = uname("hub"),
+  const {
+    name = uname('hub'),
     encoder = new JsonEncoder(),
     retryAfter = 1000,
     ignoreUnhandled = true,
@@ -88,11 +90,11 @@ export function useMessageHub(
 
   const log = Logger(name, logLevel)
 
-  let handlers = {}
+  const handlers = {}
   let channel: Channel | undefined
-  let queue: Message[] = []
+  const queue: Message[] = []
   let queueRetryTimer: any
-  let waitingForResponse: Record<string, [Function, Function]> = {}
+  const waitingForResponse: Record<string, [Function, Function]> = {}
 
   const dispose = () => {
     clearTimeout(queueRetryTimer)
@@ -103,54 +105,55 @@ export function useMessageHub(
     if (channel) {
       if (channel.isConnected) {
         while (queue.length) {
-          let message = queue[0]
+          const message = queue[0]
           try {
             channel.postMessage(await encoder.encode(message))
             queue.shift() // remove from queue when done
-          } catch (err) {
-            log.warn("postMessage", err)
+          }
+          catch (err) {
+            log.warn('postMessage', err)
             break
           }
         }
       }
-      if (queue.length > 0 && retryAfter > 0) {
+      if (queue.length > 0 && retryAfter > 0)
         queueRetryTimer = setTimeout(postNext, retryAfter)
-      }
     }
   }
 
   const postMessage = async (message: Message) => {
-    log("enqueue postMessage", message)
+    log('enqueue postMessage', message)
     queue.push(message)
     await postNext()
   }
 
   const connect = async (newChannel: Channel) => {
     channel = newChannel
-    channel.on("connect", postNext)
-    channel.on("message", async (msg: any) => {
-      log("onmessage", typeof msg)
+    channel.on('connect', postNext)
+    channel.on('message', async (msg: any) => {
+      log('onmessage', typeof msg)
       const { name, args, id, result, error } = await encoder.decode(msg.data)
 
       // Incoming new message
       if (name) {
         log(`name ${name} id ${id}`)
         try {
-          // @ts-ignore
-          if (handlers[name] == null) {
+          // @ts-expect-error xxx
+          if (handlers[name] == null)
             throw new Error(`handler for ${name} was not found`)
-          }
-          // @ts-ignore
+
+          // @ts-expect-error xxx
           let result = handlers[name](...args)
-          if (isPromise(result)) result = await result
+          if (isPromise(result))
+            result = await result
           log(`result ${result}`)
-          if (id) {
+          if (id)
             postMessage({ id, result })
-          }
-        } catch (error) {
-          let err =
-            error instanceof Error ? error : new Error(valueToString(error))
-          log.warn("execution error", err.name)
+        }
+        catch (error) {
+          const err
+            = error instanceof Error ? error : new Error(valueToString(error))
+          log.warn('execution error', err.name)
           postMessage({
             id,
             error: {
@@ -166,23 +169,24 @@ export function useMessageHub(
       else if (id) {
         log(`response for id=${id}: result=${result}, error=${error}`)
         if (waitingForResponse[id] == null) {
-          if (result === undefined) {
+          if (result === undefined)
             log(`skip response for ${id}`)
-          } else {
+          else
             log.warn(`no response hook for ${id}`)
-          }
-        } else {
+        }
+        else {
           const [resolve, reject] = waitingForResponse[id]
           if (resolve && reject) {
             delete waitingForResponse[id]
             if (error) {
-              let err = new Error(error.message)
+              const err = new Error(error.message)
               err.stack = error.stack
               err.name = error.name
-              log.warn("reject", err.name)
+              log.warn('reject', err.name)
               reject(err)
-            } else {
-              log("resolve", result)
+            }
+            else {
+              log('resolve', result)
               resolve(result)
             }
           }
@@ -191,7 +195,7 @@ export function useMessageHub(
 
       // Don't know what to do with it
       else if (!ignoreUnhandled) {
-        log.warn("Unhandled message", msg)
+        log.warn('Unhandled message', msg)
       }
     })
 
@@ -201,7 +205,7 @@ export function useMessageHub(
   const fetchMessage = async (
     name: string,
     args: any[],
-    opt: MessagesOptions = {}
+    opt: MessagesOptions = {},
   ): Promise<unknown> => {
     const { timeout = 5000 } = opt
     const id = uuid()
@@ -212,15 +216,14 @@ export function useMessageHub(
     })
     return tryTimeout(
       new Promise(
-        (resolve, reject) => (waitingForResponse[id] = [resolve, reject])
+        (resolve, reject) => (waitingForResponse[id] = [resolve, reject]),
       ),
-      timeout
+      timeout,
     )
   }
 
-  if (opt.channel) {
+  if (opt.channel)
     connect(opt.channel)
-  }
 
   return {
     dispose,

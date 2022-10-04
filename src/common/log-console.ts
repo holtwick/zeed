@@ -1,7 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { LogHandler, LogHandlerOptions, LogLevel, LogMessage } from "./log-base"
-import { useLevelFilter, useNamespaceFilter } from "./log-filter"
+/* eslint-disable no-console */
+
+import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
+import { LogLevel } from './log-base'
+import { useLevelFilter, useNamespaceFilter } from './log-filter'
 
 /**
  * Very basic logger. Please take a look at the browser and node
@@ -14,17 +17,19 @@ export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
     level = undefined,
     filter = undefined,
-    colors = true,
-    levelHelper = false,
-    nameBrackets = true,
-    padding = 16,
+    // colors = true,
+    // levelHelper = false,
+    // nameBrackets = true,
+    // padding = 16,
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
-    if (!matchesLevel(msg.level)) return
-    if (!matchesNamespace(msg.name)) return
-    let name = msg.name ? `[${msg.name}]` : ""
+    if (!matchesLevel(msg.level))
+      return
+    if (!matchesNamespace(msg.name))
+      return
+    const name = msg.name ? `[${msg.name}]` : ''
     switch (msg.level) {
       case LogLevel.info:
         console.info(`I|*   ${name}`, ...msg.messages)

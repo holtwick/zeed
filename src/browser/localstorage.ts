@@ -1,10 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Json, ObjectStorage } from "../common/types"
-import { Logger } from "../common/log"
-import { jsonStringifySafe } from "../common/data/json"
+import type { Json, ObjectStorage } from '../common/types'
+import { Logger } from '../common/log'
+import { jsonStringifySafe } from '../common/data/json'
 
-const log = Logger("zeed:localstorage")
+const log = Logger('zeed:localstorage')
 
 export interface LocalStorageOptions {
   name: string
@@ -15,28 +15,29 @@ export interface LocalStorageOptions {
 export class LocalStorage<T = Json> implements ObjectStorage<T> {
   private name: string
   private prefix: string
-  private pretty: boolean = false
+  private pretty = false
   private objectFromString: (data: string) => any
   private objectToString: (data: any) => string
 
   constructor(opt: LocalStorageOptions) {
-    log.assert(opt.name, "name required")
+    log.assert(opt.name, 'name required')
     this.name = opt.name
     this.prefix = `${opt.name}$`
-    this.objectToString =
-      opt.objectToString ??
-      ((data: any): string => {
+    this.objectToString
+      = opt.objectToString
+      ?? ((data: any): string => {
         return this.pretty
           ? jsonStringifySafe(data, null, 2)
           : jsonStringifySafe(data)
       })
 
-    this.objectFromString =
-      opt.objectFromString ??
-      ((data: string) => {
+    this.objectFromString
+      = opt.objectFromString
+      ?? ((data: string) => {
         try {
           return JSON.parse(data)
-        } catch (err) {
+        }
+        catch (err) {
           log.warn(`LocalStorage parse error '${err}' in`, data)
         }
       })
@@ -48,10 +49,9 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
   }
 
   getItem(key: string): T | undefined {
-    let value = localStorage.getItem(`${this.prefix}${key}`)
-    if (value != null) {
+    const value = localStorage.getItem(`${this.prefix}${key}`)
+    if (value != null)
       return this.objectFromString(value)
-    }
   }
 
   removeItem(key: string): void {
@@ -60,7 +60,7 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
 
   clear(): void {
     Object.keys(localStorage)
-      .filter((key) => key.startsWith(this.prefix))
+      .filter(key => key.startsWith(this.prefix))
       .forEach((key) => {
         localStorage.removeItem(key)
       })
@@ -69,7 +69,7 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
   allKeys(): string[] {
     const prefixLength = this.prefix.length
     return Object.keys(localStorage)
-      .filter((key) => key.startsWith(this.prefix))
-      .map((key) => key.substr(prefixLength))
+      .filter(key => key.startsWith(this.prefix))
+      .map(key => key.substr(prefixLength))
   }
 }

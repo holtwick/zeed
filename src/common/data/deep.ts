@@ -1,12 +1,13 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isArray, isObject, isPrimitive, isRecord } from "./is"
+/* eslint-disable no-prototype-builtins */
+
+import { isArray, isObject, isPrimitive, isRecord } from './is'
 
 export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   // if both x and y are null or undefined and exactly the same
-  if (a === b) {
+  if (a === b)
     return true
-  }
 
   // Cyclic
   if (hash.has(b)) {
@@ -14,39 +15,33 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
     return false
   }
 
-  if (!isPrimitive(b)) {
+  if (!isPrimitive(b))
     hash.add(b)
-  }
 
   // if they are not strictly equal, they both need to be Objects
-  if (!(a instanceof Object) || !(b instanceof Object)) {
+  if (!(a instanceof Object) || !(b instanceof Object))
     return false
-  }
 
   // they must have the exact same prototype chain, the closest we can do is
   // test there constructor.
-  if (a.constructor !== b.constructor) {
+  if (a.constructor !== b.constructor)
     return false
-  }
 
   // Shortcut to avoid to many loops
-  if (a.length !== b.length) {
+  if (a.length !== b.length)
     return false
-  }
 
-  for (let p in a) {
+  for (const p in a) {
     // other properties were tested using x.constructor === y.constructor
-    if (!a.hasOwnProperty(p)) {
+    if (!a.hasOwnProperty(p))
       continue
-    }
 
     // allows to compare x[ p ] and y[ p ] when set to undefined
-    if (!b.hasOwnProperty(p)) {
+    if (!b.hasOwnProperty(p))
       return false
-    }
 
-    let aa = a[p]
-    let bb = b[p]
+    const aa = a[p]
+    const bb = b[p]
 
     // if they have the same strict value or identity then they are equal
     // if (aa === bb) {
@@ -61,16 +56,14 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
     // }
 
     // Objects and Arrays must be tested recursively
-    if (!deepEqual(aa, bb, hash)) {
+    if (!deepEqual(aa, bb, hash))
       return false
-    }
   }
 
   // allows x[ p ] to be set to undefined
-  for (let p in b) {
-    if (b.hasOwnProperty(p) && !a.hasOwnProperty(p)) {
+  for (const p in b) {
+    if (b.hasOwnProperty(p) && !a.hasOwnProperty(p))
       return false
-    }
   }
 
   return true
@@ -79,23 +72,26 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
 /** Strip properties with value `undefined` in place */
 export function deepStripUndefinedInPlace(a: any, hash = new WeakSet()) {
   // Cyclic
-  if (hash.has(a)) return "[Circular ~]"
-  if (!isPrimitive(a)) hash.add(a)
+  if (hash.has(a))
+    return '[Circular ~]'
+  if (!isPrimitive(a))
+    hash.add(a)
 
   if (isRecord(a)) {
-    for (let p in a) {
-      if (!a.hasOwnProperty(p)) continue
+    for (const p in a) {
+      if (!a.hasOwnProperty(p))
+        continue
       if (a[p] === undefined) {
         delete a[p]
         continue
       }
       deepStripUndefinedInPlace(a[p], hash)
     }
-  } else if (isArray(a)) {
-    for (var i = a.length - 1; i >= 0; i--) {
-      if (a[i] === undefined) {
+  }
+  else if (isArray(a)) {
+    for (let i = a.length - 1; i >= 0; i--) {
+      if (a[i] === undefined)
         a.splice(i, 1)
-      }
     }
   }
   // else ignore
@@ -105,24 +101,23 @@ export function deepStripUndefinedInPlace(a: any, hash = new WeakSet()) {
 
 export function deepMerge(target: any, ...sources: any[]) {
   // todo cyclic protection
-  for (let source of sources) {
-    if (!isObject(target)) {
+  for (const source of sources) {
+    if (!isObject(target))
       target = {}
-    }
 
-    if (source == null || !isObject(source)) continue
+    if (source == null || !isObject(source))
+      continue
 
     Object.keys(source).forEach((key) => {
       const targetValue = target[key]
-      const sourceValue = source[key]
+      const sourceValue = (source as any)[key]
 
-      if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
+      if (Array.isArray(targetValue) && Array.isArray(sourceValue))
         target[key] = targetValue.concat(sourceValue)
-      } else if (isObject(targetValue) && isObject(sourceValue)) {
+      else if (isObject(targetValue) && isObject(sourceValue))
         target[key] = deepMerge(Object.assign({}, targetValue), sourceValue)
-      } else {
+      else
         target[key] = sourceValue
-      }
     })
   }
 

@@ -4,14 +4,14 @@ import {
   isArray,
   jsonStringifySafe,
   toBase64,
-} from "./data"
-import { encodeQuery } from "./data/url"
-import { Logger } from "./log"
-import { Json } from "./types"
+} from './data'
+import { encodeQuery } from './data/url'
+import { Logger } from './log'
+import type { Json } from './types'
 
-const log = Logger("zeed:network")
+const log = Logger('zeed:network')
 
-type fetchOptionType = {
+interface fetchOptionType {
   /** Returns the cache mode associated with request, which is a string indicating how the request will interact with the browser's cache when fetching. */
   cache?: RequestCache
   /** Returns the credentials mode associated with request, which is a string indicating whether credentials will be sent with the request always, never, or only when sent to a same-origin URL. */
@@ -43,31 +43,30 @@ type fetchOptionType = {
 
 type fetchOptionsType = fetchOptionType | fetchOptionsType[]
 
-// @ts-ignore
 const defaultOptions: fetchOptionType = {
-  cache: "no-cache",
-  redirect: "follow",
+  cache: 'no-cache',
+  redirect: 'follow',
   headers: {},
 }
 
 // Source https://developer.mozilla.org/de/docs/Web/HTTP/Methods
 export type httpMethod =
-  | "GET"
-  | "POST"
-  | "PUT"
-  | "DELETE"
-  | "HEAD"
-  | "CONNECT"
-  | "OPTIONS"
-  | "TRACE"
-  | "PATCH"
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'HEAD'
+  | 'CONNECT'
+  | 'OPTIONS'
+  | 'TRACE'
+  | 'PATCH'
 
 export function parseBasicAuth(url: string) {
-  let m = /:\/\/([^@]*)@/gi.exec(url)
+  const m = /:\/\/([^@]*)@/gi.exec(url)
   if (m && m[1]) {
-    let [username, password] = m[1].split(":", 2)
+    const [username, password] = m[1].split(':', 2)
     return {
-      url: url.replace(m[1] + "@", ""),
+      url: url.replace(`${m[1]}@`, ''),
       username,
       password,
     }
@@ -78,30 +77,29 @@ export function parseBasicAuth(url: string) {
 export async function fetchBasic(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
-  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
+  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch,
 ): Promise<Response | undefined> {
   try {
-    if (isArray(fetchOptions)) {
+    if (isArray(fetchOptions))
       fetchOptions = deepMerge({}, ...arrayFlatten(fetchOptions))
-    }
 
-    let auth = parseBasicAuth(String(url))
+    const auth = parseBasicAuth(String(url))
     if (auth) {
       url = auth.url
       fetchOptions = deepMerge(
         {},
         fetchOptions,
-        fetchOptionsBasicAuth(auth.username, auth.password)
+        fetchOptionsBasicAuth(auth.username, auth.password),
       )
     }
 
     if (
-      // @ts-ignore
-      fetchOptions.headers != null &&
-      // @ts-ignore
-      !(fetchOptions.headers instanceof Headers)
+      // @ts-expect-error headers
+      fetchOptions.headers != null
+      // @ts-expect-error headers
+      && !(fetchOptions.headers instanceof Headers)
     ) {
-      // @ts-ignore
+      // @ts-expect-error headers
       fetchOptions.headers = new Headers(fetchOptions.headers)
     }
 
@@ -109,19 +107,21 @@ export async function fetchBasic(
     const response = await fetchFn(String(url), fetchOptions as RequestInit)
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-    if (response.status < 400) {
+    if (response.status < 400)
       return response
-    }
+
     try {
       log.warn(
-        `Fetch of ${url} with ${fetchOptions} returned status=${response.status}`
+        `Fetch of ${url} with ${fetchOptions} returned status=${response.status}`,
       )
       log.warn(`Response: ${await response.text()}`)
-    } catch (err) {
-      log.error("Exception:", err)
     }
-  } catch (err) {
-    log.error("fetchBasic", err)
+    catch (err) {
+      log.error('Exception:', err)
+    }
+  }
+  catch (err) {
+    log.error('fetchBasic', err)
   }
 }
 
@@ -129,27 +129,27 @@ export async function fetchBasic(
 export async function fetchJson<T = Json>(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
-  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
+  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch,
 ): Promise<T | undefined> {
   try {
-    let res = await fetchBasic(
+    const res = await fetchBasic(
       url,
       [
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            Accept: "application/json",
+            Accept: 'application/json',
           },
         },
         fetchOptions,
       ],
-      fetchFn
+      fetchFn,
     )
-    if (res) {
+    if (res)
       return await res.json()
-    }
-  } catch (err) {
-    log.error("fetchJSON error:", err)
+  }
+  catch (err) {
+    log.error('fetchJSON error:', err)
   }
 }
 
@@ -157,19 +157,19 @@ export async function fetchJson<T = Json>(
 export async function fetchText(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
-  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch
+  fetchFn: (input: RequestInfo, init?: RequestInit) => Promise<Response> = fetch,
 ): Promise<string | undefined> {
   try {
-    let res = await fetchBasic(
+    const res = await fetchBasic(
       url,
-      [defaultOptions, { method: "GET" }, fetchOptions],
-      fetchFn
+      [defaultOptions, { method: 'GET' }, fetchOptions],
+      fetchFn,
     )
-    if (res) {
+    if (res)
       return await res.text()
-    }
-  } catch (err) {
-    log.error("fetchHTML error:", err)
+  }
+  catch (err) {
+    log.error('fetchHTML error:', err)
   }
 }
 
@@ -178,13 +178,13 @@ export async function fetchText(
 /** Options for fetchBasic to send data as application/x-www-form-urlencoded */
 export function fetchOptionsFormURLEncoded(
   data: object,
-  method: httpMethod = "POST"
+  method: httpMethod = 'POST',
 ): fetchOptionType {
   return {
     method,
     ...defaultOptions,
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
     },
     body: encodeQuery(data),
   }
@@ -193,13 +193,13 @@ export function fetchOptionsFormURLEncoded(
 /** Options to send data as JSON  */
 export function fetchOptionsJson(
   data: object,
-  method: httpMethod = "POST"
+  method: httpMethod = 'POST',
 ): fetchOptionType {
   return {
     method,
     ...defaultOptions,
     headers: {
-      "Content-Type": "application/json; charset=utf-8",
+      'Content-Type': 'application/json; charset=utf-8',
       // Accept: "application/json",
     },
     body: jsonStringifySafe(data),
@@ -209,11 +209,11 @@ export function fetchOptionsJson(
 /** Options to pass basic auth */
 export function fetchOptionsBasicAuth(
   username: string,
-  password: string
+  password: string,
 ): fetchOptionType {
   return {
     headers: {
-      Authorization: "Basic " + toBase64(username + ":" + password),
+      Authorization: `Basic ${toBase64(`${username}:${password}`)}`,
     },
   }
 }

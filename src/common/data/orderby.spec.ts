@@ -1,131 +1,131 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { composeOrderby, parseOrderby, sortedOrderby } from "./orderby"
+import { composeOrderby, parseOrderby, sortedOrderby } from './orderby'
 
-describe("Order by", () => {
-  it("should order correctly", () => {
-    expect(parseOrderby("timestamp asc")).toEqual({
+describe('Order by', () => {
+  it('should order correctly', () => {
+    expect(parseOrderby('timestamp asc')).toEqual({
       asc: true,
       desc: false,
-      field: "timestamp",
-      orderby: "asc",
+      field: 'timestamp',
+      orderby: 'asc',
     })
-    expect(parseOrderby("timestamp desc")).toEqual({
+    expect(parseOrderby('timestamp desc')).toEqual({
       asc: false,
       desc: true,
-      field: "timestamp",
-      orderby: "desc",
+      field: 'timestamp',
+      orderby: 'desc',
     })
-    expect(parseOrderby("timestamp xxx")).toEqual({
+    expect(parseOrderby('timestamp xxx')).toEqual({
       asc: true,
       desc: false,
-      field: "timestamp",
-      orderby: "xxx",
+      field: 'timestamp',
+      orderby: 'xxx',
     })
-    expect(parseOrderby("timestamp")).toEqual({
+    expect(parseOrderby('timestamp')).toEqual({
       asc: true,
       desc: false,
-      field: "timestamp",
-      orderby: "asc",
+      field: 'timestamp',
+      orderby: 'asc',
     })
   })
 
-  it("should compose", () => {
-    expect(composeOrderby("timestamp")).toEqual("timestamp asc")
-    expect(composeOrderby("timestamp", true)).toEqual("timestamp asc")
-    expect(composeOrderby("timestamp", false)).toEqual("timestamp desc")
+  it('should compose', () => {
+    expect(composeOrderby('timestamp')).toEqual('timestamp asc')
+    expect(composeOrderby('timestamp', true)).toEqual('timestamp asc')
+    expect(composeOrderby('timestamp', false)).toEqual('timestamp desc')
   })
 
-  it("should sort by", () => {
+  it('should sort by', () => {
     const values = [
       {
-        name: "b",
+        name: 'b',
       },
       {
-        name: "a",
+        name: 'a',
       },
       {
-        name: "c",
+        name: 'c',
       },
     ]
-    expect(sortedOrderby(values, "name desc")).toEqual([
+    expect(sortedOrderby(values, 'name desc')).toEqual([
       {
-        name: "c",
+        name: 'c',
       },
       {
-        name: "b",
+        name: 'b',
       },
       {
-        name: "a",
+        name: 'a',
       },
     ])
-    expect(sortedOrderby(values, "name asc")).toEqual([
+    expect(sortedOrderby(values, 'name asc')).toEqual([
       {
-        name: "a",
+        name: 'a',
       },
       {
-        name: "b",
+        name: 'b',
       },
       {
-        name: "c",
+        name: 'c',
       },
     ])
   })
 
-  it("should sort by2", () => {
+  it('should sort by2', () => {
     const values = [
       {
         group: 1,
-        name: "b",
+        name: 'b',
       },
       {
         group: 1,
-        name: "a",
+        name: 'a',
       },
       {
         group: 2,
-        name: "c",
+        name: 'c',
       },
       {
         group: 1,
-        name: "d",
+        name: 'd',
       },
     ]
-    expect(sortedOrderby(values, "group desc", "name asc")).toEqual([
+    expect(sortedOrderby(values, 'group desc', 'name asc')).toEqual([
       {
         group: 2,
-        name: "c",
+        name: 'c',
       },
       {
         group: 1,
-        name: "a",
+        name: 'a',
       },
       {
         group: 1,
-        name: "b",
+        name: 'b',
       },
       {
         group: 1,
-        name: "d",
+        name: 'd',
       },
     ])
 
-    expect(sortedOrderby(values, "group", "name desc")).toEqual([
+    expect(sortedOrderby(values, 'group', 'name desc')).toEqual([
       {
         group: 1,
-        name: "d",
+        name: 'd',
       },
       {
         group: 1,
-        name: "b",
+        name: 'b',
       },
       {
         group: 1,
-        name: "a",
+        name: 'a',
       },
       {
         group: 2,
-        name: "c",
+        name: 'c',
       },
     ])
   })

@@ -1,19 +1,20 @@
-import "cross-fetch/polyfill"
-import { fetchText, parseBasicAuth } from "./network"
+import 'cross-fetch/polyfill'
+import { fetchText, parseBasicAuth } from './network'
 
-describe("network", () => {
-  it("should fetch", async () => {
+describe('network', () => {
+  it('should fetch', async () => {
     if (globalThis.isNodeTestEnv) {
-      let html = await fetchText("https://holtwick.de")
-      expect(html).toContain("<html")
-    } else {
-      let html = await fetchText("/")
-      expect(html).toContain("<html")
+      const html = await fetchText('https://holtwick.de')
+      expect(html).toContain('<html')
+    }
+    else {
+      const html = await fetchText('/')
+      expect(html).toContain('<html')
     }
   })
 
-  it("should parse basic auth", () => {
-    let url = "https://user:pass@example.com/?x=1"
+  it('should parse basic auth', () => {
+    const url = 'https://user:pass@example.com/?x=1'
     expect(parseBasicAuth(url)).toMatchInlineSnapshot(`
       Object {
         "password": "pass",

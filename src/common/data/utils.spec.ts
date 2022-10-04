@@ -1,5 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { sleep } from '../exec'
 import {
   cloneObject,
   empty,
@@ -8,52 +9,51 @@ import {
   memoize,
   memoizeAsync,
   size,
-} from "./utils"
-import { sleep } from "../exec"
+} from './utils'
 
-describe("cloneObject", () => {
-  it("should clone only non primitives", () => {
+describe('cloneObject', () => {
+  it('should clone only non primitives', () => {
     {
-      const sample = "Test"
+      const sample = 'Test'
       expect(cloneObject(sample) === sample).toBe(true)
-      expect(cloneObject(sample) === "Test").toBe(true)
+      expect(cloneObject(sample) === 'Test').toBe(true)
     }
     {
-      const sample = { hello: "world" }
+      const sample = { hello: 'world' }
       expect(cloneObject(sample) === sample).toBe(false)
       expect(cloneObject(sample)).toEqual(sample)
       // expect(sample === { hello: "world" }).toBe(false)
-      expect(cloneObject(sample)).toEqual({ hello: "world" })
+      expect(cloneObject(sample)).toEqual({ hello: 'world' })
     }
   })
 })
 
-describe("size", () => {
-  it("should calc size of map", () => {
-    let map = new Map()
-    map.set("a", 1)
-    map.set("b", 2)
+describe('size', () => {
+  it('should calc size of map', () => {
+    const map = new Map()
+    map.set('a', 1)
+    map.set('b', 2)
     expect(size(map)).toBe(2)
   })
 
-  it("should calc size of set", () => {
-    let set = new Set()
+  it('should calc size of set', () => {
+    const set = new Set()
     set.add(1)
     set.add(2)
     set.add(3)
     expect(size(set)).toBe(3)
   })
 
-  it("should calc size of object", () => {
+  it('should calc size of object', () => {
     expect(size({ a: 1, b: 2 })).toBe(2)
   })
 
-  it("should calc size of array", () => {
+  it('should calc size of array', () => {
     expect(size([1, 2, undefined])).toBe(3)
   })
 
-  it("should calc size of primitives", () => {
-    expect(size("hello")).toBe(5)
+  it('should calc size of primitives', () => {
+    expect(size('hello')).toBe(5)
     expect(size(3)).toBe(0)
     expect(size(true)).toBe(0)
     expect(size(null)).toBe(0)
@@ -62,17 +62,17 @@ describe("size", () => {
   })
 })
 
-describe("empty", () => {
-  it("should calc empty of map", () => {
-    let map = new Map()
+describe('empty', () => {
+  it('should calc empty of map', () => {
+    const map = new Map()
     expect(empty(map)).toBe(true)
-    map.set("a", 1)
-    map.set("b", 2)
+    map.set('a', 1)
+    map.set('b', 2)
     expect(empty(map)).toBe(false)
   })
 
-  it("should calc empty of set", () => {
-    let set = new Set()
+  it('should calc empty of set', () => {
+    const set = new Set()
     expect(empty(set)).toBe(true)
     set.add(1)
     set.add(2)
@@ -80,20 +80,20 @@ describe("empty", () => {
     expect(empty(set)).toBe(false)
   })
 
-  it("should calc empty of object", () => {
+  it('should calc empty of object', () => {
     expect(empty({})).toBe(true)
     expect(empty({ a: 1, b: 2 })).toBe(false)
   })
 
-  it("should calc empty of array", () => {
+  it('should calc empty of array', () => {
     expect(empty([])).toBe(true)
     expect(empty([undefined])).toBe(false)
     expect(empty([1, 2, undefined])).toBe(false)
   })
 
-  it("should calc empty of primitives", () => {
-    expect(empty("")).toBe(true)
-    expect(empty("hello")).toBe(false)
+  it('should calc empty of primitives', () => {
+    expect(empty('')).toBe(true)
+    expect(empty('hello')).toBe(false)
     expect(empty(3)).toBe(true)
     expect(empty(0)).toBe(true)
     expect(empty(false)).toBe(true)
@@ -103,9 +103,9 @@ describe("empty", () => {
     expect(empty(NaN)).toBe(true)
   })
 
-  it("should ensure key", () => {
-    let rooms: any = {}
-    ensureKey(rooms, "a", (r) => ({ r } as any)).x = 1
+  it('should ensure key', () => {
+    const rooms: any = {}
+    ensureKey(rooms, 'a', r => ({ r } as any)).x = 1
     expect(rooms).toMatchInlineSnapshot(`
       Object {
         "a": Object {
@@ -114,7 +114,7 @@ describe("empty", () => {
         },
       }
     `)
-    ensureKey(rooms, "a", (r) => ({ r } as any)).x += 10
+    ensureKey(rooms, 'a', r => ({ r } as any)).x += 10
     expect(rooms).toMatchInlineSnapshot(`
       Object {
         "a": Object {
@@ -125,8 +125,8 @@ describe("empty", () => {
     `)
   })
 
-  it("should repeat forTimes", () => {
-    let l: any = []
+  it('should repeat forTimes', () => {
+    const l: any = []
     forTimes(10, (...args) => l.push(args))
     expect(l).toMatchInlineSnapshot(`
       Array [
@@ -174,7 +174,7 @@ describe("empty", () => {
     `)
   })
 
-  it("should memoize", () => {
+  it('should memoize', () => {
     let ctr = 1
 
     // this is intentionally WRONG! usually should have same result with same args.
@@ -189,7 +189,7 @@ describe("empty", () => {
     expect(ctr).toBe(12)
   })
 
-  it("should memoize async", async () => {
+  it('should memoize async', async () => {
     let ctr = 1
 
     // this is intentionally WRONG! usually should have same result with same args.

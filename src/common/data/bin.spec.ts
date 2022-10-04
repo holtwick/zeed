@@ -1,7 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { fromBase64, jsonToUint8Array, Uint8ArrayToJson } from "."
 import {
+  Uint8ArrayToHexDump,
+  Uint8ArrayToString,
   equalBinary,
   fromHex,
   joinToUint8Array,
@@ -9,26 +10,25 @@ import {
   toBase64,
   toHex,
   toUint8Array,
-  Uint8ArrayToHexDump,
-  Uint8ArrayToString,
-} from "./bin"
+} from './bin'
+import { Uint8ArrayToJson, fromBase64, jsonToUint8Array } from '.'
 
-describe("bin", () => {
-  it("should compare", () => {
+describe('bin', () => {
+  it('should compare', () => {
     const pingMessage = new Uint8Array([0x9])
-    const pongMessage = new Uint8Array([0xa])
+    const pongMessage = new Uint8Array([0xA])
 
     expect(equalBinary(pingMessage, pongMessage)).toBe(false)
     expect(equalBinary(pingMessage, pingMessage)).toBe(true)
   })
 
-  it("should text code", () => {
-    const sample = "Hello → wörld 👨‍👩‍👧‍👦"
+  it('should text code', () => {
+    const sample = 'Hello → wörld 👨‍👩‍👧‍👦'
     const encoded = stringToUInt8Array(sample)
 
-    expect(toBase64([1, 2, 3])).toEqual("AQID")
-    expect(toHex([1, 2, 254])).toEqual("0102fe")
-    expect(fromHex("0102fe")).toMatchInlineSnapshot(`
+    expect(toBase64([1, 2, 3])).toEqual('AQID')
+    expect(toHex([1, 2, 254])).toEqual('0102fe')
+    expect(fromHex('0102fe')).toMatchInlineSnapshot(`
       Uint8Array [
         1,
         2,
@@ -37,17 +37,17 @@ describe("bin", () => {
     `)
 
     expect(toBase64(encoded)).toEqual(
-      "SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm"
+      'SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm',
     )
 
     expect(
       Uint8ArrayToString(
-        fromBase64("SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm")
-      )
+        fromBase64('SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm'),
+      ),
     ).toBe(sample)
 
     expect(
-      fromBase64("SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm")
+      fromBase64('SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm'),
     ).toMatchInlineSnapshot(`
 Uint8Array [
   72,
@@ -96,13 +96,13 @@ Uint8Array [
 `)
 
     expect(Uint8ArrayToString(encoded)).toEqual(sample)
-    expect(Uint8ArrayToString(encoded)).not.toEqual(sample + "a")
+    expect(Uint8ArrayToString(encoded)).not.toEqual(`${sample}a`)
   })
 
-  it("should encode JSON", () => {
+  it('should encode JSON', () => {
     const sample = {
-      name: "Hello → wörld 👨‍👩‍👧‍👦",
-      list: [1, false, "test"],
+      name: 'Hello → wörld 👨‍👩‍👧‍👦',
+      list: [1, false, 'test'],
       num: 1,
     }
     const bin = jsonToUint8Array(sample)
@@ -199,8 +199,8 @@ Uint8Array [
     expect(back).toEqual(sample)
   })
 
-  it("should inline string conversions", () => {
-    expect(toUint8Array("abc")).toMatchInlineSnapshot(`
+  it('should inline string conversions', () => {
+    expect(toUint8Array('abc')).toMatchInlineSnapshot(`
 Uint8Array [
   97,
   98,
@@ -216,15 +216,15 @@ Uint8Array [
 `)
   })
 
-  it("should toUint8Array", () => {
-    expect(toUint8Array(Buffer.from("abc"))).toMatchInlineSnapshot(`
+  it('should toUint8Array', () => {
+    expect(toUint8Array(Buffer.from('abc'))).toMatchInlineSnapshot(`
 Uint8Array [
   97,
   98,
   99,
 ]
 `)
-    expect(toUint8Array("abc")).toMatchInlineSnapshot(`
+    expect(toUint8Array('abc')).toMatchInlineSnapshot(`
 Uint8Array [
   97,
   98,
@@ -240,8 +240,8 @@ Uint8Array [
 `)
   })
 
-  it("should join bins", () => {
-    let result = joinToUint8Array([new Uint8Array([1, 2, 3]), "abc"])
+  it('should join bins', () => {
+    const result = joinToUint8Array([new Uint8Array([1, 2, 3]), 'abc'])
     expect(result).toMatchInlineSnapshot(`
       Uint8Array [
         1,
@@ -253,7 +253,7 @@ Uint8Array [
       ]
     `)
 
-    let result2 = joinToUint8Array(new Uint8Array([1, 2, 3]), "abc")
+    const result2 = joinToUint8Array(new Uint8Array([1, 2, 3]), 'abc')
     expect(result2).toMatchInlineSnapshot(`
       Uint8Array [
         1,
@@ -266,12 +266,12 @@ Uint8Array [
     `)
   })
 
-  it("should dump", () => {
-    let data = new Uint8Array([
+  it('should dump', () => {
+    const data = new Uint8Array([
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 97, 98, 99, 14, 15, 16, 17, 18,
       19, 20,
     ])
-    let hex = Uint8ArrayToHexDump(data)
+    const hex = Uint8ArrayToHexDump(data)
     expect(hex).toMatchInlineSnapshot(`
       "0000  01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 61 62 63  .............abc
       0010  0E 0F 10 11 12 13 14                             .......         "

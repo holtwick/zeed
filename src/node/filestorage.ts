@@ -2,20 +2,20 @@
 
 import {
   mkdirSync,
-  readdirSync,
   readFileSync,
+  readdirSync,
   rmSync,
   unlinkSync,
   writeFileSync,
-} from "fs"
-import { dirname, resolve } from "path"
-import { jsonStringifySafe } from "../common/data/json"
-import { toValidFilename } from "../common/data/path"
-import { cloneObject } from "../common/data/utils"
-import { Logger } from "../common/log"
-import { Json, ObjectStorage } from "../common/types"
+} from 'fs'
+import { dirname, resolve } from 'path'
+import { jsonStringifySafe } from '../common/data/json'
+import { toValidFilename } from '../common/data/path'
+import { cloneObject } from '../common/data/utils'
+import { Logger } from '../common/log'
+import type { Json, ObjectStorage } from '../common/types'
 
-const log = Logger("zeed:filestorage")
+const log = Logger('zeed:filestorage')
 
 export interface FileStorageOptions {
   pretty?: boolean
@@ -30,7 +30,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   private store: Record<string, T | null> = {}
   private dirname: string
   private fileKeys?: string[] = undefined
-  private pretty: boolean = false
+  private pretty = false
   private extension: string
   private extensionLength: number
   private objectFromString: (data: string) => any
@@ -38,29 +38,30 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   private keyToFilename: (key: string) => string
 
   constructor(opt: FileStorageOptions = {}) {
-    this.dirname = resolve(process.cwd(), opt.path ?? ".fileStorage")
+    this.dirname = resolve(process.cwd(), opt.path ?? '.fileStorage')
     this.pretty = !!opt.pretty
-    this.extension = opt.extension ?? ".json"
+    this.extension = opt.extension ?? '.json'
 
-    if (opt.extension && !this.extension.startsWith(".")) {
-      this.extension = "." + this.extension
-    }
+    if (opt.extension && !this.extension.startsWith('.'))
+      this.extension = `.${this.extension}`
+
     this.extensionLength = this.extension.length
 
-    this.objectToString =
-      opt.objectToString ??
-      ((data: any): string => {
+    this.objectToString
+      = opt.objectToString
+      ?? ((data: any): string => {
         return this.pretty
           ? jsonStringifySafe(data, null, 2)
           : jsonStringifySafe(data)
       })
 
-    this.objectFromString =
-      opt.objectFromString ??
-      ((data: string) => {
+    this.objectFromString
+      = opt.objectFromString
+      ?? ((data: string) => {
         try {
           return JSON.parse(data)
-        } catch (err) {
+        }
+        catch (err) {
           log.warn(`fileStorage parse error '${err}' in`, data)
         }
       })
@@ -74,9 +75,10 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
       const data = this.objectToString(value)
       const path = this.getPath(key)
       mkdirSync(dirname(path), { recursive: true })
-      writeFileSync(path, data, "utf8")
-    } catch (err) {
-      log.error("setItem error", err)
+      writeFileSync(path, data, 'utf8')
+    }
+    catch (err) {
+      log.error('setItem error', err)
     }
   }
 
@@ -90,24 +92,25 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   }
 
   getItem(key: string): T | undefined {
-    let value = this.store[key]
+    const value = this.store[key]
 
     //  null is an indicator for not existing!
-    if (value === null) return
+    if (value === null)
+      return
 
-    if (value != null) {
+    if (value != null)
       return cloneObject(value) // this.objectFromString(value)
-    }
 
     try {
       const path = this.getPath(key)
-      const data = readFileSync(path, "utf8")
+      const data = readFileSync(path, 'utf8')
       if (data != null) {
         const value = this.objectFromString(data)
         this.store[key] = value
         return value
       }
-    } catch (err) {
+    }
+    catch (err) {
       // log.warn("getItem error", err)
       this.store[key] = null // do not retry next time
     }
@@ -117,14 +120,14 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
     delete this.store[key]
     if (this.fileKeys != null) {
       const index: number = this.fileKeys.indexOf(key)
-      if (index !== -1) {
+      if (index !== -1)
         this.fileKeys.splice(index, 1)
-      }
     }
     try {
       const path = this.getPath(key)
       unlinkSync(path)
-    } catch (err) {}
+    }
+    catch (err) {}
   }
 
   clear(): void {
@@ -136,20 +139,20 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
   allKeys(): string[] {
     if (this.fileKeys == null) {
       try {
-        this.fileKeys =
-          readdirSync(this.dirname, { withFileTypes: true })
+        this.fileKeys
+          = readdirSync(this.dirname, { withFileTypes: true })
             .filter(
-              (item) =>
-                !item.isDirectory() && item.name.endsWith(this.extension)
+              item =>
+                !item.isDirectory() && item.name.endsWith(this.extension),
             )
-            .map((item) => item.name.slice(0, -this.extensionLength)) || []
-      } catch (err) {}
-    }
-    let keys = [...(this.fileKeys || [])]
-    for (let key of Object.keys(this.store)) {
-      if (!keys.includes(key)) {
-        keys.push(key)
+            .map(item => item.name.slice(0, -this.extensionLength)) || []
       }
+      catch (err) {}
+    }
+    const keys = [...(this.fileKeys || [])]
+    for (const key of Object.keys(this.store)) {
+      if (!keys.includes(key))
+        keys.push(key)
     }
     keys.sort()
     return keys

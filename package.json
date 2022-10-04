@@ -67,15 +67,15 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",
     "@antfu/ni": "^0.18.2",
-    "@types/jest": "^28.1.8",
-    "@types/node": "^18.7.13",
+    "@types/jest": "^29.1.1",
+    "@types/node": "^18.8.2",
     "c8": "^7.12.0",
     "cross-fetch": "^3.1.5",
-    "esbuild": "^0.15.5",
+    "esbuild": "^0.15.10",
     "eslint": "^8.24.0",
     "tsup": "^6.2.3",
-    "typescript": "^4.8.2",
-    "vite": "^3.0.9",
-    "vitest": "^0.22.1"
+    "typescript": "^4.8.4",
+    "vite": "^3.1.4",
+    "vitest": "^0.23.4"
   }
 }

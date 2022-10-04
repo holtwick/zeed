@@ -1,8 +1,9 @@
 {
   "name": "zeed-node-demo",
+  "type": "commonjs",
   "version": "0.1.0",
   "description": "Just a demo",
-  "type": "commonjs",
+  "author": "Dirk Holtwick",
   "main": "index.js",
   "engines": {
     "node": ">=14.13.1"
@@ -10,7 +11,6 @@
   "scripts": {
     "start": "ZEED=* node index.js"
   },
-  "author": "Dirk Holtwick",
   "dependencies": {
     "zeed": "file:../.."
   }

@@ -1,24 +1,25 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../common/log"
+import { Logger } from '../common/log'
 
-const { error } = Logger("zeed:base64")
+const { error } = Logger('zeed:base64')
 
 export function urlBase64ToUint8Array(
-  base64String: string
+  base64String: string,
 ): Uint8Array | undefined {
   try {
-    let padding = "=".repeat((4 - (base64String.length % 4)) % 4)
-    let base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/")
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
 
-    let rawData = window.atob(base64)
-    let outputArray = new Uint8Array(rawData.length)
+    const rawData = window.atob(base64)
+    const outputArray = new Uint8Array(rawData.length)
 
-    for (let i = 0; i < rawData.length; ++i) {
+    for (let i = 0; i < rawData.length; ++i)
       outputArray[i] = rawData.charCodeAt(i)
-    }
+
     return outputArray
-  } catch (err) {
+  }
+  catch (err) {
     error(err, base64String)
   }
 }

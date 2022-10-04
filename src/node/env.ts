@@ -2,19 +2,19 @@
 
 // Adopted from https://github.com/motdotla/dotenv BSD-2
 
-import fs from "fs"
-import { resolve } from "path"
-import { Logger } from "../common/log"
-import { LogLevel } from "../common/log-base"
+import fs from 'fs'
+import { resolve } from 'path'
+import { Logger } from '../common/log'
+import { LogLevel } from '../common/log-base'
 
-const log = Logger("zeed:env")
+const log = Logger('zeed:env')
 
-const NEWLINE = "\n"
+const NEWLINE = '\n'
 const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/
 const RE_NEWLINES = /\\n/g
 const NEWLINES_MATCH = /\n|\r|\r\n/
 
-type csvOptions = {
+interface csvOptions {
   /** @deprecated will probably be replaced by logLevel */
   debug?: boolean
   path?: string
@@ -25,13 +25,13 @@ type csvOptions = {
 }
 
 // Parses src into an Object
-function parse(src: string, options: csvOptions = {}) {
-  let obj: Record<string, string> = {}
+function parse(src: string, _options: csvOptions = {}) {
+  const obj: Record<string, string> = {}
 
   // convert Buffers before splitting into lines and processing
   String(src)
     .split(NEWLINES_MATCH)
-    .forEach(function (line, idx) {
+    .forEach((line, idx) => {
       // matching "KEY' and 'VAL' in 'KEY=VAL'
       const keyValueArr = line.match(RE_INI_KEY_VAL)
       // matched?
@@ -41,27 +41,28 @@ function parse(src: string, options: csvOptions = {}) {
       if (keyValueArr != null) {
         const key = keyValueArr[1]
         // default undefined or missing values to empty string
-        let val = keyValueArr[2] || ""
+        let val = keyValueArr[2] || ''
         const end = val.length - 1
         const isDoubleQuoted = val[0] === '"' && val[end] === '"'
-        const isSingleQuoted = val[0] === "'" && val[end] === "'"
+        const isSingleQuoted = val[0] === '\'' && val[end] === '\''
 
         // if single or double quoted, remove quotes
         if (isSingleQuoted || isDoubleQuoted) {
           val = val.substring(1, end)
 
           // if double quoted, expand newlines
-          if (isDoubleQuoted) {
+          if (isDoubleQuoted)
             val = val.replace(RE_NEWLINES, NEWLINE)
-          }
-        } else {
+        }
+        else {
           // remove surrounding whitespace
           val = val.trim()
         }
         obj[key] = val
-      } else {
+      }
+      else {
         log.debug(
-          `did not match key and value when parsing line ${idx + 1}: ${line}`
+          `did not match key and value when parsing line ${idx + 1}: ${line}`,
         )
       }
     })
@@ -75,13 +76,14 @@ function parse(src: string, options: csvOptions = {}) {
  */
 export function stringToPath(
   value?: string,
-  defaultValue: string = "."
+  defaultValue = '.',
 ): string {
   return resolve(process.cwd(), value ?? defaultValue)
 }
 
-export function valueToPath(value?: any, defaultValue = ""): string {
-  if (value == null) value = defaultValue
+export function valueToPath(value?: any, defaultValue = ''): string {
+  if (value == null)
+    value = defaultValue
   return stringToPath(String(value).trim(), defaultValue)
 }
 
@@ -89,55 +91,60 @@ export const toPath = valueToPath
 
 export function getEnvVariableRelaxed(
   name: string,
-  env = process.env
+  env = process.env,
 ): string | undefined {
-  if (env[name] != null) return env[name]
+  if (env[name] != null)
+    return env[name]
   name = name.toLowerCase()
-  for (let [k, v] of Object.entries(env)) {
-    if (k.toLowerCase() === name) return v
+  for (const [k, v] of Object.entries(env)) {
+    if (k.toLowerCase() === name)
+      return v
   }
 }
 
 /** Populates process.env from .env file. */
 export function setupEnv(options: csvOptions = {}) {
-  const dotenvPath: string =
-    options?.path ?? toPath(options?.filename ?? ".env")
-  const encoding: BufferEncoding = options?.encoding ?? "utf8"
+  const dotenvPath: string
+    = options?.path ?? toPath(options?.filename ?? '.env')
+  const encoding: BufferEncoding = options?.encoding ?? 'utf8'
   const debug = options?.debug || false
 
-  if (debug !== true) log.level = LogLevel.off
+  if (debug !== true)
+    log.level = LogLevel.off
 
   try {
     // specifying an encoding returns a string instead of a buffer
     const parsedEnv = fs.existsSync(dotenvPath)
       ? parse(fs.readFileSync(dotenvPath, { encoding }), { debug })
       : {}
-    const parsedEnvLocal = fs.existsSync(dotenvPath + ".local")
-      ? parse(fs.readFileSync(dotenvPath + ".local", { encoding }), { debug })
+    const parsedEnvLocal = fs.existsSync(`${dotenvPath}.local`)
+      ? parse(fs.readFileSync(`${dotenvPath}.local`, { encoding }), { debug })
       : {}
 
     const parsed: Record<string, string> = Object.assign(
       {},
       parsedEnv,
-      parsedEnvLocal
+      parsedEnvLocal,
     )
-    let env = options?.env ?? process.env
+    const env = options?.env ?? process.env
 
     Object.entries(parsed).forEach(([key, value]) => {
-      if (typeof options?.prefix === "string") {
+      if (typeof options?.prefix === 'string')
         key = options?.prefix + key
-      }
+
       if (!Object.prototype.hasOwnProperty.call(env, key)) {
         if (value != null) {
           log.info(`set env.${key} = ${value}`)
           env[key] = value
         }
-      } else {
+      }
+      else {
         log.debug(`"${key}" is already defined and will not be overwritten`)
       }
     })
     return { parsed }
-  } catch (e) {
+  }
+  catch (e) {
     log.error(e)
     return { error: e }
   }

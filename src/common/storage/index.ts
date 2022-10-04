@@ -1,1 +1,1 @@
-export * from "./memstorage"
+export * from './memstorage'

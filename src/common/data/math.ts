@@ -1,9 +1,9 @@
 export function getSecureRandom(): number {
-  return crypto.getRandomValues(new Uint32Array(1))[0] / 0xffffffff
+  return crypto.getRandomValues(new Uint32Array(1))[0] / 0xFFFFFFFF
 }
 
 export function getSecureRandomIfPossible(): number {
-  return typeof crypto !== "undefined" ? getSecureRandom() : Math.random()
+  return typeof crypto !== 'undefined' ? getSecureRandom() : Math.random()
 }
 
 export function randomBoolean(bias = 0.25): boolean {
@@ -38,11 +38,14 @@ export function avg(array: number[]): number {
 // https://www.noulakaz.net/2007/03/18/a-regular-expression-to-check-for-prime-numbers/
 /** Fancy prime number check ;) */
 export function isPrimeRX(value: number): boolean {
-  return !/^1?$|^(11+?)\1+$/.test("1".repeat(value))
+  return !/^1?$|^(11+?)\1+$/.test('1'.repeat(value))
 }
 
 export function isPrime(value: number): boolean {
-  for (var i = 2; i < value; i++) if (value % i === 0) return false
+  for (let i = 2; i < value; i++) {
+    if (value % i === 0)
+      return false
+  }
   return value > 1
 }
 
@@ -52,7 +55,7 @@ export function isPrime(value: number): boolean {
 let _seed = 6
 
 /** Deterministic random */
-export function seededRandom(max: number = 0, min: number = 1, seed?: number) {
+export function seededRandom(max = 0, min = 1, seed?: number) {
   _seed = ((seed ?? _seed) * 9301 + 49297) % 233280
   const rnd = _seed / 233280
   return min + rnd * (max - min)

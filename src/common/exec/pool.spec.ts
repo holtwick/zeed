@@ -1,25 +1,25 @@
-import { usePool } from "./pool"
-import { sleep } from "./promise"
+import { usePool } from './pool'
+import { sleep } from './promise'
 
-describe("pool", () => {
-  it("should execute some", async () => {
-    let r: any[] = []
+describe('pool', () => {
+  it('should execute some', async () => {
+    const r: any[] = []
     const pool = usePool({ maxParallel: 2 })
 
-    let collectedEvents: any = []
+    const collectedEvents: any = []
     pool.events.onAny((...args) => collectedEvents.push(args))
 
     pool.enqueue(
       async () => {
-        r.push("a")
+        r.push('a')
         await sleep(10)
       },
-      { id: "a" }
+      { id: 'a' },
     )
     pool.enqueue(
       async (taskInfo) => {
-        //info.setProgress(0, 5)
-        r.push("b")
+        // info.setProgress(0, 5)
+        r.push('b')
         taskInfo?.setResolved(2)
         await sleep(1)
         taskInfo?.incResolved()
@@ -27,44 +27,44 @@ describe("pool", () => {
         taskInfo?.incResolved()
         await sleep(10)
       },
-      { id: "b", max: 5 }
+      { id: 'b', max: 5 },
     )
     pool.enqueue(
       async () => {
-        r.push("c")
+        r.push('c')
         await sleep(10)
       },
-      { id: "c" }
+      { id: 'c' },
     )
     pool.enqueue(
       async () => {
-        r.push("d")
+        r.push('d')
         await sleep(10)
       },
-      { id: "d" }
+      { id: 'd' },
     )
     pool.enqueue(
       async () => {
-        r.push("dd")
+        r.push('dd')
         await sleep(10)
       },
-      { id: "dd" }
+      { id: 'dd' },
     )
     pool.enqueue(
       async () => {
-        r.push("e")
+        r.push('e')
         await sleep(10)
       },
-      { id: "e" }
+      { id: 'e' },
     )
-    let { cancel } = pool.enqueue(
+    const { cancel } = pool.enqueue(
       async () => {
-        r.push("f")
+        r.push('f')
         await sleep(10)
       },
-      { id: "f" }
+      { id: 'f' },
     )
-    pool.cancel("dd")
+    pool.cancel('dd')
     cancel()
     expect(r).toMatchInlineSnapshot(`
       Array [
@@ -73,16 +73,16 @@ describe("pool", () => {
       ]
     `)
 
-    let { promise } = pool.enqueue(
+    const { promise } = pool.enqueue(
       async () => {
-        r.push("g")
+        r.push('g')
         await sleep(10)
-        return "g"
+        return 'g'
       },
-      { id: "g" }
+      { id: 'g' },
     )
 
-    expect(await promise).toBe("g")
+    expect(await promise).toBe('g')
 
     await pool.waitFinishAll()
 
@@ -301,47 +301,47 @@ describe("pool", () => {
     `)
   })
 
-  it("should respect group", async () => {
-    let r: any[] = []
+  it('should respect group', async () => {
+    const r: any[] = []
     const pool = usePool({ maxParallel: 3 })
 
-    let collectedEvents: any = []
+    const collectedEvents: any = []
     pool.events.onAny((...args) => collectedEvents.push(args))
 
     pool.enqueue(
       async () => {
-        r.push("ga")
+        r.push('ga')
         await sleep(10)
       },
-      { id: "ga", group: "x" }
+      { id: 'ga', group: 'x' },
     )
     pool.enqueue(
       async () => {
-        r.push("gb")
+        r.push('gb')
         await sleep(10)
       },
-      { id: "gb", group: "x" }
+      { id: 'gb', group: 'x' },
     )
     pool.enqueue(
       async () => {
-        r.push("gc")
+        r.push('gc')
         await sleep(10)
       },
-      { id: "gc", group: "x" }
+      { id: 'gc', group: 'x' },
     )
     pool.enqueue(
       async () => {
-        r.push("1")
+        r.push('1')
         await sleep(10)
       },
-      { id: "1" }
+      { id: '1' },
     )
     pool.enqueue(
       async () => {
-        r.push("2")
+        r.push('2')
         await sleep(10)
       },
-      { id: "2" }
+      { id: '2' },
     )
 
     expect(r).toMatchInlineSnapshot(`

@@ -1,10 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { sleep } from "./promise"
-import { debounce, throttle } from "./throttle-debounce"
+import { sleep } from './promise'
+import { debounce, throttle } from './throttle-debounce'
 
-describe("throttle", () => {
-  it("should throttle correctly", async () => {
+describe('throttle', () => {
+  it('should throttle correctly', async () => {
     let ctr = 0
     expect(ctr).toBe(0)
     const fn = throttle(() => ctr++, { delay: 100 })
@@ -38,7 +38,7 @@ describe("throttle", () => {
     expect(ctr).toBe(3)
   })
 
-  it("should debounce correctly", async () => {
+  it('should debounce correctly', async () => {
     let ctr = 0
     expect(ctr).toBe(0)
     const fn = debounce(() => ctr++, { delay: 100 })
@@ -64,14 +64,14 @@ describe("throttle", () => {
     expect(ctr).toBe(2)
   })
 
-  it("should throttle with least args", async () => {
+  it('should throttle with least args', async () => {
     let r = 0
     const fn = throttle(
       (v: number) => {
         r = v
         // log("FN", v)
       },
-      { delay: 50 }
+      { delay: 50 },
     )
 
     // Exec leading 0ms

@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { LogLevel, LogLevelAlias, LogLevelAliasType } from "./log-base"
+import type { LogLevelAliasType } from './log-base'
+import { LogLevel, LogLevelAlias } from './log-base'
 
 interface NamespaceFilter {
   (name: string): boolean
@@ -11,35 +12,35 @@ interface NamespaceFilter {
 
 export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
   if (
-    defaultNamespaceFilter === true ||
-    defaultNamespaceFilter === "true" ||
-    defaultNamespaceFilter === "1" ||
-    (typeof defaultNamespaceFilter === "number" && defaultNamespaceFilter !== 0)
-  ) {
-    defaultNamespaceFilter = "*"
-  } else if (
-    defaultNamespaceFilter === false ||
-    defaultNamespaceFilter === "false" ||
-    defaultNamespaceFilter === 0 ||
-    defaultNamespaceFilter === "0" ||
-    defaultNamespaceFilter == null ||
-    defaultNamespaceFilter === "null" ||
-    defaultNamespaceFilter === "undefined"
-  ) {
-    defaultNamespaceFilter = ""
-  } else {
+    defaultNamespaceFilter === true
+    || defaultNamespaceFilter === 'true'
+    || defaultNamespaceFilter === '1'
+    || (typeof defaultNamespaceFilter === 'number' && defaultNamespaceFilter !== 0)
+  )
+    defaultNamespaceFilter = '*'
+  else if (
+    defaultNamespaceFilter === false
+    || defaultNamespaceFilter === 'false'
+    || defaultNamespaceFilter === 0
+    || defaultNamespaceFilter === '0'
+    || defaultNamespaceFilter == null
+    || defaultNamespaceFilter === 'null'
+    || defaultNamespaceFilter === 'undefined'
+  )
+    defaultNamespaceFilter = ''
+  else
     defaultNamespaceFilter = String(defaultNamespaceFilter)
-  }
+
   return defaultNamespaceFilter
 }
 
 // todo sideffects
 const defaultNamespaceFilter: string = getNamespaceFilterString(
-  typeof process !== "undefined"
+  typeof process !== 'undefined'
     ? process.env.ZEED ?? process.env.DEBUG
-    : typeof localStorage !== "undefined"
-    ? localStorage.zeed ?? localStorage.debug
-    : "*"
+    : typeof localStorage !== 'undefined'
+      ? localStorage.zeed ?? localStorage.debug
+      : '*',
 )
 
 /**
@@ -49,21 +50,23 @@ const defaultNamespaceFilter: string = getNamespaceFilterString(
  * @returns Function to check if filter applies
  */
 export function useNamespaceFilter(
-  filter: string = defaultNamespaceFilter
+  filter: string = defaultNamespaceFilter,
 ): NamespaceFilter {
   let fn: any // (name: string) => boolean
-  let reject = [] as RegExp[]
-  let accept = [] as RegExp[]
+  const reject = [] as RegExp[]
+  const accept = [] as RegExp[]
 
   if (!filter) {
-    fn = function (name: string) {
+    fn = function (_name: string) {
       return false
     }
-  } else if (filter === "*") {
-    fn = function (name: string) {
+  }
+  else if (filter === '*') {
+    fn = function (_name: string) {
       return true
     }
-  } else {
+  }
+  else {
     let i
     const split = filter.split(/[\s,]+/)
     const len = split.length
@@ -72,28 +75,25 @@ export function useNamespaceFilter(
         // ignore empty strings
         continue
       }
-      let template = split[i].replace(/\*/g, ".*?")
-      if (template[0] === "-") {
-        reject.push(new RegExp("^" + template.substr(1) + "$"))
-      } else {
-        accept.push(new RegExp("^" + template + "$"))
-      }
+      const template = split[i].replace(/\*/g, '.*?')
+      if (template[0] === '-')
+        reject.push(new RegExp(`^${template.substr(1)}$`))
+      else
+        accept.push(new RegExp(`^${template}$`))
     }
 
     fn = function (name: string) {
-      if (reject.length === 0 && accept.length === 0) {
+      if (reject.length === 0 && accept.length === 0)
         return true
-      }
+
       let i, len
       for (i = 0, len = reject.length; i < len; i++) {
-        if (reject[i].test(name)) {
+        if (reject[i].test(name))
           return false
-        }
       }
       for (i = 0, len = accept.length; i < len; i++) {
-        if (accept[i].test(name)) {
+        if (accept[i].test(name))
           return true
-        }
       }
       return false
     }
@@ -105,26 +105,29 @@ export function useNamespaceFilter(
 }
 
 // todo sideffects
-const defaultLevelFilter: any =
-  typeof process !== "undefined"
+const defaultLevelFilter: any
+  = typeof process !== 'undefined'
     ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL
-    : typeof localStorage !== "undefined"
-    ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
-    : undefined
+    : typeof localStorage !== 'undefined'
+      ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
+      : undefined
 
 export function parseLogLevel(filter: LogLevelAliasType): LogLevel {
-  if (filter === false) return LogLevel.off
-  if (typeof filter === "number") return filter as number
-  if (typeof filter === "string") {
+  if (filter === false)
+    return LogLevel.off
+  if (typeof filter === 'number')
+    return filter as number
+  if (typeof filter === 'string') {
     const l = LogLevelAlias[filter.toLocaleLowerCase().trim()]
-    if (l != null) return l
+    if (l != null)
+      return l
   }
   return LogLevel.all
 }
 
 export function useLevelFilter(
-  filter: string | number | boolean | LogLevelAliasType = defaultLevelFilter
+  filter: string | number | boolean | LogLevelAliasType = defaultLevelFilter,
 ): (level: LogLevel) => boolean {
   const filterLevel = parseLogLevel(filter)
-  return (level) => level >= filterLevel
+  return level => level >= filterLevel
 }

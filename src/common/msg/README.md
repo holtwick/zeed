@@ -19,8 +19,8 @@ We differentiate between the following parts:
 Channels are a uniform abstraction for sending and receiving data usually in binary format. It uses the [commonly known `MessageEvent` pattern](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), with send via `postMessage` and listening on `message`. It is extended to optionally reflect connection states.
 
 ```ts
-channel.postMessage("Hello World")
-channel.on("message", (msg) => {
+channel.postMessage('Hello World')
+channel.on('message', (msg) => {
   log(`Received data=${data}`)
 })
 ```
@@ -31,13 +31,13 @@ Same API as `Emitter` for easily sending event like messages via a `Channel`. It
 
 ```ts
 interface MyProtocol {
-  doSomething(with:string, count:number):void
+  doSomething(using: string, count: number): void
 }
 
 const hub = usePubSub<MyProtocol>({ channel })
 
-hub.emit("doSomething", "hello", 2)
-hub.on("doSomething", (with, count) => {
+hub.emit('doSomething', 'hello', 2)
+hub.on('doSomething', (using, count) => {
   // ...
 })
 ```
@@ -45,8 +45,8 @@ hub.on("doSomething", (with, count) => {
 You can also use the alternative more PubSub like syntax ;)
 
 ```ts
-hub.publish("doSomething", "hello", 2)
-hub.subscribe("doSomething", (with, count) => {})
+hub.publish('doSomething', 'hello', 2)
+hub.subscribe('doSomething', (using, count) => {})
 ```
 
 ## Encoder
@@ -75,8 +75,8 @@ interface MyMessages {
 Using the messages is easy:
 
 ```ts
-let hub = useMessageHub({ channel }).send<MyMessages>()
-let echoResponse = await hub.echo({ hello: "world" })
+const hub = useMessageHub({ channel }).send<MyMessages>()
+const echoResponse = await hub.echo({ hello: 'world' })
 ```
 
 On the receiver part implementation is also straight forward:
@@ -86,7 +86,7 @@ useMessageHub({ channel }).listen<MyMessages>({
   async echo(data) {
     return data
   }
-)
+})
 ```
 
 ## Various transports and their properties

@@ -18,7 +18,7 @@ export interface RPCOptions<Remote> {
   deserialize?: (data: any) => any
 }
 
-export type RPCFn<T> = {
+export interface RPCFn<T> {
   /** Call the remote function and wait for the result. */
   (...args: ArgumentsType<T>): Promise<Awaited<ReturnType<T>>>
   /** Send event without asking for response */
@@ -42,7 +42,7 @@ type RPCMessage = [
   RPCMode,
   any, // args
   number | undefined | null, // id
-  string | undefined | null // method
+  string | undefined | null, // method
 ]
 
 const defaultSerialize = (i: any) => i
@@ -50,7 +50,7 @@ const defaultDeserialize = defaultSerialize
 
 export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
   functions: LocalFunctions,
-  options: RPCOptions<RemoteFunctions>
+  options: RPCOptions<RemoteFunctions>,
 ): RPCReturn<RemoteFunctions> {
   const {
     post,
@@ -72,25 +72,28 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
       let result, error: any
       if (method != null) {
         try {
-          // @ts-expect-error
+          // @ts-expect-error xxx
           result = await functions[method](...args)
-        } catch (e) {
+        }
+        catch (e) {
           error = String(e)
         }
-      } else {
-        error = "Method implementation missing"
+      }
+      else {
+        error = 'Method implementation missing'
       }
       if (mode === RPCMode.request && id) {
-        if (error) {
+        if (error)
           post(serialize([RPCMode.reject, error, id]))
-        } else {
+        else
           post(serialize([RPCMode.resolve, result, id]))
-        }
       }
-    } else if (id) {
+    }
+    else if (id) {
       const promise = rpcPromiseMap.get(id)
       if (promise != null) {
-        if (mode === RPCMode.reject) promise.reject(args)
+        if (mode === RPCMode.reject)
+          promise.reject(args)
         else promise.resolve(args)
       }
       rpcPromiseMap.delete(id)
@@ -118,6 +121,6 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
         sendCall.asEvent = sendEvent
         return sendCall
       },
-    }
+    },
   ) as any
 }

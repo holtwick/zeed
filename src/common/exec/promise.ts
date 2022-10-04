@@ -1,12 +1,15 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../log"
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable no-async-promise-executor */
 
-const { warn } = Logger("zeed:promise")
+import { Logger } from '../log'
+
+const { warn } = Logger('zeed:promise')
 
 export function createPromise<T>(): [Promise<T>, any, any] {
   let resolve, reject
-  let promise = new Promise<T>((_resolve, _reject) => {
+  const promise = new Promise<T>((_resolve, _reject) => {
     resolve = _resolve
     reject = _reject
   })
@@ -15,27 +18,27 @@ export function createPromise<T>(): [Promise<T>, any, any] {
 
 /** Sleep for `milliSeconds`. Example 1s: `await sleep(1000)` */
 export async function sleep(milliSeconds: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, milliSeconds))
+  return new Promise(resolve => setTimeout(resolve, milliSeconds))
 }
 
 export async function immediate(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 0))
+  return new Promise(resolve => setTimeout(resolve, 0))
 }
 
-export const timeoutReached = Symbol("timeout")
+export const timeoutReached = Symbol('timeout')
 
-type Unwrap<T> = T extends Promise<infer U>
-  ? U
-  : T extends (...args: any) => Promise<infer U>
-  ? U
-  : T extends (...args: any) => infer U
-  ? U
-  : T
+// type Unwrap<T> = T extends Promise<infer U>
+//   ? U
+//   : T extends (...args: any) => Promise<infer U>
+//     ? U
+//     : T extends (...args: any) => infer U
+//       ? U
+//       : T
 
 export async function timeout<T>(
   promise: Promise<T>,
   milliSeconds: number,
-  timeoutValue = timeoutReached
+  timeoutValue = timeoutReached,
 ): Promise<T | typeof timeoutValue> {
   return new Promise(async (resolve, reject) => {
     let done = false
@@ -46,17 +49,20 @@ export async function timeout<T>(
     }, milliSeconds)
 
     try {
-      let result = await promise
+      const result = await promise
       clearTimeout(timeout)
-      if (!done) resolve(result)
-    } catch (err) {
+      if (!done)
+        resolve(result)
+    }
+    catch (err) {
       clearTimeout(timeout)
-      if (!done) reject(err)
+      if (!done)
+        reject(err)
     }
   })
 }
 
-export const timoutError = new Error("Timeout reached")
+export const timoutError = new Error('Timeout reached')
 
 export function isTimeout(value: any): boolean {
   return value === timeoutReached || value === timoutError
@@ -64,11 +70,11 @@ export function isTimeout(value: any): boolean {
 
 export async function tryTimeout<T>(
   promise: Promise<T>,
-  milliSeconds: number
+  milliSeconds: number,
 ): Promise<T | undefined> {
-  if (milliSeconds <= 0) {
+  if (milliSeconds <= 0)
     return await promise
-  }
+
   return new Promise(async (resolve, reject) => {
     let done = false
 
@@ -78,12 +84,15 @@ export async function tryTimeout<T>(
     }, milliSeconds)
 
     try {
-      let result = await promise
+      const result = await promise
       clearTimeout(timeout)
-      if (!done) resolve(result)
-    } catch (err) {
+      if (!done)
+        resolve(result)
+    }
+    catch (err) {
       clearTimeout(timeout)
-      if (!done) reject(err)
+      if (!done)
+        reject(err)
     }
   })
 }
@@ -92,10 +101,10 @@ export async function tryTimeout<T>(
 export function waitOn(
   obj: any,
   event: string,
-  timeoutMS: number = 1000
+  timeoutMS = 1000,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
-    let fn = (value: any) => {
+    const fn = (value: any) => {
       if (timer) {
         clearTimeout(timer)
         done()
@@ -105,36 +114,34 @@ export function waitOn(
 
     let done = () => {
       timer = null
-      if (obj.off) {
+      if (obj.off)
         obj.off(event, fn)
-      } else if (obj.removeEventListener) {
+      else if (obj.removeEventListener)
         obj.removeEventListener(event, fn)
-      } else {
-        warn("No remove listener method found for", obj, event)
-      }
+      else
+        warn('No remove listener method found for', obj, event)
     }
 
     let timer: any = setTimeout(() => {
       done()
-      reject(new Error(`Did not response in time`))
+      reject(new Error('Did not response in time'))
     }, timeoutMS)
 
-    if (obj.on) {
+    if (obj.on)
       obj.on(event, fn)
-    } else if (obj.addEventListener) {
+    else if (obj.addEventListener)
       obj.addEventListener(event, fn)
-    } else {
-      warn("No listener method found for", obj)
-    }
+    else
+      warn('No listener method found for', obj)
   })
 }
 
 export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
   return Boolean(
-    value &&
-      (value instanceof Promise ||
-        // @ts-ignore
-        typeof value.then === "function")
+    value
+      && (value instanceof Promise
+        // @ts-expect-error xxx
+        || typeof value.then === 'function'),
   )
 }
 
@@ -176,5 +183,5 @@ export type AsyncReturnType<T extends (...args: any) => any> = T extends (
 ) => Promise<infer U>
   ? U
   : T extends (...args: any) => infer U
-  ? U
-  : any
+    ? U
+    : any

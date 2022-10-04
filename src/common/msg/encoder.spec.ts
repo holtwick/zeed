@@ -1,11 +1,11 @@
-import { CryptoEncoder, JsonEncoder } from "."
-import { deriveKeyPbkdf2, randomUint8Array } from ".."
+import { deriveKeyPbkdf2, randomUint8Array } from '..'
+import { CryptoEncoder, JsonEncoder } from '.'
 
-describe("encoder", () => {
-  it("should encode json", async () => {
+describe('encoder', () => {
+  it('should encode json', async () => {
     const sample = {
-      name: "Hello → wörld 👨‍👩‍👧‍👦",
-      list: [1, false, "test"],
+      name: 'Hello → wörld 👨‍👩‍👧‍👦',
+      list: [1, false, 'test'],
       num: 1,
     }
     const encoder = new JsonEncoder()
@@ -14,10 +14,10 @@ describe("encoder", () => {
     expect(back).toEqual(sample)
   })
 
-  it("should encode crypto", async () => {
+  it('should encode crypto', async () => {
     const sample = {
-      name: "Hello → wörld 👨‍👩‍👧‍👦",
-      list: [1, false, "test"],
+      name: 'Hello → wörld 👨‍👩‍👧‍👦',
+      list: [1, false, 'test'],
       num: 1,
     }
     const key = await deriveKeyPbkdf2(randomUint8Array(20))

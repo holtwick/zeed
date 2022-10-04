@@ -2,21 +2,23 @@
 // https://github.com/mazondo/gravatarjs/blob/master/gravatar.js
 // https://en.gravatar.com/site/implement/images/
 
-import { Logger } from "../common/log"
+import { Logger } from '../common/log'
 
-const log = Logger("zeed:gravatar")
+const log = Logger('zeed:gravatar')
 
 /** @deprecated Due to privacy concerns. Prefer local or custom solutions. */
 function gravatar(
   email: string,
-  options: { size?: any; backup?: any; secure?: any; rating?: any }
+  options: { size?: any; backup?: any; secure?: any; rating?: any },
 ) {
+  const hex_chr = '0123456789abcdef'.split('')
+
   // using md5() from here: http://www.myersdaily.org/joseph/javascript/md5-text.html
   function md5cycle(e: any[], t: any[]) {
-    var n = e[0],
-      r = e[1],
-      i = e[2],
-      s = e[3]
+    let n = e[0]
+    let r = e[1]
+    let i = e[2]
+    let s = e[3]
     n = ff(n, r, i, s, t[0], 7, -680876936)
     s = ff(s, n, r, i, t[1], 12, -389564586)
     i = ff(i, s, n, r, t[2], 17, 606105819)
@@ -97,7 +99,7 @@ function gravatar(
     r: number,
     i: any,
     s: number,
-    o: number
+    o: number,
   ) {
     return cmn((t & n) | (~t & r), e, t, i, s, o)
   }
@@ -108,7 +110,7 @@ function gravatar(
     r: number,
     i: any,
     s: number,
-    o: number
+    o: number,
   ) {
     return cmn((t & r) | (n & ~r), e, t, i, s, o)
   }
@@ -119,7 +121,7 @@ function gravatar(
     r: number,
     i: any,
     s: number,
-    o: number
+    o: number,
   ) {
     return cmn(t ^ n ^ r, e, t, i, s, o)
   }
@@ -130,19 +132,19 @@ function gravatar(
     r: number,
     i: any,
     s: number,
-    o: number
+    o: number,
   ) {
     return cmn(n ^ (t | ~r), e, t, i, s, o)
   }
   function md51(e: string) {
-    var t = e.length,
-      n = [1732584193, -271733879, -1732584194, 271733878],
-      r: number
-    for (r = 64; r <= e.length; r += 64) {
+    const t = e.length
+    const n = [1732584193, -271733879, -1732584194, 271733878]
+    let r: number
+    for (r = 64; r <= e.length; r += 64)
       md5cycle(n, md5blk(e.substring(r - 64, r)))
-    }
+
     e = e.substring(r - 64)
-    var i = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    const i = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for (r = 0; r < e.length; r++) i[r >> 2] |= e.charCodeAt(r) << (r % 4 << 3)
     i[r >> 2] |= 128 << (r % 4 << 3)
     if (r > 55) {
@@ -154,27 +156,27 @@ function gravatar(
     return n
   }
   function md5blk(e: string) {
-    var t = [],
-      n: number
+    const t = []
+    let n: number
     for (n = 0; n < 64; n += 4) {
-      t[n >> 2] =
-        e.charCodeAt(n) +
-        (e.charCodeAt(n + 1) << 8) +
-        (e.charCodeAt(n + 2) << 16) +
-        (e.charCodeAt(n + 3) << 24)
+      t[n >> 2]
+        = e.charCodeAt(n)
+        + (e.charCodeAt(n + 1) << 8)
+        + (e.charCodeAt(n + 2) << 16)
+        + (e.charCodeAt(n + 3) << 24)
     }
     return t
   }
   function rhex(e: number) {
-    var t = "",
-      n = 0
+    let t = ''
+    let n = 0
     for (; n < 4; n++)
       t += hex_chr[(e >> (n * 8 + 4)) & 15] + hex_chr[(e >> (n * 8)) & 15]
     return t
   }
   function hex(e: any[]) {
-    for (var t = 0; t < e.length; t++) e[t] = rhex(e[t])
-    return e.join("")
+    for (let t = 0; t < e.length; t++) e[t] = rhex(e[t])
+    return e.join('')
   }
   function md5(e: string) {
     return hex(md51(e))
@@ -182,56 +184,56 @@ function gravatar(
   function add32(e: number, t: number) {
     return (e + t) & 4294967295
   }
-  var hex_chr = "0123456789abcdef".split("")
-  //check to make sure you gave us something
-  var options = options || {},
-    base: string,
-    params = []
 
-  //set some defaults, just in case
+  // check to make sure you gave us something
+  options = options || {}
+
+  const params = []
+
+  // set some defaults, just in case
   options = {
-    size: options.size || "50",
-    rating: options.rating || "g",
-    secure: options.secure || location.protocol === "https:",
-    backup: options.backup || "",
+    size: options.size || '50',
+    rating: options.rating || 'g',
+    secure: options.secure || location.protocol === 'https:',
+    backup: options.backup || '',
   }
 
-  //setup the email address
+  // setup the email address
   email = email.trim().toLowerCase()
 
-  //determine which base to use
-  base = options.secure
-    ? "https://secure.gravatar.com/avatar/"
-    : "http://www.gravatar.com/avatar/"
+  // determine which base to use
+  const base = options.secure
+    ? 'https://secure.gravatar.com/avatar/'
+    : 'http://www.gravatar.com/avatar/'
 
-  //add the params
-  if (options.rating) {
-    params.push("r=" + options.rating)
-  }
-  if (options.backup) {
-    params.push("d=" + encodeURIComponent(options.backup))
-  }
-  if (options.size) {
-    params.push("s=" + options.size)
-  }
+  // add the params
+  if (options.rating)
+    params.push(`r=${options.rating}`)
 
-  //now throw it all together
-  return base + md5(email) + "?" + params.join("&")
+  if (options.backup)
+    params.push(`d=${encodeURIComponent(options.backup)}`)
+
+  if (options.size)
+    params.push(`s=${options.size}`)
+
+  // now throw it all together
+  return `${base + md5(email)}?${params.join('&')}`
 }
 
 export function gravatarURLByEmail(
   email: string,
-  defaultURL: string = ""
+  defaultURL = '',
 ): string {
   try {
     return gravatar(email, {
       size: 256,
-      backup: "monsterid",
+      backup: 'monsterid',
       // backup: "https://holtwick.de/download/user.png", // "retro",
       secure: true,
     })
-  } catch (error) {
-    log("Gravatar issue: Did not find an image for " + email)
+  }
+  catch (error) {
+    log(`Gravatar issue: Did not find an image for ${email}`)
     return defaultURL
   }
 }

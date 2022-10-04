@@ -1,8 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { deepEqual } from "./data/deep"
-import { LoggerConsoleHandler } from "./log-console"
-import { parseLogLevel, useNamespaceFilter } from "./log-filter"
+/* eslint-disable no-console */
+
+import { deepEqual } from './data/deep'
+import { LoggerConsoleHandler } from './log-console'
+import { parseLogLevel, useNamespaceFilter } from './log-filter'
 
 export enum LogLevel {
   all = -1,
@@ -15,24 +17,24 @@ export enum LogLevel {
 }
 
 export const LogLevelAlias: Record<string, LogLevel> = {
-  "*": LogLevel.all,
-  a: LogLevel.all,
-  all: LogLevel.all,
-  d: LogLevel.debug,
-  dbg: LogLevel.debug,
-  debug: LogLevel.debug,
-  i: LogLevel.info,
-  inf: LogLevel.info,
-  info: LogLevel.info,
-  w: LogLevel.warn,
-  warn: LogLevel.warn,
-  warning: LogLevel.warn,
-  e: LogLevel.error,
-  err: LogLevel.error,
-  error: LogLevel.error,
-  fatal: LogLevel.fatal,
-  off: LogLevel.off,
-  "-": LogLevel.off,
+  '*': LogLevel.all,
+  'a': LogLevel.all,
+  'all': LogLevel.all,
+  'd': LogLevel.debug,
+  'dbg': LogLevel.debug,
+  'debug': LogLevel.debug,
+  'i': LogLevel.info,
+  'inf': LogLevel.info,
+  'info': LogLevel.info,
+  'w': LogLevel.warn,
+  'warn': LogLevel.warn,
+  'warning': LogLevel.warn,
+  'e': LogLevel.error,
+  'err': LogLevel.error,
+  'error': LogLevel.error,
+  'fatal': LogLevel.fatal,
+  'off': LogLevel.off,
+  '-': LogLevel.off,
 }
 
 export type LogLevelAliasKey = keyof typeof LogLevelAlias
@@ -101,18 +103,19 @@ export interface LogHandlerOptions {
   stack?: boolean | number
 }
 
-export function LoggerContext(prefix: string = ""): LoggerContextInterface {
+export function LoggerContext(_prefix = ''): LoggerContextInterface {
   let logHandlers: LogHandler[] = [LoggerConsoleHandler()]
-  let logAssertLevel: LogLevel = LogLevel.warn
-  let logCheckNamespace = (name: string) => true
+  const logAssertLevel: LogLevel = LogLevel.warn
+  let logCheckNamespace = (_name: string) => true
   let logLock = false
   let logFactory = LoggerBaseFactory
 
   function LoggerBaseFactory(
-    name: string = "",
-    level?: LogLevelAliasType
+    name = '',
+    level?: LogLevelAliasType,
   ): LoggerInterface {
     function log(...messages: any[]) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       emit({
         name,
         messages,
@@ -132,8 +135,9 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
       if (log.active === true) {
         if (msg.level >= Logger.level && msg.level >= log.level) {
           if (logCheckNamespace(name)) {
-            for (let handler of logHandlers) {
-              if (handler) handler(msg)
+            for (const handler of logHandlers) {
+              if (handler)
+                handler(msg)
             }
           }
         }
@@ -183,7 +187,8 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
           if (console.assert) {
             // https://developer.mozilla.org/de/docs/Web/API/Console/assert
             console.assert(cond, ...messages)
-          } else {
+          }
+          else {
             console.error(`Assert did fail with: ${cond}`, ...messages)
           }
         }
@@ -203,14 +208,14 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     }
 
     log.assertEqual = function (value: any, expected: any, ...args: any[]) {
-      let equal = deepEqual(value, expected)
+      const equal = deepEqual(value, expected)
       if (!equal) {
         log.assert(
           equal,
           `Assert did fail. Expected ${expected} got ${value}`,
           expected,
           value,
-          ...args
+          ...args,
         )
         // } else {
         //   methods.debug(`Passed equal`)
@@ -218,14 +223,14 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     }
 
     log.assertNotEqual = function (value: any, expected: any, ...args: any[]) {
-      let equal = deepEqual(value, expected)
+      const equal = deepEqual(value, expected)
       if (equal) {
         log.assert(
           equal,
           `Assert did fail. Expected ${expected} not to be equal with ${value}`,
           expected,
           value,
-          ...args
+          ...args,
         )
         // } else {
         //   methods.debug(`Passed not equal check`)
@@ -236,8 +241,8 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
   }
 
   function Logger(
-    name: string = "",
-    level?: LogLevelAliasType
+    name = '',
+    level?: LogLevelAliasType,
   ): LoggerInterface {
     return logFactory(name, level)
   }
@@ -250,28 +255,31 @@ export function LoggerContext(prefix: string = ""): LoggerContextInterface {
     logCheckNamespace = useNamespaceFilter(namespaces)
   }
 
-  Logger.setLock = (lock: boolean = true) => (logLock = lock)
+  Logger.setLock = (lock = true) => (logLock = lock)
 
   Logger.setHandlers = function (handlers: LogHandler[] = []) {
-    if (logFactory !== LoggerBaseFactory) {
+    if (logFactory !== LoggerBaseFactory)
       logFactory = LoggerBaseFactory
-    }
-    if (logLock) return
-    logHandlers = [...handlers].filter((h) => typeof h === "function")
+
+    if (logLock)
+      return
+    logHandlers = [...handlers].filter(h => typeof h === 'function')
   }
 
   Logger.level = LogLevel.all
 
   /** @deprecated */
   Logger.setLogLevel = function (level: LogLevel = LogLevel.all) {
-    if (logLock) return
+    if (logLock)
+      return
     Logger.level = level
   }
 
   Logger.setFactory = function (
-    factory: (name?: string) => LoggerInterface
+    factory: (name?: string) => LoggerInterface,
   ): void {
-    if (logLock) return
+    if (logLock)
+      return
     logFactory = factory
   }
 

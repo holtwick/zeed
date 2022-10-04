@@ -1,37 +1,37 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "."
 import {
   decrypt,
   deriveKeyPbkdf2,
   digest,
   encrypt,
   randomUint8Array,
-} from "./crypto"
-import { equalBinary, toHex } from "./data/bin"
+} from './crypto'
+import { equalBinary, toHex } from './data/bin'
+import { Logger } from '.'
 
-const log = Logger("crypto.spec")
+const log = Logger('crypto.spec')
 
-describe("crypto", () => {
-  it("should not have collisions", () => {
+describe('crypto', () => {
+  it('should not have collisions', () => {
     expect(equalBinary(new Uint8Array(2), new Uint8Array([0, 0]))).toBe(true)
-    let list: Uint8Array[] = Array.apply(null, Array(100)).map(() =>
-      randomUint8Array(8)
+    const list: Uint8Array[] = Array.apply(null, Array(100)).map(() =>
+      randomUint8Array(8),
     )
     let id: Uint8Array | undefined
     while ((id = list.pop())) {
       // console.log(id)
       expect(equalBinary(id, new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0]))).toBe(
-        false
+        false,
       )
       expect(id?.length).toBe(8)
       expect(list).not.toContain(id)
     }
   })
 
-  it("should digest", async () => {
-    expect(toHex(await digest("abc"))).toBe(
-      "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+  it('should digest', async () => {
+    expect(toHex(await digest('abc'))).toBe(
+      'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
     )
     expect(await digest(new Uint8Array([1, 2, 3]))).toMatchInlineSnapshot(`
 Uint8Array [
@@ -91,7 +91,7 @@ Uint8Array [
   //   `)
   // })
 
-  it("should raw crypt", async () => {
+  it('should raw crypt', async () => {
     const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]), {
       salt: new Uint8Array([1, 2, 3]),
     })
@@ -108,7 +108,7 @@ Uint8Array [
         205, 105, 178, 193, 150, 36, 24, 216, 180, 75, 168, 133, 37, 25, 124,
         137, 221, 103, 214, 97, 218, 232, 248, 93,
       ]),
-      key
+      key,
     )
     expect(binFix).toEqual(sample)
   })

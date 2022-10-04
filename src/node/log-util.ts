@@ -1,62 +1,62 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { resolve } from "path"
+import { resolve } from 'path'
 
 export function getStackLlocationList(stack: string): any[] {
-  if (typeof stack !== "string") return []
+  if (typeof stack !== 'string')
+    return []
   // console.log("stack", stack)
   return (
     stack
-      ?.split("\n")
+      ?.split('\n')
       ?.map((rawLine) => {
-        let m = rawLine.match(
-          /^\s+at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/
+        const m = rawLine.match(
+          /^\s+at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/,
         )
         if (m) {
           let line = m[3] || m[2] || m[4]
-          if (line.endsWith(")")) line = line.slice(0, -1)
+          if (line.endsWith(')'))
+            line = line.slice(0, -1)
           return line
         }
+        return null
       })
-      ?.filter((v) => v != null) || []
+      ?.filter(v => v != null) || []
   )
 }
 
 const cwd = resolve(process.cwd())
-const home = process.env?.HOME ? resolve(process.env?.HOME) : ""
+const home = process.env?.HOME ? resolve(process.env?.HOME) : ''
 // console.log(`cwd = ${cwd}, home = ${home}}`)
 
 function pathStripCwd(path: string) {
   // console.log(">", path)
 
-  if (path.includes("/node_modules/")) {
-    return ""
-  }
+  if (path.includes('/node_modules/'))
+    return ''
 
-  const fileURL = "file://"
-  if (path.startsWith(fileURL)) {
+  const fileURL = 'file://'
+  if (path.startsWith(fileURL))
     return path.substr(fileURL.length)
-  }
 
-  if (cwd && path.startsWith(cwd)) {
+  if (cwd && path.startsWith(cwd))
     return path.substr(cwd.length + 1)
-  }
 
-  if (home && path.startsWith(home)) {
-    path = "~/" + path.substr(home.length + 1)
-  }
+  if (home && path.startsWith(home))
+    path = `~/${path.substr(home.length + 1)}`
 
   return path
 }
 
 function extractFileInfo(stackLine: string): string {
-  let m = stackLine.match(/^\s*at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/)
+  const m = stackLine.match(/^\s*at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/)
   if (m) {
     let line = m[3] || m[2] || m[4]
-    if (line.endsWith(")")) line = line.slice(0, -1)
+    if (line.endsWith(')'))
+      line = line.slice(0, -1)
     return line
   }
-  return ""
+  return ''
 }
 
 /**
@@ -68,35 +68,34 @@ function extractFileInfo(stackLine: string): string {
  * @returns
  */
 export function getSourceLocation(level = 2, stripCwd = true): string {
-  let stack = new Error().stack || ""
+  const stack = new Error('stack').stack || ''
   let line: string | undefined = getStackLlocationList(stack)?.[level]
-  if (line && stripCwd) {
+  if (line && stripCwd)
     line = pathStripCwd(line)
-  }
-  return line || ""
+
+  return line || ''
 }
 
 export function getStack(): string {
-  return new Error().stack || ""
+  return new Error('stack').stack || ''
 }
 
 export function getSourceLocationByPrecedingPattern(
   patterns: string[],
-  stripCwd = true
+  stripCwd = true,
 ) {
-  let line = ""
-  let stack = new Error().stack || ""
-  if (typeof stack === "string") {
-    const lines = stack.split("\n").map((l) => l.trim())
+  let line = ''
+  const stack = new Error('stack').stack || ''
+  if (typeof stack === 'string') {
+    const lines = stack.split('\n').map(l => l.trim())
     // console.log(lines)
-    const index = lines.findIndex((l) => patterns.some((p) => l.startsWith(p)))
+    const index = lines.findIndex(l => patterns.some(p => l.startsWith(p)))
     line = lines[index + 1]
-    if (line) {
+    if (line)
       line = extractFileInfo(line)
-    }
-    if (line && stripCwd) {
+
+    if (line && stripCwd)
       line = pathStripCwd(line)
-    }
   }
   return line
 }

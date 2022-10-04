@@ -4,12 +4,12 @@ import {
   isPrimeRX,
   randomBoolean,
   seededRandom,
-} from "./math"
+} from './math'
 
-describe("math", () => {
-  it("should not have collisions", () => {
-    let list: number[] = Array.apply(null, Array(1000)).map(() =>
-      getSecureRandom()
+describe('math', () => {
+  it('should not have collisions', () => {
+    const list: number[] = Array.apply(null, Array(1000)).map(() =>
+      getSecureRandom(),
     )
     let id: number | undefined
     while ((id = list.pop())) {
@@ -19,15 +19,15 @@ describe("math", () => {
     }
   })
 
-  it("should bias", () => {
+  it('should bias', () => {
     let sum = 0
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 1000; i++)
       sum += randomBoolean(0.1) ? 1 : 0
-    }
+
     expect(sum / 1000).toBeLessThan(0.2)
   })
 
-  it("should recog primes rx", () => {
+  it('should recog primes rx', () => {
     expect(isPrimeRX(1)).toBe(false)
     expect(isPrimeRX(2)).toBe(true)
     expect(isPrimeRX(3)).toBe(true)
@@ -41,7 +41,7 @@ describe("math", () => {
     expect(isPrimeRX(11)).toBe(true)
   })
 
-  it("should recog primes", () => {
+  it('should recog primes', () => {
     expect(isPrime(1)).toBe(false)
     expect(isPrime(2)).toBe(true)
     expect(isPrime(3)).toBe(true)
@@ -55,7 +55,7 @@ describe("math", () => {
     expect(isPrime(11)).toBe(true)
   })
 
-  it("should not be random", () => {
+  it('should not be random', () => {
     expect([
       seededRandom(),
       seededRandom(),

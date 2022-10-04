@@ -1,28 +1,29 @@
-import { LoggerContext, LogLevel, LogMessage } from "./log-base"
-import { LoggerMemoryHandler } from "./log-memory"
+import type { LogMessage } from './log-base'
+import { LogLevel, LoggerContext } from './log-base'
+import { LoggerMemoryHandler } from './log-memory'
 
-describe("log-memory", () => {
-  it("should log into memory", async () => {
-    let messages: LogMessage[] = []
+describe('log-memory', () => {
+  it('should log into memory', async () => {
+    const messages: LogMessage[] = []
 
-    let logger = LoggerContext()
+    const logger = LoggerContext()
     logger.setHandlers([
       LoggerMemoryHandler({
         level: LogLevel.all,
-        filter: "*",
+        filter: '*',
         messages,
       }),
     ])
 
-    let log = logger("test")
-    let { info, error, warn, debug, assert } = log
+    const log = logger('test')
+    const { info, error, warn, debug, assert } = log
 
-    log("Simple") // shortcut
-    debug("Hello")
-    info("World")
-    warn("is on")
-    error("Fire")
-    assert(false, "Fatal")
+    log('Simple') // shortcut
+    debug('Hello')
+    info('World')
+    warn('is on')
+    error('Fire')
+    assert(false, 'Fatal')
 
     expect(messages).toMatchInlineSnapshot(`
       Array [

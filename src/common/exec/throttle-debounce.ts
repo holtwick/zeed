@@ -2,10 +2,10 @@
 // From https://github.com/cowboy/jquery-throttle-debounce
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
-import { Logger } from "../log"
+import { Logger } from '../log'
 
 const DEBUG = false
-const log = DEBUG ? Logger("zeed:throttle") : () => {}
+const log = DEBUG ? Logger('zeed:throttle') : () => {}
 
 interface ThrottleOptions {
   delay?: number
@@ -31,12 +31,12 @@ interface DebounceOptions {
  */
 export function throttle<F extends Function>(
   callback: F,
-  opt: ThrottleOptions = {}
+  opt: ThrottleOptions = {},
 ): F & {
-  cancel: () => void
-  dispose: () => void
+    cancel: () => void
+    dispose: () => void
   // todo force execution
-} {
+  } {
   const { delay = 100, trailing = true, leading = true } = opt
 
   let timeoutID: any = 0
@@ -44,7 +44,7 @@ export function throttle<F extends Function>(
   let visited = 0
   let trailingExec: Function | undefined
 
-  let debugCheckpoint = Date.now()
+  const debugCheckpoint = Date.now()
 
   function clearExistingTimeout() {
     if (timeoutID) {
@@ -55,8 +55,7 @@ export function throttle<F extends Function>(
 
   function wrapper(this: any, ...args: any[]) {
     const now = Date.now()
-    let self = this
-    let elapsed = now - checkpoint
+    const elapsed = now - checkpoint
 
     function debugElapsed() {
       const dnow = Date.now()
@@ -65,24 +64,25 @@ export function throttle<F extends Function>(
       ).toFixed(1)}ms - visited ${visited}x`
     }
 
-    function exec() {
+    const exec = () => {
       visited = 0
       checkpoint = Date.now()
-      callback.apply(self, args)
+      callback.apply(this, args)
     }
 
     trailingExec = exec
 
     // Make sure enough time has passed since last call
     if (elapsed > delay || !timeoutID) {
-      DEBUG && log("elapsed", debugElapsed())
+      DEBUG && log('elapsed', debugElapsed())
 
       // Leading execute once immediately
       if (leading) {
         if (elapsed > delay) {
-          DEBUG && log("🚀 leading", debugElapsed())
+          DEBUG && log('🚀 leading', debugElapsed())
           exec()
-        } else {
+        }
+        else {
           ++visited // at least trigger trailing this way
         }
       }
@@ -96,18 +96,19 @@ export function throttle<F extends Function>(
 
       // Delay. We should not get here if timeout has not been reached before
       timeoutID = setTimeout(() => {
-        DEBUG && log("⏱ reached timeout", debugElapsed())
+        DEBUG && log('⏱ reached timeout', debugElapsed())
         timeoutID = 0
         // Only execute on trailing or when visited again, but do not twice if leading
         if (trailing && (!leading || visited > 0)) {
-          DEBUG && log("🚀 trailing", debugElapsed())
+          DEBUG && log('🚀 trailing', debugElapsed())
           trailingExec?.()
         }
       }, timeout)
-    } else {
+    }
+    else {
       // Count visits
       ++visited
-      DEBUG && log("visited", debugElapsed())
+      DEBUG && log('visited', debugElapsed())
     }
   }
 
@@ -125,7 +126,7 @@ export function throttle<F extends Function>(
  */
 export function debounce<F extends Function>(
   callback: F,
-  opt: DebounceOptions = {}
+  opt: DebounceOptions = {},
 ): F & { cancel: () => void; dispose: () => void } {
   const { delay = 100 } = opt
   let timeoutID: any = 0
@@ -138,11 +139,10 @@ export function debounce<F extends Function>(
   }
 
   function wrapper(this: any, ...arguments_: any[]) {
-    let self = this
     clearExistingTimeout()
     timeoutID = setTimeout(() => {
       timeoutID = 0
-      callback.apply(self, arguments_)
+      callback.apply(this, arguments_)
     }, delay)
   }
 

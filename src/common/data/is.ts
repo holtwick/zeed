@@ -13,7 +13,7 @@ export type Primitive =
   | bigint
 
 export function isObject(obj: unknown): obj is object {
-  return obj != null && typeof obj === "object"
+  return obj != null && typeof obj === 'object'
 }
 
 export function isPrimitive(obj: unknown): obj is Primitive {
@@ -29,23 +29,23 @@ export function isRecord(obj: unknown): obj is Record<string, any> {
 }
 
 export function isString(obj: unknown): obj is string {
-  return typeof obj === "string"
+  return typeof obj === 'string'
 }
 
 export function isNumber(obj: unknown): obj is number {
-  return typeof obj === "number"
+  return typeof obj === 'number'
 }
 
 export function isInteger(obj: unknown): obj is number {
-  return typeof obj === "number" && Number.isInteger(obj)
+  return typeof obj === 'number' && Number.isInteger(obj)
 }
 
 export function isSafeInteger(obj: unknown): obj is number {
-  return typeof obj === "number" && Number.isSafeInteger(obj)
+  return typeof obj === 'number' && Number.isSafeInteger(obj)
 }
 
 export function isBoolean(obj: unknown): obj is boolean {
-  return typeof obj === "boolean"
+  return typeof obj === 'boolean'
 }
 
 export function isNullOrUndefined(obj: unknown): obj is null | undefined {
@@ -53,5 +53,5 @@ export function isNullOrUndefined(obj: unknown): obj is null | undefined {
 }
 
 export function isUint8Array(obj: unknown): obj is Uint8Array {
-  return isObject(obj) && obj.constructor.name === "Uint8Array"
+  return isObject(obj) && obj.constructor.name === 'Uint8Array'
 }

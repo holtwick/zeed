@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getSecureRandomIfPossible } from "./math"
+import { getSecureRandomIfPossible } from './math'
 
 // Get a sort_weight suitable for adding to top of list
 // Original idea https://holtwick.de/en/blog/smart-table-reordering
@@ -11,18 +11,18 @@ export interface SortableItem {
 
 export function startSortWeight(items: SortableItem[]): number {
   return (
-    items.reduce((acc, item) => Math.min(acc, item.sort_weight || 0), 0) -
-    1 -
-    getSecureRandomIfPossible()
+    items.reduce((acc, item) => Math.min(acc, item.sort_weight || 0), 0)
+    - 1
+    - getSecureRandomIfPossible()
   )
 }
 
 // Get a sort_weight suitable for adding to end of list
 export function endSortWeight(items: SortableItem[]): number {
   return (
-    items.reduce((acc, item) => Math.max(acc, item.sort_weight || 0), 0) +
-    1 +
-    getSecureRandomIfPossible()
+    items.reduce((acc, item) => Math.max(acc, item.sort_weight || 0), 0)
+    + 1
+    + getSecureRandomIfPossible()
   )
 }
 
@@ -30,17 +30,16 @@ export function endSortWeight(items: SortableItem[]): number {
 export function moveSortWeight(
   newIndex: number,
   oldIndex: number,
-  items: SortableItem[]
+  items: SortableItem[],
 ): number {
-  let count = items.length
+  const count = items.length
 
   const moveLower = newIndex < oldIndex
-  if (count <= 0 || newIndex >= count - 1) {
+  if (count <= 0 || newIndex >= count - 1)
     return endSortWeight(items)
-  }
-  if (newIndex <= 0) {
+
+  if (newIndex <= 0)
     return startSortWeight(items)
-  }
 
   // Make sure they are sorted
   items = sortedItems([...items])
@@ -51,9 +50,9 @@ export function moveSortWeight(
   const distance = upper - lower
   if (distance === 0) {
     // Ugly list with no presets, make the best guess
-    if (moveLower) {
+    if (moveLower)
       return startSortWeight(items)
-    }
+
     return endSortWeight(items)
   }
   const middle = lower + distance / 2
@@ -65,3 +64,4 @@ export function sortedItems<T extends SortableItem>(items: T[]): T[] {
   items.sort((a, b) => (a.sort_weight || 0) - (b.sort_weight || 0))
   return items
 }
+

@@ -1,5 +1,6 @@
-import { isPromise } from "../exec/promise"
-import { DayInput, DayValue, DAY_MS } from "./day"
+import { isPromise } from '../exec/promise'
+import type { DayInput, DayValue } from './day'
+import { DAY_MS } from './day'
 
 // See also and alternatives:
 // https://blog.openreplay.com/is-it-time-for-the-javascript-temporal-api
@@ -20,22 +21,22 @@ export class Day {
   }
 
   constructor(days?: DayInputLegacy) {
-    if (typeof days === "number") {
+    if (typeof days === 'number') {
       this.days = days
       return
     }
 
-    if (days != null) {
+    if (days != null)
       days = Day.from(days)?.days
-    }
 
     if (days == null) {
       const date = new Date()
-      this.days =
-        date.getFullYear() * 10000 +
-        (date.getMonth() + 1) * 100 +
-        date.getDate()
-    } else {
+      this.days
+        = date.getFullYear() * 10000
+        + (date.getMonth() + 1) * 100
+        + date.getDate()
+    }
+    else {
       this.days = days
     }
   }
@@ -45,18 +46,18 @@ export class Day {
   }
 
   static fromString(dateString: string): Day | undefined {
-    return Day.from(+dateString.replace(/[^0-9]/g, "").slice(0, 8))
+    return Day.from(+dateString.replace(/[^0-9]/g, '').slice(0, 8))
   }
 
-  static fromDate(date: Date, gmt: boolean = false): Day {
+  static fromDate(date: Date, gmt = false): Day {
     return (
       gmt
         ? Day.fromString(date.toISOString().substr(0, 10))
         : Day.from(
-            date.getFullYear() * 10000 +
-              (date.getMonth() + 1) * 100 +
-              date.getDate()
-          )
+          date.getFullYear() * 10000
+              + (date.getMonth() + 1) * 100
+              + date.getDate(),
+        )
     ) as Day
   }
 
@@ -64,19 +65,25 @@ export class Day {
     return Day.fromDate(date, true)
   }
 
-  static from(value: DayInputLegacy, gmt: boolean = false): Day | undefined {
-    if (typeof value === "number") {
-      if (value < 100) return
+  static from(value: DayInputLegacy, gmt = false): Day | undefined {
+    if (typeof value === 'number') {
+      if (value < 100)
+        return
       return new Day(value)
-    } else if (typeof value === "string") {
+    }
+    else if (typeof value === 'string') {
       return Day.fromString(value)
-    } else if (Array.isArray(value) && value.length === 3) {
+    }
+    else if (Array.isArray(value) && value.length === 3) {
       const [year, month = 1, day = 1] = value
-      if (month < 1 || month > 12 || day < 1 || day > 31) return
+      if (month < 1 || month > 12 || day < 1 || day > 31)
+        return
       return new Day(year * 10000 + month * 100 + day)
-    } else if (value instanceof Date) {
+    }
+    else if (value instanceof Date) {
       return Day.fromDate(value, gmt)
-    } else if (value instanceof Day) {
+    }
+    else if (value instanceof Day) {
       return value
     }
   }
@@ -92,25 +99,25 @@ export class Day {
     return this.days
   }
 
-  toString(sep: string = "-") {
-    let baseString = String(this.days)
+  toString(sep = '-') {
+    const baseString = String(this.days)
     return (
-      baseString.slice(0, 4) +
-      sep +
-      baseString.slice(4, 6) +
-      sep +
-      baseString.slice(6, 8)
+      baseString.slice(0, 4)
+      + sep
+      + baseString.slice(4, 6)
+      + sep
+      + baseString.slice(6, 8)
     )
   }
 
-  toDate(gmt: boolean = false): Date {
+  toDate(gmt = false): Date {
     return gmt
       ? new Date(`${this.toString()}T00:00:00.000Z`)
       : new Date(
-          this.days / 10000, // year
-          ((this.days / 100) % 100) - 1, // month
-          this.days % 100 // day
-        )
+        this.days / 10000, // year
+        ((this.days / 100) % 100) - 1, // month
+        this.days % 100, // day
+      )
   }
 
   toDateGMT() {
@@ -135,7 +142,7 @@ export class Day {
     // Important! Don't use local time here due to summer/winter time days can
     // be longer or shorter!
     return Day.fromDateGMT(
-      new Date(this.toDateGMT().getTime() + offset * DAY_MS)
+      new Date(this.toDateGMT().getTime() + offset * DAY_MS),
     )
   }
 
@@ -149,18 +156,19 @@ export class Day {
 
   /** Very stupid approach, only works for days <= 28 */
   monthOffset(offset: number): Day {
-    let m = this.month + offset
+    const m = this.month + offset
     let mm = Math.floor((m - 1) % 12) + 1
-    if (mm === 0) mm = 12
-    let yy = Math.floor((m - 1) / 12)
+    if (mm === 0)
+      mm = 12
+    const yy = Math.floor((m - 1) / 12)
     // log("calc", m, mm, yy, [this.year + yy, mm, this.day])
     return Day.from([this.year + yy, mm, this.day])!
   }
 
   daysUntil(otherDay: DayInputLegacy): number {
     return Math.round(
-      (new Day(otherDay)?.toDateGMT().getTime() - this.toDateGMT().getTime()) /
-        DAY_MS
+      (new Day(otherDay)?.toDateGMT().getTime() - this.toDateGMT().getTime())
+        / DAY_MS,
     )
   }
 
@@ -178,15 +186,16 @@ export class Day {
 export async function forEachDay(
   from: DayInputLegacy,
   to: DayInputLegacy,
-  handler: (date: Day) => Promise<void> | void
+  handler: (date: Day) => Promise<void> | void,
 ) {
   let start = Day.from(from)
-  let end = Day.from(to)
+  const end = Day.from(to)
+  // eslint-disable-next-line no-unmodified-loop-condition
   while (start && end && start?.days <= end?.days) {
-    let result = handler(start)
-    if (isPromise(result)) {
+    const result = handler(start)
+    if (isPromise(result))
       await result
-    }
+
     start = start.dayOffset(+1)
   }
 }

@@ -1,6 +1,6 @@
 // Inspired by https://github.com/kof/node-argsparser/blob/master/lib/argsparser.js
 
-import { toCamelCase } from "../common/data/camelcase"
+import { toCamelCase } from '../common/data/camelcase'
 
 interface ParseConfig {
   args?: string[]
@@ -21,39 +21,45 @@ export function parseArgs(config: ParseConfig = {}) {
     numberArgs = [],
   } = config
 
-  let nameToAlias = Object.entries(alias).reduce((map, curr) => {
+  const nameToAlias = Object.entries(alias).reduce((map, curr) => {
+    // eslint-disable-next-line prefer-const
     let [name, values] = curr
-    if (typeof values === "string") values = [values]
-    for (let value of values) {
+    if (typeof values === 'string')
+      values = [values]
+    for (const value of values)
       map[normalize(value)] = normalize(name)
-    }
+
     return map
   }, {} as any)
 
-  let opts: Record<string, any> = {
+  const opts: Record<string, any> = {
     _: [],
   }
 
   function setOpt(name: string, value: any) {
-    if (opts[name] == null) {
+    if (opts[name] == null)
       opts[name] = value
-    } else if (typeof opts[name] === "boolean") {
+
+    else if (typeof opts[name] === 'boolean')
       opts[name] = value
-    } else if (Array.isArray(opts[name])) {
+
+    else if (Array.isArray(opts[name]))
       opts[name].push(value)
-    } else {
+
+    else
       opts[name] = [opts[name], value]
-    }
   }
 
-  let argList = [...args]
+  const argList = [...args]
   let arg: string | undefined
+
+  // eslint-disable-next-line no-cond-assign
   while ((arg = argList.shift())) {
     let value: any
     if (/^--?/.test(arg)) {
-      let key = arg.replace(/^--?/, "")
-      if (arg.includes("=")) {
-        let [name, valuePart] = key.split("=", 2)
+      let key = arg.replace(/^--?/, '')
+      if (arg.includes('=')) {
+        const [name, valuePart] = key.split('=', 2)
         key = name.trim()
         value = valuePart.trim()
       }
@@ -61,22 +67,25 @@ export function parseArgs(config: ParseConfig = {}) {
       key = nameToAlias[key] ?? key
       if (booleanArgs.includes(key)) {
         setOpt(key, true)
-      } else {
-        value = value ?? argList.shift() ?? ""
-        if (numberArgs.includes(key)) {
+      }
+      else {
+        value = value ?? argList.shift() ?? ''
+        if (numberArgs.includes(key))
           value = Number(value ?? 0)
-        }
+
         if (listArgs.includes(key)) {
-          if (Array.isArray(opts[key])) {
+          if (Array.isArray(opts[key]))
             opts[key].push(value)
-          } else {
+
+          else
             opts[key] = [value]
-          }
-        } else {
+        }
+        else {
           setOpt(key, value)
         }
       }
-    } else {
+    }
+    else {
       opts._.push(arg)
     }
   }

@@ -1,48 +1,61 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Uint8ArrayToHexDump } from "./bin"
-import { jsonStringify } from "./json"
+import { Uint8ArrayToHexDump } from './bin'
+import { jsonStringify } from './json'
 
-const TRUE_VALUES_LIST = ["1", "true", "yes", "y", "on"]
+const TRUE_VALUES_LIST = ['1', 'true', 'yes', 'y', 'on']
 
 export function stringToBoolean(value?: string, defaultValue = false): boolean {
-  if (value == null || typeof value !== "string") return defaultValue
+  if (value == null || typeof value !== 'string')
+    return defaultValue
   return TRUE_VALUES_LIST.includes(String(value).trim().toLowerCase())
 }
 
 export function stringToInteger(value?: string, defaultValue = 0): number {
-  if (value == null || typeof value !== "string") return defaultValue
+  if (value == null || typeof value !== 'string')
+    return defaultValue
   return parseInt(value.trim(), 10) ?? defaultValue
 }
 
 export function stringToFloat(value?: string, defaultValue = 0.0): number {
-  if (value == null || typeof value !== "string") return defaultValue
+  if (value == null || typeof value !== 'string')
+    return defaultValue
   return parseFloat(value.trim()) ?? defaultValue
 }
 
 export function valueToBoolean(value?: any, defaultValue = false): boolean {
-  if (value == null) return defaultValue
-  if (typeof value === "boolean") return value
-  if (typeof value === "number") return value !== 0
+  if (value == null)
+    return defaultValue
+  if (typeof value === 'boolean')
+    return value
+  if (typeof value === 'number')
+    return value !== 0
   return TRUE_VALUES_LIST.includes(String(value).trim().toLowerCase())
 }
 
 export function valueToInteger(value?: any, defaultValue = 0): number {
-  if (value == null) return defaultValue
-  if (typeof value === "boolean") return value ? 1 : 0
-  if (typeof value === "number") return Math.floor(value)
+  if (value == null)
+    return defaultValue
+  if (typeof value === 'boolean')
+    return value ? 1 : 0
+  if (typeof value === 'number')
+    return Math.floor(value)
   return parseInt(String(value).trim(), 10) ?? defaultValue
 }
 
 export function valueToFloat(value?: any, defaultValue = 0.0): number {
-  if (value == null) return defaultValue
-  if (typeof value === "boolean") return value ? 1 : 0
-  if (typeof value === "number") return Math.floor(value)
+  if (value == null)
+    return defaultValue
+  if (typeof value === 'boolean')
+    return value ? 1 : 0
+  if (typeof value === 'number')
+    return Math.floor(value)
   return parseFloat(String(value).trim()) ?? defaultValue
 }
 
-export function valueToString(value?: any, defaultValue = ""): string {
-  if (value == null) return defaultValue
+export function valueToString(value?: any, defaultValue = ''): string {
+  if (value == null)
+    return defaultValue
   // if (value == "") return defaultValue // ???
   return String(value) ?? defaultValue
 }
@@ -66,26 +79,26 @@ export const toBool = valueToBoolean
 
 // Strings
 
-export type RenderMessagesOptions = {
+export interface RenderMessagesOptions {
   trace?: boolean // = true
   pretty?: boolean // = true
 }
 
 export function formatMessages(
   messages: any[],
-  opt: RenderMessagesOptions = {}
+  opt: RenderMessagesOptions = {},
 ): any[] {
   const { trace = true, pretty = true } = opt
   return messages.map((obj) => {
-    if (obj && typeof obj === "object") {
-      if (pretty && (obj instanceof Uint8Array || obj instanceof ArrayBuffer)) {
-        return "\n" + Uint8ArrayToHexDump(obj) + "\n"
-      }
+    if (obj && typeof obj === 'object') {
+      if (pretty && (obj instanceof Uint8Array || obj instanceof ArrayBuffer))
+        return `\n${Uint8ArrayToHexDump(obj)}\n`
+
       if (obj instanceof Error) {
-        if (!trace) {
-          return `${obj.name || "Error"}: ${obj.message}`
-        }
-        return `${obj.name || "Error"}: ${obj.message}\n${obj.stack}`
+        if (!trace)
+          return `${obj.name || 'Error'}: ${obj.message}`
+
+        return `${obj.name || 'Error'}: ${obj.message}\n${obj.stack}`
       }
       return pretty ? jsonStringify(obj, null, 2) : jsonStringify(obj)
     }
@@ -95,9 +108,9 @@ export function formatMessages(
 
 export function renderMessages(
   messages: any[],
-  opt: RenderMessagesOptions = {}
+  opt: RenderMessagesOptions = {},
 ): string {
-  return formatMessages(messages, opt).join(" ")
+  return formatMessages(messages, opt).join(' ')
 }
 
 //
@@ -106,7 +119,8 @@ export function renderMessages(
 export function fixBrokenUth8String(brokenString: string): string {
   try {
     return decodeURIComponent(escape(brokenString))
-  } catch (e) {
+  }
+  catch (e) {
     // log.debug("fixString failed for", s)
   }
   return brokenString

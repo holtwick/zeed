@@ -1,8 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getGlobalContext } from "./global"
-import { LoggerContext, LoggerContextInterface } from "./log-base"
-import { LoggerConsoleHandler } from "./log-console"
+import { getGlobalContext } from './global'
+import type { LoggerContextInterface } from './log-base'
+import { LoggerContext } from './log-base'
+import { LoggerConsoleHandler } from './log-console'
 
 // Global logger to guarantee all submodules use the same logger instance
 
@@ -15,7 +16,7 @@ declare global {
 }
 
 function getLoggerContext() {
-  let logger = LoggerContext()
+  const logger = LoggerContext()
   logger.setHandlers([LoggerConsoleHandler()])
   return logger
 }
@@ -23,18 +24,21 @@ function getLoggerContext() {
 export function getGlobalLogger(): LoggerContextInterface {
   if (globalLogger == null) {
     try {
-      let gcontext = getGlobalContext()
+      const gcontext = getGlobalContext()
       if (gcontext != null) {
         if (gcontext?.logger == null) {
           globalLogger = getLoggerContext()
           gcontext.logger = globalLogger
-        } else {
+        }
+        else {
           globalLogger = gcontext.logger
         }
-      } else {
+      }
+      else {
         globalLogger = getLoggerContext()
       }
-    } catch (e) {
+    }
+    catch (e) {
       globalLogger = getLoggerContext()
     }
   }
@@ -42,4 +46,4 @@ export function getGlobalLogger(): LoggerContextInterface {
 }
 
 // todo sideffects
-export let Logger = getGlobalLogger()
+export const Logger = getGlobalLogger()

@@ -1,29 +1,29 @@
-import { parseArgs } from "./args"
+import { parseArgs } from './args'
 
-describe("args.spec", () => {
-  it("should parse correctly", async () => {
-    let result = parseArgs({
+describe('args.spec', () => {
+  it('should parse correctly', async () => {
+    const result = parseArgs({
       args: [
-        "file",
-        "--on",
-        "-?",
-        "-i",
-        "-o",
-        "string",
-        "free",
-        "--some=test",
-        "--some=test2",
-        "--some-more=test3",
-        "--some-list=listItem",
-        "--some-number=123",
+        'file',
+        '--on',
+        '-?',
+        '-i',
+        '-o',
+        'string',
+        'free',
+        '--some=test',
+        '--some=test2',
+        '--some-more=test3',
+        '--some-list=listItem',
+        '--some-number=123',
         '--some-one="empty string"',
       ],
-      booleanArgs: ["help", "on", "i"],
-      listArgs: ["someList"],
-      numberArgs: ["someNumber"],
+      booleanArgs: ['help', 'on', 'i'],
+      listArgs: ['someList'],
+      numberArgs: ['someNumber'],
       alias: {
-        some: ["some-more"],
-        help: ["h", "?"],
+        some: ['some-more'],
+        help: ['h', '?'],
       },
     })
     expect(result).toMatchInlineSnapshot(`

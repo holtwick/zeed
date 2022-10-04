@@ -1,104 +1,104 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { sleep } from "./promise"
-import { LogLevel } from "../log-base"
-import { SerialQueue } from "./queue"
+import { LogLevel } from '../log-base'
+import { sleep } from './promise'
+import { SerialQueue } from './queue'
 
 const logLevel = LogLevel.off
 
-describe("queue", () => {
-  it("should execute in strict order", async () => {
+describe('queue', () => {
+  it('should execute in strict order', async () => {
     expect.assertions(1)
 
-    let list: any = []
-    let queue = new SerialQueue({ logLevel })
+    const list: any = []
+    const queue = new SerialQueue({ logLevel })
     queue.enqueue(async () => {
       await sleep(100)
-      list.push("a")
+      list.push('a')
     })
     queue.enqueue(async () => {
       await sleep(200)
-      list.push("b")
+      list.push('b')
     })
     queue.enqueue(async () => {
       await sleep(1)
-      list.push("c")
+      list.push('c')
     })
     await queue.wait()
-    expect(list).toEqual(["a", "b", "c"])
+    expect(list).toEqual(['a', 'b', 'c'])
   })
 
-  it("should execute in random order", async () => {
+  it('should execute in random order', async () => {
     expect.assertions(1)
 
-    let list: any = []
+    const list: any = []
 
     ;(async () => {
       await sleep(100)
-      list.push("a")
+      list.push('a')
     })()
     ;(async () => {
       await sleep(200)
-      list.push("b")
+      list.push('b')
     })()
     ;(async () => {
       await sleep(1)
-      list.push("c")
+      list.push('c')
     })()
 
     await sleep(500)
 
-    expect(list).toEqual(["c", "a", "b"])
+    expect(list).toEqual(['c', 'a', 'b'])
   })
 
-  it("should return value", async () => {
+  it('should return value', async () => {
     expect.assertions(2)
 
-    let list: any = []
-    let queue = new SerialQueue({ logLevel })
+    const list: any = []
+    const queue = new SerialQueue({ logLevel })
     queue.enqueue(async () => {
       await sleep(100)
-      list.push("a")
+      list.push('a')
     })
-    let r = await queue.enqueue(async () => {
+    const r = await queue.enqueue(async () => {
       await sleep(200)
-      list.push("b")
+      list.push('b')
       return 123
     })
 
     expect(r).toEqual(123)
-    expect(list).toEqual(["a", "b"])
+    expect(list).toEqual(['a', 'b'])
 
     await queue.wait()
   })
 
-  it("should pause", async () => {
+  it('should pause', async () => {
     expect.assertions(3)
 
-    let list: any = []
-    let queue = new SerialQueue({ logLevel })
+    const list: any = []
+    const queue = new SerialQueue({ logLevel })
 
-    let events: any = []
+    const events: any = []
     queue.onAny((...args) => events.push(args))
 
     queue.enqueue(async () => {
       await sleep(100)
-      list.push("a")
+      list.push('a')
     })
     queue.enqueue(async () => {
       await sleep(200)
-      list.push("b")
+      list.push('b')
     })
     queue.enqueue(async () => {
       await sleep(1)
-      list.push("c")
+      list.push('c')
     })
     await queue.pause()
-    expect(list).toEqual(["a"])
+    expect(list).toEqual(['a'])
 
     queue.resume()
     await queue.wait()
-    expect(list).toEqual(["a", "b", "c"])
+    expect(list).toEqual(['a', 'b', 'c'])
 
     expect(events).toMatchInlineSnapshot(`
       Array [
@@ -143,29 +143,29 @@ describe("queue", () => {
     `)
   })
 
-  it("should cancel the rest", async () => {
+  it('should cancel the rest', async () => {
     expect.assertions(3)
 
-    let list: any = []
-    let queue = new SerialQueue({ logLevel })
+    const list: any = []
+    const queue = new SerialQueue({ logLevel })
 
-    let events: any = []
+    const events: any = []
     queue.onAny((...args) => events.push(args))
 
     await queue.pause()
 
     queue.enqueue(async () => {
       await sleep(100)
-      list.push("a")
+      list.push('a')
     })
     queue.enqueue(async () => {
       await sleep(200)
-      list.push("b")
+      list.push('b')
     })
     queue
       .enqueue(async () => {
         await sleep(1)
-        list.push("c")
+        list.push('c')
       })
       .then((r) => {
         expect(r).toBe(undefined)

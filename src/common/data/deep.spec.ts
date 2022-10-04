@@ -1,22 +1,22 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "../../index.log"
-import { deepEqual, deepMerge, deepStripUndefinedInPlace } from "./deep"
+import { Logger } from '../../index.log'
+import { deepEqual, deepMerge, deepStripUndefinedInPlace } from './deep'
 
-const log = Logger("test:deep")
+const log = Logger('test:deep')
 
-describe("Deep", () => {
-  it("should deep without self reference", () => {
-    let sample: any = {
+describe('Deep', () => {
+  it('should deep without self reference', () => {
+    const sample: any = {
       a: 1,
     }
     sample.b = sample
-    let sample2: any = {
+    const sample2: any = {
       a: 1,
     }
     sample2.b = sample2
 
-    log("sample", sample)
+    log('sample', sample)
 
     // false because cyclic
     expect(deepEqual(sample, sample2)).toBe(false)
@@ -39,12 +39,12 @@ describe("Deep", () => {
   //   expect(deepEqual(a, b)).toBeTruthy()
   // })
 
-  it("should simple checks", () => {
-    let value = new String("Hello")
+  it('should simple checks', () => {
+    const value = new String('Hello')
     // expect(typeof value === 'string').toBe(true)
-    expect(typeof value === "object").toBe(true)
-    expect(value.valueOf()).toBe("Hello")
-    expect(new String(value).valueOf()).toBe("Hello")
+    expect(typeof value === 'object').toBe(true)
+    expect(value.valueOf()).toBe('Hello')
+    expect(new String(value).valueOf()).toBe('Hello')
   })
 
   // it('should clone complex', () => {
@@ -91,8 +91,8 @@ describe("Deep", () => {
   //   expect(deepClone({ c: 1, a: { d: 0, c: 1, e: { a: 0, 1: 4 } } })).toEqual({ c: 1, a: { d: 0, c: 1, e: { a: 0, 1: 4 } } })
   // })
 
-  it("should merge deep", () => {
-    let a = {
+  it('should merge deep', () => {
+    const a = {
       hello: {
         world: 42,
       },
@@ -101,27 +101,27 @@ describe("Deep", () => {
       },
     }
 
-    let b = {
+    const b = {
       hello: {
         world: -1,
-        sea: "none",
+        sea: 'none',
       },
       other: {
         fish: 2,
       },
     }
 
-    let c = {
+    const c = {
       other: {
         fish: 8,
       },
     }
 
-    let d = deepMerge(a, b, c)
+    const d = deepMerge(a, b, c)
     expect(d).toEqual({
       hello: {
         world: -1,
-        sea: "none",
+        sea: 'none',
       },
       other: {
         fish: 8,
@@ -166,13 +166,13 @@ describe("Deep", () => {
   //   // expect(a.one.sample.a === b.one.sample.a).toBe(true)
   // })
 
-  it("should strip undefined", () => {
-    let sample = {
+  it('should strip undefined', () => {
+    const sample = {
       hello: {
         world: -1,
         null1: null,
         undefined1: undefined,
-        sea: "none",
+        sea: 'none',
       },
       undefined1: undefined,
       other: [
@@ -182,7 +182,7 @@ describe("Deep", () => {
         },
         undefined,
         null,
-        "Hello",
+        'Hello',
       ],
       before: {
         magic: 666,

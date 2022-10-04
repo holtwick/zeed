@@ -1,10 +1,10 @@
-import { Logger } from "../common/log"
-import { toPath } from "./env"
-import { LoggerFileHandler } from "./log-file"
-import { LoggerNodeHandler } from "./log-node"
+import { Logger } from '../common/log'
+import { toPath } from './env'
+import { LoggerFileHandler } from './log-file'
+import { LoggerNodeHandler } from './log-node'
 
 function setupLogContextNode() {
-  let handlers = [
+  const handlers = [
     LoggerNodeHandler({
       padding: 32,
       nameBrackets: false,
@@ -12,10 +12,9 @@ function setupLogContextNode() {
     }),
   ]
 
-  let logFilePath = process.env.ZEED_LOG ?? process.env.LOG
-  if (logFilePath) {
+  const logFilePath = process.env.ZEED_LOG ?? process.env.LOG
+  if (logFilePath)
     handlers.unshift(LoggerFileHandler(toPath(logFilePath)))
-  }
 
   Logger.setHandlers(handlers)
 }

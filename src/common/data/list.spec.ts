@@ -1,19 +1,19 @@
-import { listDistinctUnion, listGroupBy, listQuery } from "./list"
+import { listDistinctUnion, listGroupBy, listQuery } from './list'
 
 const sampleList = [
-  { id: 1, title: "aaa", age: 22 },
-  { id: 2, title: "bbb", age: 22 },
-  { id: 3, title: "agga", age: 33 },
+  { id: 1, title: 'aaa', age: 22 },
+  { id: 2, title: 'bbb', age: 22 },
+  { id: 3, title: 'agga', age: 33 },
 ]
 
-describe("list", () => {
-  it("should query", () => {
+describe('list', () => {
+  it('should query', () => {
     expect(
       listQuery(
         sampleList,
-        [(e) => e.title.startsWith("a"), (e) => e.id <= 2],
-        [(e) => ((e.age += 1), e)]
-      )
+        [e => e.title.startsWith('a'), e => e.id <= 2],
+        [e => ((e.age += 1), e)],
+      ),
     ).toMatchInlineSnapshot(`
       Array [
         Object {
@@ -23,7 +23,7 @@ describe("list", () => {
         },
       ]
     `)
-    expect(listGroupBy(sampleList, "age")).toMatchInlineSnapshot(`
+    expect(listGroupBy(sampleList, 'age')).toMatchInlineSnapshot(`
       Object {
         "22": Array [
           Object {
@@ -48,7 +48,7 @@ describe("list", () => {
         ],
       }
     `)
-    expect(listDistinctUnion(sampleList, "age")).toMatchInlineSnapshot(`
+    expect(listDistinctUnion(sampleList, 'age')).toMatchInlineSnapshot(`
       Array [
         23,
         22,

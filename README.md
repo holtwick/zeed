@@ -19,14 +19,14 @@ npm i zeed
 Powerful logging for browser and terminal.
 
 ```js
-import { Logger } from "zeed"
+import { Logger } from 'zeed'
 
-const log = Logger("demo")
+const log = Logger('demo')
 
-log("Hello World")
-log.info("Info")
-log.warn("Warning")
-log.error("Error")
+log('Hello World')
+log.info('Info')
+log.warn('Warning')
+log.error('Error')
 ```
 
 Sample output on a terminal:
@@ -44,7 +44,7 @@ By default, the most appropriate log handlers are activated. By default, a color
 **By default logs are muted!** Show the logs by applying filters. On the browser enter this an the web inspector console:
 
 ```js
-localStorage.zeed = "*"
+localStorage.zeed = '*'
 ```
 
 On node set an environment variable like this
@@ -93,7 +93,7 @@ node --enable-source-maps myapp.js
 Wait for an event via `on` or `addEventListener`, useful in unit tests.
 
 ```js
-await waitOn(emitter, "action", 1000) // 1000 is optional timeout in ms
+await waitOn(emitter, 'action', 1000) // 1000 is optional timeout in ms
 ```
 
 Wait for milliseconds.
@@ -126,9 +126,9 @@ const id2 = uuidB32() // base32 encoded => 26 chars
 Get an incremental unique ID for current process with named groups, great for debugging.
 
 ```js
-uname("something") // => 'something-0'
-uname("other") // => 'other-0'
-uname("something") // => 'something-1'
+uname('something') // => 'something-0'
+uname('other') // => 'other-0'
+uname('something') // => 'something-1'
 ```
 
 Sortable unique ID inspired by [go-uuid](https://github.com/rsms/go-uuid). 6 bytes encode time and 10 bytes are random. String is Base62 encoded. Date can be extracted from the ID.
@@ -156,10 +156,10 @@ interface MyEvents {
   inc(count: number): number
 }
 
-let counter = 0
+const counter = 0
 
-const e = new Emitter() < MyEvents > e.on("inc", async (count) => counter + 1)
-await e.emit("inc", 1) // counter === 1
+const e = new Emitter() < MyEvents > e.on('inc', async count => counter + 1)
+await e.emit('inc', 1) // counter === 1
 ```
 
 It is also possible to alternatively use a Proxy called `.call` that makes nice dynamic function calls of the events:
@@ -187,8 +187,8 @@ declare global {
   }
 }
 
-getGlobalEmitter().emit("test", "Hello World") // or
-getGlobalEmitter().call.test("Hello World")
+getGlobalEmitter().emit('test', 'Hello World') // or
+getGlobalEmitter().call.test('Hello World')
 ```
 
 ## Messaging
@@ -196,8 +196,8 @@ getGlobalEmitter().call.test("Hello World")
 Communicating to servers or other remote parts through messages as if they were methods on a local object in a type safe way:
 
 ```ts
-let m = useMessageHub({ cannel }).send<MyMessages>()
-m.echo({ hello: "world" })
+const m = useMessageHub({ cannel }).send<MyMessages>()
+m.echo({ hello: 'world' })
 ```
 
 > But there is much more basic infrastructure for communication available in `zeed`. More details at [src/common/msg/README.md](./src/common/msg/README.md)
@@ -212,7 +212,7 @@ interface Row extends SortedItem {
   title: string
 }
 
-let rows: Row[] = []
+const rows: Row[] = []
 
 const getSortedRows = () => sortedItems(rows)
 ```
@@ -255,11 +255,11 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 
 ```ts
 const disposableTimer = () => {
-  const timout = setTimeout(() => console.log('hello world')), 1000)
+  const timout = setTimeout(() => console.log('hello world'), 1000)
   return () => clearTimeout(timeout)
 }
 
-let disposer = useDisposer()
+const disposer = useDisposer()
 
 const obj = disposableTimer()
 disposer.track(obj)
@@ -271,8 +271,8 @@ const untrackTimer = disposer.track(disposableTimer())
 // then later one of these
 
 disposer.untrack(obj) // dispose single object
-untrackTimer()        // dispose single object by return value of .track
-disposer.dispose()    // will dispose all tracked elements
+untrackTimer() // dispose single object by return value of .track
+disposer.dispose() // will dispose all tracked elements
 ```
 
 You can also `untrack` single entries. Entries are untracked LIFO. Disposers can also return a Promise and therefore `await` async disposals.
@@ -290,7 +290,7 @@ class DisposeExample {
   }
 }
 
-let obj = new DisposeExample()
+const obj = new DisposeExample()
 // ...
 obj.dispose()
 ```

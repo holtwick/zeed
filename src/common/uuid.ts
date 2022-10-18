@@ -14,8 +14,8 @@ export function uuidBytes(): Uint8Array {
 
 export const uuid32bit = () => new Uint32Array(randomUint8Array(4))[0]
 
-export function uuidB62(): string {
-  return encode62(uuidBytes(), 22)
+export function uuidB62(bytes = uuidBytes()): string {
+  return encode62(bytes, 22)
 }
 
 export function uuidEncodeB62(bytes: Uint8Array): string {
@@ -38,8 +38,8 @@ export function uuidDecodeV4(uuid: string): Uint8Array {
   return fromHex(uuid.replaceAll('-', ''))
 }
 
-export function uuidB32(): string {
-  return encode32(uuidBytes(), 26)
+export function uuidB32(bytes = uuidBytes()): string {
+  return encode32(bytes, 26)
 }
 
 export function uuidEncodeB32(bytes: Uint8Array): string {
@@ -83,22 +83,24 @@ const mapModes = {
   },
 }
 
-let mode: keyof typeof mapModes = 'base62'
+let _mode: keyof typeof mapModes = 'base62'
+let _sorted = false
 
-export function setUuidDefaultEncoding(type: keyof typeof mapModes) {
-  mode = type
+export function setUuidDefaultEncoding(mode: keyof typeof mapModes, sorted = false) {
+  _mode = mode
+  _sorted = sorted
 }
 
 export function uuid(): string {
-  return mapModes[mode].uuid()
+  return mapModes[_mode].uuid(_sorted ? suidBytes() : uuidBytes())
 }
 
 export function uuidDecode(uuid: string): Uint8Array {
-  return mapModes[mode].uuidDecode(uuid)
+  return mapModes[_mode].uuidDecode(uuid)
 }
 
 export function uuidEncode(bytes: Uint8Array): string {
-  return mapModes[mode].uuidEncode(bytes)
+  return mapModes[_mode].uuidEncode(bytes)
 }
 
 //

@@ -10,8 +10,8 @@ import {
   suidDate,
   uname,
   uuid,
-  uuid32Decode,
-  uuid32Encode,
+  uuidDecodeB32,
+  uuidEncodeB32,
   uuid32bit,
   uuidB32,
   uuidBytes,
@@ -20,9 +20,13 @@ import {
   uuidEncode,
   uuidEncodeV4,
   uuidv4,
+  setUuidDefaultEncoding,
 } from './uuid'
 
 describe('uuid', () => {
+    
+  // beforeAll(() => setUuidDefaultEncoding('base32'))
+
   it('should not certain length', () => {
     expect(uuid().length).toBe(22)
     expect(uuidB32().length).toBe(26)
@@ -151,9 +155,9 @@ describe('uuid', () => {
 
   it('should encode / decode 32', () => {
     const bytes = uuidBytes()
-    const b32 = uuid32Encode(bytes)
+    const b32 = uuidEncodeB32(bytes)
     expect(b32).toHaveLength(26)
-    expect(uuid32Decode(b32)).toEqual(bytes)
+    expect(uuidDecodeB32(b32)).toEqual(bytes)
   })
 
   it('should encode / decode 62', () => {

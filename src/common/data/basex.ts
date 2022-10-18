@@ -20,14 +20,16 @@ const alphabets = {
   '8': '01234567',
   '11': '0123456789a',
   '16': '0123456789abcdef',
-  '32': '0123456789ABCDEFGHJKMNPQRSTVWXYZ',
+  '32': '0123456789abcdefghjkmnpqrtuvwxyz', // Agnoster, because least mix up and good sorting
+  '32-crockford': '0123456789ABCDEFGHJKMNPQRSTVWXYZ', // Crockford
+  '32-geohash': '0123456789bcdefghjkmnpqrstuvwxyz', // https://en.wikipedia.org/wiki/Base32#Geohash
+  '32-agnoster': '0123456789abcdefghjkmnpqrtuvwxyz', // https://github.com/agnoster/base32-js/blob/master/lib/base32.js#L6 without i(1), l(1), o(0), s(5); keeps sort order
   '32-rfc': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', // https://datatracker.ietf.org/doc/html/rfc4648#section-6
   '32-hex': '0123456789ABCDEFGHIJKLMNOPQRSTUV', // https://datatracker.ietf.org/doc/html/rfc4648#section-7
   '32-zbase': 'ybndrfg8ejkmcpqxot1uwisza345h769', //  https://en.wikipedia.org/wiki/Base32#z-base-32
   '36': '0123456789abcdefghijklmnopqrstuvwxyz',
   '58': '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-  // "62": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", // The sort order is not kept!
-  '62': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+  '62': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', // Correct sort order
   '64': 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
   '64-url': 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_', // https://datatracker.ietf.org/doc/html/rfc4648#section-5
   '66': 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.!~',
@@ -40,7 +42,7 @@ export function useBase(alphaOrBase: string | number) {
     ALPHABET = alphaOrBase
   }
   else {
-    // @ts-expect-error xxx
+    // @ts-expect-error Only certain values
     ALPHABET = alphabets[String(alphaOrBase)]
     if (ALPHABET == null)
       throw new Error(`Unknown base ${alphaOrBase}`)
@@ -189,8 +191,22 @@ export function useBase(alphaOrBase: string | number) {
 
 // Shortcuts
 
+const { encode: encodeBase32, decode: _decodeBase32 } = useBase(32)
+
+function decodeBase32(s: string) {
+  return _decodeBase32(s
+    .toLocaleLowerCase()
+    .replaceAll('l', '1')
+    .replaceAll('s', '5')
+    .replaceAll('o', '0')
+    .replaceAll('i', '1'))
+}
+
+export { encodeBase32, decodeBase32 }
+
 export const { encode: encodeBase16, decode: decodeBase16 } = useBase(16)
-export const { encode: encodeBase32, decode: decodeBase32 } = useBase(32)
 export const { encode: encodeBase58, decode: decodeBase58 } = useBase(58)
 export const { encode: encodeBase62, decode: decodeBase62 } = useBase(62)
-export const { encode: encodeBase64, decode: decodeBase64 } = useBase(62)
+
+// export const { encode: encodeBase32, decode: decodeBase32 } = useBase(32)
+// export const { encode: encodeBase64, decode: decodeBase64 } = useBase(64)

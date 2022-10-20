@@ -8,11 +8,13 @@ import { getTimestamp } from './time'
 const { encode: encode62, decode: decode62 } = useBase(62)
 const { encode: encode32, decode: decode32 } = useBase(32)
 
+// 128 bit UUID
+
 export function uuidBytes(): Uint8Array {
   return randomUint8Array(16)
 }
 
-export const uuid32bit = () => new Uint32Array(randomUint8Array(4))[0]
+// Base62
 
 export function uuidB62(bytes = uuidBytes()): string {
   return encode62(bytes, 22)
@@ -22,21 +24,11 @@ export function uuidEncodeB62(bytes: Uint8Array): string {
   return encode62(bytes, 22)
 }
 
-export function uuidEncodeV4(bytes: Uint8Array): string {
-  const id = toHex(bytes)
-  // 10000000 - 1000 - 4000 - 8000 - 100000000000
-  return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(
-    16,
-  )}`
-}
-
 export function uuidDecodeB62(uuid: string): Uint8Array {
   return decode62(uuid, 16)
 }
 
-export function uuidDecodeV4(uuid: string): Uint8Array {
-  return fromHex(uuid.replaceAll('-', ''))
-}
+// Base32
 
 export function uuidB32(bytes = uuidBytes()): string {
   return encode32(bytes, 26)
@@ -50,75 +42,28 @@ export function uuidDecodeB32(uuid: string): Uint8Array {
   return decode32(uuid, 16)
 }
 
-//
+// UUIDv4
 
 // https://stackoverflow.com/a/2117523/140927
 const pattern = '10000000-1000-4000-8000-100000000000' // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
 
 export const uuidv4
   = typeof crypto !== 'undefined' && crypto.randomUUID != null
-    ? crypto.randomUUID.bind(crypto)
-    : () =>
-        pattern.replace(/[018]/g, (c: any) =>
-          (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16),
-        )
+    ? crypto.randomUUID.bind(crypto) // native!
+    : () => pattern.replace(/[018]/g, (c: any) =>
+        (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16),
+      )
 
-//
-
-const mapModes = {
-  base62: {
-    uuid: uuidB62,
-    uuidDecode: uuidDecodeB62,
-    uuidEncode: uuidEncodeB62,
-  },
-  base32: {
-    uuid: uuidB32,
-    uuidDecode: uuidDecodeB32,
-    uuidEncode: uuidEncodeB32,
-  },
-  uuidv4: {
-    uuid: uuidv4,
-    uuidDecode: uuidDecodeV4,
-    uuidEncode: uuidEncodeV4,
-  },
+export function uuidEncodeV4(bytes: Uint8Array): string {
+  const id = toHex(bytes)
+  return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(16)}` // 10000000 - 1000 - 4000 - 8000 - 100000000000
 }
 
-let _mode: keyof typeof mapModes = 'base62'
-let _sorted = false
-
-export function setUuidDefaultEncoding(mode: keyof typeof mapModes, sorted = false) {
-  _mode = mode
-  _sorted = sorted
+export function uuidDecodeV4(uuid: string): Uint8Array {
+  return fromHex(uuid.replaceAll('-', ''))
 }
 
-export function uuid(): string {
-  return mapModes[_mode].uuid(_sorted ? suidBytes() : uuidBytes())
-}
-
-export function uuidDecode(uuid: string): Uint8Array {
-  return mapModes[_mode].uuidDecode(uuid)
-}
-
-export function uuidEncode(bytes: Uint8Array): string {
-  return mapModes[_mode].uuidEncode(bytes)
-}
-
-//
-
-const _unameCounters: Record<string, number> = {}
-
-export function uname(name = 'id'): string {
-  if (_unameCounters[name] == null)
-    _unameCounters[name] = 0
-
-  return `${name}-${_unameCounters[name]++}`
-}
-
-let _qid = 0
-
-export function qid(): string {
-  return `id-${_qid++}`
-}
+// Sortable UID
 
 // https://github.com/segmentio/ksuid
 // https://pkg.go.dev/github.com/rsms/go-uuid
@@ -161,18 +106,76 @@ export function suidBytes(): Uint8Array {
 }
 
 export function suid(): string {
-  return encode62(suidBytes(), 22)
+  return uuidEncode(suidBytes())
 }
 
 export function suidDate(id: string): Date {
-  return suidBytesDate(decode62(id, 16))
+  return suidBytesDate(uuidDecode(id))
 }
 
 export function suidBytesDate(id: Uint8Array): Date {
   return new Date(
-    ReferenceDateInMS
-      + id.slice(0, 6).reduce((acc, byte) => {
-        return acc * 256 + byte
-      }, 0),
+    ReferenceDateInMS + id.slice(0, 6).reduce((acc, byte) => acc * 256 + byte, 0),
   )
+}
+
+// 32 bit UUID
+
+export const uuid32bit = () => new Uint32Array(randomUint8Array(4))[0]
+
+// Global Settings
+
+const mapModes = {
+  base62: {
+    uuid: uuidB62,
+    uuidDecode: uuidDecodeB62,
+    uuidEncode: uuidEncodeB62,
+  },
+  base32: {
+    uuid: uuidB32,
+    uuidDecode: uuidDecodeB32,
+    uuidEncode: uuidEncodeB32,
+  },
+  uuidv4: {
+    uuid: uuidv4,
+    uuidDecode: uuidDecodeV4,
+    uuidEncode: uuidEncodeV4,
+  },
+}
+
+let _mode: keyof typeof mapModes = 'base62'
+let _sorted = false
+
+export function setUuidDefaultEncoding(mode: keyof typeof mapModes, sorted = false) {
+  _mode = mode
+  _sorted = sorted
+}
+
+export function uuid(): string {
+  return mapModes[_mode].uuid(_sorted ? suidBytes() : uuidBytes())
+}
+
+export function uuidDecode(uuid: string): Uint8Array {
+  return mapModes[_mode].uuidDecode(uuid)
+}
+
+export function uuidEncode(bytes: Uint8Array): string {
+  return mapModes[_mode].uuidEncode(bytes)
+}
+
+// Simple Counters
+
+const _unameCounters: Record<string, number> = {}
+
+export function uname(name = 'id'): string {
+  if (_unameCounters[name] == null)
+    _unameCounters[name] = 0
+
+  return `${name}-${_unameCounters[name]++}`
+}
+
+let _qid = 0
+
+export function qid(): string {
+  return `id-${_qid++}`
 }

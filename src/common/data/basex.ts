@@ -210,3 +210,7 @@ export const { encode: encodeBase62, decode: decodeBase62 } = useBase(62)
 
 // export const { encode: encodeBase32, decode: decodeBase32 } = useBase(32)
 // export const { encode: encodeBase64, decode: decodeBase64 } = useBase(64)
+
+export function estimateSizeForBase(bytes: number, base: number) {
+  return Math.ceil(bytes * (Math.log(256) / Math.log(base)))
+}

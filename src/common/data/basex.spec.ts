@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useBase } from './basex'
+import { estimateSizeForBase, useBase } from './basex'
 
 describe('BaseX', () => {
   it('should encode base16', () => {
@@ -56,4 +56,15 @@ describe('BaseX', () => {
     expect(encode(buf)).toBe('1As1f')
     expect(decode('01As1f')).toEqual(new Uint8Array([1, 9, 0, 255]))
   })
+
+  it('should estimate size', () => {
+    expect(estimateSizeForBase(16, 62)).toMatchInlineSnapshot('22')
+    expect(estimateSizeForBase(16, 64)).toMatchInlineSnapshot('22')
+    expect(estimateSizeForBase(16, 32)).toMatchInlineSnapshot('26')
+    expect(estimateSizeForBase(16, 16)).toMatchInlineSnapshot('32')
+
+    expect(estimateSizeForBase(159, 32)).toMatchInlineSnapshot('255')
+    expect(estimateSizeForBase(156, 32)).toMatchInlineSnapshot('250')
+  })
+
 })

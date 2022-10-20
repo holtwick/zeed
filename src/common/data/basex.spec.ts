@@ -62,6 +62,9 @@ describe('BaseX', () => {
     expect(estimateSizeForBase(16, 64)).toMatchInlineSnapshot('22')
     expect(estimateSizeForBase(16, 32)).toMatchInlineSnapshot('26')
     expect(estimateSizeForBase(16, 16)).toMatchInlineSnapshot('32')
+
+    expect(estimateSizeForBase(159, 32)).toMatchInlineSnapshot('255')
+    expect(estimateSizeForBase(156, 32)).toMatchInlineSnapshot('250')
   })
 
 })

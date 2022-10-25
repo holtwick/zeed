@@ -84,11 +84,20 @@ export interface LoggerInterface {
 
 export interface LoggerContextInterface {
   (name?: string, level?: LogLevelAliasType): LoggerInterface
+
   registerHandler(handler: LogHandler): void
+
   setFilter(namespaces: string): void
+
   setHandlers(handlers?: (LogHandler | undefined | null)[]): void
+
   setLock(lock: boolean): void
+
+  /** When true emits a short log message for each Logger when being set up first time. */
+  setDebug(debug: boolean): void
+
   setLogLevel(level?: LogLevel): void
+
   setFactory(factory: (name?: string) => LoggerInterface): void
 }
 
@@ -109,6 +118,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
   let logCheckNamespace = (_name: string) => true
   let logLock = false
   let logFactory = LoggerBaseFactory
+  let logDebug = false
 
   function LoggerBaseFactory(
     name = '',
@@ -244,7 +254,10 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     name = '',
     level?: LogLevelAliasType,
   ): LoggerInterface {
-    return logFactory(name, level)
+    const log = logFactory(name, level)
+    if (logDebug)
+      log.debug(`+++ init of logger "${name}" on level "${LogLevel[log.level]}".`)
+    return log
   }
 
   Logger.registerHandler = function (handler: LogHandler) {
@@ -256,6 +269,8 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
   }
 
   Logger.setLock = (lock = true) => (logLock = lock)
+
+  Logger.setDebug = (debug = true) => (logDebug = debug)
 
   Logger.setHandlers = function (handlers: LogHandler[] = []) {
     if (logFactory !== LoggerBaseFactory)

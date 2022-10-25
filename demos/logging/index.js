@@ -6,6 +6,8 @@ import { Logger, setupEnv } from 'zeed'
 
 // Read .env file
 
+Logger.setDebug()
+
 setupEnv()
 
 // Some basic logging

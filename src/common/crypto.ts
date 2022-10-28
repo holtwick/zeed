@@ -1,7 +1,7 @@
 import type { BinInput } from './data/bin'
 import { equalBinary, toUint8Array } from './data/bin'
 
-// todo: should fallback to node crypto
+/** Get random bytes using window.crypto if available. Else use a poor fallback solution. */
 export function randomUint8Array(length = 16): Uint8Array {
   const randomBytes = new Uint8Array(length)
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
@@ -19,13 +19,14 @@ export function randomUint8Array(length = 16): Uint8Array {
   return randomBytes
 }
 
-const DEFAULT_HASH_ALG = 'SHA-256'
-const DEFAULT_CRYPTO_ALG = 'AES-GCM'
-const DEFAULT_DERIVE_ALG = 'PBKDF2'
+export const CRYPTO_DEFAULT_HASH_ALG = 'SHA-256'
+export const CRYPTO_DEFAULT_ALG = 'AES-GCM'
+export const CRYPTO_DEFAULT_DERIVE_ALG = 'PBKDF2'
+export const CRYPTO_DEFAULT_DERIVE_ITERATIONS = 100000
 
 export async function digest(
   message: BinInput,
-  algorithm: AlgorithmIdentifier = DEFAULT_HASH_ALG,
+  algorithm: AlgorithmIdentifier = CRYPTO_DEFAULT_HASH_ALG,
 ): Promise<Uint8Array> {
   return toUint8Array(
     await crypto.subtle.digest(algorithm, toUint8Array(message)),
@@ -43,20 +44,20 @@ export async function deriveKeyPbkdf2(
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     secretBuffer,
-    DEFAULT_DERIVE_ALG,
+    CRYPTO_DEFAULT_DERIVE_ALG,
     false,
     ['deriveKey'],
   )
   return await crypto.subtle.deriveKey(
     {
-      name: DEFAULT_DERIVE_ALG,
+      name: CRYPTO_DEFAULT_DERIVE_ALG,
       salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
-      iterations: opt.iterations ?? 100000,
-      hash: DEFAULT_HASH_ALG,
+      iterations: opt.iterations ?? CRYPTO_DEFAULT_DERIVE_ITERATIONS,
+      hash: CRYPTO_DEFAULT_HASH_ALG,
     },
     keyMaterial,
     {
-      name: DEFAULT_CRYPTO_ALG,
+      name: CRYPTO_DEFAULT_ALG,
       length: 256,
     },
     true,
@@ -72,7 +73,7 @@ export async function encrypt(
 ): Promise<Uint8Array> {
   const iv = randomUint8Array(12)
   const cipher = await crypto.subtle.encrypt(
-    { name: DEFAULT_CRYPTO_ALG, iv },
+    { name: CRYPTO_DEFAULT_ALG, iv },
     key,
     data,
   )
@@ -99,7 +100,7 @@ export async function decrypt(
   const iv = data.subarray(2, 2 + 12)
   const cipher = data.subarray(2 + 12, data.length)
   const plain = await crypto.subtle.decrypt(
-    { name: DEFAULT_CRYPTO_ALG, iv },
+    { name: CRYPTO_DEFAULT_ALG, iv },
     key,
     cipher,
   )

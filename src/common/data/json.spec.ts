@@ -14,6 +14,20 @@ describe('convert', () => {
     )
   })
 
+
+  it('should jsonStringify class', () => {
+    class TestBase { }
+    class Test extends TestBase {
+      id: any
+      constructor(databaseID: any) {
+        super()
+        this.id = databaseID
+      }
+    }
+    let t = new Test(new Uint8Array([1, 2, 3]))
+    expect(jsonStringifySafe(t)).toMatchInlineSnapshot('"{\\"id\\":{\\"0\\":1,\\"1\\":2,\\"2\\":3}}"')
+  })
+
   it('should jsonParse', () => {
     const input = '{ "user": { "__proto__": { "isAdmin": true } } }'
     expect(jsonParse(input)).toEqual({ user: {} })
@@ -30,4 +44,5 @@ describe('convert', () => {
     const b = jsonStringifySafe({ b: 2, a: 1 })
     expect(a).toEqual(b)
   })
+
 })

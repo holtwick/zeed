@@ -3,6 +3,7 @@
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
 import { Logger } from '../log'
+import { immediate } from './promise'
 
 const DEBUG = false
 const log = DEBUG ? Logger('zeed:throttle') : () => {}
@@ -34,8 +35,8 @@ export function throttle<F extends Function>(
   opt: ThrottleOptions = {},
 ): F & {
     cancel: () => void
+    immediate: () => Promise<void>
     dispose: () => void
-  // todo force execution
   } {
   const { delay = 100, trailing = true, leading = true } = opt
 
@@ -112,8 +113,15 @@ export function throttle<F extends Function>(
     }
   }
 
+  async function immediate(this: any, ...args: any[]) {
+    clearExistingTimeout()
+    checkpoint = Date.now()
+    callback.apply(this, args)
+  }
+
   wrapper.cancel = clearExistingTimeout
   wrapper.dispose = clearExistingTimeout
+  wrapper.immediate = immediate
 
   // wrapper.flush = () => throw 'todo'
 
@@ -127,7 +135,11 @@ export function throttle<F extends Function>(
 export function debounce<F extends Function>(
   callback: F,
   opt: DebounceOptions = {},
-): F & { cancel: () => void; dispose: () => void } {
+): F & {
+    cancel: () => void
+    immediate: () => Promise<void>
+    dispose: () => void
+  } {
   const { delay = 100 } = opt
   let timeoutID: any = 0
 
@@ -146,7 +158,13 @@ export function debounce<F extends Function>(
     }, delay)
   }
 
+  async function immediate(this: any, ...args: any[]) {
+    clearExistingTimeout()
+    callback.apply(this, args)
+  }
   wrapper.cancel = clearExistingTimeout
   wrapper.dispose = clearExistingTimeout
+  wrapper.immediate = immediate
+
   return wrapper as any
 }

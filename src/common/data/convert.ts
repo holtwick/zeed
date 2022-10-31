@@ -100,7 +100,10 @@ export function formatMessages(
 
         return `${obj.name || 'Error'}: ${obj.message}\n${obj.stack}`
       }
-      return pretty ? jsonStringify(obj, null, 2) : jsonStringify(obj)
+
+      try {        
+        return pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj)
+      } catch (err) {}      
     }
     return String(obj)
   })

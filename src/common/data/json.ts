@@ -4,7 +4,7 @@ const _sortedReplacer = (key: string, value: any) =>
   value instanceof Object && !(Array.isArray(value))
     ? Object.keys(value)
       .sort()
-    // .filter((key) => value[key] != null) // Remove null and undefined
+      // .filter((key) => value[key] != null) // Remove null and undefined
       .reduce((sorted: any, key: string) => {
         // Sorted copy
         sorted[key] = value[key]
@@ -46,11 +46,16 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
       if (~stack.indexOf(value))
         value = cycleReplacer?.call(this, key, value)
     }
-    else { stack.push(value) }
+    else {
+      stack.push(value)
+    }
 
     value = _sortedReplacer(key, value)
 
-    return replacer == null ? value : replacer.call(this, key, value)
+    try {
+      return replacer == null ? value : replacer.call(this, key, value)
+    } catch (err) { }
+    return String(value)
   }
 }
 

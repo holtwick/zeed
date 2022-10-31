@@ -39,8 +39,8 @@ export class Emitter<
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
       (target: any, name: any) =>
-        (...args: any): any =>
-          this.emit(name, ...args),
+        async (...args: any): Promise<boolean> =>
+          await this.emit(name, ...args),
   })
 
   public async emit<U extends keyof RemoteListener>(

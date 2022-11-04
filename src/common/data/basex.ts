@@ -37,14 +37,12 @@ const alphabets = {
 }
 
 export function useBase(alphaOrBase: string | number) {
-  let ALPHABET: string
-  if (typeof alphaOrBase === 'string') {
-    ALPHABET = alphaOrBase
-  }
-  else {
-    // @ts-expect-error Only certain values
-    ALPHABET = alphabets[String(alphaOrBase)]
-    if (ALPHABET == null)
+  let ALPHABET: string | undefined = (alphabets as any)[String(alphaOrBase)]
+
+  if (!ALPHABET) {
+    if (typeof alphaOrBase === 'string')
+      ALPHABET = alphaOrBase
+    else
       throw new Error(`Unknown base ${alphaOrBase}`)
   }
 
@@ -117,7 +115,7 @@ export function useBase(alphaOrBase: string | number) {
 
     // Translate the result into a string.
     let str = ''
-    for (; it2 < size; ++it2) str += ALPHABET.charAt(dataEncoded[it2])
+    for (; it2 < size; ++it2) str += ALPHABET!.charAt(dataEncoded[it2])
 
     if (padToLength > 0) {
       // const pad = Math.ceil(source.length * iFACTOR)

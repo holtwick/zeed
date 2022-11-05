@@ -3,7 +3,6 @@
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
 import { Logger } from '../log'
-import { immediate } from './promise'
 
 const DEBUG = false
 const log = DEBUG ? Logger('zeed:throttle') : () => {}

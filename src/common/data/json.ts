@@ -54,7 +54,8 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
 
     try {
       return replacer == null ? value : replacer.call(this, key, value)
-    } catch (err) { }
+    }
+    catch (err) { }
     return String(value)
   }
 }

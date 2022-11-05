@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { Uint8ArrayToHexDump } from './bin'
-import { jsonStringify } from './json'
+// import { jsonStringify } from './json'
 
 const TRUE_VALUES_LIST = ['1', 'true', 'yes', 'y', 'on']
 
@@ -101,9 +101,10 @@ export function formatMessages(
         return `${obj.name || 'Error'}: ${obj.message}\n${obj.stack}`
       }
 
-      try {        
+      try {
         return pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj)
-      } catch (err) {}      
+      }
+      catch (err) {}
     }
     return String(obj)
   })

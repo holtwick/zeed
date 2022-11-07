@@ -110,6 +110,8 @@ export interface LogHandlerOptions {
   padding?: number
   fill?: number
   stack?: boolean | number
+  time?: boolean
+  pretty?: boolean
 }
 
 export function LoggerContext(_prefix = ''): LoggerContextInterface {

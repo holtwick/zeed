@@ -195,8 +195,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     const id = config.id ?? uuid()
 
     if (tasks[id] != null) {
-      const resolution
-        = config.idConflictResolution ?? PoolTaskIdConflictResolution.memoize
+      const resolution = config.idConflictResolution ?? PoolTaskIdConflictResolution.memoize
 
       if (resolution === PoolTaskIdConflictResolution.replace) {
         cancel(id)

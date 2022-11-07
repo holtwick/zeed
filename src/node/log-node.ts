@@ -2,21 +2,11 @@
 
 import tty from 'tty'
 import { renderMessages, valueToBoolean } from '../common/data/convert'
-import type {
-  LogHandler,
-  LogHandlerOptions,
-  LogMessage,
-} from '../common/log-base'
-import {
-  LogLevel,
-} from '../common/log-base'
+import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
+import { LogLevel } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
-import {
-  getSourceLocation,
-  getSourceLocationByPrecedingPattern,
-  getStack,
-} from './log-util'
+import { getSourceLocation, getSourceLocationByPrecedingPattern, getStack } from './log-util'
 
 function shouldUseColor(): boolean {
   try {
@@ -41,7 +31,7 @@ function selectColor(namespace: string) {
 
 const namespaces: Record<string, any> = {}
 
-let time: number | undefined
+let startTime: number | undefined
 
 function log(...args: any[]) {
   process.stdout.write(`${renderMessages(args)}\n`)
@@ -83,10 +73,9 @@ enum COLOR {
 const colorEnd = '\u001B[0m'
 
 export function colorString(text: string, colorCode: number) {
-  const colorStart
-    = colorCode === COLOR.ORANGE
-      ? TTY_STYLE.ORANGE
-      : `\u001B[3${colorCode < 8 ? colorCode : `8;5;${colorCode}`}m`
+  const colorStart = colorCode === COLOR.ORANGE
+    ? TTY_STYLE.ORANGE
+    : `\u001B[3${colorCode < 8 ? colorCode : `8;5;${colorCode}`}m`
   return `${colorStart}${text}${colorEnd}`
 }
 
@@ -108,15 +97,14 @@ export function colorStringList(
   })
 }
 
-export const loggerStackTraceDebug
-  = 'loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485'
+export const loggerStackTraceDebug = 'loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485'
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   if (defaultUseColor == null)
     defaultUseColor = shouldUseColor()
 
-  if (time == null)
-    time = getTimestamp()
+  if (startTime == null)
+    startTime = getTimestamp()
 
   const {
     level = undefined,
@@ -127,6 +115,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     padding = 0,
     fill = 0,
     stack = true,
+    time = true,
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
@@ -145,7 +134,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       }
       namespaces[name] = ninfo
     }
-    const diff = formatMilliseconds(timeNow - time!)
+    const timeDiffString = formatMilliseconds(timeNow - startTime!)
 
     let args: string[]
 
@@ -166,12 +155,13 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
         args.push(...colorStringList(msg.messages, TTY_STYLE.RED))
       else
         args.push(...msg.messages)
-
-      args.push(colorString(`+${diff}`, c))
+      if (time)
+        args.push(colorString(`+${timeDiffString}`, c))
     }
     else {
       args = [displayName, ...msg.messages]
-      args.push(`+${diff}`)
+      if (time)
+        args.push(`+${timeDiffString}`)
     }
 
     if (msg.messages?.[0] === loggerStackTraceDebug) {
@@ -207,22 +197,17 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
         break
       case LogLevel.warn:
         if (levelHelper) {
-          args[0]
-            = (colors
-              ? colorString(`W${sep}${charLevel}${charLevel}  `, COLOR.ORANGE)
-              : `W${sep}${charLevel}${charLevel}  `) + args[0]
+          args[0] = (colors
+            ? colorString(`W${sep}${charLevel}${charLevel}  `, COLOR.ORANGE)
+            : `W${sep}${charLevel}${charLevel}  `) + args[0]
         }
         log(...args)
         break
       case LogLevel.error:
         if (levelHelper) {
-          args[0]
-            = (colors
-              ? colorString(
-                  `E${sep}${charLevel}${charLevel}${charLevel} `,
-                  COLOR.RED,
-              )
-              : `E${sep}${charLevel}${charLevel}${charLevel} `) + args[0]
+          args[0] = (colors
+            ? colorString(`E${sep}${charLevel}${charLevel}${charLevel} `, COLOR.RED)
+            : `E${sep}${charLevel}${charLevel}${charLevel} `) + args[0]
         }
         log(...args)
         break

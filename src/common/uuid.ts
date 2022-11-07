@@ -10,8 +10,10 @@ const { encode: encode32, decode: decode32 } = useBase(32)
 
 // 128 bit UUID
 
+const uuidBytesLength = 16
+
 export function uuidBytes(): Uint8Array {
-  return randomUint8Array(16)
+  return randomUint8Array(uuidBytesLength)
 }
 
 // Base62
@@ -25,7 +27,7 @@ export function uuidEncodeB62(bytes: Uint8Array): string {
 }
 
 export function uuidDecodeB62(uuid: string): Uint8Array {
-  return decode62(uuid, 16)
+  return decode62(uuid, uuidBytesLength)
 }
 
 // Base32
@@ -39,7 +41,7 @@ export function uuidEncodeB32(bytes: Uint8Array): string {
 }
 
 export function uuidDecodeB32(uuid: string): Uint8Array {
-  return decode32(uuid, 16)
+  return decode32(uuid, uuidBytesLength)
 }
 
 // UUIDv4
@@ -161,6 +163,17 @@ export function uuidDecode(uuid: string): Uint8Array {
 
 export function uuidEncode(bytes: Uint8Array): string {
   return mapModes[_mode].uuidEncode(bytes)
+}
+
+export function uuidIsValid(uuid: string): boolean {
+  try {
+    const bin = uuidDecode(uuid)
+    return bin.length === uuidBytesLength
+  }
+  catch (err) {
+    // log.warn('Invalid ID:', uuid)
+  }
+  return false
 }
 
 // Simple Counters

@@ -10,7 +10,12 @@ import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 const namespaces: Record<string, any> = {}
 
 export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
-  const { level = undefined, filter = undefined } = opt
+  const {
+    level = undefined,
+    filter = undefined,
+    time = true,
+    pretty = false,
+  } = opt
   path = resolve(process.cwd(), path)
   mkdirSync(dirname(path), { recursive: true })
   const stream = createWriteStream(path, { flags: 'a' })
@@ -22,7 +27,7 @@ export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
     if (!matchesNamespace(msg.name))
       return
 
-    const timeNow = new Date().toISOString()
+    const timeNow = time ? `${new Date().toISOString()} ` : ''
     const name = msg.name || ''
     const ninfo = namespaces[name || '']
     if (ninfo == null)
@@ -30,7 +35,7 @@ export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
 
     const args: string[] = [
       `[${name || '*'}]`,
-      renderMessages(msg.messages, { pretty: false }),
+      renderMessages(msg.messages, { pretty }),
     ]
 
     function write(...args: string[]): void {
@@ -39,16 +44,16 @@ export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
 
     switch (msg.level) {
       case LogLevel.info:
-        write(timeNow, 'I|*  ', ...args)
+        write(`${timeNow}I|*  `, ...args)
         break
       case LogLevel.warn:
-        write(timeNow, 'W|** ', ...args)
+        write(`${timeNow}W|** `, ...args)
         break
       case LogLevel.error:
-        write(timeNow, 'E|***', ...args)
+        write(`${timeNow}E|***`, ...args)
         break
       default:
-        write(timeNow, 'D|   ', ...args)
+        write(`${timeNow}D|   `, ...args)
         break
     }
   }

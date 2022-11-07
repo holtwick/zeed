@@ -3,15 +3,8 @@
 /* eslint-disable no-console */
 
 import { deepEqual } from '../common/data/deep'
-import type {
-  LogHandler,
-  LogHandlerOptions,
-  LogMessage,
-  LoggerInterface,
-} from '../common/log-base'
-import {
-  LogLevel,
-} from '../common/log-base'
+import type { LogHandler, LogHandlerOptions, LogMessage, LoggerInterface } from '../common/log-base'
+import { LogLevel } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
 import { selectColor, supportsColors } from './log-colors'
@@ -23,7 +16,7 @@ const useColors = supportsColors()
 
 const namespaces: Record<string, any> = {}
 
-const time = getTimestamp() // todo sideffects
+const startTime = getTimestamp() // todo sideffects
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
@@ -33,6 +26,7 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     // levelHelper = false,
     // nameBrackets = true,
     padding = 16,
+    time = true,
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
@@ -42,7 +36,8 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     if (!matchesNamespace(msg.name))
       return
 
-    const timeNow = getTimestamp()
+    const timeDiffString = time ? `+${formatMilliseconds(getTimestamp() - startTime)}` : ''
+
     let name = msg.name || ''
     let ninfo = namespaces[name || '']
     if (ninfo == null) {
@@ -52,14 +47,13 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
       }
       namespaces[name] = ninfo
     }
-    const diff = formatMilliseconds(timeNow - time)
     let args: string[]
 
     if (padding > 0)
       name = name.padEnd(16, ' ')
 
     if (colors && useColors) {
-      args = [`%c${name}%c \t%s %c+${diff}`]
+      args = [`%c${name}%c \t%s %c${timeDiffString}`]
       args.push(`color:${ninfo.color}; ${styleBold}`)
       args.push(styleDefault)
       args.push(msg.messages?.[0] ?? '')
@@ -67,7 +61,7 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
       args.push(...msg.messages.slice(1))
     }
     else {
-      args = [name, ...msg.messages, `+${diff}`]
+      args = [name, ...msg.messages, `+${timeDiffString}`]
     }
 
     // function consoleArgs(args: any[] = []): any[] {

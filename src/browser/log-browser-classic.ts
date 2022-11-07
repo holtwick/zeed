@@ -2,16 +2,10 @@
 
 /* eslint-disable no-console */
 
-import { formatMilliseconds, getTimestamp } from '../common/time'
-import type {
-  LogHandler,
-  LogHandlerOptions,
-  LogMessage,
-} from '../common/log-base'
-import {
-  LogLevel,
-} from '../common/log-base'
+import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
+import { LogLevel } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
+import { formatMilliseconds, getTimestamp } from '../common/time'
 import { selectColor, supportsColors } from './log-colors'
 
 const namespaces: Record<string, any> = {}

@@ -86,4 +86,30 @@ describe('throttle', () => {
     await sleep(200)
     expect(r).toBe(4)
   })
+
+  it('should debounce long running promise', async () => {
+    let r = 0
+    const fn = debounce(
+      async (v: number) => {
+        await sleep(200)
+        r = v
+        // console.log("FN", v)
+      },
+      { delay: 50 },
+    )
+
+    expect(r).toBe(0)
+    fn(1)
+    expect(r).toBe(0)
+    await sleep(50)
+    expect(r).toBe(0)
+    fn(2)
+    await sleep(150)
+    fn(3)
+    expect(r).toBe(0)
+    await sleep(150)
+    expect(r).toBe(1)
+    await sleep(300)
+    expect(r).toBe(3)
+  })
 })

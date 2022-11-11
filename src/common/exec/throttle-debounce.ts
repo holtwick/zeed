@@ -3,38 +3,39 @@
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
 import { Logger } from '../log'
+import { promisify } from './promise'
 
 const DEBUG = false
 const log = DEBUG ? Logger('zeed:throttle') : () => {}
-
-interface ThrottleOptions {
-  delay?: number
-  trailing?: boolean
-  leading?: boolean
-  // todo force execution on dispose
-}
-
-interface DebounceOptions {
-  delay?: number
-}
 
 /**
  * A special throttle implementation that tries to distribute execution
  * in an optimal way.
  *
- * For UI usage the function is executed on first occasion (`leading`).
+ * **Functionality:** For UI usage the function is executed on first occasion (`leading`).
  * If more calls follow it will again be executed at end (`trailing`).
  * If the next call is inside the timeframe, it is delayed until `trailing`.
  * This avoids timewise too close calls.
  * It is possible to `cancel` the timeout and to `flush` a call, e.g. if
  * leaving UI situation where a final call is required to write data or similar.
  */
-export function throttle<F extends Function>(
+export function throttle<F extends (...args: any[]) => any>(
   callback: F,
-  opt: ThrottleOptions = {},
+  opt: {
+    delay?: number
+    trailing?: boolean
+    leading?: boolean
+  } = {},
 ): F & {
+    /** Stop all timers, do not exec nothing */
     cancel: () => void
-    immediate: () => Promise<void>
+
+    /** Stop all timers and execute right now. */
+    immediate: (...args: Parameters<F>) => Promise<void>
+
+    /** Stop all timers and execute trailing call, if exists. */
+    stop: () => void
+
     dispose: () => void
   } {
   const { delay = 100, trailing = true, leading = true } = opt
@@ -50,7 +51,9 @@ export function throttle<F extends Function>(
     if (timeoutID) {
       clearTimeout(timeoutID)
       timeoutID = undefined
+      return true
     }
+    return false
   }
 
   function wrapper(this: any, ...args: any[]) {
@@ -112,17 +115,20 @@ export function throttle<F extends Function>(
     }
   }
 
-  async function immediate(this: any, ...args: any[]) {
+  wrapper.cancel = clearExistingTimeout
+
+  wrapper.stop = () => {
+    if (clearExistingTimeout() && trailingExec)
+      trailingExec()
+  }
+
+  wrapper.immediate = async function immediate(this: any, ...args: Parameters<F>[]) {
     clearExistingTimeout()
     checkpoint = Date.now()
     callback.apply(this, args)
   }
 
-  wrapper.cancel = clearExistingTimeout
-  wrapper.dispose = clearExistingTimeout
-  wrapper.immediate = immediate
-
-  // wrapper.flush = () => throw 'todo'
+  wrapper.dispose = () => wrapper.stop()
 
   return wrapper as any
 }
@@ -130,36 +136,66 @@ export function throttle<F extends Function>(
 /**
  * Debounce fits best for filtering a large peak of events.
  * For UI event filtering throttle is probably a better choice.
+ *
+ * **Functionality:**  It only fires after triggers pause for `delay` ms.
  */
-export function debounce<F extends Function>(
+export function debounce<F extends (...args: any[]) => any | Promise<any>>(
   callback: F,
-  opt: DebounceOptions = {},
+  opt: {
+    delay?: number
+  } = {},
 ): F & {
     cancel: () => void
-    immediate: () => Promise<void>
+    immediate: (...args: Parameters<F>) => Promise<void>
     dispose: () => void
   } {
   const { delay = 100 } = opt
   let timeoutID: any = 0
 
+  let running = false
+  let lastArguments: any[] | undefined
+
   function clearExistingTimeout() {
     if (timeoutID) {
+      log('clear')
       clearTimeout(timeoutID)
       timeoutID = 0
     }
   }
 
-  function wrapper(this: any, ...arguments_: any[]) {
+  async function exec() {
+    try {
+      clearExistingTimeout()
+      if (lastArguments != null) {
+        log('exec')
+        const args = [...lastArguments]
+        lastArguments = undefined
+        running = true
+        await promisify(callback(...args))
+        running = false
+        log('exec done')
+        if (lastArguments != null) {
+          clearExistingTimeout()
+          log('exec trigger next')
+          timeoutID = setTimeout(exec, delay)
+        }
+      }
+    }
+    catch (err) { }
+  }
+
+  function wrapper(this: any, ...args: any[]) {
+    lastArguments = [...args]
     clearExistingTimeout()
-    timeoutID = setTimeout(() => {
-      timeoutID = 0
-      callback.apply(this, arguments_)
-    }, delay)
+    log('trigger')
+    if (running === false)
+      timeoutID = setTimeout(exec, delay)
   }
 
   async function immediate(this: any, ...args: any[]) {
     clearExistingTimeout()
-    callback.apply(this, args)
+    lastArguments = [...args]
+    await exec()
   }
   wrapper.cancel = clearExistingTimeout
   wrapper.dispose = clearExistingTimeout

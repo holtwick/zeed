@@ -114,6 +114,8 @@ export interface LogHandlerOptions {
   pretty?: boolean
 }
 
+const noop: any = () => {}
+
 export function LoggerContext(_prefix = ''): LoggerContextInterface {
   let logHandlers: LogHandler[] = [LoggerConsoleHandler()]
   const logAssertLevel: LogLevel = LogLevel.warn
@@ -126,74 +128,65 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     name = '',
     level?: LogLevelAliasType,
   ): LoggerInterface {
-    function log(...messages: any[]) {
+    const logLevel = parseLogLevel(level ?? LogLevel.all)
+
+    function defineForLogLevel(fnLevel: LogLevel, fn: any) {
+      if (logLevel <= fnLevel)
+        return fn
+      return noop
+    }
+
+    const log = defineForLogLevel(LogLevel.debug, (...messages: any[]) => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       emit({
         name,
         messages,
         level: LogLevel.debug,
       })
-    }
+    })
 
     log.label = name
-    log.active = true
-    log.level = parseLogLevel(level ?? LogLevel.all)
+    // log.active = true
 
     log.extend = function (prefix: string): LoggerInterface {
       return logFactory(name ? `${name}:${prefix}` : prefix)
     }
 
     const emit = (msg: LogMessage) => {
-      if (log.active === true) {
-        if (msg.level >= Logger.level && msg.level >= log.level) {
-          if (logCheckNamespace(name)) {
-            for (const handler of logHandlers) {
-              if (handler)
-                handler(msg)
-            }
-          }
+      // if (log.active === true) {
+      //   if (msg.level >= Logger.level && msg.level >= log.level) {
+      if (logCheckNamespace(name)) {
+        for (const handler of logHandlers) {
+          if (handler)
+            handler(msg)
         }
       }
+      // }
+      // }
     }
 
-    log.debug = function (...messages: any[]) {
-      emit({
-        name,
-        messages,
-        level: LogLevel.debug,
-      })
-    }
+    log.debug = defineForLogLevel(LogLevel.debug, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevel.debug })
+    })
 
-    log.info = function (...messages: any[]) {
-      emit({
-        name,
-        messages,
-        level: LogLevel.info,
-      })
-    }
+    log.info = defineForLogLevel(LogLevel.info, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevel.info })
+    })
 
-    log.warn = function (...messages: any[]) {
-      emit({
-        name,
-        messages,
-        level: LogLevel.warn,
-      })
-    }
+    log.warn = defineForLogLevel(LogLevel.warn, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevel.warn })
+    })
 
-    log.error = function (...messages: any[]) {
-      emit({
-        name,
-        messages,
-        level: LogLevel.error,
-      })
-    }
+    log.error = defineForLogLevel(LogLevel.error, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevel.error })
+    })
 
     // fatal(...args: any[]) {
     //   console.error(...args)
     // },
 
     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-    log.assert = function (cond: any, ...messages: any[]): asserts cond {
+    log.assert = defineForLogLevel(LogLevel.error, (cond: any, ...messages: any[]): asserts cond => {
       if (!cond) {
         if (typeof console !== undefined) {
           if (console.assert) {
@@ -217,9 +210,9 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
         //   methods.warn(...args)
         // }
       }
-    }
+    })
 
-    log.assertEqual = function (value: any, expected: any, ...args: any[]) {
+    log.assertEqual = defineForLogLevel(LogLevel.error, (value: any, expected: any, ...args: any[]) => {
       const equal = deepEqual(value, expected)
       if (!equal) {
         log.assert(
@@ -232,9 +225,9 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
         // } else {
         //   methods.debug(`Passed equal`)
       }
-    }
+    })
 
-    log.assertNotEqual = function (value: any, expected: any, ...args: any[]) {
+    log.assertNotEqual = defineForLogLevel(LogLevel.error, (value: any, expected: any, ...args: any[]) => {
       const equal = deepEqual(value, expected)
       if (equal) {
         log.assert(
@@ -247,7 +240,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
         // } else {
         //   methods.debug(`Passed not equal check`)
       }
-    }
+    })
 
     return log
   }
@@ -266,6 +259,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     logHandlers.push(handler)
   }
 
+  /** @deprecated */
   Logger.setFilter = function (namespaces: string) {
     logCheckNamespace = useNamespaceFilter(namespaces)
   }

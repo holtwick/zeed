@@ -66,7 +66,7 @@ describe('Logger', () => {
     }
 
     const logger = LoggerContext()
-    logger.setLogLevel(LogLevel.info)
+    // logger.setLogLevel(LogLevel.info)
     logger.setHandlers([LoggerTestHandler])
 
     const log = logger('test')
@@ -81,6 +81,7 @@ describe('Logger', () => {
     assert(false, 'Fatal')
 
     expect(messages).toEqual([
+      { name: 'test', messages: ['Hello'], level: 0 }, // xxx
       { name: 'test', messages: ['World'], level: 1 },
       { name: 'test', messages: ['is on'], level: 2 },
       { name: 'test', messages: ['Fire'], level: 3 },
@@ -98,16 +99,20 @@ describe('Logger', () => {
       // console.dir(messages)
 
       expect(messages).toEqual([
+        { name: 'test', messages: ['Hello'], level: 0 }, // xxx
         { name: 'test', messages: ['World'], level: 1 },
         { name: 'test', messages: ['is on'], level: 2 },
         { name: 'test', messages: ['Fire'], level: 3 },
         { name: 'test', messages: ['Fatal'], level: 2 },
+        { name: 'test:ext', messages: ['Hello'], level: 0 }, // xxx
         { name: 'test:ext', messages: ['World2'], level: 1 },
         { name: 'test:ext', messages: ['is on'], level: 2 },
         { name: 'test:ext', messages: ['Fire'], level: 3 },
         { name: 'test:ext', messages: ['Fatal'], level: 2 },
       ])
     }
+
+    // logger.setLogLevel(LogLevel.all)
   })
 
   test('should log filter namespace', () => {

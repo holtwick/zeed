@@ -1,5 +1,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { Logger } from '../../../../src/index.browser'
+// import { Logger } from 'zeed'
+
+const log = Logger('hello')
+
+log('hello world')
+
 export default defineComponent({
   name: 'HelloWorld',
   props: {

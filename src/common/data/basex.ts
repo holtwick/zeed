@@ -13,7 +13,7 @@ import { Logger } from '../log'
 import type { BinInput } from './bin'
 import { toUint8Array } from './bin'
 
-const log = Logger('zeed:basex')
+const log = Logger('zeed:basex', 'error')
 
 const alphabets = {
   '2': '01',

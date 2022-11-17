@@ -6,7 +6,7 @@ const RX_WHITESPACE = /\\\s|\s+|#[^\n]*\n?/gm
 const RX_REAL_GROUPS = /\(\?P?<(\w[\w\d_]+)>|\((?!\?(:|\!|=|<=|<\!))/gm
 const RX_LOOK_BEHIND = /^((?:\(\?[\w$]+\))?)\(\?<([=!])([\s\S]*?)\)/gm
 
-const log = Logger('zeed:xrx')
+const log = Logger('zeed:xrx', 'error')
 
 export function regExpString(rx: string | RegExp): string {
   return typeof rx === 'string' ? rx : rx.source || ''

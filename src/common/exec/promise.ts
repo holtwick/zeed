@@ -5,7 +5,7 @@
 
 import { Logger } from '../log'
 
-const { warn } = Logger('zeed:promise')
+const { warn } = Logger('zeed:promise', 'error')
 
 export function createPromise<T>(): [Promise<T>, any, any] {
   let resolve, reject

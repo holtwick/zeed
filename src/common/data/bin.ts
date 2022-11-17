@@ -4,7 +4,7 @@
 import { Logger } from '../log'
 import { jsonStringifySafe } from './json'
 
-const log = Logger('zeed:bin')
+const log = Logger('zeed:bin', 'error')
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 

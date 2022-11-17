@@ -4,7 +4,7 @@ import type { Json, ObjectStorage } from '../common/types'
 import { Logger } from '../common/log'
 import { jsonStringifySafe } from '../common/data/json'
 
-const log = Logger('zeed:localstorage')
+const log = Logger('zeed:localstorage', 'error')
 
 export interface LocalStorageOptions {
   name: string

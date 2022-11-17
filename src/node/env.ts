@@ -7,7 +7,7 @@ import { resolve } from 'path'
 import { Logger } from '../common/log'
 import { LogLevel } from '../common/log-base'
 
-const log = Logger('zeed:env')
+const log = Logger('zeed:env', 'error')
 
 const NEWLINE = '\n'
 const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/

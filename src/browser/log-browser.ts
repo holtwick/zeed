@@ -140,7 +140,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       function defineForLogLevel(fnLevel: LogLevel, fn: any) {
         if (level <= fnLevel)
           return fn
-        return noop
+        return () => {}
       }
 
       log = defineForLogLevel(LogLevel.debug, console.debug.bind(console, ...fixedArgs) as LoggerInterface)
@@ -180,7 +180,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       })
     }
     else {
-      log = noop as LoggerInterface
+      log = (() => {}) as LoggerInterface
       log.debug = noop
       log.info = noop
       log.warn = noop

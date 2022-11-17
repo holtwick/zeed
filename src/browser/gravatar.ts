@@ -4,7 +4,7 @@
 
 import { Logger } from '../common/log'
 
-const log = Logger('zeed:gravatar')
+const log = Logger('zeed:gravatar', 'error')
 
 /** @deprecated Due to privacy concerns. Prefer local or custom solutions. */
 function gravatar(

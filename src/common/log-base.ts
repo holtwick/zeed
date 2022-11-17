@@ -114,8 +114,6 @@ export interface LogHandlerOptions {
   pretty?: boolean
 }
 
-const noop: any = () => {}
-
 export function LoggerContext(_prefix = ''): LoggerContextInterface {
   let logHandlers: LogHandler[] = [LoggerConsoleHandler()]
   const logAssertLevel: LogLevel = LogLevel.warn
@@ -131,9 +129,10 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     const logLevel = parseLogLevel(level ?? LogLevel.all)
 
     function defineForLogLevel(fnLevel: LogLevel, fn: any) {
+      console.log(name, fnLevel, logLevel)
       if (logLevel <= fnLevel)
         return fn
-      return noop
+      return () => {}
     }
 
     const log = defineForLogLevel(LogLevel.debug, (...messages: any[]) => {
@@ -186,7 +185,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     // },
 
     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-    log.assert = defineForLogLevel(LogLevel.error, (cond: any, ...messages: any[]): asserts cond => {
+    log.assert = defineForLogLevel(LogLevel.fatal, (cond: any, ...messages: any[]): asserts cond => {
       if (!cond) {
         if (typeof console !== undefined) {
           if (console.assert) {
@@ -212,7 +211,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       }
     })
 
-    log.assertEqual = defineForLogLevel(LogLevel.error, (value: any, expected: any, ...args: any[]) => {
+    log.assertEqual = defineForLogLevel(LogLevel.fatal, (value: any, expected: any, ...args: any[]) => {
       const equal = deepEqual(value, expected)
       if (!equal) {
         log.assert(
@@ -227,7 +226,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       }
     })
 
-    log.assertNotEqual = defineForLogLevel(LogLevel.error, (value: any, expected: any, ...args: any[]) => {
+    log.assertNotEqual = defineForLogLevel(LogLevel.fatal, (value: any, expected: any, ...args: any[]) => {
       const equal = deepEqual(value, expected)
       if (equal) {
         log.assert(

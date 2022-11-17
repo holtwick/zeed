@@ -7,7 +7,7 @@ import { getGlobalContext } from '../global'
 import { Logger } from '../log'
 import { promisify } from '../exec/promise'
 
-const log = Logger('zeed:emitter')
+const log = Logger('zeed:emitter', 'error')
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void

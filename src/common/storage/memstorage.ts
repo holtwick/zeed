@@ -3,7 +3,7 @@
 import { cloneObject } from '../data/utils'
 import type { Json, ObjectStorage } from '../types'
 
-// const log = Logger('zeed:memstorage')
+// const log = Logger('zeed:memstorage', 'error')
 
 export interface MemStorageOptions {
   objectFromString?: (data: string) => any

@@ -9,7 +9,7 @@ import { encodeQuery } from './data/url'
 import { Logger } from './log'
 import type { Json } from './types'
 
-const log = Logger('zeed:network')
+const log = Logger('zeed:network', 'error')
 
 interface fetchOptionType {
   /** Returns the cache mode associated with request, which is a string indicating how the request will interact with the browser's cache when fetching. */

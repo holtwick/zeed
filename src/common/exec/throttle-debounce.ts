@@ -6,7 +6,7 @@ import { Logger } from '../log'
 import { promisify } from './promise'
 
 const DEBUG = false
-const log = DEBUG ? Logger('zeed:throttle') : () => {}
+const log = DEBUG ? Logger('zeed:throttle', 'error') : () => {}
 
 /**
  * A special throttle implementation that tries to distribute execution

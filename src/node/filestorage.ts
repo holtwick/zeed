@@ -15,7 +15,7 @@ import { cloneObject } from '../common/data/utils'
 import { Logger } from '../common/log'
 import type { Json, ObjectStorage } from '../common/types'
 
-const log = Logger('zeed:filestorage')
+const log = Logger('zeed:filestorage', 'error')
 
 export interface FileStorageOptions {
   pretty?: boolean

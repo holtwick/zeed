@@ -28,6 +28,20 @@ describe('log-memory', () => {
     expect(messages).toMatchInlineSnapshot(`
       Array [
         Object {
+          "level": 0,
+          "messages": Array [
+            "Simple",
+          ],
+          "name": "test",
+        },
+        Object {
+          "level": 0,
+          "messages": Array [
+            "Hello",
+          ],
+          "name": "test",
+        },
+        Object {
           "level": 1,
           "messages": Array [
             "World",

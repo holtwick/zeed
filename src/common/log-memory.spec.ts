@@ -5,8 +5,8 @@ import { LoggerMemoryHandler } from './log-memory'
 describe('log-memory', () => {
   it('should log into memory', async () => {
     const messages: LogMessage[] = []
-
-    const logger = LoggerContext()
+    
+    const logger = LoggerContext()    
     logger.setHandlers([
       LoggerMemoryHandler({
         level: LogLevel.all,
@@ -27,20 +27,6 @@ describe('log-memory', () => {
 
     expect(messages).toMatchInlineSnapshot(`
       Array [
-        Object {
-          "level": 0,
-          "messages": Array [
-            "Simple",
-          ],
-          "name": "test",
-        },
-        Object {
-          "level": 0,
-          "messages": Array [
-            "Hello",
-          ],
-          "name": "test",
-        },
         Object {
           "level": 1,
           "messages": Array [

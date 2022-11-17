@@ -3,9 +3,9 @@
 /* eslint-disable no-console */
 
 import { deepEqual } from '../common/data/deep'
-import type { LogHandler, LogHandlerOptions, LogMessage, LoggerInterface } from '../common/log-base'
+import type { LogHandler, LogHandlerOptions, LogLevelAliasType, LogMessage, LoggerInterface } from '../common/log-base'
 import { LogLevel } from '../common/log-base'
-import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
+import { parseLogLevel, useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
 import { selectColor, supportsColors } from './log-colors'
 
@@ -17,6 +17,8 @@ const useColors = supportsColors()
 const namespaces: Record<string, any> = {}
 
 const startTime = getTimestamp() // todo sideffects
+
+const noop: any = () => {}
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {
@@ -108,12 +110,14 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   /// drawbacks, therefore only use it in the Browser when actively debugging.
   return function LoggerBrowserDebugFactory(
     name = '',
+    logLevel?: LogLevelAliasType,
   ): LoggerInterface {
     let log: LoggerInterface
 
     const matches = useNamespaceFilter(filter)
+    const level = parseLogLevel(logLevel ?? LogLevel.all)
 
-    if (matches(name)) {
+    if (matches(name) && level !== LogLevel.off) {
       const fixedArgs = []
       if (useColors) {
         const color = selectColor(name)
@@ -133,46 +137,49 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       //   assert: console.assert,
       // }
 
-      log = console.debug.bind(console, ...fixedArgs) as LoggerInterface
-      log.debug = console.debug.bind(console, ...fixedArgs)
-      log.info = console.info.bind(console, ...fixedArgs)
-      log.warn = console.warn.bind(console, ...fixedArgs)
-      log.error = console.error.bind(console, ...fixedArgs)
+      function defineForLogLevel(fnLevel: LogLevel, fn: any) {
+        if (level <= fnLevel)
+          return fn
+        return noop
+      }
 
-      log.assert = console.assert.bind(console)
+      log = defineForLogLevel(LogLevel.debug, console.debug.bind(console, ...fixedArgs) as LoggerInterface)
+      log.debug = defineForLogLevel(LogLevel.debug, console.debug.bind(console, ...fixedArgs))
+      log.info = defineForLogLevel(LogLevel.info, console.info.bind(console, ...fixedArgs))
+      log.warn = defineForLogLevel(LogLevel.warn, console.warn.bind(console, ...fixedArgs))
+      log.error = defineForLogLevel(LogLevel.error, console.error.bind(console, ...fixedArgs))
 
-      log.assertEqual = function (value: any, expected: any, ...args: any[]) {
+      log.assert = defineForLogLevel(LogLevel.error, console.assert.bind(console))
+
+      log.assertEqual = defineForLogLevel(LogLevel.error, (value: any, expected: any, ...args: any[]) => {
         const equal = deepEqual(value, expected)
         if (!equal) {
           log.assert(
             equal,
-            `Assert did fail. Expected ${expected} got ${value}`,
-            expected,
-            value,
-            ...args,
+              `Assert did fail. Expected ${expected} got ${value}`,
+              expected,
+              value,
+              ...args,
           )
         }
-      }
+      })
 
-      log.assertNotEqual = function (
-        value: any,
+      log.assertNotEqual = defineForLogLevel(LogLevel.error, (value: any,
         expected: any,
-        ...args: any[]
-      ) {
+        ...args: any[]) => {
         const equal = deepEqual(value, expected)
         if (equal) {
           log.assert(
             equal,
-            `Assert did fail. Expected ${expected} not to be equal with ${value}`,
-            expected,
-            value,
-            ...args,
+              `Assert did fail. Expected ${expected} not to be equal with ${value}`,
+              expected,
+              value,
+              ...args,
           )
         }
-      }
+      })
     }
     else {
-      const noop = () => {}
       log = noop as LoggerInterface
       log.debug = noop
       log.info = noop

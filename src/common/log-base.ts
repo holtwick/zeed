@@ -129,7 +129,6 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     const logLevel = parseLogLevel(level ?? LogLevel.all)
 
     function defineForLogLevel(fnLevel: LogLevel, fn: any) {
-      console.log(name, fnLevel, logLevel)
       if (logLevel <= fnLevel)
         return fn
       return () => {}

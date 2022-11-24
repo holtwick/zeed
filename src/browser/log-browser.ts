@@ -74,6 +74,13 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     //   ]
     // }
 
+    args = args.map((arg: unknown) => {
+      // There is an aweful bug in WKWebView causing "stack" issues on Uint8Arrays >= 64k
+      if (arg instanceof Uint8Array)
+        return `<Uint8Array size=${arg.length}`
+      return arg
+    }) as any
+
     switch (msg.level) {
       case LogLevel.info:
         if (opt.levelHelper)

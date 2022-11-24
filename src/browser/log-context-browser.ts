@@ -1,6 +1,7 @@
-import { isBrowser } from '../common/platform'
 import { Logger } from '../common/log'
-import { LoggerBrowserHandler, LoggerBrowserSetupDebugFactory } from './log-browser'
+import { isBrowser } from '../common/platform'
+import { LoggerBrowserHandler } from './log-browser'
+import { LoggerBrowserSetupDebugFactory } from './log-browser-factory'
 
 // todo sideffects
 export function setupBrowserLog() {

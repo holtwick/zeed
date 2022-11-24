@@ -1,22 +1,36 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "baseUrl": ".",
-    "target": "es2020",
     "declaration": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "module": "es2020",
     "moduleResolution": "node",
     "outDir": "dist/esm",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "strictNullChecks": true,
     "strict": true,
-    "types": ["node", "vitest/globals"],
-    "allowJs": true
+    "strictNullChecks": true,
+    "target": "es2020",
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
   },
-  "include": ["src/**/*", "vitest-setup.ts"],
-  "exclude": ["_archive", "node_modules", "dist", "src/**/*.spec.ts"]
+  "exclude": [
+    "_archive",
+    "node_modules",
+    "dist",
+    "src/**/*.spec.ts"
+  ],
+  "include": [
+    "src/**/*",
+    "vitest-setup.ts"
+  ]
 }

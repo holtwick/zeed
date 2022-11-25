@@ -10,6 +10,8 @@ import {
   toBase64,
   toHex,
   toUint8Array,
+  toBase64Url,
+  fromBase64String,
 } from './bin'
 import { Uint8ArrayToJson, fromBase64, jsonToUint8Array } from '.'
 
@@ -277,4 +279,12 @@ Uint8Array [
       0010  0E 0F 10 11 12 13 14                             .......         "
     `)
   })
+
+  it('should base64Url', () => {
+    let email = 'example123+my@example.com'
+    let b64 = toBase64Url(email)
+    expect(b64).toMatchInlineSnapshot('"ZXhhbXBsZTEyMytteUBleGFtcGxlLmNvbQ"')
+    let dec = fromBase64String(b64)
+    expect(dec).toEqual(email)  
+  });
 })

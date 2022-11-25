@@ -111,11 +111,9 @@ export function toBase64(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
     return Buffer.from(bytes).toString('base64')
-
   let s = ''
   for (let i = 0; i < bytes.byteLength; i++)
     s += String.fromCharCode(bytes[i])
-
   return btoa(s)
 }
 
@@ -123,15 +121,14 @@ export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
     return Buffer.from(bytes).toString('base64url')
-
   let s = ''
   for (let i = 0; i < bytes.byteLength; i++)
     s += String.fromCharCode(bytes[i])
-
-  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_')
+  return btoa(s).replaceAll('+', '-').replaceAll('/', '_')
 }
 
 export function fromBase64(s: string): Uint8Array {
+  s = s.replaceAll('-', '+').replaceAll('_', '/')
   if (typeof Buffer !== 'undefined') {
     const buf = Buffer.from(s, 'base64')
     return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength)
@@ -140,8 +137,11 @@ export function fromBase64(s: string): Uint8Array {
   const bytes = new Uint8Array(a.length)
   for (let i = 0; i < a.length; i++)
     bytes[i] = a.charCodeAt(i)
-
   return bytes
+}
+
+export function fromBase64String(s: string): string {
+  return Uint8ArrayToString(fromBase64(s))
 }
 
 /** Compare contents of binary arrays */

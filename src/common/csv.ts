@@ -1,4 +1,4 @@
-import { isArray, isBoolean, isRecord, jsonStringifySafe } from './data'
+import { escapeRegExp, isArray, isBoolean, isRecord, jsonStringifySafe } from './data'
 
 const defaultSeparator = ','
 
@@ -35,16 +35,14 @@ export function csvStringify(data: any[], opt: {
 export function csvParse(raw: string, opt: {
   separator?: string
 } = {}) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { separator = defaultSeparator } = opt
-
   // https://regex101.com/r/BCpKyV/1
-  const rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t]|\n|\r\n)/g
+  let rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t]|\n|\r\n)/g
+  if (opt.separator)
+    rxOneValueWithSeparator = new RegExp(rxOneValueWithSeparator.source.replaceAll(',;\\t', escapeRegExp(opt.separator)), rxOneValueWithSeparator.flags)
 
   const lines: any[][] = []
   let row: any[] = []
   let m: any
-
   const text = `${raw.replaceAll('\r\n', '\n').trim()}\n`
 
   // eslint-disable-next-line no-cond-assign

@@ -1,49 +1,59 @@
-/*
-  csv-express
-  Forked and modified by John J Czaplewski <jczaplew@gmail.com>
-  Copyright 2011 Seiya Konno <nulltask@gmail.com>
-  MIT Licensed
+import { escapeRegExp, isArray, isBoolean, isRecord, jsonStringifySafe } from './data'
 
-  https://github.com/jczaplew/csv-express/blob/master/lib/csv-express.js
- */
+const defaultSeparator = ','
 
-// Configurable settings
-const separator = ','
-const preventCast = false
-const ignoreNullOrUndefined = true
-
-// Stricter parseFloat to support hexadecimal strings from
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/parseFloat#A_stricter_parse_function
-function filterFloat(value: string) {
-  if (/^([-+])?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value))
-    return Number(value)
-
-  return NaN
-}
-
-function escape(field: any) {
-  if (ignoreNullOrUndefined && field == null)
-    return ''
-
-  if (preventCast)
-    return `="${String(field).replace(/"/g, '""')}"`
-
-  if (!isNaN(filterFloat(field)) && isFinite(field))
-    return parseFloat(field)
-
-  return `"${String(field).replace(/"/g, '""')}"`
-}
-
-export function csv(data: any[], headerRow: string[]): string {
+export function csvStringify(data: any[], opt: {
+  // header?: string[]
+  separator?: string
+} = {}): string {
+  const { separator = defaultSeparator } = opt
   let body = ''
 
   // Append the header row to the response if requested
-  if (headerRow)
-    body = `${headerRow.join(separator)}\r\n`
+  // if (header)
+  //   body = `${header.join(separator)}\n`
 
   // Convert the data to a CSV-like structure
-  for (let i = 0; i < data.length; i++)
-    body += `${data[i].map(escape).join(separator)}\r\n`
+  for (let i = 0; i < data.length; i++) {
+    body += `${data[i].map((field: string) => {
+      if (field == null || field === '')
+        return ''
+      if (isBoolean(field))
+        return field ? 1 : 0
+      let s = String(field)
+      if (isRecord(field) || isArray(field))
+        s = jsonStringifySafe(field)
+      if (s.includes('"') || s.includes('\n') || s.includes(separator))
+        return `"${s.replace(/"/g, '""')}"`
+      return s
+    }).join(separator)}\n`
+  }
 
   return body
+}
+
+export function csvParse(raw: string, opt: {
+  separator?: string
+} = {}) {
+  // https://regex101.com/r/BCpKyV/1
+  let rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t]|\n|\r\n)/g
+  if (opt.separator)
+    rxOneValueWithSeparator = new RegExp(rxOneValueWithSeparator.source.replaceAll(',;\\t', escapeRegExp(opt.separator)), rxOneValueWithSeparator.flags)
+
+  const lines: any[][] = []
+  let row: any[] = []
+  let m: any
+  const text = `${raw.replaceAll('\r\n', '\n').trim()}\n`
+
+  // eslint-disable-next-line no-cond-assign
+  while (m = rxOneValueWithSeparator.exec(text)) {
+    let value = m[2] ?? m[3] ?? ''
+    value = value.replaceAll('""', '"')
+    row.push(value)
+    if (m[4] === '\n') {
+      lines.push(row)
+      row = []
+    }
+  }
+  return lines
 }

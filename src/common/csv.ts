@@ -32,34 +32,30 @@ export function csvStringify(data: any[], opt: {
   return body
 }
 
-export function csvParse(s: string, opt: {
+export function csvParse(raw: string, opt: {
   separator?: string
 } = {}) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { separator = defaultSeparator } = opt
 
-  // console.log('lines', s)
-  const valuesRegExp = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t]*))([,;\t]|\n)/g
+  // https://regex101.com/r/BCpKyV/1
+  const rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t]|\n|\r\n)/g
 
-  function parseLine(line: string) {
-    // const element: any = {}
-    const values = []
-    let matches: any
-    // valuesRegExp.index = 0
-    // eslint-disable-next-line no-cond-assign
-    while ((matches = valuesRegExp.exec(`${line}\n`))) {
-      // console.log(matches)
-      let value = matches[2] ?? matches[3] ?? ''
-      value = value.replace(/\"\"/g, '"')
-      values.push(value)
+  const lines: any[][] = []
+  let row: any[] = []
+  let m: any
+
+  const text = `${raw.replaceAll('\r\n', '\n').trim()}\n`
+
+  // eslint-disable-next-line no-cond-assign
+  while (m = rxOneValueWithSeparator.exec(text)) {
+    let value = m[2] ?? m[3] ?? ''
+    value = value.replaceAll('""', '"')
+    row.push(value)
+    if (m[4] === '\n') {
+      lines.push(row)
+      row = []
     }
-    return values
   }
-
-  // const headers = parseLine(lines.splice(0, 1)[0])
-
-  const lines = s.split(/(?:\r\n|\n)+/).filter(el => el.trim().length !== 0)
-  const result = lines.map(parseLine)
-  // console.log('result', result)
-  return result
+  return lines
 }

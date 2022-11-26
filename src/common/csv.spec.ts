@@ -26,10 +26,8 @@ describe("csv.spec", () => {
         ],
         Array [
           "2",
-          "\\"two",
-        ],
-        Array [
-          "lines\\"",
+          "two
+      lines",
           "",
           "",
           "1",

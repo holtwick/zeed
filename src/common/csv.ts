@@ -57,3 +57,13 @@ export function csvParse(raw: string, opt: {
   }
   return lines
 }
+
+export function csvParseToObjects(raw: string, opt: {
+  separator?: string
+} = {}) {
+  const lines = csvParse(raw, opt)
+  const header = lines[0]
+  return lines.slice(1).map(l =>
+    Object.fromEntries (l.map((v, i) => [header[i], v])),
+  )
+}

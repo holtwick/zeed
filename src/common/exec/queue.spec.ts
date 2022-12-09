@@ -4,14 +4,14 @@ import { LogLevel } from '../log-base'
 import { sleep } from './promise'
 import { SerialQueue } from './queue'
 
-const logLevel = LogLevel.off
+// const logLevel = LogLevel.off
 
 describe('queue', () => {
   it('should execute in strict order', async () => {
     expect.assertions(1)
 
     const list: any = []
-    const queue = new SerialQueue({ logLevel })
+    const queue = new SerialQueue() // { logLevel })
     queue.enqueue(async () => {
       await sleep(100)
       list.push('a')
@@ -55,7 +55,7 @@ describe('queue', () => {
     expect.assertions(2)
 
     const list: any = []
-    const queue = new SerialQueue({ logLevel })
+    const queue = new SerialQueue() // { logLevel })
     queue.enqueue(async () => {
       await sleep(100)
       list.push('a')
@@ -76,7 +76,7 @@ describe('queue', () => {
     expect.assertions(3)
 
     const list: any = []
-    const queue = new SerialQueue({ logLevel })
+    const queue = new SerialQueue() // { logLevel })
 
     const events: any = []
     queue.onAny((...args) => events.push(args))
@@ -147,7 +147,7 @@ describe('queue', () => {
     expect.assertions(3)
 
     const list: any = []
-    const queue = new SerialQueue({ logLevel })
+    const queue = new SerialQueue() // { logLevel })
 
     const events: any = []
     queue.onAny((...args) => events.push(args))

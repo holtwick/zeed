@@ -7,6 +7,7 @@ import {
   dayToParts,
   dayToString,
   dayYearStart,
+  dayRange
 } from './day'
 import { Day, dateStringToDays, forEachDay } from './day-legacy'
 
@@ -183,5 +184,18 @@ describe('Days', () => {
     expect(dayFromString('20121030')).toEqual(20121030)
     expect(dayFromString('2012-10-30T12:00:00Z')).toEqual(20121030)
     expect(dayFromString('fasfasdf sadf ')).toEqual(undefined)
+  })
+
+  it('should dayRange', () => {
+    expect(dayRange(20121230, 20130104)).toMatchInlineSnapshot(`
+      Array [
+        20121230,
+        20121231,
+        20130101,
+        20130102,
+        20130103,
+        20130104,
+      ]
+    `)
   })
 })

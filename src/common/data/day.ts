@@ -93,10 +93,8 @@ export function dayFromTimestamp(ms: number, gmt = true): DayValue {
 export function dayToString(day: DayValue, sep = '-') {
   const baseString = String(day)
   return (
-    baseString.slice(0, 4)
-    + sep
-    + baseString.slice(4, 6)
-    + sep
+    baseString.slice(0, 4) + sep
+    + baseString.slice(4, 6) + sep
     + baseString.slice(6, 8)
   )
 }
@@ -145,4 +143,14 @@ export function dayOffset(day: DayValue, offset: number): DayValue {
 
 export function dayDiff(left: DayValue, right: DayValue): number {
   return Math.round((dayToTimestamp(right) - dayToTimestamp(left)) / DAY_MS)
+}
+
+/** List of dates for loops */
+export function dayRange(left: DayValue, right: DayValue): number[] {
+  const list: number[] = []
+  while (left <= right) {
+    list.push(left)
+    left = dayOffset(left, +1)
+  }
+  return list
 }

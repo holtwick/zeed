@@ -157,7 +157,6 @@ export function arrayBatches<T>(array: T[], chunckLength: number): T[][] {
   const n = array.length
   while (i < n)
     chunks.push(array.slice(i, (i += chunckLength)))
-
   return chunks
 }
 

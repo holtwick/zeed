@@ -163,7 +163,7 @@ export function dayRange(left: DayValue, right?: DayValue): number[] {
 }
 
 /** Iterator, see dayRange */
-export function* dayIterator(left: DayValue, right?: DayValue): number[] {
+export function* dayIterator(left: DayValue, right?: DayValue) {
   const list: number[] = []
 
   if (right == null)

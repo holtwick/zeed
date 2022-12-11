@@ -7,7 +7,8 @@ import {
   dayToParts,
   dayToString,
   dayYearStart,
-  dayRange
+  dayRange,
+  dayIterator
 } from './day'
 import { Day, dateStringToDays, forEachDay } from './day-legacy'
 
@@ -208,5 +209,7 @@ describe('Days', () => {
         20130104,
       ]
     `)
+
+    expect(dayIterator(-6, 20130104).next().value).toEqual(20121230)
   })
 })

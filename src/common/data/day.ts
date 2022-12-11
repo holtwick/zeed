@@ -161,3 +161,20 @@ export function dayRange(left: DayValue, right?: DayValue): number[] {
   }
   return list
 }
+
+/** Iterator, see dayRange */
+export function* dayIterator(left: DayValue, right?: DayValue): number[] {
+  const list: number[] = []
+
+  if (right == null)
+    right = dayFromToday()
+
+  if (left < 0)
+    left = dayOffset(right, left + 1)
+
+  while (left <= right) {
+    yield left
+    left = dayOffset(left, +1)
+  }
+  return list
+}

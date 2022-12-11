@@ -146,8 +146,15 @@ export function dayDiff(left: DayValue, right: DayValue): number {
 }
 
 /** List of dates for loops */
-export function dayRange(left: DayValue, right: DayValue): number[] {
+export function dayRange(left: DayValue, right?: DayValue): number[] {
   const list: number[] = []
+
+  if (right == null)
+    right = dayFromToday()
+
+  if (left < 0)
+    left = dayOffset(right, left + 1)
+
   while (left <= right) {
     list.push(left)
     left = dayOffset(left, +1)

@@ -12,13 +12,12 @@ export function listQuery<T>(
     .map((o) => {
       for (const m of mappers)
         o = m(o)
-
       return o
     })
     .filter(o => o != null)
 }
 
-// /** Dictionary  */
+/** Split up a list by `key` resulting in a Record of `key` and sub-list. */
 export function listGroupBy<T extends Record<string, any>>(
   list: T[],
   key: keyof T,
@@ -30,6 +29,7 @@ export function listGroupBy<T extends Record<string, any>>(
   }, {})
 }
 
+/** Returns a list of values of a certain `key`. No duplicates. */
 export function listDistinctUnion<T extends Record<string, any>>(
   list: T[],
   key: keyof T,
@@ -40,4 +40,12 @@ export function listDistinctUnion<T extends Record<string, any>>(
       new Set(),
     ),
   )
+}
+
+/** Returns a list of values of a certain `key`. */
+export function listOfKey<T extends Record<string, any>>(
+  list: T[],
+  key: keyof T,
+): any[] {
+  return list.map(item => item[key])
 }

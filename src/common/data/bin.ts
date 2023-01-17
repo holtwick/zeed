@@ -69,8 +69,7 @@ export function toUint8Array(data: BinInput): Uint8Array {
     return stringToUInt8Array(data)
   if (data.length)
     return new Uint8Array(data)
-  // @ts-expect-error xxx
-  return data
+  return data as Uint8Array
 }
 
 export function joinToUint8Array(...args: BinInput[] | BinInput[][]) {
@@ -92,12 +91,10 @@ export function joinToUint8Array(...args: BinInput[] | BinInput[][]) {
 export function toHex(bin: BinInput): string {
   if (typeof Buffer !== 'undefined')
     return Buffer.from(toUint8Array(bin)).toString('hex')
-
   const h = '0123456789abcdef'
   let s = ''
   for (const v of [...toUint8Array(bin)])
     s += h[v >> 4] + h[v & 15]
-
   return s
 }
 

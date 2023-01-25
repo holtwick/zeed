@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isObject, isPrimitive, isRecord, isRecordPlain, isUint8Array } from './is'
+import { isNotNull, isObject, isPrimitive, isRecord, isRecordPlain, isUint8Array, isValue } from './is'
 
 describe('is', () => {
   it('should identify Uint8Array', () => {
@@ -15,7 +15,7 @@ describe('is', () => {
       foo() { return 'bar' }
     }
     const x = new X()
-    const plain = {hello: 'world'}
+    const plain = { hello: 'world' }
 
     expect(isObject(X)).toBe(false)
     expect(isObject(x)).toBe(true)
@@ -40,5 +40,28 @@ describe('is', () => {
     expect(isPrimitive(plain)).toBe(false)
     expect(isPrimitive([])).toBe(false)
     expect(isPrimitive(123)).toBe(true)
-  });
+  })
+
+  it('should filter', async () => {
+    const test = ['a', null, undefined, 'b', false, 'c', true]
+    const r: (string | true)[] = test.filter(isNotNull)
+    expect(r).toMatchInlineSnapshot(`
+      Array [
+        "a",
+        "b",
+        false,
+        "c",
+        true,
+      ]
+    `)
+
+    const rr: string[] = test.filter(isValue)
+    expect(rr).toMatchInlineSnapshot(`
+      Array [
+        "a",
+        "b",
+        "c",
+      ]
+    `)
+  })
 })

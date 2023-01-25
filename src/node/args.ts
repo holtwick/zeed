@@ -22,7 +22,6 @@ export function parseArgs(config: ParseConfig = {}) {
   } = config
 
   const nameToAlias = Object.entries(alias).reduce((map, curr) => {
-    // eslint-disable-next-line prefer-const
     let [name, values] = curr
     if (typeof values === 'string')
       values = [values]

@@ -64,4 +64,3 @@ export function sortedItems<T extends SortableItem>(items: T[]): T[] {
   items.sort((a, b) => (a.sort_weight || 0) - (b.sort_weight || 0))
   return items
 }
-

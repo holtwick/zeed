@@ -23,7 +23,10 @@ describe('Logger', () => {
     info('World')
     warn('is on')
     error('Fire')
-    assert(false, 'Fatal')
+
+    try {
+      assert(false, 'Fatal')
+    } catch (err) {}
 
     expect(messages).toEqual([
       {
@@ -52,7 +55,7 @@ describe('Logger', () => {
         name: 'test',
       },
       {
-        level: 2,
+        level: 4,
         messages: ['Fatal'],
         name: 'test',
       },
@@ -78,14 +81,17 @@ describe('Logger', () => {
     info('World')
     warn('is on')
     error('Fire')
-    assert(false, 'Fatal')
+  
+    try {
+      assert(false, 'Fatal')
+    } catch (err) {}
 
     expect(messages).toEqual([
       { name: 'test', messages: ['Hello'], level: 0 }, // xxx
       { name: 'test', messages: ['World'], level: 1 },
       { name: 'test', messages: ['is on'], level: 2 },
       { name: 'test', messages: ['Fire'], level: 3 },
-      { name: 'test', messages: ['Fatal'], level: 2 },
+      { name: 'test', messages: ['Fatal'], level: 4 },
     ])
 
     {
@@ -94,7 +100,10 @@ describe('Logger', () => {
       info('World2')
       warn('is on')
       error('Fire')
-      assert(false, 'Fatal')
+     
+      try {
+        assert(false, 'Fatal')
+      } catch (err) {}
 
       // console.dir(messages)
 
@@ -103,12 +112,12 @@ describe('Logger', () => {
         { name: 'test', messages: ['World'], level: 1 },
         { name: 'test', messages: ['is on'], level: 2 },
         { name: 'test', messages: ['Fire'], level: 3 },
-        { name: 'test', messages: ['Fatal'], level: 2 },
+        { name: 'test', messages: ['Fatal'], level: 4 },
         { name: 'test:ext', messages: ['Hello'], level: 0 }, // xxx
         { name: 'test:ext', messages: ['World2'], level: 1 },
         { name: 'test:ext', messages: ['is on'], level: 2 },
         { name: 'test:ext', messages: ['Fire'], level: 3 },
-        { name: 'test:ext', messages: ['Fatal'], level: 2 },
+        { name: 'test:ext', messages: ['Fatal'], level: 4 },
       ])
     }
 

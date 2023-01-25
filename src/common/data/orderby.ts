@@ -6,7 +6,6 @@ export function parseOrderby(value = ''): {
   asc: boolean
   desc: boolean
 } {
-  // eslint-disable-next-line prefer-const
   let [field = '', orderby = 'asc'] = value.split(' ')
   orderby = orderby.toLowerCase()
   return {

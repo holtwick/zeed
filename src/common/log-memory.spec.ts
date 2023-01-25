@@ -23,7 +23,10 @@ describe('log-memory', () => {
     info('World')
     warn('is on')
     error('Fire')
-    assert(false, 'Fatal')
+    
+    try {
+      assert(false, 'Fatal')
+    } catch (err) {}
 
     expect(messages).toMatchInlineSnapshot(`
       Array [
@@ -63,7 +66,7 @@ describe('log-memory', () => {
           "name": "test",
         },
         Object {
-          "level": 2,
+          "level": 4,
           "messages": Array [
             "Fatal",
           ],

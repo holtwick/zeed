@@ -105,4 +105,3 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
   }
 }
-

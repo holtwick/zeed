@@ -2,7 +2,6 @@
 
 /* eslint-disable no-console */
 
-import { deepEqual } from '../common/data/deep'
 import type { LogHandlerOptions, LogLevelAliasType, LoggerInterface } from '../common/log-base'
 import { LogLevel } from '../common/log-base'
 import { parseLogLevel, useNamespaceFilter } from '../common/log-filter'
@@ -42,14 +41,6 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
         fixedArgs.push(`[${name}] \t%s`)
       }
 
-      // console.previous = {
-      //   debug: console.debug,
-      //   info: console.info,
-      //   warn: console.warn,
-      //   error: console.error,
-      //   assert: console.assert,
-      // }
-
       function defineForLogLevel(fnLevel: LogLevel, fn: any) {
         if (level <= fnLevel)
           return fn
@@ -62,34 +53,14 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       log.warn = defineForLogLevel(LogLevel.warn, console.warn.bind(console, ...fixedArgs))
       log.error = defineForLogLevel(LogLevel.error, console.error.bind(console, ...fixedArgs))
 
-      log.assert = defineForLogLevel(LogLevel.error, console.assert.bind(console))
-
-      log.assertEqual = defineForLogLevel(LogLevel.error, (value: any, expected: any, ...args: any[]) => {
-        const equal = deepEqual(value, expected)
-        if (!equal) {
-          log.assert(
-            equal,
-              `Assert did fail. Expected ${expected} got ${value}`,
-              expected,
-              value,
-              ...args,
-          )
-        }
+      log.fatal = defineForLogLevel(LogLevel.fatal, (...args: any) => {
+        log.error(...args)
+        throw new Error(`${args.map(String).join(' ')}`)
       })
 
-      log.assertNotEqual = defineForLogLevel(LogLevel.error, (value: any,
-        expected: any,
-        ...args: any[]) => {
-        const equal = deepEqual(value, expected)
-        if (equal) {
-          log.assert(
-            equal,
-              `Assert did fail. Expected ${expected} not to be equal with ${value}`,
-              expected,
-              value,
-              ...args,
-          )
-        }
+      log.assert = defineForLogLevel(LogLevel.fatal, (cond: unknown, ...args: any) => {
+        if (cond == null || !cond)
+          log.fatal(...args)
       })
     }
     else {
@@ -98,10 +69,8 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       log.info = noop
       log.warn = noop
       log.error = noop
-
       log.assert = noop
-      log.assertEqual = noop
-      log.assertNotEqual = noop
+      log.fatal = noop
     }
 
     log.extend = (subName: string) => {

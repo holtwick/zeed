@@ -28,12 +28,10 @@ export function toHumanReadableUrl(url: string): string {
 
 export function encodeQuery(data: Record<string, any>) {
   const pairs = []
-  // eslint-disable-next-line prefer-const
   for (let [key, value] of Object.entries(data)) {
     if (value != null) {
       if (!Array.isArray(value))
         value = [value]
-
       for (const v of value) {
         if (v != null) {
           pairs.push(

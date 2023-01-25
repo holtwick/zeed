@@ -1,8 +1,5 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-/* eslint-disable no-console */
-
-import { deepEqual } from './data/deep'
 import { LoggerConsoleHandler } from './log-console'
 import { parseLogLevel, useNamespaceFilter } from './log-filter'
 
@@ -51,6 +48,8 @@ export interface LogMessage {
 
 export type LogHandler = (msg: LogMessage) => void
 
+export type LogAssert = (condition: unknown, ...messages: any[]) => void // asserts condition -> see https://github.com/microsoft/TypeScript/issues/34523
+
 export interface LoggerInterface {
   (...messages: any[]): void
 
@@ -67,13 +66,11 @@ export interface LoggerInterface {
 
   error(...messages: any[]): void
 
-  assert(cond: any, ...messages: any[]): void
+  /** Throws if condition is not truthy */
+  assert: LogAssert
 
-  /** @deprecated use .assert */
-  assertEqual(value: any, expected: any, ...args: any[]): void
-
-  /** @deprecated use .assert */
-  assertNotEqual(value: any, expected: any, ...args: any[]): void
+  /** Always throws */
+  fatal(...messages: any[]): never
 
   extend(prefix: string): LoggerInterface
 
@@ -116,7 +113,6 @@ export interface LogHandlerOptions {
 
 export function LoggerContext(_prefix = ''): LoggerContextInterface {
   let logHandlers: LogHandler[] = [LoggerConsoleHandler()]
-  const logAssertLevel: LogLevel = LogLevel.warn
   let logCheckNamespace = (_name: string) => true
   let logLock = false
   let logFactory = LoggerBaseFactory
@@ -179,65 +175,14 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       emit({ name, messages, level: LogLevel.error })
     })
 
-    // fatal(...args: any[]) {
-    //   console.error(...args)
-    // },
-
-    // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-    log.assert = defineForLogLevel(LogLevel.fatal, (cond: any, ...messages: any[]): asserts cond => {
-      if (!cond) {
-        if (typeof console !== undefined) {
-          if (console.assert) {
-            // https://developer.mozilla.org/de/docs/Web/API/Console/assert
-            console.assert(cond, ...messages)
-          }
-          else {
-            console.error(`Assert did fail with: ${cond}`, ...messages)
-          }
-        }
-        emit({
-          name,
-          messages: messages || [`Assert did fail with: ${cond}`],
-          level: logAssertLevel,
-        })
-        // try {
-        //   if (typeof expect !== undefined) {
-        //     expect(cond).toBeTruthy()
-        //   }
-        // } catch (err) {
-        //   methods.warn(...args)
-        // }
-      }
+    log.fatal = defineForLogLevel(LogLevel.fatal, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevel.fatal })
+      throw new Error(`${messages.map(String).join(' ')}`)
     })
 
-    log.assertEqual = defineForLogLevel(LogLevel.fatal, (value: any, expected: any, ...args: any[]) => {
-      const equal = deepEqual(value, expected)
-      if (!equal) {
-        log.assert(
-          equal,
-          `Assert did fail. Expected ${expected} got ${value}`,
-          expected,
-          value,
-          ...args,
-        )
-        // } else {
-        //   methods.debug(`Passed equal`)
-      }
-    })
-
-    log.assertNotEqual = defineForLogLevel(LogLevel.fatal, (value: any, expected: any, ...args: any[]) => {
-      const equal = deepEqual(value, expected)
-      if (equal) {
-        log.assert(
-          equal,
-          `Assert did fail. Expected ${expected} not to be equal with ${value}`,
-          expected,
-          value,
-          ...args,
-        )
-        // } else {
-        //   methods.debug(`Passed not equal check`)
-      }
+    log.assert = defineForLogLevel(LogLevel.fatal, (cond: unknown, ...args: any) => {
+      if (!cond)
+        log.fatal(...args)
     })
 
     return log

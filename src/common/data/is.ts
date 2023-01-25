@@ -56,10 +56,27 @@ export function isBoolean(obj: unknown): obj is boolean {
   return typeof obj === 'boolean'
 }
 
+/** @deprecated use `isNull` */
 export function isNullOrUndefined(obj: unknown): obj is null | undefined {
   return obj == null
 }
 
+export function isNull(obj: unknown): obj is null | undefined {
+  return obj == null
+}
 export function isUint8Array(obj: unknown): obj is Uint8Array {
   return isObject(obj) && obj.constructor.name === 'Uint8Array'
+}
+
+// https://stackoverflow.com/a/46700791/140927
+
+/// Not `null` or `undefined`, use like `.filter(isNotEmpty)`
+export function isNotNull<T>(value: T | null | undefined): value is T {
+  return value != null
+}
+
+/// Not `null` or `undefined` or `boolean`, use like `.filter(isValue)`.
+// Usefull e.g. on conditional list: `[x && 'value', ...]`
+export function isValue<T>(value: T | null | undefined | boolean): value is T {
+  return value != null && value !== false && value !== true
 }

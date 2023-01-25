@@ -8,7 +8,7 @@ export default defineConfig({
     snapshotFormat: {
       printBasicPrototype: true,
     },
-    root: './src',
+    // root: './src',
     globals: true,
   },
 })

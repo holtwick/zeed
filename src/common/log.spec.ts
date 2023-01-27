@@ -1,7 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import type { LogMessage } from './log-base'
+import type { LoggerInterface, LogMessage } from './log-base'
 import { LogLevel, LoggerContext } from './log-base'
+import { Logger } from './log'
 
 describe('Logger', () => {
   test('should log different levels', () => {
@@ -26,7 +27,7 @@ describe('Logger', () => {
 
     try {
       assert(false, 'Fatal')
-    } catch (err) {}
+    } catch (err) { }
 
     expect(messages).toEqual([
       {
@@ -81,10 +82,10 @@ describe('Logger', () => {
     info('World')
     warn('is on')
     error('Fire')
-  
+
     try {
       assert(false, 'Fatal')
-    } catch (err) {}
+    } catch (err) { }
 
     expect(messages).toEqual([
       { name: 'test', messages: ['Hello'], level: 0 }, // xxx
@@ -100,10 +101,10 @@ describe('Logger', () => {
       info('World2')
       warn('is on')
       error('Fire')
-     
+
       try {
         assert(false, 'Fatal')
-      } catch (err) {}
+      } catch (err) { }
 
       // console.dir(messages)
 
@@ -190,4 +191,18 @@ describe('Logger', () => {
 
     expect(messages).toEqual([])
   })
+
+  // it('should handle unreachable', () => {
+      
+  //   // https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
+  //   let log:LoggerInterface = Logger('xxx')
+
+  //   function t1(data?: string): string {
+  //     if (data == null)
+  //       log.fatal('throw!')
+  //     return data // Type 'string | undefined' is not assignable to type 'string'. Type 'undefined' is not assignable to type 'string'.(2322)
+  //   }
+
+  //   t1() 
+  // })
 })

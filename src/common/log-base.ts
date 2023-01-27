@@ -66,10 +66,32 @@ export interface LoggerInterface {
 
   error(...messages: any[]): void
 
-  /** Throws if condition is not truthy */
+  /**
+   * Throws if condition is not truthy.
+   *
+   * **Attention!**  Due to a bug in typescript you will need to explicitly set the `LoggerInterface` type in
+   * order to have the assertions having an effect on unreachable code. Example:
+   *
+   * ```ts
+   * const log: LoggerInterface = Logger('xxx')
+   * ```
+   *
+   * Bug https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
+   */
   assert: LogAssert
 
-  /** Always throws */
+  /**
+   * Always throws.
+   *
+   * **Attention!** Due to a bug in typescript you will need to explicitly set the `LoggerInterface` type in
+   * order to have the assertions having an effect on unreachable code. Example:
+   *
+   * ```ts
+   * const log: LoggerInterface = Logger('xxx')
+   * ```
+   *
+   * Bug https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
+   */
   fatal(...messages: any[]): never
 
   extend(prefix: string): LoggerInterface

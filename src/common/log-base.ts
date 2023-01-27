@@ -48,8 +48,6 @@ export interface LogMessage {
 
 export type LogHandler = (msg: LogMessage) => void
 
-export type LogAssert = (condition: unknown, ...messages: any[]) => void // asserts condition -> see https://github.com/microsoft/TypeScript/issues/34523
-
 export interface LoggerInterface {
   (...messages: any[]): void
 
@@ -78,7 +76,7 @@ export interface LoggerInterface {
    *
    * Bug https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
    */
-  assert: LogAssert
+  assert(condition: unknown, ...messages: any[]): asserts condition
 
   /**
    * Always throws.

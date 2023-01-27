@@ -16,17 +16,16 @@ describe('Logger', () => {
 
     logger.setHandlers([LoggerTestHandler])
 
-    const log = logger('test')
-    const { info, error, warn, debug, assert } = log
+    const log:LoggerInterface = logger('test')
 
     log('Simple') // shortcut
-    debug('Hello')
-    info('World')
-    warn('is on')
-    error('Fire')
+    log.debug('Hello')
+    log.info('World')
+    log.warn('is on')
+    log.error('Fire')
 
     try {
-      assert(false, 'Fatal')
+      log.assert(false, 'Fatal')
     } catch (err) { }
 
     expect(messages).toEqual([
@@ -73,18 +72,17 @@ describe('Logger', () => {
     // logger.setLogLevel(LogLevel.info)
     logger.setHandlers([LoggerTestHandler])
 
-    const log = logger('test')
-    const { info, error, warn, debug, assert, label } = log
+    const log: LoggerInterface = logger('test')
 
-    expect(label).toBe('test')
+    expect(log.label).toBe('test')
 
-    debug('Hello')
-    info('World')
-    warn('is on')
-    error('Fire')
+    log.debug('Hello')
+    log.info('World')
+    log.warn('is on')
+    log.error('Fire')
 
     try {
-      assert(false, 'Fatal')
+      log.assert(false, 'Fatal')
     } catch (err) { }
 
     expect(messages).toEqual([
@@ -96,14 +94,14 @@ describe('Logger', () => {
     ])
 
     {
-      const { info, error, warn, debug, assert } = log.extend('ext')
-      debug('Hello')
-      info('World2')
-      warn('is on')
-      error('Fire')
+      const log2: LoggerInterface = log.extend('ext')
+      log2.debug('Hello')
+      log2.info('World2')
+      log2.warn('is on')
+      log2.error('Fire')
 
       try {
-        assert(false, 'Fatal')
+        log2.assert(false, 'Fatal')
       } catch (err) { }
 
       // console.dir(messages)
@@ -193,7 +191,7 @@ describe('Logger', () => {
   })
 
   // it('should handle unreachable', () => {
-      
+
   //   // https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
   //   let log:LoggerInterface = Logger('xxx')
 

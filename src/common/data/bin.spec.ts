@@ -25,26 +25,35 @@ describe('bin', () => {
   })
 
   it('should text code', () => {
-    const sample = 'Hello → wörld 👨‍👩‍👧‍👦'
+    const sample = 'Hello → wörld 👨‍👩‍👧‍👦.'
     const encoded = stringToUInt8Array(sample)
 
     expect(toBase64([1, 2, 3])).toEqual('AQID')
-    expect(toHex([1, 2, 254])).toEqual('0102fe')
-    expect(fromHex('0102fe')).toMatchInlineSnapshot(`
+    expect(toHex([1, 2, 254, 255])).toEqual('0102feff')
+    expect(fromHex('0102feff')).toMatchInlineSnapshot(`
       Uint8Array [
         1,
         2,
         254,
+        255,
       ]
     `)
 
     expect(toBase64(encoded)).toEqual(
-      'SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm',
+      'SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5GmLg==',
+    )
+
+    expect(toBase64(encoded, true)).toEqual(
+      'SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5GmLg',
+    )
+
+    expect(toBase64Url(encoded)).toEqual(
+      'SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J-RqeKAjfCfkafigI3wn5GmLg',
     )
 
     expect(
       Uint8ArrayToString(
-        fromBase64('SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J+RqeKAjfCfkafigI3wn5Gm'),
+        fromBase64('SGVsbG8g4oaSIHfDtnJsZCDwn5Go4oCN8J-RqeKAjfCfkafigI3wn5GmLg'),
       ),
     ).toBe(sample)
 

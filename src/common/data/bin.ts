@@ -104,24 +104,32 @@ export function fromHex(hexString: string): Uint8Array {
   )
 }
 
-export function toBase64(bin: BinInput): string {
+/** Regular base64 */
+export function toBase64(bin: BinInput, stripPadding = false): string {
   const bytes = toUint8Array(bin)
-  if (typeof Buffer !== 'undefined')
-    return Buffer.from(bytes).toString('base64')
-  let s = ''
-  for (let i = 0; i < bytes.byteLength; i++)
-    s += String.fromCharCode(bytes[i])
-  return btoa(s)
+  let sb = ''
+  if (typeof Buffer !== 'undefined') {
+    sb = Buffer.from(bytes).toString('base64')
+  }
+  else {
+    let s = ''
+    for (let i = 0; i < bytes.byteLength; i++)
+      s += String.fromCharCode(bytes[i])
+    sb = btoa(s)
+  }
+  if (stripPadding)
+    return sb.replaceAll('=', '')
+  return sb
 }
 
 export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
-    return Buffer.from(bytes).toString('base64url')
+    return Buffer.from(bytes).toString('base64url').replaceAll('=', '')
   let s = ''
   for (let i = 0; i < bytes.byteLength; i++)
     s += String.fromCharCode(bytes[i])
-  return btoa(s).replaceAll('+', '-').replaceAll('/', '_')
+  return btoa(s).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
 export function fromBase64(s: string): Uint8Array {

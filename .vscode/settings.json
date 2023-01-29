@@ -3,5 +3,14 @@
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "vitest.commandLine": "pnpm exec vitest",
+  "vitest.enable": true,
+  "vitest.exclude": [    
+    "**/_archive/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/cypress/**",
+    "**/.{idea,git,cache,output,temp}/**"
+  ]
 }

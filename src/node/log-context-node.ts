@@ -1,3 +1,4 @@
+import { valueToBoolean } from '../common'
 import { Logger } from '../common/log'
 import { toPath } from './env'
 import { LoggerFileHandler } from './log-file'
@@ -13,8 +14,10 @@ function setupLogContextNode() {
   ]
 
   const logFilePath = process.env.ZEED_LOG ?? process.env.LOG
+  const time = valueToBoolean(process.env.ZEED_TIME, true)
+  const pretty = valueToBoolean(process.env.ZEED_PRETTY, false)
   if (logFilePath)
-    handlers.unshift(LoggerFileHandler(toPath(logFilePath)))
+    handlers.unshift(LoggerFileHandler(toPath(logFilePath), { time, pretty }))
 
   Logger.setHandlers(handlers)
 }

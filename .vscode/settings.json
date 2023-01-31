@@ -6,7 +6,7 @@
   },
   "vitest.commandLine": "pnpm exec vitest",
   "vitest.enable": true,
-  "vitest.exclude": [    
+  "vitest.exclude": [
     "**/_archive/**",
     "**/node_modules/**",
     "**/dist/**",

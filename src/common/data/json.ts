@@ -1,7 +1,7 @@
 // From https://github.com/moll/json-stringify-safe License ISC
 
 const _sortedReplacer = (key: string, value: any) =>
-  value instanceof Object && !(Array.isArray(value))
+  (value instanceof Object && !(Array.isArray(value)))
     ? Object.keys(value)
       .sort()
       // .filter((key) => value[key] != null) // Remove null and undefined

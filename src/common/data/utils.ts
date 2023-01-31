@@ -59,7 +59,7 @@ export function size(obj: any) {
 }
 
 export function last<T>(array?: T[]): T | undefined {
-  return array != null && array.length > 0 ? array[array.length - 1] : undefined
+  return (array != null && array.length > 0) ? array[array.length - 1] : undefined
 }
 
 // True for [], {}, "", Map(), Set() and all primitives

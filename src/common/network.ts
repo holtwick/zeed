@@ -111,9 +111,7 @@ export async function fetchBasic(
       return response
 
     try {
-      log.warn(
-        `Fetch of ${url} with ${fetchOptions} returned status=${response.status}`,
-      )
+      log.warn(`Fetch of ${String(url)} returned status=${response.status}. Options:`, fetchOptions)
       log.warn(`Response: ${await response.text()}`)
     }
     catch (err) {

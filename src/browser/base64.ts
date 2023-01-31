@@ -2,7 +2,7 @@
 
 import { Logger } from '../common/log'
 
-const { error } = Logger('zeed:base64', 'error')
+const log = Logger('zeed:base64', 'error')
 
 export function urlBase64ToUint8Array(
   base64String: string,
@@ -20,6 +20,6 @@ export function urlBase64ToUint8Array(
     return outputArray
   }
   catch (err) {
-    error(err, base64String)
+    log.error(err, base64String)
   }
 }

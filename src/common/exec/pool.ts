@@ -79,7 +79,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   }
 
   function didFinish() {
-    events.emit('didFinish')
+    void events.emit('didFinish')
     // allFinishedResolve(countMax)
     countMax = 0
     countResolved = 0
@@ -93,7 +93,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       presentResolved
         += state === PoolTaskState.finished ? max : Math.min(max, resolved)
     }
-    events.emit(
+    void events.emit(
       'didUpdate',
       countMax,
       countResolved,
@@ -136,7 +136,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
         const done = taskInfo.done
         taskInfo.state = PoolTaskState.running
         ++currentParallel
-        events.emit('didStart', id)
+        void events.emit('didStart', id)
 
         const taskFinished = (result?: T) => {
           if (taskInfo) {
@@ -153,12 +153,12 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           .task(taskInfo)
           .then((r) => {
             done(r)
-            events.emit('didResolve', id, r)
+            void events.emit('didResolve', id, r)
             taskFinished(r)
           })
           .catch((err) => {
             done()
-            events.emit('didReject', id, err)
+            void events.emit('didReject', id, err)
             taskFinished()
           })
       }
@@ -170,7 +170,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     if (taskInfo && taskInfo.state === PoolTaskState.waiting) {
       tasks[id].state = PoolTaskState.finished
       ++countResolved
-      events.emit('didCancel', id)
+      void events.emit('didCancel', id)
       didUpdate()
     }
   }

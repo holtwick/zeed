@@ -13,9 +13,7 @@ interface PubSubConfig {
   debug?: boolean
 }
 
-export class PubSub<
-  L extends ListenerSignature<L> = DefaultListener,
-> extends Emitter<L> {
+export class PubSub< L extends ListenerSignature<L> = DefaultListener> extends Emitter<L> {
   name: string
   channel: Channel
   encoder: Encoder
@@ -88,8 +86,8 @@ export class PubSub<
     return false
   }
 
-  publish = this.emit
-  subscribe = this.on
+  publish = this.emit.bind(this)
+  subscribe = this.on.bind(this)
 }
 
 export function usePubSub<L extends ListenerSignature<L> = DefaultListener>(

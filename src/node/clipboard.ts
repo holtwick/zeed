@@ -8,6 +8,6 @@ export function pbcopy(data: string) {
         proc.on('close', () => resolve(data))
         proc.stdin.write(data)
         proc.stdin.end()
-      })
+      }).catch(() => {})
     })
 }

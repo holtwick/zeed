@@ -72,8 +72,8 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
       let result, error: any
       if (method != null) {
         try {
-          // @ts-expect-error xxx
-          result = await functions[method](...args)
+          const fn = (functions as any)[method] // todo
+          result = await fn(...args)
         }
         catch (e) {
           error = String(e)

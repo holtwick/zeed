@@ -29,7 +29,7 @@ export abstract class Channel extends Emitter<{
   abstract isConnected?: boolean
   abstract postMessage(data: any): void
   close() {
-    this.dispose()
+    void this.dispose()
   }
 }
 
@@ -40,7 +40,7 @@ export class LocalChannel extends Channel {
   other?: LocalChannel
 
   postMessage(data: any) {
-    this.other?.emit('message', {
+    void this.other?.emit('message', {
       data, // : cloneObject(data),
       origin: 'local',
       lastEventId: uuid(),

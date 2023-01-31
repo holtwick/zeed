@@ -148,13 +148,13 @@ export function useMessageHub(
             result = await result
           log(`result ${result}`)
           if (id)
-            postMessage({ id, result })
+            await postMessage({ id, result })
         }
         catch (error) {
           const err
             = error instanceof Error ? error : new Error(valueToString(error))
           log.warn('execution error', err.name)
-          postMessage({
+          await postMessage({
             id,
             error: {
               message: err.message,
@@ -199,7 +199,7 @@ export function useMessageHub(
       }
     })
 
-    postNext()
+    await postNext()
   }
 
   const fetchMessage = async (
@@ -209,7 +209,7 @@ export function useMessageHub(
   ): Promise<unknown> => {
     const { timeout = 5000 } = opt
     const id = uuid()
-    postMessage({
+    await postMessage({
       name,
       args,
       id,
@@ -223,7 +223,7 @@ export function useMessageHub(
   }
 
   if (opt.channel)
-    connect(opt.channel)
+    void connect(opt.channel) // todo async
 
   return {
     dispose,

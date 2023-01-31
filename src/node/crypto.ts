@@ -3,12 +3,11 @@ import nodeCrypto from 'crypto'
 
 export {}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-declare namespace NodeJS {
-  interface Global {
-    crypto: Crypto
-  }
-}
+// declare namespace NodeJS {
+//   interface Global {
+//     crypto: Crypto
+//   }
+// }
 
 // todo sideffects
 try {

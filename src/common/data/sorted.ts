@@ -8,7 +8,7 @@ export function useSorted<S extends Record<string, any>>(
   } = {},
 ) {
   const {
-    getter = (item: any) => item.sort,
+    getter = (item: any): number => item.sort,
     // setter = (item: any, value) => (item.sort = value),
   } = config
 

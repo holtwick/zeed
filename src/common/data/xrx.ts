@@ -9,7 +9,7 @@ const RX_LOOK_BEHIND = /^((?:\(\?[\w$]+\))?)\(\?<([=!])([\s\S]*?)\)/gm
 const log = Logger('zeed:xrx', 'error')
 
 export function regExpString(rx: string | RegExp): string {
-  return typeof rx === 'string' ? rx : rx.source || ''
+  return typeof rx === 'string' ? rx : (rx.source || '')
 }
 
 export function regExpEscape(str: string): string {

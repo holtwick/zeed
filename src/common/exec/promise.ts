@@ -5,7 +5,7 @@
 
 import { Logger } from '../log'
 
-const { warn } = Logger('zeed:promise', 'error')
+const log = Logger('zeed:promise', 'error')
 
 export function createPromise<T>(): [Promise<T>, any, any] {
   let resolve, reject
@@ -119,7 +119,7 @@ export function waitOn(
       else if (obj.removeEventListener)
         obj.removeEventListener(event, fn)
       else
-        warn('No remove listener method found for', obj, event)
+        log.warn('No remove listener method found for', obj, event)
     }
 
     let timer: any = setTimeout(() => {
@@ -132,7 +132,7 @@ export function waitOn(
     else if (obj.addEventListener)
       obj.addEventListener(event, fn)
     else
-      warn('No listener method found for', obj)
+      log.warn('No listener method found for', obj)
   })
 }
 

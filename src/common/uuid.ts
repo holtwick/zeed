@@ -49,7 +49,7 @@ export function uuidDecodeB32(uuid: string): Uint8Array {
 // https://stackoverflow.com/a/2117523/140927
 const pattern = '10000000-1000-4000-8000-100000000000' // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
 
-export const uuidv4 = typeof crypto !== 'undefined' && crypto.randomUUID != null
+export const uuidv4 = (typeof crypto !== 'undefined' && crypto.randomUUID != null)
   ? crypto.randomUUID.bind(crypto) // native!
   : () => pattern.replace(/[018]/g, (c: any) => (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16))
 

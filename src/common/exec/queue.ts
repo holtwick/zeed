@@ -69,7 +69,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
         break
 
       if (this.countResolved === 0)
-        this.emit('didStart', this.countMax)
+        void this.emit('didStart', this.countMax)
 
       const { name, task, resolve } = info
       this.currentTask = task()
@@ -87,11 +87,11 @@ export class SerialQueue extends Emitter<TaskEvents> {
       this.currentTask = undefined
 
       this.countResolved += 1
-      this.emit('didUpdate', this.countMax, this.countResolved)
+      void this.emit('didUpdate', this.countMax, this.countResolved)
     }
 
     if (this.queue.length === 0) {
-      this.emit('didFinish')
+      void this.emit('didFinish')
       this.countMax = 0
       this.countResolved = 0
     }
@@ -120,9 +120,9 @@ export class SerialQueue extends Emitter<TaskEvents> {
       })
 
       this.countMax += 1
-      this.emit('didUpdate', this.countMax, this.countResolved)
+      void this.emit('didUpdate', this.countMax, this.countResolved)
 
-      this.performNext()
+      void this.performNext()
     })
   }
 
@@ -140,7 +140,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
   /** Remove all tasks from queue that are not yet executing. */
   async cancelAll(_unblock = true) {
     this.log('cancelAll')
-    this.emit('didCancel')
+    void this.emit('didCancel')
     const resolver = this.queue.map(task => task.resolve)
     this.queue = []
     resolver.forEach(r => r(undefined))
@@ -158,7 +158,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
   resume() {
     this.log('resume')
     this.paused = false
-    this.performNext()
+    void this.performNext()
   }
 
   /** Wait for all tasks to finish */

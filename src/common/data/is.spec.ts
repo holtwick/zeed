@@ -22,29 +22,33 @@ describe('is', () => {
     expect(isObject(plain)).toBe(true)
     expect(isObject([])).toBe(true)
     expect(isObject(123)).toBe(false)
+    expect(isObject(new Date())).toBe(true)
 
     expect(isRecord(X)).toBe(false)
     expect(isRecord(x)).toBe(true)
     expect(isRecord(plain)).toBe(true)
     expect(isRecord([])).toBe(false)
     expect(isRecord(123)).toBe(false)
+    expect(isRecord(new Date())).toBe(true)
 
     expect(isRecordPlain(X)).toBe(false)
     expect(isRecordPlain(x)).toBe(false)
     expect(isRecordPlain(plain)).toBe(true)
     expect(isRecordPlain([])).toBe(false)
     expect(isRecordPlain(123)).toBe(false)
+    expect(isRecordPlain(new Date())).toBe(false)
 
     expect(isPrimitive(X)).toBe(false)
     expect(isPrimitive(x)).toBe(false)
     expect(isPrimitive(plain)).toBe(false)
     expect(isPrimitive([])).toBe(false)
     expect(isPrimitive(123)).toBe(true)
+    expect(isPrimitive(new Date())).toBe(false)
   })
 
   it('should filter', async () => {
     const test = ['a', null, undefined, 'b', false, 'c', true]
-    const r: (string | true)[] = test.filter(isNotNull)
+    const r: (string | boolean)[] = test.filter(isNotNull)
     expect(r).toMatchInlineSnapshot(`
       Array [
         "a",

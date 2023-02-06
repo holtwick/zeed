@@ -66,6 +66,8 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   const { maxParallel = 3 } = config
   const events = new Emitter<PoolTaskEvents>()
 
+  const progress = new Progress()
+
   let countMax = 0
   let countResolved = 0
   let currentParallel = 0
@@ -174,12 +176,14 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       tasks[id].state = PoolTaskState.finished
       ++countResolved
       void events.emit('didCancel', id)
+      void tasks[id].progress.dispose()
       didUpdate()
     }
   }
 
   function cancelAll() {
     Object.keys(tasks).forEach(cancel)
+    // progress.dispose()
   }
 
   function enqueue<P>(
@@ -223,10 +227,12 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       }
     }
 
-    const progress = new Progress({
+    const taskProgress = new Progress({
       totalUnits: config.max ?? 1,
       completeUnits: config.resolved ?? 0,
     })
+
+    progress.addChild(taskProgress)
 
     tasks[id] = {
       id,
@@ -238,19 +244,19 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       resolved: config.resolved ?? 0,
       done,
       payload: config.payload,
-      progress,
+      progress: taskProgress,
       setMax(units) {
-        progress.setTotalUnit(units)
+        progress.setTotalUnits(units)
         tasks[id].max = units
         didUpdate()
       },
       setResolved(units) {
-        progress.setCompletetedUnit(units)
+        progress.setCompletetedUnits(units)
         tasks[id].resolved = units
         didUpdate()
       },
       incResolved(inc = 1) {
-        progress.incCompletedUnit(inc)
+        progress.incCompletedUnits(inc)
         tasks[id].resolved += inc
         didUpdate()
       },
@@ -270,6 +276,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     events,
     cancel,
     cancelAll,
+    progress,
     enqueue,
     dispose: cancelAll,
     // allFinishedPromise,

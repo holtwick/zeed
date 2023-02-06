@@ -1,5 +1,6 @@
 import { Emitter } from '../msg/emitter'
 import { uuid } from '../uuid'
+import { Progress } from './progress'
 import { createPromise } from './promise'
 
 interface PoolConfig {
@@ -26,8 +27,11 @@ export interface PoolTask<T> {
   priority: number
   /** Same groups are executed only one at a time */
   group?: string
+
+  progress: Progress
   max: number
   resolved: number
+
   result?: T
   payload?: unknown
 }
@@ -219,6 +223,11 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       }
     }
 
+    const progress = new Progress({
+      totalUnits: config.max ?? 1,
+      completeUnits: config.resolved ?? 0,
+    })
+
     tasks[id] = {
       id,
       task,
@@ -229,15 +238,19 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       resolved: config.resolved ?? 0,
       done,
       payload: config.payload,
-      setMax(max) {
-        tasks[id].max = max
+      progress,
+      setMax(units) {
+        progress.setTotalUnit(units)
+        tasks[id].max = units
         didUpdate()
       },
-      setResolved(max) {
-        tasks[id].resolved = max
+      setResolved(units) {
+        progress.setCompletetedUnit(units)
+        tasks[id].resolved = units
         didUpdate()
       },
       incResolved(inc = 1) {
+        progress.incCompletedUnit(inc)
         tasks[id].resolved += inc
         didUpdate()
       },

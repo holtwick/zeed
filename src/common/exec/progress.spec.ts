@@ -7,7 +7,7 @@ describe("progress.spec", () => {
       totalUnits: 10
     })
     expect(p.getFraction()).toBe(0)
-    p.incCompletedUnit()
+    p.incCompletedUnits()
     expect(p.getTotalUnits()).toBe(10)
     expect(p.getCompletedUnits()).toBe(1)
     expect(p.getFraction()).toBe(0.1)
@@ -20,10 +20,10 @@ describe("progress.spec", () => {
     expect(p.getChildrenCount()).toBe(1)
     expect(p.getFraction()).toBe(0.1)
 
-    pp.setTotalUnit(10)
+    pp.setTotalUnits(10)
     expect(p.getFraction()).toBe(0.05)
 
-    pp.incCompletedUnit(5)
+    pp.incCompletedUnits(5)
     expect(p.getTotalUnits()).toBe(20)
     expect(p.getCompletedUnits()).toBe(6)
     expect(p.getFraction()).toBe(0.3)
@@ -42,7 +42,7 @@ describe("progress.spec", () => {
 
     // Finish due to all units completed
     expect(p.isFinished()).toBe(false)
-    p.setCompletetedUnit(10)
+    p.setCompletetedUnits(10)
     expect(p.getFraction()).toBe(1)
     expect(p.isFinished()).toBe(true)
   })

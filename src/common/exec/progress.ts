@@ -49,13 +49,10 @@ export class Progress extends Emitter<{
     }
   }
 
+  /** Add child progress, which count into its parents units. On `dispose` it will auto remove itself from parent. */
   addChild(child: Progress) {
-    child.on('progressDispose', () => {
-      arrayRemoveElement(this._children, child)
-    })
-    child.on('progressChanged', () => {
-      this.update()
-    })
+    child.on('progressDispose', () => this.removeChild(child))
+    child.on('progressChanged', () => this.update())
     if (!this._children.includes(child))
       this._children.push(child)
     this.update()
@@ -112,17 +109,19 @@ export class Progress extends Emitter<{
     return this._children.length
   }
 
-  setTotalUnit(unit: number) {
-    this._totalUnits = unit
+  setTotalUnits(units: number, completedUnits?: number) {
+    this._totalUnits = units
+    if (completedUnits != null)
+      this._completedUnits = completedUnits
     this.update()
   }
 
-  setCompletetedUnit(unit: number) {
-    this._completedUnits = unit
+  setCompletetedUnits(units: number) {
+    this._completedUnits = units
     this.update()
   }
 
-  incCompletedUnit(step = 1) {
+  incCompletedUnits(step = 1) {
     this._completedUnits += step
     this.update()
   }

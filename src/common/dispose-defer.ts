@@ -82,6 +82,9 @@ export function useDispose(config?: string | UseDisposeConfig) {
     getSize() {
       return tracked.length
     },
+    isDisposed() {
+      return tracked.length <= 0
+    },
   })
 }
 

@@ -38,8 +38,8 @@ describe('dispose', () => {
     expect(disposeCalls).toEqual([3])
     expect(dispose.getSize()).toEqual(3)
 
-    y()
-    y()
+    y?.()
+    y?.()
     await dispose.untrack(x)
     expect(disposeCalls).toEqual([3, 1])
     expect(dispose.getSize()).toEqual(2)

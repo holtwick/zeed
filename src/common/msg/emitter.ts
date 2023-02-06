@@ -34,6 +34,7 @@ export class Emitter<
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
+  /** Unused, but here for historical reasons */
   dispose = useDispose()
 
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
@@ -48,11 +49,6 @@ export class Emitter<
     ...args: Parameters<RemoteListener[U]>
   ): Promise<boolean> {
     let ok = false
-
-    this.dispose.add(() => {
-      this.subscribers = {}
-      this.subscribersOnAny = []
-    })
 
     try {
       const subscribers = (this.subscribers[event] || []) as EmitterHandler[]

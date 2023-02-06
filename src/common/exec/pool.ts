@@ -90,8 +90,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     let presentResolved = 0
     for (const { max, resolved, state } of Object.values(tasks)) {
       presentMax += max
-      presentResolved
-        += state === PoolTaskState.finished ? max : Math.min(max, resolved)
+      presentResolved += state === PoolTaskState.finished ? max : Math.min(max, resolved)
     }
     void events.emit(
       'didUpdate',

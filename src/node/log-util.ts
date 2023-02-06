@@ -1,27 +1,25 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { resolve } from 'path'
+import { isNotNull } from '../common'
 
-export function getStackLlocationList(stack: string): any[] {
+export function getStackLlocationList(stack: string): string[] {
   if (typeof stack !== 'string')
     return []
   // console.log("stack", stack)
   return (
-    stack
-      ?.split('\n')
-      ?.map((rawLine) => {
-        const m = rawLine.match(
-          /^\s+at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/,
-        )
-        if (m) {
-          let line = m[3] || m[2] || m[4]
-          if (line.endsWith(')'))
-            line = line.slice(0, -1)
-          return line
-        }
-        return null
-      })
-      ?.filter(v => v != null) || []
+    stack?.split('\n').map((rawLine) => {
+      const m = rawLine.match(
+        /^\s+at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/,
+      )
+      if (m) {
+        let line = m[3] || m[2] || m[4]
+        if (line.endsWith(')'))
+          line = line.slice(0, -1)
+        return line
+      }
+      return undefined
+    })?.filter(isNotNull) ?? []
   )
 }
 

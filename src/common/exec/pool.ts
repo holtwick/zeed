@@ -84,11 +84,22 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     }
   }
 
+  async function cleanupFinished() {
+    for (const id of Object.keys(tasks)) {
+      const task = tasks[id]
+      if (task.state === PoolTaskState.finished) {
+        await tasks[id].progress.dispose()
+        delete tasks[id]
+      }
+    }
+  }
+
   function didFinish() {
     void events.emit('didFinish')
     // allFinishedResolve(countMax)
     countMax = 0
     countResolved = 0
+    void cleanupFinished()
   }
 
   function didUpdate() {
@@ -148,6 +159,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
             taskInfo.result = result
             taskInfo.state = PoolTaskState.finished
             taskInfo.resolved = taskInfo.max
+            // void taskInfo.progress.dispose()
           }
           --currentParallel
           ++countResolved

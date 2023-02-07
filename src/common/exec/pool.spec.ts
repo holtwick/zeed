@@ -9,6 +9,9 @@ describe('pool', () => {
     const collectedEvents: any = []
     pool.events.onAny((...args) => collectedEvents.push(args))
 
+    expect(pool.progress.getFraction()).toBe(0)
+    expect(pool.progress.getTotalUnits()).toBe(0)
+
     pool.enqueue(
       async () => {
         r.push('a')
@@ -16,6 +19,9 @@ describe('pool', () => {
       },
       { id: 'a' },
     )
+
+    expect(pool.progress.getTotalUnits()).toBe(1)
+
     pool.enqueue(
       async (taskInfo) => {
         // info.setProgress(0, 5)
@@ -64,6 +70,7 @@ describe('pool', () => {
       },
       { id: 'f' },
     )
+
     pool.cancel('dd')
     cancel()
     expect(r).toMatchInlineSnapshot(`
@@ -82,9 +89,16 @@ describe('pool', () => {
       { id: 'g' },
     )
 
+    expect(pool.progress.getTotalUnits()).toBe(10)
+    
     expect(await promise).toBe('g')
 
     await pool.waitFinishAll()
+    await sleep(1)
+
+    expect(pool.progress.getTotalUnits()).toBe(0)
+    expect(pool.progress.getCompletedUnits()).toBe(0)    
+    expect(pool.progress.getFraction()).toBe(0)
 
     expect(r).toMatchInlineSnapshot(`
       Array [

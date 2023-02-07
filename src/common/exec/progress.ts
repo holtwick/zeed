@@ -86,7 +86,7 @@ export class Progress extends Emitter<{
 
   /** Cannot calculate progress, because totalUnits are missing. Special representation in UI. */
   isIndeterminate(): boolean {
-    return this._totalUnits <= 0
+    return this._totalUnits <= 0 && this._children.length <= 0
   }
 
   isCancelled() {
@@ -118,6 +118,11 @@ export class Progress extends Emitter<{
 
   setCompletetedUnits(units: number) {
     this._completedUnits = units
+    this.update()
+  }
+
+  setCompleted() {
+    this._completedUnits = this._totalUnits
     this.update()
   }
 

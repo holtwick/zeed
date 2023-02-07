@@ -46,4 +46,16 @@ describe("progress.spec", () => {
     expect(p.getFraction()).toBe(1)
     expect(p.isFinished()).toBe(true)
   })
+
+  it("should cancel and auto reset", async () => {
+    let p = new Progress({
+      totalUnits: 10
+    })
+    expect(p.isCancelled()).toBe(false)
+    await p.cancel()
+    expect(p.isCancelled()).toBe(true)
+    p.incCompletedUnits(10)
+    expect(p.isFinished()).toBe(true)
+    expect(p.isCancelled()).toBe(false)
+  })
 })

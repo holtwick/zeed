@@ -11,17 +11,19 @@ export class Progress extends Emitter<{
   private _totalUnits: number
   private _completedUnits: number
   private _isCancelled = false
+  private _resetWhenFinished = true
   private _children: Progress[] = []
 
   constructor(opt: {
     totalUnits?: number
     completeUnits?: number
-    isIndeterminate?: boolean
+    resetWhenFinished?: boolean
   } = {}) {
     super()
 
     this._totalUnits = opt.totalUnits ?? 0
     this._completedUnits = opt.completeUnits ?? 0
+    this._resetWhenFinished = opt.resetWhenFinished ?? true
 
     this.dispose.add(async () => {
       // log('dispose', this._children)
@@ -33,12 +35,21 @@ export class Progress extends Emitter<{
 
   private update() {
     void this.emit('progressChanged', this)
+
+    if (this._isCancelled && this._resetWhenFinished) {
+      if (this.getTotalUnits() <= this.getCompletedUnits())
+        this.reset()
+    }
   }
 
   /** Fresh start */
   reset() {
-    this._isCancelled = false
-    this.update()
+    if (this._isCancelled) {
+      this._isCancelled = false
+      for (const child of this._children)
+        child.reset()
+      this.update()
+    }
   }
 
   /** Notify and mark as cancelled. May take some time before having an effect. */

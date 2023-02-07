@@ -90,7 +90,16 @@ describe('pool', () => {
     )
 
     expect(pool.progress.getTotalUnits()).toBe(10)
-    
+    expect(pool.progress.toString()).toMatchInlineSnapshot(`
+      "pool-0: 0 of 0 units, 20 %, cancel=false
+        a: 0 of 1 units, 0 %, cancel=false
+        b: 2 of 5 units, 40 %, cancel=false
+        c: 0 of 1 units, 0 %, cancel=false
+        d: 0 of 1 units, 0 %, cancel=false
+        e: 0 of 1 units, 0 %, cancel=false
+        g: 0 of 1 units, 0 %, cancel=false"
+    `)
+
     expect(await promise).toBe('g')
 
     await pool.waitFinishAll()
@@ -99,6 +108,7 @@ describe('pool', () => {
     expect(pool.progress.getTotalUnits()).toBe(0)
     expect(pool.progress.getCompletedUnits()).toBe(0)    
     expect(pool.progress.getFraction()).toBe(0)
+    expect(pool.progress.toString()).toMatchInlineSnapshot('"pool-0: 0 of 0 units, 0 %, cancel=false"')
 
     expect(r).toMatchInlineSnapshot(`
       Array [

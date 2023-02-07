@@ -2,6 +2,7 @@
 
 import { arrayRemoveElement } from '../data'
 import { Emitter } from '../msg'
+import { uname } from '../uuid'
 
 export class Progress extends Emitter<{
   progressCancelled(progress: Progress): void
@@ -14,16 +15,20 @@ export class Progress extends Emitter<{
   private _resetWhenFinished = true
   private _children: Progress[] = []
 
+  name: string
+
   constructor(opt: {
     totalUnits?: number
     completeUnits?: number
     resetWhenFinished?: boolean
+    name?: string
   } = {}) {
     super()
 
     this._totalUnits = opt.totalUnits ?? 0
     this._completedUnits = opt.completeUnits ?? 0
     this._resetWhenFinished = opt.resetWhenFinished ?? true
+    this.name = opt.name ?? uname('progress')
 
     this.dispose.add(async () => {
       // log('dispose', this._children)
@@ -116,7 +121,10 @@ export class Progress extends Emitter<{
   getFraction() {
     if (this.isIndeterminate())
       return 0
-    return Math.min(1, Math.max(0, this.getCompletedUnits() / this.getTotalUnits()))
+    let value = this.getCompletedUnits() / this.getTotalUnits()
+    if (isNaN(value))
+      value = 0
+    return Math.min(1, Math.max(0, value))
   }
 
   getChildrenCount() {
@@ -143,5 +151,14 @@ export class Progress extends Emitter<{
   incCompletedUnits(step = 1) {
     this._completedUnits += step
     this.update()
+  }
+
+  toString(indent = 0) {
+    let s = `${'  '.repeat(indent)}${this.name}: ${this._completedUnits} of ${this._totalUnits} units, ${Math.floor(this.getFraction() * 100)} %, cancel=${this._isCancelled}\n`
+    for (const child of this._children)
+      s += child.toString(indent + 1)
+    if (indent === 0)
+      return s.trim()
+    return s
   }
 }

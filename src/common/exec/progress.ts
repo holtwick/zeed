@@ -33,21 +33,22 @@ export class Progress extends Emitter<{
 
   private update() {
     void this.emit('progressChanged', this)
-    // log('update', this._children)
   }
 
   /** Fresh start */
   reset() {
     this._isCancelled = false
+    this.update()
   }
 
   /** Notify and mark as cancelled. May take some time before having an effect. */
   async cancel() {
-    if (!this.isCancelled) {
+    if (!this._isCancelled) {
       this._isCancelled = true
       await this.emit('progressCancelled', this)
       for (const child of this._children)
         await child.cancel()
+      this.update()
     }
   }
 

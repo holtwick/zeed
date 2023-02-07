@@ -121,7 +121,10 @@ export class Progress extends Emitter<{
   getFraction() {
     if (this.isIndeterminate())
       return 0
-    return Math.min(1, Math.max(0, this.getCompletedUnits() / this.getTotalUnits()))
+    let value = this.getCompletedUnits() / this.getTotalUnits()
+    if (isNaN(value))
+      value = 0
+    return Math.min(1, Math.max(0, value))
   }
 
   getChildrenCount() {

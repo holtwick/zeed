@@ -1,9 +1,10 @@
 import { Emitter } from '../msg/emitter'
-import { uuid } from '../uuid'
+import { uname, uuid } from '../uuid'
 import { Progress } from './progress'
 import { createPromise } from './promise'
 
 interface PoolConfig {
+  name?: string
   maxParallel?: number
 }
 
@@ -63,10 +64,10 @@ export interface PoolTaskEvents {
 // todo: dependents
 
 export function usePool<T = any>(config: PoolConfig = {}) {
-  const { maxParallel = 3 } = config
+  const { maxParallel = 3, name = uname('pool') } = config
   const events = new Emitter<PoolTaskEvents>()
 
-  const progress = new Progress()
+  const progress = new Progress({ name })
 
   progress.on('progressCancelled', cancelAll)
 
@@ -243,6 +244,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     }
 
     const taskProgress = new Progress({
+      name: id,
       totalUnits: config.max ?? 1,
       completeUnits: config.resolved ?? 0,
     })
@@ -261,17 +263,17 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       payload: config.payload,
       progress: taskProgress,
       setMax(units) {
-        progress.setTotalUnits(units)
+        taskProgress.setTotalUnits(units)
         tasks[id].max = units
         didUpdate()
       },
       setResolved(units) {
-        progress.setCompletetedUnits(units)
+        taskProgress.setCompletetedUnits(units)
         tasks[id].resolved = units
         didUpdate()
       },
       incResolved(inc = 1) {
-        progress.incCompletedUnits(inc)
+        taskProgress.incCompletedUnits(inc)
         tasks[id].resolved += inc
         didUpdate()
       },

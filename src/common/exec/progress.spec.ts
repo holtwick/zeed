@@ -4,6 +4,7 @@ describe("progress.spec", () => {
   it("should track progress", async () => {
     // Simple progress
     let p = new Progress({
+      name: 'root',
       totalUnits: 10
     })
     expect(p.getFraction()).toBe(0)
@@ -27,6 +28,11 @@ describe("progress.spec", () => {
     expect(p.getTotalUnits()).toBe(20)
     expect(p.getCompletedUnits()).toBe(6)
     expect(p.getFraction()).toBe(0.3)
+
+    expect(p.toString()).toMatchInlineSnapshot(`
+      "root: 1 of 10 units, 30 %, cancel=false
+        progress-0: 5 of 10 units, 50 %, cancel=false"
+    `)
 
     // Finished due to dispose
     expect(pp.isFinished()).toBe(false)

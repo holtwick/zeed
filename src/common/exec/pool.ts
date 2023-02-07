@@ -68,6 +68,8 @@ export function usePool<T = any>(config: PoolConfig = {}) {
 
   const progress = new Progress()
 
+  progress.on('progressCancelled', cancelAll)
+
   let countMax = 0
   let countResolved = 0
   let currentParallel = 0
@@ -100,6 +102,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     countMax = 0
     countResolved = 0
     void cleanupFinished()
+    progress.reset()
   }
 
   function didUpdate() {

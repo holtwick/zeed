@@ -4,6 +4,13 @@ import { arrayRemoveElement } from '../data'
 import { Emitter } from '../msg'
 import { uname } from '../uuid'
 
+interface ProgressOptions {
+  totalUnits?: number
+  completeUnits?: number
+  resetWhenFinished?: boolean
+  name?: string
+}
+
 /**
  * Progress helper with these properties:
  *
@@ -27,12 +34,7 @@ export class Progress extends Emitter<{
 
   name: string
 
-  constructor(opt: {
-    totalUnits?: number
-    completeUnits?: number
-    resetWhenFinished?: boolean
-    name?: string
-  } = {}) {
+  constructor(opt: ProgressOptions = {}) {
     super()
 
     this._totalUnits = opt.totalUnits ?? 0
@@ -40,8 +42,8 @@ export class Progress extends Emitter<{
     this._resetWhenFinished = opt.resetWhenFinished ?? true
     this.name = opt.name ?? uname('progress')
 
+    // Make sure to cleanup also children
     this.dispose.add(async () => {
-      // log('dispose', this._children)
       for (const child of this._children)
         await child.dispose()
       await this.emit('progressDispose', this)
@@ -86,6 +88,13 @@ export class Progress extends Emitter<{
     if (!this._children.includes(child))
       this._children.push(child)
     this.update()
+  }
+
+  /** Create child progress.  */
+  createChildProgress(opt?: ProgressOptions) {
+    const progress = new Progress(opt)
+    this.addChild(progress)
+    return progress
   }
 
   removeChild(child: Progress) {

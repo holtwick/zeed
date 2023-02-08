@@ -7,6 +7,17 @@ import { Logger } from '../log'
 
 const log = Logger('zeed:promise', 'error')
 
+/**
+ * Promise to be used with `await`. Example:
+ *
+ * ```
+ * const [promise, resolve, reject] = createPromise()
+ * setTimeout(() => {
+ *   resolve(5)
+ * }, 50)
+ * const result = await promise
+ * ```
+ */
 export function createPromise<T>(): [Promise<T>, any, any] {
   let resolve, reject
   const promise = new Promise<T>((_resolve, _reject) => {
@@ -21,6 +32,7 @@ export async function sleep(milliSeconds: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, milliSeconds))
 }
 
+/** Same as `await sleep(0)`, just let the event loop execute. */
 export async function immediate(): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, 0))
 }

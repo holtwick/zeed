@@ -1,9 +1,19 @@
-// Inspired by https://developer.apple.com/documentation/foundation/progress#
+// Inspired by https://developer.apple.com/documentation/foundation/progress
 
 import { arrayRemoveElement } from '../data'
 import { Emitter } from '../msg'
 import { uname } from '../uuid'
 
+/**
+ * Progress helper with these properties:
+ *
+ * - `totalUnits` and `completedUnits` for progress
+ * - Can be cancelled
+ * - Sends events on cancel, changed and dispose
+ * - Supports children and propagates values.
+ *   Total progress is sum of all units in the tree.
+ * - On `dispose` child removes itself from parent.
+ */
 export class Progress extends Emitter<{
   progressCancelled(progress: Progress): void
   progressChanged(progress: Progress): void
@@ -38,6 +48,7 @@ export class Progress extends Emitter<{
     })
   }
 
+  /** Notify others about changes and reset on completion, if flag is set. */
   private update() {
     void this.emit('progressChanged', this)
 
@@ -131,6 +142,7 @@ export class Progress extends Emitter<{
     return this._children.length
   }
 
+  /** Change total units. */
   setTotalUnits(units: number, completedUnits?: number) {
     this._totalUnits = units
     if (completedUnits != null)
@@ -138,21 +150,31 @@ export class Progress extends Emitter<{
     this.update()
   }
 
+  /** Relatively change total units. */
+  incTotalUnits(step = 1) {
+    this._totalUnits += step
+    this.update()
+  }
+
+  /** Set fixed number of completed units. */
   setCompletetedUnits(units: number) {
     this._completedUnits = units
     this.update()
   }
 
+  /** Set to 100% without disposing. */
   setCompleted() {
     this._completedUnits = this._totalUnits
     this.update()
   }
 
+  /** Dynamically change completed units. */
   incCompletedUnits(step = 1) {
     this._completedUnits += step
     this.update()
   }
 
+  /** Progress tree to string for debuggin purposes. Consider using `name` attribute of Progress. */
   toString(indent = 0) {
     let s = `${'  '.repeat(indent)}${this.name}: ${this._completedUnits} of ${this._totalUnits} units, ${Math.floor(this.getFraction() * 100)} %, cancel=${this._isCancelled}\n`
     for (const child of this._children)

@@ -1,3 +1,4 @@
+import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
 import { uname, uuid } from '../uuid'
 import { Progress } from './progress'
@@ -86,6 +87,9 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   } = config
 
   const events = new Emitter<PoolTaskEvents>()
+
+  const dispose = useDispose()
+  dispose.add(cancelAll)
 
   const progress = new Progress({ name })
 
@@ -329,7 +333,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     hasById,
     progress,
     enqueue,
-    dispose: cancelAll,
+    dispose,
     waitFinishAll,
   }
 }

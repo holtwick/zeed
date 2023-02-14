@@ -3,9 +3,33 @@ import { uname, uuid } from '../uuid'
 import { Progress } from './progress'
 import { createPromise } from './promise'
 
-interface PoolConfig {
+export enum PoolTaskIdConflictResolution {
+  /**
+   * Tasks with same `id` are replaced. Newest wins.
+   */
+  replace,
+
+  /**
+   * Task with same `id` will continue to run. Reference is returned with option to cancel.
+   * Named "memoize" because the result of the task should always be the same for the same `id`,
+   * like e.g. a download.
+   */
+  memoize,
+
+  /** Like memoize, but try to put on top of the list */
+  prioritize,
+
+  /**
+   * Tasks with same `id` throw error
+   */
+  error,
+
+}
+
+export interface PoolConfig {
   name?: string
   maxParallel?: number
+  idConflictResolution?: PoolTaskIdConflictResolution
 }
 
 export type PoolTaskFn<T = any> = (taskInfo: PoolTask<T>) => Promise<T>
@@ -37,25 +61,6 @@ export interface PoolTask<T> {
   payload?: unknown
 }
 
-export enum PoolTaskIdConflictResolution {
-  /**
-   * Tasks with same `id` are replaced. Newest wins.
-   */
-  replace,
-
-  /**
-   * Task with same `id` will continue to run. Reference is returned with option to cancel.
-   * Named "memoize" because the result of the task should always be the same for the same `id`,
-   * like e.g. a download.
-   */
-  memoize,
-
-  /**
-   * Tasks with same `id` throw error
-   */
-  error,
-}
-
 export interface PoolTaskEvents {
   didUpdate(
     max: number,
@@ -74,7 +79,12 @@ export interface PoolTaskEvents {
 // todo: dependents
 
 export function usePool<T = any>(config: PoolConfig = {}) {
-  const { maxParallel = 3, name = uname('pool') } = config
+  const {
+    maxParallel = 3,
+    name = uname('pool'),
+    idConflictResolution = PoolTaskIdConflictResolution.memoize,
+  } = config
+
   const events = new Emitter<PoolTaskEvents>()
 
   const progress = new Progress({ name })
@@ -228,14 +238,17 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     const id = config.id ?? uuid()
 
     if (tasks[id] != null) {
-      const resolution = config.idConflictResolution ?? PoolTaskIdConflictResolution.memoize
+      const resolution = config.idConflictResolution ?? idConflictResolution
 
       if (resolution === PoolTaskIdConflictResolution.replace) {
         cancel(id)
       }
-      else if (resolution === PoolTaskIdConflictResolution.memoize) {
-        // todo ???
+      else if (resolution === PoolTaskIdConflictResolution.memoize || resolution === PoolTaskIdConflictResolution.prioritize) {
         const runningTask = tasks[id]
+
+        if (resolution === PoolTaskIdConflictResolution.prioritize)
+          runningTask.priority = ++priority
+
         return {
           id,
           promise: (async () => {

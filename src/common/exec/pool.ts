@@ -8,7 +8,7 @@ interface PoolConfig {
   maxParallel?: number
 }
 
-export type PoolTaskFn<T = any> = (taskInfo?: PoolTask<T>) => Promise<T>
+export type PoolTaskFn<T = any> = (taskInfo: PoolTask<T>) => Promise<T>
 
 export enum PoolTaskState {
   waiting,

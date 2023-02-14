@@ -222,6 +222,10 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     // progress.dispose()
   }
 
+  function hasById(id: string) {
+    return tasks[id] != null
+  }
+
   function enqueue<P>(
     task: PoolTaskFn<T>,
     config: {
@@ -322,10 +326,10 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     events,
     cancel,
     cancelAll,
+    hasById,
     progress,
     enqueue,
     dispose: cancelAll,
-    // allFinishedPromise,
     waitFinishAll,
   }
 }

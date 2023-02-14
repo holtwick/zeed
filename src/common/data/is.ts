@@ -40,16 +40,16 @@ export function isString(obj: unknown): obj is string {
 }
 
 export function isNumber(obj: unknown): obj is number {
-  return typeof obj === 'number'
+  return typeof obj === 'number' && !isNaN(obj) // wtf! Nan === type number
 }
 
 export function isInteger(obj: unknown): obj is number {
-  return typeof obj === 'number' && Number.isInteger(obj)
+  return isNumber(obj) && Number.isInteger(obj)
 }
 
 /** Integer with full precision i.e. its value is in the signed 53 bit range.  */
 export function isSafeInteger(obj: unknown): obj is number {
-  return typeof obj === 'number' && Number.isSafeInteger(obj)
+  return isNumber(obj) && Number.isSafeInteger(obj)
 }
 
 export function isBoolean(obj: unknown): obj is boolean {

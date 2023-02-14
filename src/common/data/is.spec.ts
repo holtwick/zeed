@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isNotNull, isObject, isPrimitive, isRecord, isRecordPlain, isUint8Array, isValue } from './is'
+import { isNotNull, isNumber, isObject, isPrimitive, isRecord, isRecordPlain, isUint8Array, isValue } from './is'
 
 describe('is', () => {
   it('should identify Uint8Array', () => {
@@ -43,7 +43,7 @@ describe('is', () => {
     expect(isPrimitive(plain)).toBe(false)
     expect(isPrimitive([])).toBe(false)
     expect(isPrimitive(123)).toBe(true)
-    expect(isPrimitive(new Date())).toBe(false)
+    expect(isPrimitive(new Date())).toBe(false)  
   })
 
   it('should filter', async () => {
@@ -68,4 +68,12 @@ describe('is', () => {
       ]
     `)
   })
+
+  it('should handle NaN', () => {
+    const nan = +'abc'
+    expect(isNaN(nan)).toBe(true)
+    expect(typeof nan === 'number').toBe(true)
+    expect(isNumber(nan)).toBe(false)
+  })
+  
 })

@@ -38,11 +38,21 @@ export interface PoolTask<T> {
 }
 
 export enum PoolTaskIdConflictResolution {
-  /** Tasks with same `id` are replaced. Last wins */
+  /**
+   * Tasks with same `id` are replaced. Newest wins.
+   */
   replace,
-  /** Tasks with same `id` ??? */
+
+  /**
+   * Task with same `id` will continue to run. Reference is returned with option to cancel.
+   * Named "memoize" because the result of the task should always be the same for the same `id`,
+   * like e.g. a download.
+   */
   memoize,
-  /** Tasks with same `id` throw error */
+
+  /**
+   * Tasks with same `id` throw error
+   */
   error,
 }
 
@@ -262,16 +272,22 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       done,
       payload: config.payload,
       progress: taskProgress,
+
+      /** @deprecated should use `.progress` */
       setMax(units) {
         taskProgress.setTotalUnits(units)
         tasks[id].max = units
         didUpdate()
       },
+
+      /** @deprecated should use `.progress` */
       setResolved(units) {
         taskProgress.setCompletetedUnits(units)
         tasks[id].resolved = units
         didUpdate()
       },
+
+      /** @deprecated should use `.progress` */
       incResolved(inc = 1) {
         taskProgress.incCompletedUnits(inc)
         tasks[id].resolved += inc

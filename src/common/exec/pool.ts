@@ -187,6 +187,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
             taskInfo.result = result
             taskInfo.state = PoolTaskState.finished
             taskInfo.resolved = taskInfo.max
+            taskInfo.progress?.setCompleted()
             // void taskInfo.progress.dispose()
           }
           --currentParallel

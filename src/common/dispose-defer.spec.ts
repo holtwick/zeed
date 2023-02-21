@@ -1,11 +1,14 @@
 // (C)opyright 20210922 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { Logger } from "./log"
 import { useDefer, useDispose } from './dispose-defer'
+
+const log = Logger("dispose-test")
 
 describe('dispose', () => {
   it('should dispose correctly', async () => {
     const disposeCalls: any[] = []
-    const dispose = useDispose()
+    const dispose = useDispose('a')
 
     const y = dispose.track({
       dispose() {
@@ -56,7 +59,7 @@ describe('dispose', () => {
   it('should be a fancy dispose itself', () => {
     let x = 1
     class Some {
-      dispose = useDispose()
+      dispose = useDispose(log)
 
       constructor() {
         this.dispose.track(() => {

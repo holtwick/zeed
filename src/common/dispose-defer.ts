@@ -1,8 +1,10 @@
+import { isString } from './data'
 import { arrayFilterInPlace } from './data/array'
 import { isPromise, promisify } from './exec/promise'
 import { Logger } from './log'
+import type { LoggerInterface } from './log-base'
 
-const log = Logger('zeed:dispose', 'error')
+const logDispose = Logger('zeed:dispose')
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
@@ -44,11 +46,20 @@ async function callDisposer(disposable: Disposer): Promise<void> {
 
 interface UseDisposeConfig {
   name?: string
+  log?: LoggerInterface
 }
 
-export function useDispose(config?: string | UseDisposeConfig) {
-  const { name } = typeof config === 'string' ? { name: config } : config ?? {}
+export function useDispose(config?: string | UseDisposeConfig | LoggerInterface) {
+  let opt = config as any
+  if (opt != null) {
+    if (isString(opt))
+      opt = { name: opt }
+    else if ('debug' in opt && 'label' in opt)
+      opt = { name: opt.label, log: opt }
+  }
 
+  const name = opt?.name
+  const log = opt?.log ?? logDispose
   const tracked: Disposer[] = []
 
   const untrack = async (disposable: Disposer): Promise<void> => {
@@ -61,7 +72,7 @@ export function useDispose(config?: string | UseDisposeConfig) {
   /** Dispose all tracked entries */
   const dispose = async (): Promise<void> => {
     if (name)
-      log.debug(`dispose ${name}: ${tracked.length} entries`)
+      log.debug(`dispose "${name}": ${tracked.length} entries`)
     while (tracked.length > 0)
       await untrack(tracked[0]) // LIFO
   }

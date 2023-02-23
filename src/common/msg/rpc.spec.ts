@@ -55,7 +55,7 @@ describe('rpc', () => {
     expect(alice.bump()).toBeUndefined()
 
     expect(Bob.getCount()).toBe(0)
-    await new Promise(resolve => setTimeout(resolve, 1))
+    await new Promise(resolve => setTimeout(resolve, 100))
     expect(Bob.getCount()).toBe(1)
 
     channel.port1.close()

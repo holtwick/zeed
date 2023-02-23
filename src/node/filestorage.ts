@@ -8,7 +8,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from 'fs'
-import { dirname, resolve } from 'path'
+import { dirname, resolve } from 'node:path'
 import { jsonStringifySafe } from '../common/data/json'
 import { toValidFilename } from '../common/data/path'
 import { cloneObject } from '../common/data/utils'

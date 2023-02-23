@@ -1,5 +1,5 @@
 // https://nodejs.org/api/webcrypto.html
-import nodeCrypto from 'crypto'
+import nodeCrypto from 'node:crypto'
 
 export {}
 

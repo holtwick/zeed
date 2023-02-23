@@ -2,8 +2,8 @@
 
 // Adopted from https://github.com/motdotla/dotenv BSD-2
 
-import fs from 'fs'
-import { resolve } from 'path'
+import fs from 'node:fs'
+import { resolve } from 'node:path'
 import { Logger } from '../common/log'
 import { LogLevel } from '../common/log-base'
 

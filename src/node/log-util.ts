@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { isNotNull } from '../common'
 
 export function getStackLlocationList(stack: string): string[] {

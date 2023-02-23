@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import tty from 'tty'
+import tty from 'node:tty'
 import { renderMessages, valueToBoolean } from '../common/data/convert'
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
 import { LogLevel } from '../common/log-base'

@@ -83,7 +83,7 @@ export function empty(value: any): boolean {
 }
 
 // Also see common/data/deep.ts
-export function cloneObject<T>(obj: T): T {
+function _cloneObject<T>(obj: T): T {
   // Primitives are immutable anyway
   if (Object(obj) !== obj)
     return obj
@@ -91,6 +91,8 @@ export function cloneObject<T>(obj: T): T {
   // Rude but very efficient way to clone
   return JSON.parse(jsonStringifySafe(obj))
 }
+
+export const cloneObject = typeof structuredClone !== 'undefined' ? structuredClone : _cloneObject
 
 // Also see common/data/deep.ts
 export function cloneJsonObject<T = Json>(obj: T): T {

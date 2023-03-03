@@ -1,4 +1,3 @@
-import 'cross-fetch/polyfill'
 import { fetchText, parseBasicAuth } from './network'
 
 describe('network', () => {

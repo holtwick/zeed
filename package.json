@@ -52,7 +52,7 @@
   },
   "scripts": {
     "build": "nr clean && nr build:tsup",
-    "build:tsup": "tsup src/index.all.ts --dts-only && tsup src/index.browser.ts src/index.node.ts --format esm,cjs --dts --sourcemap --minify --keep-names",
+    "build:tsup": "tsup src/index.all.ts --dts-only && tsup src/index.browser.ts src/index.node.ts",
     "check": "tsc --noEmit -p tsconfig.json",
     "clean": "rm -rf dist",
     "coverage": "vitest --run --coverage",

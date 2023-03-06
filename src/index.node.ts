@@ -2,4 +2,4 @@
 
 export * from './common/index'
 export * from './node/index'
-export * from './node/log-context-node'
+export { Logger } from './node/log-context-node'

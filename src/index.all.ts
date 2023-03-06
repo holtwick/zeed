@@ -2,4 +2,5 @@
 
 export * from './common'
 export * from './node/index'
-export * from './browser'
+export * from './browser/index'
+export { Logger } from './browser/log-context-browser'

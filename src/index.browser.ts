@@ -2,4 +2,4 @@
 
 export * from './common'
 export * from './browser'
-export * from './browser/log-context-browser'
+export { Logger } from './browser/log-context-browser'

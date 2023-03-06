@@ -1,12 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import {
-  getNamespaceFilterString,
-  parseLogLevel,
-  useLevelFilter,
-  useNamespaceFilter,
-} from './log-filter'
-import { LogLevel } from './log-base'
+import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelInfo, LogLevelOff, LogLevelWarn } from './log-base'
+import { getNamespaceFilterString,  parseLogLevel,  useLevelFilter,  useNamespaceFilter } from './log-filter'
 
 describe('log-filter', () => {
   test('should match', () => {
@@ -86,29 +81,29 @@ describe('log-filter', () => {
   it('should filter by level', () => {
     {
       const levelFilter = useLevelFilter('err')
-      expect(levelFilter(LogLevel.debug)).toBe(false)
-      expect(levelFilter(LogLevel.warn)).toBe(false)
-      expect(levelFilter(LogLevel.error)).toBe(true)
+      expect(levelFilter(LogLevelDebug)).toBe(false)
+      expect(levelFilter(LogLevelWarn)).toBe(false)
+      expect(levelFilter(LogLevelError)).toBe(true)
     }
     {
       const levelFilter = useLevelFilter('adfdfds')
-      expect(levelFilter(LogLevel.debug)).toBe(true)
-      expect(levelFilter(LogLevel.warn)).toBe(true)
-      expect(levelFilter(LogLevel.error)).toBe(true)
+      expect(levelFilter(LogLevelDebug)).toBe(true)
+      expect(levelFilter(LogLevelWarn)).toBe(true)
+      expect(levelFilter(LogLevelError)).toBe(true)
     }
     {
-      const levelFilter = useLevelFilter(LogLevel.warn)
-      expect(levelFilter(LogLevel.debug)).toBe(false)
-      expect(levelFilter(LogLevel.warn)).toBe(true)
-      expect(levelFilter(LogLevel.error)).toBe(true)
+      const levelFilter = useLevelFilter(LogLevelWarn)
+      expect(levelFilter(LogLevelDebug)).toBe(false)
+      expect(levelFilter(LogLevelWarn)).toBe(true)
+      expect(levelFilter(LogLevelError)).toBe(true)
     }
   })
 
   it('should identify log level', () => {
-    expect(parseLogLevel(false)).toEqual(LogLevel.off)
-    expect(parseLogLevel('info')).toEqual(LogLevel.info)
-    expect(parseLogLevel(LogLevel.error)).toEqual(LogLevel.error)
-    expect(parseLogLevel(true)).toEqual(LogLevel.all)
-    expect(parseLogLevel(2)).toEqual(LogLevel.warn)
+    expect(parseLogLevel(false)).toEqual(LogLevelOff)
+    expect(parseLogLevel('info')).toEqual(LogLevelInfo)
+    expect(parseLogLevel(LogLevelError)).toEqual(LogLevelError)
+    expect(parseLogLevel(true)).toEqual(LogLevelAll)
+    expect(parseLogLevel(2)).toEqual(LogLevelWarn)
   })
 })

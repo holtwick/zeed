@@ -3,7 +3,7 @@
 /* eslint-disable n/no-path-concat */
 
 import { rmSync, statSync, unlinkSync } from 'fs'
-import { LogLevel, Logger, sleep } from '../common'
+import { Logger, sleep, LogLevelAll } from '../common'
 import { LoggerFileHandler } from './log-file'
 
 describe('Log File', () => {
@@ -15,7 +15,7 @@ describe('Log File', () => {
     const path = `${__dirname}/tmp/test.log`
     Logger.setHandlers([
       LoggerFileHandler(path, {
-        level: LogLevel.all,
+        level: LogLevelAll,
         filter: '*',
       }),
     ])

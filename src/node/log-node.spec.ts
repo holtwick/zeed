@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { LogLevel, Logger } from '../common'
+import { Logger, LogLevelAll } from '../common'
 import { LoggerNodeHandler, loggerStackTraceDebug } from './log-node'
 
 describe('log-node', () => {
@@ -17,7 +17,7 @@ describe('log-node', () => {
   test('should find pattern', () => {
     Logger.setHandlers([
       LoggerNodeHandler({
-        level: LogLevel.all,
+        level: LogLevelAll,
         filter: '*',
         stack: true,
       }),

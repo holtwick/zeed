@@ -7,10 +7,10 @@ export type LogLevel = number
 
 export const LogLevelAll = -1
 export const LogLevelDebug = 0
-export const LogLevelInfo = 2
-export const LogLevelWarn = 3
-export const LogLevelError = 4
-export const LogLevelFatal = 5
+export const LogLevelInfo = 1
+export const LogLevelWarn = 2
+export const LogLevelError = 3
+export const LogLevelFatal = 4
 export const LogLevelOff = 9007199254740991 // `Infinity` ===  `1 / 0`, but bad for sideEffects, therefore `Math.pow(2, 53) - 1`
 
 export const LogLevelAlias: Record<string, LogLevel> = {

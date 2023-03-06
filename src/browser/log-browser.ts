@@ -3,21 +3,19 @@
 /* eslint-disable no-console */
 
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
-import { LogLevel } from '../common/log-base'
+import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
 import { selectColor, supportsColors } from './log-colors'
 
-const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
-const styleDefault = `${styleFont}`
-const styleBold = `font-weight: 600; ${styleFont}`
-const useColors = supportsColors()
-
-const namespaces: Record<string, any> = {}
-
-const startTime = getTimestamp() // todo sideffects
-
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
+  const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
+  const styleDefault = `${styleFont}`
+  const styleBold = `font-weight: 600; ${styleFont}`
+  const useColors = supportsColors()
+  const namespaces: Record<string, any> = {}
+  const startTime = getTimestamp()
+
   const {
     filter = undefined,
     level = undefined,
@@ -82,17 +80,17 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     }) as any
 
     switch (msg.level) {
-      case LogLevel.info:
+      case LogLevelInfo:
         if (opt.levelHelper)
           args[0] = `I|*   ${args[0]}`
         console.info(...args)
         break
-      case LogLevel.warn:
+      case LogLevelWarn:
         if (opt.levelHelper)
           args[0] = `W|**  ${args[0]}`
         console.warn(...args)
         break
-      case LogLevel.error:
+      case LogLevelError:
         if (opt.levelHelper)
           args[0] = `E|*** ${args[0]}`
         console.error(...args)

@@ -2,20 +2,18 @@
 
 /* eslint-disable no-console */
 
-import type { LogHandlerOptions, LogLevelAliasType, LoggerInterface } from '../common/log-base'
-import { LogLevel } from '../common/log-base'
+import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../common/log-base'
+import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../common/log-base'
 import { parseLogLevel, useNamespaceFilter } from '../common/log-filter'
 import { selectColor, supportsColors } from './log-colors'
 
-const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
-const styleDefault = `${styleFont}`
-const styleBold = `font-weight: 600; ${styleFont}`
-const useColors = supportsColors()
-
-const noop: any = () => {}
-
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
+  const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
+  const styleDefault = `${styleFont}`
+  const styleBold = `font-weight: 600; ${styleFont}`
+  const useColors = supportsColors()
+  const noop: any = () => {}
 
   /// The trick is, that console called directly provides a reference to the source code.
   /// For the regular implementation this information is lost. But this approach has other
@@ -27,9 +25,9 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
     let log: LoggerInterface
 
     const matches = useNamespaceFilter(filter)
-    const level = parseLogLevel(logLevel ?? LogLevel.all)
+    const level = parseLogLevel(logLevel ?? LogLevelAll)
 
-    if (matches(name) && level !== LogLevel.off) {
+    if (matches(name) && level !== LogLevelOff) {
       const fixedArgs = []
       if (useColors) {
         const color = selectColor(name)
@@ -47,18 +45,18 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
         return () => {}
       }
 
-      log = defineForLogLevel(LogLevel.debug, console.debug.bind(console, ...fixedArgs) as LoggerInterface)
-      log.debug = defineForLogLevel(LogLevel.debug, console.debug.bind(console, ...fixedArgs))
-      log.info = defineForLogLevel(LogLevel.info, console.info.bind(console, ...fixedArgs))
-      log.warn = defineForLogLevel(LogLevel.warn, console.warn.bind(console, ...fixedArgs))
-      log.error = defineForLogLevel(LogLevel.error, console.error.bind(console, ...fixedArgs))
+      log = defineForLogLevel(LogLevelDebug, console.debug.bind(console, ...fixedArgs) as LoggerInterface)
+      log.debug = defineForLogLevel(LogLevelDebug, console.debug.bind(console, ...fixedArgs))
+      log.info = defineForLogLevel(LogLevelInfo, console.info.bind(console, ...fixedArgs))
+      log.warn = defineForLogLevel(LogLevelWarn, console.warn.bind(console, ...fixedArgs))
+      log.error = defineForLogLevel(LogLevelError, console.error.bind(console, ...fixedArgs))
 
-      log.fatal = defineForLogLevel(LogLevel.fatal, (...args: any) => {
+      log.fatal = defineForLogLevel(LogLevelFatal, (...args: any) => {
         log.error(...args)
         throw new Error(`${args.map(String).join(' ')}`)
       })
 
-      log.assert = defineForLogLevel(LogLevel.fatal, (cond: unknown, ...args: any) => {
+      log.assert = defineForLogLevel(LogLevelFatal, (cond: unknown, ...args: any) => {
         if (cond == null || !cond)
           log.fatal(...args)
       })

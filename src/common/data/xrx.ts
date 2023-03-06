@@ -1,12 +1,8 @@
 /* eslint-disable no-cond-assign */
 
-import { Logger } from '../log'
-
 const RX_WHITESPACE = /\\\s|\s+|#[^\n]*\n?/gm
 const RX_REAL_GROUPS = /\(\?P?<(\w[\w\d_]+)>|\((?!\?(:|\!|=|<=|<\!))/gm
 const RX_LOOK_BEHIND = /^((?:\(\?[\w$]+\))?)\(\?<([=!])([\s\S]*?)\)/gm
-
-const log = Logger('zeed:xrx', 'error')
 
 export function regExpString(rx: string | RegExp): string {
   return typeof rx === 'string' ? rx : (rx.source || '')
@@ -59,8 +55,8 @@ export class XRX {
             && !this.namedGroups[name]
           )
             this.namedGroups[name] = index
-          else
-            log.error(`Unallowed or duplicate group name: ${name}`)
+          // else
+          //   log.error(`Unallowed or duplicate group name: ${name}`)
 
           return '('
         }

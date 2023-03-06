@@ -21,10 +21,6 @@ export function getGlobal(): any {
       : Function('return this;')()
 }
 
-// todo sideffects
-const _navigator = getNavigator()
-const _window = getWindow()
-
 export function detect(
   info = {
     ios: false,
@@ -46,6 +42,9 @@ export function detect(
     touch: false,
   },
 ) {
+  const _navigator = getNavigator()
+  const _window = getWindow()
+
   info.ios = _navigator?.platform?.match(/(iPhone|iPod|iPad)/i) != null
   info.macos = !!_navigator?.platform?.startsWith('Mac')
   info.windows = !!_navigator?.platform?.startsWith('Win')
@@ -99,10 +98,11 @@ export function detect(
 //   "try {return this===global;}catch(e){return false;}"
 // )
 
-export const isBrowser = () =>
-  typeof window !== 'undefined' && globalThis === window
+export function isBrowser() {
+  return typeof window !== 'undefined' && globalThis === window
+}
 
-export const platform = detect()
+// export const platform = detect()
 
 /**
  * Before closing the tab/window or quitting the node process

@@ -2,3 +2,4 @@
 
 export * from './common'
 export * from './browser'
+export { Logger } from './browser/log-context-browser'

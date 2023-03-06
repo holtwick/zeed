@@ -4,10 +4,6 @@
 
 import fs from 'node:fs'
 import { resolve } from 'node:path'
-import { Logger } from '../common/log'
-import { LogLevel } from '../common/log-base'
-
-const log = Logger('zeed:env', 'error')
 
 const NEWLINE = '\n'
 const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/
@@ -60,11 +56,9 @@ function parse(src: string, _options: csvOptions = {}) {
         }
         obj[key] = val
       }
-      else {
-        log.debug(
-          `did not match key and value when parsing line ${idx + 1}: ${line}`,
-        )
-      }
+      // else {
+      //   log.debug(`did not match key and value when parsing line ${idx + 1}: ${line}`)
+      // }
     })
 
   // log.debug("obj", obj)
@@ -109,9 +103,6 @@ export function setupEnv(options: csvOptions = {}) {
   const encoding: BufferEncoding = options?.encoding ?? 'utf8'
   const debug = options?.debug || false
 
-  if (debug !== true)
-    log.level = LogLevel.off
-
   try {
     // specifying an encoding returns a string instead of a buffer
     const parsedEnv = fs.existsSync(dotenvPath)
@@ -133,19 +124,16 @@ export function setupEnv(options: csvOptions = {}) {
         key = options?.prefix + key
 
       if (!Object.prototype.hasOwnProperty.call(env, key)) {
-        if (value != null) {
-          log.info(`set env.${key} = ${value}`)
+        if (value != null)
           env[key] = value
-        }
       }
-      else {
-        log.debug(`"${key}" is already defined and will not be overwritten`)
-      }
+      // else {
+      //   log.debug(`"${key}" is already defined and will not be overwritten`)
+      // }
     })
     return { parsed }
   }
   catch (e) {
-    log.error(e)
     return { error: e }
   }
 }

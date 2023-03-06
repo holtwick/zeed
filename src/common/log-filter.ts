@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import type { LogLevelAliasType } from './log-base'
-import { LogLevel, LogLevelAlias } from './log-base'
+import type { LogLevel, LogLevelAliasType } from './log-base'
+import { LogLevelAlias, LogLevelAll, LogLevelOff } from './log-base'
 
 interface NamespaceFilter {
   (name: string): boolean
@@ -34,14 +34,15 @@ export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
   return defaultNamespaceFilter
 }
 
-// todo sideffects
-const defaultNamespaceFilter: string = getNamespaceFilterString(
-  typeof process !== 'undefined'
-    ? process.env.ZEED ?? process.env.DEBUG
-    : typeof localStorage !== 'undefined'
-      ? localStorage.zeed ?? localStorage.debug
-      : '*',
-)
+function getDefaultNamespaceFilter() {
+  return getNamespaceFilterString(
+    typeof process !== 'undefined'
+      ? process.env.ZEED ?? process.env.DEBUG
+      : typeof localStorage !== 'undefined'
+        ? localStorage.zeed ?? localStorage.debug
+        : '*',
+  )
+}
 
 /**
  * Filter as described here https://github.com/visionmedia/debug#wildcards
@@ -50,7 +51,7 @@ const defaultNamespaceFilter: string = getNamespaceFilterString(
  * @returns Function to check if filter applies
  */
 export function useNamespaceFilter(
-  filter: string = defaultNamespaceFilter,
+  filter: string = getDefaultNamespaceFilter(),
 ): NamespaceFilter {
   let fn: any // (name: string) => boolean
   const reject = [] as RegExp[]
@@ -104,30 +105,30 @@ export function useNamespaceFilter(
   return fn as NamespaceFilter
 }
 
-// todo sideffects
-const defaultLevelFilter: any
-  = typeof process !== 'undefined'
+function getDefaultLevelFilter() {
+  return typeof process !== 'undefined'
     ? process.env.ZEED_LEVEL ?? process.env.LEVEL ?? process.env.DEBUG_LEVEL
     : typeof localStorage !== 'undefined'
       ? localStorage.zeed_level ?? localStorage.level ?? localStorage.debug_level
       : undefined
+}
 
 export function parseLogLevel(filter: LogLevelAliasType): LogLevel {
   if (filter === false)
-    return LogLevel.off
+    return LogLevelOff
   if (typeof filter === 'number')
-    return filter as number
+    return filter
   if (typeof filter === 'string') {
     const l = LogLevelAlias[filter.toLocaleLowerCase().trim()]
     if (l != null)
       return l
   }
-  return LogLevel.all
+  return LogLevelAll
 }
 
 export function useLevelFilter(
-  filter: string | number | boolean | LogLevelAliasType = defaultLevelFilter,
-): (level: LogLevel) => boolean {
+  filter: string | number | boolean | LogLevelAliasType = getDefaultLevelFilter(),
+): (level: number) => boolean {
   const filterLevel = parseLogLevel(filter)
   return level => level >= filterLevel
 }

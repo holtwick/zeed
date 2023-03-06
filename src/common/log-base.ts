@@ -3,39 +3,39 @@
 import { LoggerConsoleHandler } from './log-console'
 import { parseLogLevel, useNamespaceFilter } from './log-filter'
 
-export enum LogLevel {
-  all = -1,
-  debug = 0,
-  info,
-  warn,
-  error,
-  fatal,
-  off = Infinity,
-}
+export type LogLevel = number
+
+export const LogLevelAll = -1
+export const LogLevelDebug = 0
+export const LogLevelInfo = 1
+export const LogLevelWarn = 2
+export const LogLevelError = 3
+export const LogLevelFatal = 4
+export const LogLevelOff = 9007199254740991 // `Infinity` ===  `1 / 0`, but bad for sideEffects, therefore `Math.pow(2, 53) - 1`
 
 export const LogLevelAlias: Record<string, LogLevel> = {
-  '*': LogLevel.all,
-  'a': LogLevel.all,
-  'all': LogLevel.all,
-  'd': LogLevel.debug,
-  'dbg': LogLevel.debug,
-  'debug': LogLevel.debug,
-  'i': LogLevel.info,
-  'inf': LogLevel.info,
-  'info': LogLevel.info,
-  'w': LogLevel.warn,
-  'warn': LogLevel.warn,
-  'warning': LogLevel.warn,
-  'e': LogLevel.error,
-  'err': LogLevel.error,
-  'error': LogLevel.error,
-  'fatal': LogLevel.fatal,
-  'off': LogLevel.off,
-  '-': LogLevel.off,
+  '*': LogLevelAll,
+  'a': LogLevelAll,
+  'all': LogLevelAll,
+  'd': LogLevelDebug,
+  'dbg': LogLevelDebug,
+  'debug': LogLevelDebug,
+  'i': LogLevelInfo,
+  'inf': LogLevelInfo,
+  'info': LogLevelInfo,
+  'w': LogLevelWarn,
+  'warn': LogLevelWarn,
+  'warning': LogLevelWarn,
+  'e': LogLevelError,
+  'err': LogLevelError,
+  'error': LogLevelError,
+  'fatal': LogLevelFatal,
+  'off': LogLevelOff,
+  '-': LogLevelOff,
 }
 
 export type LogLevelAliasKey = keyof typeof LogLevelAlias
-export type LogLevelAliasType = LogLevel | boolean | LogLevelAliasKey
+export type LogLevelAliasType = number | boolean | LogLevelAliasKey
 
 export interface LogMessage {
   level: LogLevel
@@ -142,7 +142,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     name = '',
     level?: LogLevelAliasType,
   ): LoggerInterface {
-    const logLevel = parseLogLevel(level ?? LogLevel.all)
+    const logLevel = parseLogLevel(level ?? LogLevelAll)
 
     function defineForLogLevel(fnLevel: LogLevel, fn: any) {
       if (logLevel <= fnLevel)
@@ -150,12 +150,12 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       return () => {}
     }
 
-    const log = defineForLogLevel(LogLevel.debug, (...messages: any[]) => {
+    const log = defineForLogLevel(LogLevelDebug, (...messages: any[]) => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       emit({
         name,
         messages,
-        level: LogLevel.debug,
+        level: LogLevelDebug,
       })
     })
 
@@ -179,28 +179,28 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       // }
     }
 
-    log.debug = defineForLogLevel(LogLevel.debug, (...messages: any[]) => {
-      emit({ name, messages, level: LogLevel.debug })
+    log.debug = defineForLogLevel(LogLevelDebug, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevelDebug })
     })
 
-    log.info = defineForLogLevel(LogLevel.info, (...messages: any[]) => {
-      emit({ name, messages, level: LogLevel.info })
+    log.info = defineForLogLevel(LogLevelInfo, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevelInfo })
     })
 
-    log.warn = defineForLogLevel(LogLevel.warn, (...messages: any[]) => {
-      emit({ name, messages, level: LogLevel.warn })
+    log.warn = defineForLogLevel(LogLevelWarn, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevelWarn })
     })
 
-    log.error = defineForLogLevel(LogLevel.error, (...messages: any[]) => {
-      emit({ name, messages, level: LogLevel.error })
+    log.error = defineForLogLevel(LogLevelError, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevelError })
     })
 
-    log.fatal = defineForLogLevel(LogLevel.fatal, (...messages: any[]) => {
-      emit({ name, messages, level: LogLevel.fatal })
+    log.fatal = defineForLogLevel(LogLevelFatal, (...messages: any[]) => {
+      emit({ name, messages, level: LogLevelFatal })
       throw new Error(`${messages.map(String).join(' ')}`)
     })
 
-    log.assert = defineForLogLevel(LogLevel.fatal, (cond: unknown, ...args: any) => {
+    log.assert = defineForLogLevel(LogLevelFatal, (cond: unknown, ...args: any) => {
       if (!cond)
         log.fatal(...args)
     })
@@ -208,13 +208,10 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     return log
   }
 
-  function Logger(
-    name = '',
-    level?: LogLevelAliasType,
-  ): LoggerInterface {
+  function Logger(name = '', level?: LogLevelAliasType): LoggerInterface {
     const log = logFactory(name, level)
     if (logDebug)
-      log.debug(`+++ init of logger "${name}" on level "${LogLevel[log.level]}".`)
+      log.debug(`+++ init of logger "${name}" on level "${log.level}".`)
     return log
   }
 
@@ -240,10 +237,10 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     logHandlers = [...handlers].filter(h => typeof h === 'function')
   }
 
-  Logger.level = LogLevel.all
+  Logger.level = LogLevelAll
 
   /** @deprecated */
-  Logger.setLogLevel = function (level: LogLevel = LogLevel.all) {
+  Logger.setLogLevel = function (level: LogLevel = LogLevelAll) {
     if (logLock)
       return
     Logger.level = level

@@ -1,4 +1,4 @@
-import { Logger } from '../log'
+import { DefaultLogger } from '../log'
 import { uname } from '../uuid'
 import type { Channel } from './channel'
 import type { DefaultListener, ListenerSignature } from './emitter'
@@ -13,7 +13,7 @@ interface PubSubConfig {
   debug?: boolean
 }
 
-export class PubSub< L extends ListenerSignature<L> = DefaultListener> extends Emitter<L> {
+export class PubSub<L extends ListenerSignature<L> = DefaultListener> extends Emitter<L> {
   name: string
   channel: Channel
   encoder: Encoder
@@ -34,7 +34,7 @@ export class PubSub< L extends ListenerSignature<L> = DefaultListener> extends E
     this.debug = debug
 
     this.name = name ?? this.channel.id ?? uname('pubsub')
-    this.log = Logger(`${this.shortId}`)
+    this.log = DefaultLogger(`${this.shortId}`)
 
     if (this.debug) {
       this.channel.on('connect', () => {

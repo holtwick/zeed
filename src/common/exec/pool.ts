@@ -4,28 +4,30 @@ import { uname, uuid } from '../uuid'
 import { Progress } from './progress'
 import { createPromise } from './promise'
 
-export enum PoolTaskIdConflictResolution {
-  /**
-   * Tasks with same `id` are replaced. Newest wins.
-   */
-  replace,
+export type PoolTaskIdConflictResolution = 'replace' | 'memoize' | 'prioritize' | 'error'
 
-  /**
-   * Task with same `id` will continue to run. Reference is returned with option to cancel.
-   * Named "memoize" because the result of the task should always be the same for the same `id`,
-   * like e.g. a download.
-   */
-  memoize,
+// export enum PoolTaskIdConflictResolution {
+//   /**
+//    * Tasks with same `id` are replaced. Newest wins.
+//    */
+//   replace = 0,
 
-  /** Like memoize, but try to put on top of the list */
-  prioritize,
+//   /**
+//    * Task with same `id` will continue to run. Reference is returned with option to cancel.
+//    * Named "memoize" because the result of the task should always be the same for the same `id`,
+//    * like e.g. a download.
+//    */
+//   memoize = 1,
 
-  /**
-   * Tasks with same `id` throw error
-   */
-  error,
+//   /** Like memoize, but try to put on top of the list */
+//   prioritize = 2,
 
-}
+//   /**
+//    * Tasks with same `id` throw error
+//    */
+//   error = 3,
+
+// }
 
 export interface PoolConfig {
   name?: string
@@ -35,11 +37,7 @@ export interface PoolConfig {
 
 export type PoolTaskFn<T = any> = (taskInfo: PoolTask<T>) => Promise<T>
 
-export enum PoolTaskState {
-  waiting,
-  running,
-  finished,
-}
+export type PoolTaskState = 'waiting' | 'running' | 'finished'
 
 /** Task */
 export interface PoolTask<T> {
@@ -83,7 +81,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   const {
     maxParallel = 3,
     name = uname('pool'),
-    idConflictResolution = PoolTaskIdConflictResolution.memoize,
+    idConflictResolution = 'memoize',
   } = config
 
   const events = new Emitter<PoolTaskEvents>()
@@ -114,7 +112,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
   async function cleanupFinished() {
     for (const id of Object.keys(tasks)) {
       const task = tasks[id]
-      if (task.state === PoolTaskState.finished) {
+      if (task.state === 'finished') {
         await tasks[id].progress.dispose()
         delete tasks[id]
       }
@@ -135,7 +133,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     let presentResolved = 0
     for (const { max, resolved, state } of Object.values(tasks)) {
       presentMax += max
-      presentResolved += state === PoolTaskState.finished ? max : Math.min(max, resolved)
+      presentResolved += state === 'finished' ? max : Math.min(max, resolved)
     }
     void events.emit(
       'didUpdate',
@@ -153,7 +151,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     if (currentParallel >= maxParallel)
       return
     const waitingTasks = Object.values(tasks).filter(
-      t => t.state === PoolTaskState.waiting,
+      t => t.state === 'waiting',
     )
     if (waitingTasks.length > 0) {
       let taskInfo: PoolTask<T> | undefined
@@ -164,7 +162,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
           t.group != null
           && Object.values(tasks).some(
             tt =>
-              tt.state === PoolTaskState.running
+              tt.state === 'running'
               && tt.id !== t.id
               && tt.group === t.group,
           )
@@ -178,14 +176,14 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       if (taskInfo != null) {
         const id = taskInfo.id
         const done = taskInfo.done
-        taskInfo.state = PoolTaskState.running
+        taskInfo.state = 'running'
         ++currentParallel
         void events.emit('didStart', id)
 
         const taskFinished = (result?: T) => {
           if (taskInfo) {
             taskInfo.result = result
-            taskInfo.state = PoolTaskState.finished
+            taskInfo.state = 'finished'
             taskInfo.resolved = taskInfo.max
             taskInfo.progress?.setCompleted()
             // void taskInfo.progress.dispose()
@@ -213,8 +211,8 @@ export function usePool<T = any>(config: PoolConfig = {}) {
 
   function cancel(id: string) {
     const taskInfo = tasks[id]
-    if (taskInfo && taskInfo.state === PoolTaskState.waiting) {
-      tasks[id].state = PoolTaskState.finished
+    if (taskInfo && taskInfo.state === 'waiting') {
+      tasks[id].state = 'finished'
       ++countResolved
       void events.emit('didCancel', id)
       void tasks[id].progress.dispose()
@@ -249,19 +247,19 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     if (tasks[id] != null) {
       const resolution = config.idConflictResolution ?? idConflictResolution
 
-      if (resolution === PoolTaskIdConflictResolution.replace) {
+      if (resolution === 'replace') {
         cancel(id)
       }
-      else if (resolution === PoolTaskIdConflictResolution.memoize || resolution === PoolTaskIdConflictResolution.prioritize) {
+      else if (resolution === 'memoize' || resolution === 'prioritize') {
         const runningTask = tasks[id]
 
-        if (resolution === PoolTaskIdConflictResolution.prioritize)
+        if (resolution === 'prioritize')
           runningTask.priority = ++priority
 
         return {
           id,
           promise: (async () => {
-            if (runningTask.state === PoolTaskState.finished)
+            if (runningTask.state === 'finished')
               return tasks[id].result
 
             // todo: wait for task to finish
@@ -288,7 +286,7 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       task,
       priority: ++priority,
       group: config.group,
-      state: PoolTaskState.waiting,
+      state: 'waiting',
       max: config.max ?? 1,
       resolved: config.resolved ?? 0,
       done,
@@ -338,5 +336,3 @@ export function usePool<T = any>(config: PoolConfig = {}) {
     waitFinishAll,
   }
 }
-
-export type Pool = ReturnType<typeof usePool>

@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 
 import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
-import { LogLevel } from './log-base'
+import { LogLevelError, LogLevelInfo, LogLevelWarn } from './log-base'
 import { useLevelFilter, useNamespaceFilter } from './log-filter'
 
 /**
@@ -31,13 +31,13 @@ export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
       return
     const name = msg.name ? `[${msg.name}]` : ''
     switch (msg.level) {
-      case LogLevel.info:
+      case LogLevelInfo:
         console.info(`I|*   ${name}`, ...msg.messages)
         break
-      case LogLevel.warn:
+      case LogLevelWarn:
         console.warn(`W|**  ${name}`, ...msg.messages)
         break
-      case LogLevel.error:
+      case LogLevelError:
         console.error(`E|*** ${name}`, ...msg.messages)
         break
       default:

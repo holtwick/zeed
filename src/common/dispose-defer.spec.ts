@@ -1,9 +1,9 @@
 // (C)opyright 20210922 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from "./log"
+import { DefaultLogger } from "./log"
 import { useDefer, useDispose } from './dispose-defer'
 
-const log = Logger("dispose-test")
+const log = DefaultLogger("dispose-test")
 
 describe('dispose', () => {
   it('should dispose correctly', async () => {

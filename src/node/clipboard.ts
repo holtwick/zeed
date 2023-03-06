@@ -2,7 +2,7 @@
 export function pbcopy(data: string) {
   return new Promise(
     (resolve, reject) => {
-      import('child_process').then(({ spawn }) => {
+      import('node:child_process').then(({ spawn }) => {
         const proc = spawn('pbcopy')
         proc.on('error', (err: any) => reject(err))
         proc.on('close', () => resolve(data))

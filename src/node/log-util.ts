@@ -23,13 +23,7 @@ export function getStackLlocationList(stack: string): string[] {
   )
 }
 
-const cwd = resolve(process.cwd())
-const home = process.env?.HOME ? resolve(process.env?.HOME) : ''
-// console.log(`cwd = ${cwd}, home = ${home}}`)
-
 function pathStripCwd(path: string) {
-  // console.log(">", path)
-
   if (path.includes('/node_modules/'))
     return ''
 
@@ -37,9 +31,11 @@ function pathStripCwd(path: string) {
   if (path.startsWith(fileURL))
     return path.substr(fileURL.length)
 
+  const cwd = resolve(process.cwd())
   if (cwd && path.startsWith(cwd))
     return path.substr(cwd.length + 1)
 
+  const home = process.env?.HOME ? resolve(process.env?.HOME) : ''
   if (home && path.startsWith(home))
     path = `~/${path.substr(home.length + 1)}`
 

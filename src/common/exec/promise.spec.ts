@@ -5,8 +5,7 @@ import {
   isPromise,
   promisify,
   sleep,
-  timeout,
-  timeoutReached,
+  timeout,  
 } from './promise'
 
 describe('Promises', () => {
@@ -34,7 +33,7 @@ describe('Promises', () => {
 
   it('should timeout', async () => {
     const r = await timeout(sleep(1000), 500)
-    expect(r).toBe(timeoutReached)
+    expect(r).toBe('timeoutReached')
     const r2 = await timeout(
       (async () => {
         return 123

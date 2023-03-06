@@ -65,12 +65,15 @@ export async function deriveKeyPbkdf2(
   )
 }
 
-const MAGIC_ID = new Uint8Array([1, 1])
+function getMagicId() {
+  return new Uint8Array([1, 1])
+}
 
 export async function encrypt(
   data: Uint8Array,
   key: CryptoKey,
 ): Promise<Uint8Array> {
+  const MAGIC_ID = getMagicId()
   const iv = randomUint8Array(12)
   const cipher = await crypto.subtle.encrypt(
     { name: CRYPTO_DEFAULT_ALG, iv },
@@ -94,7 +97,7 @@ export async function decrypt(
   key: CryptoKey,
 ): Promise<Uint8Array> {
   const magic = data.subarray(0, 2)
-  if (!equalBinary(magic, MAGIC_ID))
+  if (!equalBinary(magic, getMagicId()))
     return Promise.reject(new Error(`Unknown magic ${magic}`))
 
   const iv = data.subarray(2, 2 + 12)

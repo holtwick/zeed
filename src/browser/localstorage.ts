@@ -1,11 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import type { Json, ObjectStorage } from '../common/types'
-import { Logger } from '../common/log'
 import { jsonStringifySafe } from '../common/data/json'
-import type { LoggerInterface } from '../common'
-
-const log: LoggerInterface = Logger('zeed:localstorage', 'error')
 
 export interface LocalStorageOptions {
   name: string
@@ -21,8 +17,7 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
   private objectToString: (data: any) => string
 
   constructor(opt: LocalStorageOptions) {
-    log.assert(opt.name, 'name required')
-    this.name = opt.name
+    this.name = opt.name ?? 'zeed'
     this.prefix = `${opt.name}$`
     this.objectToString
       = opt.objectToString
@@ -32,16 +27,14 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
           : jsonStringifySafe(data)
       })
 
-    this.objectFromString
-      = opt.objectFromString
-      ?? ((data: string) => {
-        try {
-          return JSON.parse(data)
-        }
-        catch (err) {
-          log.warn(`LocalStorage parse error '${err}' in`, data)
-        }
-      })
+    this.objectFromString = opt.objectFromString ?? ((data: string) => {
+      try {
+        return JSON.parse(data)
+      }
+      catch (err) {
+        // log.warn(`LocalStorage parse error '${err}' in`, data)
+      }
+    })
   }
 
   setItem(key: string, value: T): void {

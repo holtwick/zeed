@@ -1,5 +1,5 @@
-import type { LoggerInterface, LogMessage } from './log-base'
-import { LogLevel, LoggerContext } from './log-base'
+import { LoggerInterface, LogLevelAll, LogMessage } from './log-base'
+import { LoggerContext } from './log-base'
 import { LoggerMemoryHandler } from './log-memory'
 
 describe('log-memory', () => {
@@ -9,7 +9,7 @@ describe('log-memory', () => {
     const logger = LoggerContext()
     logger.setHandlers([
       LoggerMemoryHandler({
-        level: LogLevel.all,
+        level: LogLevelAll,
         filter: '*',
         messages,
       }),

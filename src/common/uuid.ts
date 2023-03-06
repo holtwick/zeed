@@ -2,11 +2,8 @@
 
 import { randomUint8Array } from './crypto'
 import { fromHex, toHex } from './data'
-import { useBase } from './data/basex'
+import { decodeBase32, decodeBase62, encodeBase32, encodeBase62 } from './data/basex'
 import { getTimestamp } from './time'
-
-const { encode: encode62, decode: decode62 } = useBase(62)
-const { encode: encode32, decode: decode32 } = useBase(32)
 
 // 128 bit UUID
 
@@ -19,29 +16,29 @@ export function uuidBytes(): Uint8Array {
 // Base62
 
 export function uuidB62(bytes = uuidBytes()): string {
-  return encode62(bytes, 22)
+  return encodeBase62(bytes, 22)
 }
 
 export function uuidEncodeB62(bytes: Uint8Array): string {
-  return encode62(bytes, 22)
+  return encodeBase62(bytes, 22)
 }
 
 export function uuidDecodeB62(uuid: string): Uint8Array {
-  return decode62(uuid, uuidBytesLength)
+  return decodeBase62(uuid, uuidBytesLength)
 }
 
 // Base32
 
 export function uuidB32(bytes = uuidBytes()): string {
-  return encode32(bytes, 26)
+  return encodeBase32(bytes, 26)
 }
 
 export function uuidEncodeB32(bytes: Uint8Array): string {
-  return encode32(bytes, 26)
+  return encodeBase32(bytes, 26)
 }
 
 export function uuidDecodeB32(uuid: string): Uint8Array {
-  return decode32(uuid, uuidBytesLength)
+  return decodeBase32(uuid, uuidBytesLength)
 }
 
 // UUIDv4
@@ -49,9 +46,11 @@ export function uuidDecodeB32(uuid: string): Uint8Array {
 // https://stackoverflow.com/a/2117523/140927
 const pattern = '10000000-1000-4000-8000-100000000000' // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
 
-export const uuidv4 = (typeof crypto !== 'undefined' && crypto.randomUUID != null)
-  ? crypto.randomUUID.bind(crypto) // native!
-  : () => pattern.replace(/[018]/g, (c: any) => (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16))
+export const uuidv4 = function () {
+  return (typeof crypto !== 'undefined' && crypto.randomUUID != null)
+    ? crypto.randomUUID() // native!
+    : pattern.replace(/[018]/g, (c: any) => (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16))
+}
 
 export function uuidEncodeV4(bytes: Uint8Array): string {
   const id = toHex(bytes)
@@ -120,7 +119,9 @@ export function suidBytesDate(id: Uint8Array): Date {
 
 // 32 bit UUID
 
-export const uuid32bit = () => new Uint32Array(randomUint8Array(4))[0]
+export function uuid32bit() {
+  return new Uint32Array(randomUint8Array(4))[0]
+}
 
 // Global Settings
 

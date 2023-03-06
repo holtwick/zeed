@@ -1,3 +1,5 @@
+import 'cross-fetch/polyfill'
+
 import * as crypto from 'node:crypto'
 
 globalThis.isNodeTestEnv = true

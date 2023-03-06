@@ -9,8 +9,8 @@
   "scripts": {
     "start": "pnpm run build && ZEED=* node dist/node/index.js",
     "build:zeed": "(cd ../.. && pnpm build)",
-    "build:browser": "esbuild index.ts --bundle --outdir=dist/browser --platform=browser && prettier -w dist/browser/index.js",
-    "build:node": "esbuild index.ts --bundle --outdir=dist/node --platform=node && prettier -w dist/node/index.js",
+    "build:browser": "esbuild index.ts --bundle --outdir=dist/browser --format=esm --platform=browser && prettier -w dist/browser/index.js",
+    "build:node": "esbuild index.ts --bundle --outdir=dist/node --format=esm --platform=node && prettier -w dist/node/index.js",
     "build": "pnpm run build:zeed && pnpm run build:browser && pnpm run build:node"
   },
   "dependencies": {

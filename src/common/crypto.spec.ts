@@ -8,9 +8,9 @@ import {
   randomUint8Array,
 } from './crypto'
 import { equalBinary, toHex } from './data/bin'
-import { Logger } from '.'
+import { DefaultLogger } from '.'
 
-const log = Logger('crypto.spec')
+const log = DefaultLogger('crypto.spec')
 
 describe('crypto', () => {
   it('should not have collisions', () => {

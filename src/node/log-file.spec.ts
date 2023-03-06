@@ -3,7 +3,7 @@
 /* eslint-disable n/no-path-concat */
 
 import { rmSync, statSync, unlinkSync } from 'fs'
-import { Logger, sleep, LogLevelAll, getGlobalLogger } from '../common'
+import { DefaultLogger, sleep, LogLevelAll, getGlobalLogger } from '../common'
 import { LoggerFileHandler } from './log-file'
 
 describe('Log File', () => {
@@ -19,7 +19,7 @@ describe('Log File', () => {
         filter: '*',
       }),
     ])
-    const log = Logger('test')
+    const log = DefaultLogger('test')
     log('debug')
     log.info('info')
     log.warn('warn')

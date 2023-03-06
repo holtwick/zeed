@@ -6,7 +6,7 @@ import {
   toBase64,
 } from './data'
 import { encodeQuery } from './data/url'
-import { Logger } from './log'
+import { DefaultLogger } from './log'
 import type { Json } from './types'
 
 interface fetchOptionType {
@@ -108,7 +108,7 @@ export async function fetchBasic(
     if (response.status < 400)
       return response
 
-    const log = Logger('zeed:network')
+    const log = DefaultLogger('zeed:network')
 
     try {
       log.warn(`Fetch of ${String(url)} returned status=${response.status}. Options:`, fetchOptions)
@@ -119,7 +119,7 @@ export async function fetchBasic(
     }
   }
   catch (err) {
-    const log = Logger('zeed:network')
+    const log = DefaultLogger('zeed:network')
     log.error('fetchBasic', err)
   }
 }
@@ -148,7 +148,7 @@ export async function fetchJson<T = Json>(
       return await res.json()
   }
   catch (err) {
-    const log = Logger('zeed:network')
+    const log = DefaultLogger('zeed:network')
     log.error('fetchJSON error:', err)
   }
 }
@@ -169,7 +169,7 @@ export async function fetchText(
       return await res.text()
   }
   catch (err) {
-    const log = Logger('zeed:network')
+    const log = DefaultLogger('zeed:network')
     log.error('fetchHTML error:', err)
   }
 }

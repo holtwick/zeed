@@ -5,7 +5,7 @@ import type { Disposable, DisposerFunction } from '../dispose-defer'
 import { useDispose } from '../dispose-defer'
 import { getGlobalContext } from '../global'
 import { promisify } from '../exec/promise'
-import { Logger } from '../log'
+import { DefaultLogger } from '../log'
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void
@@ -32,7 +32,7 @@ export class Emitter<
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
-  _logEmitter = Logger('zeed:emitter', 'error')
+  _logEmitter = DefaultLogger('zeed:emitter', 'error')
 
   /** Unused, but here for historical reasons */
   dispose = useDispose()

@@ -1,9 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger } from '../../index.log'
+ 
+import { DefaultLogger } from '../log'
 import { deepEqual, deepMerge, deepStripUndefinedInPlace } from './deep'
 
-const log = Logger('test:deep')
+const log = DefaultLogger('test:deep')
 
 describe('Deep', () => {
   it('should deep without self reference', () => {

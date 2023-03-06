@@ -2,7 +2,7 @@
 
 import type { LoggerInterface, LogMessage } from './log-base'
 import { LogLevel, LoggerContext } from './log-base'
-import { Logger } from './log'
+import { DefaultLogger } from './log'
 
 describe('Logger', () => {
   test('should log different levels', () => {

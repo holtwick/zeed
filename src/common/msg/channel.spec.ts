@@ -1,10 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { vi } from 'vitest'
-import { Logger } from '../log'
+import { DefaultLogger } from '../log'
 import { createLocalChannelPair } from './channel'
 
-const log = Logger('test:channel')
+const log = DefaultLogger('test:channel')
 
 describe('Channel', () => {
   // it('should fake', (done) => {

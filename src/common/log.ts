@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getGlobalContext } from './global'
-import type { LoggerContextInterface, LoggerInterface } from './log-base'
+import type { LogLevelAliasType, LoggerContextInterface, LoggerInterface } from './log-base'
 import { LoggerContext } from './log-base'
 import { LoggerConsoleHandler } from './log-console'
 
@@ -15,19 +15,22 @@ declare global {
   }
 }
 
-function getLoggerContext() {
+function getLoggerContext(setup?: (context: LoggerContextInterface) => void) {
   const logger = LoggerContext()
-  logger.setHandlers([LoggerConsoleHandler()])
+  if (setup)
+    setup(logger)
+  else
+    logger.setHandlers([LoggerConsoleHandler()])
   return logger
 }
 
-export function getGlobalLogger(): LoggerContextInterface {
+export function getGlobalLogger(setup?: (context: LoggerContextInterface) => void): LoggerContextInterface {
   if (globalLogger == null) {
     try {
       const gcontext = getGlobalContext()
       if (gcontext != null) {
         if (gcontext?.logger == null) {
-          globalLogger = getLoggerContext()
+          globalLogger = getLoggerContext(setup)
           gcontext.logger = globalLogger
         }
         else {
@@ -35,16 +38,16 @@ export function getGlobalLogger(): LoggerContextInterface {
         }
       }
       else {
-        globalLogger = getLoggerContext()
+        globalLogger = getLoggerContext(setup)
       }
     }
     catch (e) {
-      globalLogger = getLoggerContext()
+      globalLogger = getLoggerContext(setup)
     }
   }
   return globalLogger
 }
 
-export function Logger(...args: any[]): LoggerInterface {
-  return getGlobalLogger()(...args)
+export function DefaultLogger(name?: string, level?: LogLevelAliasType): LoggerInterface {
+  return getGlobalLogger()(name, level)
 }

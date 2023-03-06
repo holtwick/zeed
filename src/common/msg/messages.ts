@@ -1,6 +1,6 @@
 import { valueToString } from '../data/convert'
 import { isPromise, tryTimeout } from '../exec/promise'
-import { Logger } from '../log'
+import { DefaultLogger } from '../log'
 import type { LogLevelAliasType } from '../log-base'
 import type { Json } from '../types'
 import { uname, uuid } from '../uuid'
@@ -88,7 +88,7 @@ export function useMessageHub(
     logLevel = false,
   } = opt
 
-  const log = Logger(name, logLevel)
+  const log = DefaultLogger(name, logLevel)
 
   const handlers = {}
   let channel: Channel | undefined

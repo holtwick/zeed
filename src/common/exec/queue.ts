@@ -4,7 +4,7 @@
 
 import type { LogLevel, LoggerInterface } from '../log-base'
 import { LogLevelOff } from '../log-base'
-import { Logger } from '../log'
+import { DefaultLogger } from '../log'
 import { uname } from '../uuid'
 import { Emitter } from '../msg/emitter'
 
@@ -45,7 +45,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
     super()
     const { name = uname('queue'), logLevel } = opt
     this.name = name
-    this.log = Logger(`zeed:queue:${name}`, logLevel ?? LogLevelOff)
+    this.log = DefaultLogger(`zeed:queue:${name}`, logLevel ?? LogLevelOff)
   }
 
   private async performNext() {

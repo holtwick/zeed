@@ -3,10 +3,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-async-promise-executor */
 
-import { Logger } from '../log'
-
-const log = Logger('zeed:promise', 'error')
-
 /**
  * Promise to be used with `await`. Example:
  *
@@ -37,8 +33,6 @@ export async function immediate(): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, 0))
 }
 
-export const timeoutReached = Symbol('timeout')
-
 // type Unwrap<T> = T extends Promise<infer U>
 //   ? U
 //   : T extends (...args: any) => Promise<infer U>
@@ -50,7 +44,7 @@ export const timeoutReached = Symbol('timeout')
 export async function timeout<T>(
   promise: Promise<T>,
   milliSeconds: number,
-  timeoutValue = timeoutReached,
+  timeoutValue = 'timeoutReached',
 ): Promise<T | typeof timeoutValue> {
   return new Promise(async (resolve, reject) => {
     let done = false
@@ -74,10 +68,8 @@ export async function timeout<T>(
   })
 }
 
-export const timoutError = new Error('Timeout reached')
-
 export function isTimeout(value: any): boolean {
-  return value === timeoutReached || value === timoutError
+  return value === 'timeoutReached' || value?.name === 'Timeout reached'
 }
 
 export async function tryTimeout<T>(
@@ -92,7 +84,7 @@ export async function tryTimeout<T>(
 
     const timeout = setTimeout(() => {
       done = true
-      reject(timoutError)
+      reject(new Error('Timeout reached'))
     }, milliSeconds)
 
     try {
@@ -130,8 +122,8 @@ export function waitOn(
         obj.off(event, fn)
       else if (obj.removeEventListener)
         obj.removeEventListener(event, fn)
-      else
-        log.warn('No remove listener method found for', obj, event)
+      // else
+      //   log.warn('No remove listener method found for', obj, event)
     }
 
     let timer: any = setTimeout(() => {
@@ -143,18 +135,13 @@ export function waitOn(
       obj.on(event, fn)
     else if (obj.addEventListener)
       obj.addEventListener(event, fn)
-    else
-      log.warn('No listener method found for', obj)
+    // else
+    //   log.warn('No listener method found for', obj)
   })
 }
 
 export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
-  return Boolean(
-    value
-      && (value instanceof Promise
-        // @ts-expect-error xxx
-        || typeof value.then === 'function'),
-  )
+  return Boolean(value && (value instanceof Promise || typeof (value as any).then === 'function'))
 }
 
 /** This is exactly what Prose.resolve(x) is supposed to be: return a Promise no matter what type x is */

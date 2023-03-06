@@ -1,10 +1,8 @@
 import { isString } from './data'
 import { arrayFilterInPlace } from './data/array'
 import { isPromise, promisify } from './exec/promise'
+import { Logger } from './log'
 import type { LoggerInterface } from './log-base'
-import { LoggerLazy } from './log-lazy'
-
-const logDispose = LoggerLazy('zeed:dispose')
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
@@ -59,7 +57,8 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
   }
 
   const name = opt?.name
-  const log = opt?.log ?? logDispose
+  const log = opt?.log ?? Logger('zeed:dispose')
+
   const tracked: Disposer[] = []
 
   const untrack = async (disposable: Disposer): Promise<void> => {

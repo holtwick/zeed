@@ -3,7 +3,7 @@
 import tty from 'node:tty'
 import { renderMessages, valueToBoolean } from '../common/data/convert'
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
-import { LogLevel } from '../common/log-base'
+import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
 import { getSourceLocation, getSourceLocationByPrecedingPattern, getStack } from './log-util'
@@ -149,9 +149,9 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     if (colors) {
       const c = ninfo.color
       args = [`${colorString(displayName, c)} | `] // nameBrackets ? [`%c[${name}]`] : [`%c${name}`]
-      if (msg.level === LogLevel.warn)
+      if (msg.level === LogLevelWarn)
         args.push(...colorStringList(msg.messages, TTY_STYLE.ORANGE))
-      else if (msg.level === LogLevel.error)
+      else if (msg.level === LogLevelError)
         args.push(...colorStringList(msg.messages, TTY_STYLE.RED))
       else
         args.push(...msg.messages)
@@ -190,12 +190,12 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     const charLevel = '.'
 
     switch (msg.level) {
-      case LogLevel.info:
+      case LogLevelInfo:
         if (levelHelper)
           args[0] = `I${sep}${charLevel}   ${args[0]}`
         log(...args)
         break
-      case LogLevel.warn:
+      case LogLevelWarn:
         if (levelHelper) {
           args[0] = (colors
             ? colorString(`W${sep}${charLevel}${charLevel}  `, COLOR.ORANGE)
@@ -203,7 +203,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
         }
         log(...args)
         break
-      case LogLevel.error:
+      case LogLevelError:
         if (levelHelper) {
           args[0] = (colors
             ? colorString(`E${sep}${charLevel}${charLevel}${charLevel} `, COLOR.RED)

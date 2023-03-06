@@ -1,10 +1,7 @@
 /* eslint-disable no-control-regex */
 /* eslint-disable prefer-spread */
 
-import { LoggerLazy } from '../log-lazy'
 import { jsonStringifySafe } from './json'
-
-const log = LoggerLazy('zeed:bin', 'error')
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 
@@ -166,23 +163,11 @@ export function equalBinary(
 }
 
 export function jsonToUint8Array(json: any): Uint8Array | never {
-  try {
-    return stringToUInt8Array(jsonStringifySafe(json))
-  }
-  catch (err) {
-    log.warn('jsonToUint8Array', json)
-    throw err
-  }
+  return stringToUInt8Array(jsonStringifySafe(json))
 }
 
 export function Uint8ArrayToJson<T = any>(data: Uint8Array): T | never {
-  try {
-    return JSON.parse(Uint8ArrayToString(data))
-  }
-  catch (err) {
-    log.warn('Uint8ArrayToJson', data)
-    throw err
-  }
+  return JSON.parse(Uint8ArrayToString(data))
 }
 
 // https://gist.github.com/igorgatis/d294fe714a4f523ac3a3

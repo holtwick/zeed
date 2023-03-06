@@ -4,7 +4,7 @@ import { createWriteStream, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { renderMessages } from '../common/data/convert'
 import type { LogHandlerOptions, LogMessage } from '../common/log-base'
-import { LogLevel } from '../common/log-base'
+import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 
 const namespaces: Record<string, any> = {}
@@ -43,13 +43,13 @@ export function LoggerFileHandler(path: string, opt: LogHandlerOptions = {}) {
     }
 
     switch (msg.level) {
-      case LogLevel.info:
+      case LogLevelInfo:
         write(`${timeNow}I|*  `, ...args)
         break
-      case LogLevel.warn:
+      case LogLevelWarn:
         write(`${timeNow}W|** `, ...args)
         break
-      case LogLevel.error:
+      case LogLevelError:
         write(`${timeNow}E|***`, ...args)
         break
       default:

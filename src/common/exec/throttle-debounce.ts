@@ -2,11 +2,10 @@
 // From https://github.com/cowboy/jquery-throttle-debounce
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
-import { LoggerLazy } from '../log-lazy'
 import { promisify } from './promise'
 
-const DEBUG = false
-const log = DEBUG ? LoggerLazy('zeed:throttle', 'error') : () => {}
+// const DEBUG = false
+// const log = DEBUG ? LoggerLazy('zeed:throttle', 'error') : () => {}
 
 /**
  * A special throttle implementation that tries to distribute execution
@@ -77,12 +76,12 @@ export function throttle<F extends (...args: any[]) => any>(
 
     // Make sure enough time has passed since last call
     if (elapsed > delay || !timeoutID) {
-      DEBUG && log('elapsed', debugElapsed())
+      // DEBUG && log('elapsed', debugElapsed())
 
       // Leading execute once immediately
       if (leading) {
         if (elapsed > delay) {
-          DEBUG && log('🚀 leading', debugElapsed())
+          // DEBUG && log('🚀 leading', debugElapsed())
           exec()
         }
         else {
@@ -91,7 +90,7 @@ export function throttle<F extends (...args: any[]) => any>(
       }
 
       const timeout = elapsed > delay ? delay : delay - elapsed
-      log(`⏱ start timeout with ${timeout.toFixed(1)}ms`, debugElapsed())
+      // log(`⏱ start timeout with ${timeout.toFixed(1)}ms`, debugElapsed())
 
       // Prepare for next round
       clearExistingTimeout()
@@ -99,11 +98,11 @@ export function throttle<F extends (...args: any[]) => any>(
 
       // Delay. We should not get here if timeout has not been reached before
       timeoutID = setTimeout(() => {
-        DEBUG && log('⏱ reached timeout', debugElapsed())
+        // DEBUG && log('⏱ reached timeout', debugElapsed())
         timeoutID = 0
         // Only execute on trailing or when visited again, but do not twice if leading
         if (trailing && (!leading || visited > 0)) {
-          DEBUG && log('🚀 trailing', debugElapsed())
+          // DEBUG && log('🚀 trailing', debugElapsed())
           trailingExec?.()
         }
       }, timeout)
@@ -111,7 +110,7 @@ export function throttle<F extends (...args: any[]) => any>(
     else {
       // Count visits
       ++visited
-      DEBUG && log('visited', debugElapsed())
+      // DEBUG && log('visited', debugElapsed())
     }
   }
 
@@ -157,7 +156,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
 
   function clearExistingTimeout() {
     if (timeoutID) {
-      log('clear')
+      // log('clear')
       clearTimeout(timeoutID)
       timeoutID = 0
     }
@@ -167,16 +166,16 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     try {
       clearExistingTimeout()
       if (lastArguments != null) {
-        log('exec')
+        // log('exec')
         const args = [...lastArguments]
         lastArguments = undefined
         running = true
         await promisify(callback(...args))
         running = false
-        log('exec done')
+        // log('exec done')
         if (lastArguments != null) {
           clearExistingTimeout()
-          log('exec trigger next')
+          // log('exec trigger next')
           timeoutID = setTimeout(exec, delay)
         }
       }
@@ -187,7 +186,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
   function wrapper(this: any, ...args: any[]) {
     lastArguments = [...args]
     clearExistingTimeout()
-    log('trigger')
+    // log('trigger')
     if (running === false)
       timeoutID = setTimeout(exec, delay)
   }

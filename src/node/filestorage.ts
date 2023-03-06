@@ -7,15 +7,12 @@ import {
   rmSync,
   unlinkSync,
   writeFileSync,
-} from 'fs'
+} from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { jsonStringifySafe } from '../common/data/json'
 import { toValidFilename } from '../common/data/path'
 import { cloneObject } from '../common/data/utils'
-import { Logger } from '../common/log'
 import type { Json, ObjectStorage } from '../common/types'
-
-const log = Logger('zeed:filestorage', 'error')
 
 export interface FileStorageOptions {
   pretty?: boolean
@@ -55,16 +52,14 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
           : jsonStringifySafe(data)
       })
 
-    this.objectFromString
-      = opt.objectFromString
-      ?? ((data: string) => {
-        try {
-          return JSON.parse(data)
-        }
-        catch (err) {
-          log.warn(`fileStorage parse error '${err}' in`, data)
-        }
-      })
+    this.objectFromString = opt.objectFromString ?? ((data: string) => {
+      try {
+        return JSON.parse(data)
+      }
+      catch (err) {
+        // log.warn(`fileStorage parse error '${err}' in`, data)
+      }
+    })
 
     this.keyToFilename = opt.keyToFilename ?? toValidFilename
   }
@@ -78,7 +73,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
       writeFileSync(path, data, 'utf8')
     }
     catch (err) {
-      log.error('setItem error', err)
+      // log.error('setItem error', err)
     }
   }
 

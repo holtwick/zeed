@@ -9,11 +9,8 @@
 // "Fast base encoding / decoding of any given alphabet using bitcoin style leading zero compression."
 // "WARNING: This module is NOT RFC3548 compliant, it cannot be used for base16 (hex), base32, or base64 encoding in a standards compliant manner."
 
-import { Logger } from '../log'
 import type { BinInput } from './bin'
 import { toUint8Array } from './bin'
-
-const log = Logger('zeed:basex', 'error')
 
 const alphabets = {
   '2': '01',
@@ -36,7 +33,13 @@ const alphabets = {
   '85': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~', // https://datatracker.ietf.org/doc/html/rfc1924#section-4.2
 }
 
-export function useBase(alphaOrBase: string | number) {
+type encodeFunction = (source: BinInput, padToLength?: number) => string
+type decodeFunction = (source: string, padToLength?: number) => Uint8Array
+
+export function _useBase(alphaOrBase: string | number): {
+  encode: encodeFunction
+  decode: decodeFunction
+} {
   let ALPHABET: string | undefined = (alphabets as any)[String(alphaOrBase)]
 
   if (!ALPHABET) {
@@ -100,7 +103,7 @@ export function useBase(alphaOrBase: string | number) {
       }
 
       if (carry !== 0) {
-        log.warn('Non-zero carry', data, padToLength, i, size)
+        // log.warn('Non-zero carry', data, padToLength, i, size)
         throw new Error('Non-zero carry')
       }
 
@@ -187,27 +190,69 @@ export function useBase(alphaOrBase: string | number) {
   }
 }
 
+let cache: Map<number | string, any> | undefined
+
+export function useBase(alphaOrBase: string | number) {
+  if (cache == null)
+    cache = new Map()
+
+  function fn() {
+    let fn = cache!.get(alphaOrBase)
+    if (fn == null) {
+      fn = _useBase(alphaOrBase)
+      cache!.set(alphaOrBase, fn)
+    }
+    return fn
+  }
+
+  function encode(source: BinInput, padToLength = -1): string {
+    return fn().encode(source, padToLength)
+  }
+  function decode(source: string, padToLength = -1): Uint8Array {
+    return fn().decode(source, padToLength)
+  }
+  return { encode, decode }
+}
+
 // Shortcuts
 
-const { encode: encodeBase32, decode: _decodeBase32 } = useBase(32)
+export function encodeBase32(bin: BinInput, padding = -1) {
+  return useBase(32).encode(bin, padding)
+}
 
-function decodeBase32(s: string) {
-  return _decodeBase32(s
+export function decodeBase32(s: string, padding = -1) {
+  return useBase(32).decode(s
     .toLocaleLowerCase()
     .replaceAll('l', '1')
     .replaceAll('s', '5')
     .replaceAll('o', '0')
-    .replaceAll('i', '1'))
+    .replaceAll('i', '1'),
+  padding)
 }
 
-export { encodeBase32, decodeBase32 }
+export function encodeBase16(bin: BinInput, padding = -1) {
+  return useBase(16).encode(bin, padding)
+}
 
-export const { encode: encodeBase16, decode: decodeBase16 } = useBase(16)
-export const { encode: encodeBase58, decode: decodeBase58 } = useBase(58)
-export const { encode: encodeBase62, decode: decodeBase62 } = useBase(62)
+export function decodeBase16(s: string, padding = -1) {
+  return useBase(16).decode(s, padding)
+}
 
-// export const { encode: encodeBase32, decode: decodeBase32 } = useBase(32)
-// export const { encode: encodeBase64, decode: decodeBase64 } = useBase(64)
+export function encodeBase58(bin: BinInput, padding = -1) {
+  return useBase(58).encode(bin, padding)
+}
+
+export function decodeBase58(s: string, padding = -1) {
+  return useBase(58).decode(s, padding)
+}
+
+export function encodeBase62(bin: BinInput, padding = -1) {
+  return useBase(62).encode(bin, padding)
+}
+
+export function decodeBase62(s: string, padding = -1) {
+  return useBase(62).decode(s, padding)
+}
 
 export function estimateSizeForBase(bytes: number, base: number) {
   return Math.ceil(bytes * (Math.log(256) / Math.log(base)))

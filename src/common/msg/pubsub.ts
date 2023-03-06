@@ -13,7 +13,7 @@ interface PubSubConfig {
   debug?: boolean
 }
 
-export class PubSub< L extends ListenerSignature<L> = DefaultListener> extends Emitter<L> {
+export class PubSub<L extends ListenerSignature<L> = DefaultListener> extends Emitter<L> {
   name: string
   channel: Channel
   encoder: Encoder

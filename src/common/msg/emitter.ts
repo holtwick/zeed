@@ -5,9 +5,7 @@ import type { Disposable, DisposerFunction } from '../dispose-defer'
 import { useDispose } from '../dispose-defer'
 import { getGlobalContext } from '../global'
 import { promisify } from '../exec/promise'
-import { LoggerLazy } from '../log-lazy'
-
-const log = LoggerLazy('zeed:emitter', 'error')
+import { Logger } from '../log'
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void
@@ -34,6 +32,8 @@ export class Emitter<
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
+  _logEmitter = Logger('zeed:emitter', 'error')
+
   /** Unused, but here for historical reasons */
   dispose = useDispose()
 
@@ -52,7 +52,7 @@ export class Emitter<
 
     try {
       const subscribers = (this.subscribers[event] || []) as EmitterHandler[]
-      // log.debug("emit", this?.constructor?.name, event, ...args, subscribers)
+      this._logEmitter.debug('emit', this?.constructor?.name, event, ...args, subscribers)
 
       this.subscribersOnAny.forEach(fn => fn(event, ...args))
 
@@ -62,7 +62,7 @@ export class Emitter<
             return promisify(fn(...args))
           }
           catch (err) {
-            log.warn('emit warning:', err)
+            this._logEmitter.warn('emit warning:', err)
           }
           return null
         }).filter(fn => fn != null)
@@ -71,7 +71,7 @@ export class Emitter<
       }
     }
     catch (err) {
-      log.error('emit exception', err)
+      this._logEmitter.error('emit exception', err)
     }
     return ok
   }
@@ -146,10 +146,6 @@ export function getGlobalEmitter(): Emitter<ZeedGlobalEmitter> {
   return emitter as any
 }
 
-// This can be used as a global messaging port to connect loose
-// parts of your app
-export const messages = new Emitter()
-
 // For debugging
 
 interface LazyEvent {
@@ -185,7 +181,7 @@ export function lazyListener(
       })
     }
     else {
-      log.error(name, 'Cannot listen to key')
+      emitter.log.error(name, 'Cannot listen to key')
     }
   }
   else {
@@ -195,7 +191,7 @@ export function lazyListener(
       })
     }
     else {
-      log.error(name, 'cannot listen to all for', emitter)
+      emitter.log.error(name, 'cannot listen to all for', emitter)
     }
   }
 
@@ -222,11 +218,11 @@ export function lazyListener(
           }
           else {
             if (skipUnmatched) {
-              log.warn(name, `Unhandled event ${key} with value: ${ev.obj}`)
+              // log.warn(name, `Unhandled event ${key} with value: ${ev.obj}`)
               continue
             }
             reject(new Error(`Expected ${key}, but found ${ev.key} with value=${ev.obj}`))
-            log.error(name, `Unhandled event ${key} with value: ${ev.obj}`)
+            // log.error(name, `Unhandled event ${key} with value: ${ev.obj}`)
           }
           break
         }

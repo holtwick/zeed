@@ -2,8 +2,8 @@
 
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-import type { LoggerInterface } from '../log-base'
-import { LogLevel } from '../log-base'
+import type { LogLevel, LoggerInterface } from '../log-base'
+import { LogLevelOff } from '../log-base'
 import { Logger } from '../log'
 import { uname } from '../uuid'
 import { Emitter } from '../msg/emitter'
@@ -45,7 +45,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
     super()
     const { name = uname('queue'), logLevel } = opt
     this.name = name
-    this.log = Logger(`zeed:queue:${name}`, logLevel ?? LogLevel.off)
+    this.log = Logger(`zeed:queue:${name}`, logLevel ?? LogLevelOff)
   }
 
   private async performNext() {

@@ -31,7 +31,7 @@
     "utils",
     "zeed"
   ],
-  "sideEffects": true,
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.all.d.ts",

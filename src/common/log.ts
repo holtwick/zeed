@@ -45,5 +45,5 @@ export function getGlobalLogger(): LoggerContextInterface {
   return globalLogger
 }
 
-// todo sideffects
+// todo sideeffects
 export const Logger = getGlobalLogger()

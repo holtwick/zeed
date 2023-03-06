@@ -15,7 +15,7 @@ const useColors = supportsColors()
 
 const namespaces: Record<string, any> = {}
 
-const startTime = getTimestamp() // todo sideffects
+const startTime = getTimestamp() // todo sideeffects
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {

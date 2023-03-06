@@ -2,10 +2,12 @@
 
 /* eslint-disable no-new-func */
 
-import { platform } from './platform'
+import { detect } from './platform'
 
 describe('Platform', () => {
   it('should detect', () => {
+    let platform = detect()
+    
     if (globalThis.isNodeTestEnv) {
       expect(platform.node).toBe(true)
       expect(platform.test).toBe(true)

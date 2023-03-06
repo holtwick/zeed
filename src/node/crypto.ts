@@ -9,7 +9,7 @@ export {}
 //   }
 // }
 
-// todo sideffects
+// todo sideeffects
 try {
   if (
     typeof globalThis !== 'undefined'

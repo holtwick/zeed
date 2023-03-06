@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { createWriteStream, mkdirSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { createWriteStream, mkdirSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { renderMessages } from '../common/data/convert'
 import type { LogHandlerOptions, LogMessage } from '../common/log-base'
 import { LogLevel } from '../common/log-base'

@@ -2,11 +2,11 @@
 // From https://github.com/cowboy/jquery-throttle-debounce
 // And https://github.com/wuct/raf-throttle/blob/master/rafThrottle.js
 
-import { Logger } from '../log'
+import { LoggerLazy } from '../log-lazy'
 import { promisify } from './promise'
 
 const DEBUG = false
-const log = DEBUG ? Logger('zeed:throttle', 'error') : () => {}
+const log = DEBUG ? LoggerLazy('zeed:throttle', 'error') : () => {}
 
 /**
  * A special throttle implementation that tries to distribute execution

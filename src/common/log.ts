@@ -47,3 +47,7 @@ export function getGlobalLogger(): LoggerContextInterface {
 
 // todo sideeffects
 export const Logger = getGlobalLogger()
+
+// export function Logger(...args: any[]): LoggerInterface {
+//   return getGlobalLogger()(...args)
+// }

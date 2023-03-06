@@ -1,9 +1,11 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { vi } from 'vitest'
-import { platform } from '../platform'
+import { detect } from '../platform'
 import { sleep, waitOn } from '../exec/promise'
 import { Emitter, getGlobalEmitter, lazyListener } from './emitter'
+
+let platform = detect()
 
 declare global {
   interface ZeedGlobalEmitter {

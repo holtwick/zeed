@@ -4,10 +4,10 @@ import { getSecureRandomIfPossible } from '../data/math'
 import type { Disposable, DisposerFunction } from '../dispose-defer'
 import { useDispose } from '../dispose-defer'
 import { getGlobalContext } from '../global'
-import { Logger } from '../log'
 import { promisify } from '../exec/promise'
+import { LoggerLazy } from '../log-lazy'
 
-const log = Logger('zeed:emitter', 'error')
+const log = LoggerLazy('zeed:emitter', 'error')
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void

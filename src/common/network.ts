@@ -6,10 +6,10 @@ import {
   toBase64,
 } from './data'
 import { encodeQuery } from './data/url'
-import { Logger } from './log'
+import { LoggerLazy } from './log-lazy'
 import type { Json } from './types'
 
-const log = Logger('zeed:network', 'error')
+const log = LoggerLazy('zeed:network', 'error')
 
 interface fetchOptionType {
   /** Returns the cache mode associated with request, which is a string indicating how the request will interact with the browser's cache when fetching. */

@@ -4,10 +4,10 @@
 
 import fs from 'node:fs'
 import { resolve } from 'node:path'
-import { Logger } from '../common/log'
 import { LogLevel } from '../common/log-base'
+import { LoggerLazy } from '../common/log-lazy'
 
-const log = Logger('zeed:env', 'error')
+const log = LoggerLazy('zeed:env', 'error')
 
 const NEWLINE = '\n'
 const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/

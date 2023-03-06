@@ -1,10 +1,10 @@
 /* eslint-disable no-control-regex */
 /* eslint-disable prefer-spread */
 
-import { Logger } from '../log'
+import { LoggerLazy } from '../log-lazy'
 import { jsonStringifySafe } from './json'
 
-const log = Logger('zeed:bin', 'error')
+const log = LoggerLazy('zeed:bin', 'error')
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 

@@ -1,11 +1,11 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import type { Json, ObjectStorage } from '../common/types'
-import { Logger } from '../common/log'
 import { jsonStringifySafe } from '../common/data/json'
 import type { LoggerInterface } from '../common'
+import { LoggerLazy } from '../common/log-lazy'
 
-const log: LoggerInterface = Logger('zeed:localstorage', 'error')
+const log: LoggerInterface = LoggerLazy('zeed:localstorage', 'error')
 
 export interface LocalStorageOptions {
   name: string

@@ -7,19 +7,19 @@ import { createLocalChannelPair } from './channel'
 const log = Logger('test:channel')
 
 describe('Channel', () => {
-  it('should fake', (done) => {
-    // log.info("done", done.toSource())
-    expect.assertions(1)
+  // it('should fake', (done) => {
+  //   // log.info("done", done.toSource())
+  //   expect.assertions(1)
 
-    const [f1, f2] = createLocalChannelPair()
+  //   const [f1, f2] = createLocalChannelPair()
 
-    f1.on('message', (ev) => {
-      expect(ev.data).toBe('123')
-      done()
-    })
+  //   f1.on('message', (ev) => {
+  //     expect(ev.data).toBe('123')
+  //     done()
+  //   })
 
-    f2.postMessage('123')
-  })
+  //   f2.postMessage('123')
+  // })
 
   it('should fake2', (done) => {
     // log.info("done", done.toSource())

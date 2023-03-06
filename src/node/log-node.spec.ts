@@ -1,11 +1,11 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Logger, LogLevelAll } from '../common'
+import { getGlobalLogger, Logger, LogLevelAll } from '../common'
 import { LoggerNodeHandler, loggerStackTraceDebug } from './log-node'
 
 describe('log-node', () => {
   it('should color log', async () => {
-    Logger.setHandlers([LoggerNodeHandler()])
+    getGlobalLogger().setHandlers([LoggerNodeHandler()])
     const log = Logger('test')
     log('debug')
     log.info('info')
@@ -15,7 +15,7 @@ describe('log-node', () => {
   })
 
   test('should find pattern', () => {
-    Logger.setHandlers([
+    getGlobalLogger().setHandlers([
       LoggerNodeHandler({
         level: LogLevelAll,
         filter: '*',

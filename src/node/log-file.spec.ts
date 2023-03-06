@@ -3,7 +3,7 @@
 /* eslint-disable n/no-path-concat */
 
 import { rmSync, statSync, unlinkSync } from 'fs'
-import { Logger, sleep, LogLevelAll } from '../common'
+import { Logger, sleep, LogLevelAll, getGlobalLogger } from '../common'
 import { LoggerFileHandler } from './log-file'
 
 describe('Log File', () => {
@@ -13,7 +13,7 @@ describe('Log File', () => {
 
   it('should write log', async () => {
     const path = `${__dirname}/tmp/test.log`
-    Logger.setHandlers([
+    getGlobalLogger().setHandlers([
       LoggerFileHandler(path, {
         level: LogLevelAll,
         filter: '*',

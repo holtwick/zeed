@@ -1,10 +1,10 @@
 import { valueToBoolean } from '../common'
-import { Logger } from '../common/log'
+import { getGlobalLogger } from '../common/log'
 import { toPath } from './env'
 import { LoggerFileHandler } from './log-file'
 import { LoggerNodeHandler } from './log-node'
 
-function setupLogContextNode() {
+export function setupLogContextNode() {
   const handlers = [
     LoggerNodeHandler({
       padding: 32,
@@ -19,8 +19,8 @@ function setupLogContextNode() {
   if (logFilePath)
     handlers.unshift(LoggerFileHandler(toPath(logFilePath), { time, pretty }))
 
-  Logger.setHandlers(handlers)
+  const logger = getGlobalLogger()
+  logger.setHandlers(handlers)
 }
 
-// todo sideeffects
-setupLogContextNode()
+// setupLogContextNode()

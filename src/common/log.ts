@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getGlobalContext } from './global'
-import type { LoggerContextInterface } from './log-base'
+import type { LoggerContextInterface, LoggerInterface } from './log-base'
 import { LoggerContext } from './log-base'
 import { LoggerConsoleHandler } from './log-console'
 
@@ -45,9 +45,6 @@ export function getGlobalLogger(): LoggerContextInterface {
   return globalLogger
 }
 
-// todo sideeffects
-export const Logger = getGlobalLogger()
-
-// export function Logger(...args: any[]): LoggerInterface {
-//   return getGlobalLogger()(...args)
-// }
+export function Logger(...args: any[]): LoggerInterface {
+  return getGlobalLogger()(...args)
+}

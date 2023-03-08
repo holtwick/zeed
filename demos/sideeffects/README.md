@@ -10,9 +10,9 @@ Better use strings, like `type MyStates = 'sleep' | 'code' | 'eat'`.
 
 ## Avoid `const x = Infinity`
 
-Don't ask me why, but this always goes into the tree-shaking code. Maybe it is just a bug in `esbuild'.
+Don't ask me why, but this always goes into the tree shaking code. Maybe it is just a bug in `esbuild`? It will show up as something like `var K = 1 / 0;` in the output, which is an interesting topic in itself that `1/0 === Infinity` ;)
 
-Use something like `const x = 9007199254740991` instead, if you can. This is `math.pow(2, 53) - 1`.
+Use something like `const x = 9007199254740991` instead, if it makes sense in your code. This equals `math.pow(2, 53) - 1`.
 
 ## Avoid global factories
 

@@ -56,8 +56,8 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
         throw new Error(`${args.map(String).join(' ')}`)
       })
 
-      log.assert = defineForLogLevel(LogLevelFatal, (cond: unknown, ...args: any) => {
-        if (cond == null || !cond)
+      log.assert = defineForLogLevel(LogLevelFatal, (condition: unknown, ...args: any) => {
+        if (condition == null || (typeof condition === 'number' && isNaN(condition)) || !condition)
           log.fatal(...args)
       })
     }

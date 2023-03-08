@@ -48,6 +48,19 @@ export function getGlobalLogger(setup?: (context: LoggerContextInterface) => voi
   return globalLogger
 }
 
+/** Can be used for lazy usage e.g. inside of Zeed  */
+export function getGlobalLoggerIfExists() {
+  if (globalLogger != null)
+    return globalLogger
+
+  try {
+    const gcontext = getGlobalContext()
+    if (gcontext?.logger != null)
+      return gcontext.logger
+  }
+  catch (e) { }
+}
+
 export function DefaultLogger(name?: string, level?: LogLevelAliasType): LoggerInterface {
   return getGlobalLogger()(name, level)
 }

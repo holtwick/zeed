@@ -47,7 +47,7 @@ function getEncoder(forBits:number) {
 }
 
 function encode64(data) {
-  getEncoder(64).encode(data)
+  return getEncoder(64).encode(data)
 }
 ```
 

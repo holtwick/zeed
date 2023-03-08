@@ -196,7 +196,7 @@ export function useBase(alphaOrBase: string | number) {
   if (cache == null)
     cache = new Map()
 
-  function fn() {
+  function getFromCache() {
     let fn = cache!.get(alphaOrBase)
     if (fn == null) {
       fn = _useBase(alphaOrBase)
@@ -206,11 +206,13 @@ export function useBase(alphaOrBase: string | number) {
   }
 
   function encode(source: BinInput, padToLength = -1): string {
-    return fn().encode(source, padToLength)
+    return getFromCache().encode(source, padToLength)
   }
+
   function decode(source: string, padToLength = -1): Uint8Array {
-    return fn().decode(source, padToLength)
+    return getFromCache().decode(source, padToLength)
   }
+
   return { encode, decode }
 }
 

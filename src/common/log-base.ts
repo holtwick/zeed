@@ -200,8 +200,8 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       throw new Error(`${messages.map(String).join(' ')}`)
     })
 
-    log.assert = defineForLogLevel(LogLevelFatal, (cond: unknown, ...args: any) => {
-      if (!cond)
+    log.assert = defineForLogLevel(LogLevelFatal, (condition: unknown, ...args: any) => {
+      if (condition == null || (typeof condition === 'number' && isNaN(condition)) || !condition)
         log.fatal(...args)
     })
 

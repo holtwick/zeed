@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
-import { arrayUnion } from 'zeed'
-import { Logger, LoggerInterface } from "zeed"
+import { arrayUnion, Logger, LoggerInterface } from 'zeed'
 
 const log: LoggerInterface = Logger("test")
 

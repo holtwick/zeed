@@ -125,23 +125,18 @@ export function cloneJsonObject<T = Json>(obj: T): T {
  * square(2) // == 2
  * ```
  */
-export function memoize<In, Out>(
-  fn: (arg: In) => Out,
-): (arg: In) => Out {
+export function memoize<In, Out>(fn: (arg: In) => Out): (arg: In) => Out {
   const cache = new Map<In, Out>()
   return (n: In): Out => {
     if (cache.has(n))
       return cache.get(n)!
-
     const result = fn(n)
     cache.set(n, result)
     return result
   }
 }
 
-export function memoizeAsync<In extends any[], Out extends Promise<any>>(
-  fn: (...arg: In) => Out,
-): (...arg: In) => Promise<Out> {
+export function memoizeAsync<In extends any[], Out extends Promise<any>>(fn: (...arg: In) => Out): (...arg: In) => Promise<Out> {
   const cache = new Map<string, Out>()
   return async (...n: In): Promise<Out> => {
     const key = jsonStringifySafe(n)
@@ -153,6 +148,26 @@ export function memoizeAsync<In extends any[], Out extends Promise<any>>(
     return result
   }
 }
+
+// let cacheMemoizeDomain: any
+
+// /**
+//  * Same as `memoize` but does not require global const.
+//  */
+// export function memoizeDomain<In, Out>(domain: string, fn: (arg: In) => Out): (arg: In) => Out {
+//   if (cacheMemoizeDomain == null)
+//     cacheMemoizeDomain = new Map<string, Map<In, Out>>()
+//   if (!cacheMemoizeDomain.has(domain))
+//     cacheMemoizeDomain.set(domain, new Map())
+//   const cache = cacheMemoizeDomain.get(domain)
+//   return (n: In): Out => {
+//     if (cache.has(n))
+//       return cache.get(n)!
+//     const result = fn(n)
+//     cache.set(n, result)
+//     return result
+//   }
+// }
 
 /** Repeat `count` times. Starts with `0` */
 export function forTimes<T = undefined>(

@@ -3,7 +3,7 @@
   "format": [
     "esm",
     "cjs"
-  ], 
+  ],
   "treeshake": true,
   "minify": true,
   "sourcemap": true

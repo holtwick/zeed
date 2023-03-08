@@ -59,12 +59,12 @@ export function throttle<F extends (...args: any[]) => any>(
     const now = Date.now()
     const elapsed = now - checkpoint
 
-    function debugElapsed() {
-      const dnow = Date.now()
-      return `total ${(dnow - debugCheckpoint).toFixed(1)}ms - elapsed ${(
-        dnow - checkpoint
-      ).toFixed(1)}ms - visited ${visited}x`
-    }
+    // function debugElapsed() {
+    //   const dnow = Date.now()
+    //   return `total ${(dnow - debugCheckpoint).toFixed(1)}ms - elapsed ${(
+    //     dnow - checkpoint
+    //   ).toFixed(1)}ms - visited ${visited}x`
+    // }
 
     const exec = () => {
       visited = 0

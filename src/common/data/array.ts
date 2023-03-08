@@ -39,14 +39,10 @@ export function arraySymmetricDifference<T>(x: T[], y: T[]): T[] {
 export function arrayRemoveElement<T>(arr: T[], el: T): T[] {
   if (arr && Array.isArray(arr)) {
     let index
-    while ((index = arr.indexOf(el)) !== -1) {
-      // log("arrayRemoveElement remove", index, el)
+    while ((index = arr.indexOf(el)) !== -1)
       arr.splice(index, 1)
-    }
-    // log("arrayRemoveElement result", arr)
     return arr
   }
-  // log("arrayRemoveElement no array", arr, el)
   return []
 }
 
@@ -169,6 +165,5 @@ export function createArray<T>(
   const arr = new Array(size)
   for (let i = 0; i < size; i++)
     arr[i] = item instanceof Function ? item(i) : item
-
   return arr
 }

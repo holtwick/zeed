@@ -29,7 +29,7 @@
     "dist"
   ],
   "include": [
-    "src/**/*",
+    "src/**/*.ts",
     "vitest-setup.ts"
   ]
 }

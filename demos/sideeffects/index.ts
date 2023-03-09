@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { arrayUnion, assert } from 'zeed'
+import { arrayUnion } from 'zeed'
 
 // import { Logger, LoggerInterface } from "zeed"
 // const log: LoggerInterface = Logger("test")
@@ -10,6 +10,6 @@ let aa = arrayUnion(a)
 
 console.log('result arrayUnion', aa)
 
-assert(false, 'ASSERT TEST')
+// assertCondition(false, 'ASSERT TEST')
 
 // console.log(encodeBase32('abc'))

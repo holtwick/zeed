@@ -14,6 +14,19 @@ Don't ask me why, but this always goes into the tree shaking code. Maybe it is j
 
 Use something like `const x = 9007199254740991` instead, if it makes sense in your code. This equals `math.pow(2, 53) - 1`.
 
+## Avoid const with function call / instantiation
+
+Defining `const` for primitives (string, number, boolean, etc.) and simple objects is fine, but as soon as a call is involved, this causes problems. Examples:
+
+```ts
+// THOSE ARE WRONG!
+const argh = new Error('argh error')
+
+const isInteger = Number.isInteger || (num => typeof num === 'number' && isFinite(num) && Math.floor(num) === num)
+
+const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER
+```
+
 ## Avoid global factories
 
 You might want to use a fancy factory like

@@ -212,7 +212,7 @@ export function Uint8ArrayToHexDump(
       })
       .join('')
     codes += '   '.repeat(blockSize - block.length)
-    let chars = block.replace(/[\x00-\x1F\x20]/g, '.')
+    let chars = block.replace(/[\x00-\x1F\x20\x7F-\xA0\xAD]/g, '.')
     chars += ' '.repeat(blockSize - block.length)
     lines.push(`${addr} ${codes}  ${chars}`)
   }

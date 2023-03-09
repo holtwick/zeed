@@ -7,22 +7,30 @@
 export const fromCharCode = String.fromCharCode
 export const fromCodePoint = String.fromCodePoint
 
-const toLowerCase = (s: string): string => s.toLowerCase()
+function toLowerCase(s: string): string {
+  return s.toLowerCase()
+}
 
 const trimLeftRegex = /^\s*/g
 
-export const trimLeft = (s: string): string => s.replace(trimLeftRegex, '')
+export function trimLeft(s: string): string {
+  return s.replace(trimLeftRegex, '')
+}
 
 const fromCamelCaseRegex = /([A-Z])/g
 
-export const fromCamelCase = (s: string, separator: string): string => trimLeft(s.replace(fromCamelCaseRegex, match => `${separator}${toLowerCase(match)}`))
+export function fromCamelCase(s: string, separator: string): string {
+  return trimLeft(s.replace(fromCamelCaseRegex, match => `${separator}${toLowerCase(match)}`))
+}
 
 /**
  * Compute the utf8ByteLength
  */
-export const utf8ByteLength = (str: string): number => unescape(encodeURIComponent(str)).length
+export function utf8ByteLength(str: string): number {
+  return unescape(encodeURIComponent(str)).length
+}
 
-export const _encodeUtf8Polyfill = (str: string): Uint8Array => {
+export function _encodeUtf8Polyfill(str: string): Uint8Array {
   const encodedString = unescape(encodeURIComponent(str))
   const len = encodedString.length
   const buf = new Uint8Array(len)
@@ -32,13 +40,21 @@ export const _encodeUtf8Polyfill = (str: string): Uint8Array => {
   return buf
 }
 
-export const utf8TextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder() : null)
+let utf8TextEncoder: TextEncoder | undefined | null
 
-export const _encodeUtf8Native = (str: string): Uint8Array => utf8TextEncoder!.encode(str) // todo
+export function getUtf8TextEncoder(): TextEncoder | null {
+  if (utf8TextEncoder === undefined)
+    utf8TextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder() : null)
+  return utf8TextEncoder
+}
 
-export const encodeUtf8 = utf8TextEncoder ? _encodeUtf8Native : _encodeUtf8Polyfill
+export function encodeUtf8(str: string): Uint8Array {
+  return getUtf8TextEncoder()
+    ? utf8TextEncoder!.encode(str)
+    : _encodeUtf8Polyfill(str)
+}
 
-export const _decodeUtf8Polyfill = (buf: Uint8Array): string => {
+function _decodeUtf8Polyfill(buf: Uint8Array): string {
   let remainingLen = buf.length
   let encodedString = ''
   let bufPos = 0
@@ -53,20 +69,29 @@ export const _decodeUtf8Polyfill = (buf: Uint8Array): string => {
   return decodeURIComponent(escape(encodedString))
 }
 
-// eslint-disable-next-line import/no-mutable-exports
-export let utf8TextDecoder = typeof TextDecoder === 'undefined' ? null : new TextDecoder('utf-8', { fatal: true, ignoreBOM: true })
+let utf8TextDecoder: any
 
-if (utf8TextDecoder && utf8TextDecoder.decode(new Uint8Array()).length === 1) {
-  // Safari doesn't handle BOM correctly.
-  // This fixes a bug in Safari 13.0.5 where it produces a BOM the first time it is called.
-  // utf8TextDecoder.decode(new Uint8Array()).length === 1 on the first call and
-  // utf8TextDecoder.decode(new Uint8Array()).length === 1 on the second call
-  // Another issue is that from then on no BOM chars are recognized anymore
-  utf8TextDecoder = null
+export function getUtf8TextDecoder(): TextDecoder | undefined {
+  if (utf8TextDecoder === undefined) {
+    utf8TextDecoder = (typeof TextDecoder === 'undefined' ? null : new TextDecoder('utf-8', { fatal: true, ignoreBOM: true })) ?? null
+    if (utf8TextDecoder && utf8TextDecoder.decode(new Uint8Array()).length === 1) {
+      // Safari doesn't handle BOM correctly.
+      // This fixes a bug in Safari 13.0.5 where it produces a BOM the first time it is called.
+      // utf8TextDecoder.decode(new Uint8Array()).length === 1 on the first call and
+      // utf8TextDecoder.decode(new Uint8Array()).length === 1 on the second call
+      // Another issue is that from then on no BOM chars are recognized anymore
+      utf8TextDecoder = null
+    }
+  }
+  return utf8TextDecoder
 }
 
-export const _decodeUtf8Native = (buf: Uint8Array): string => (utf8TextDecoder as TextDecoder).decode(buf)
+export function decodeUtf8(buf: Uint8Array): string {
+  return getUtf8TextDecoder()
+    ? utf8TextDecoder.decode(buf)
+    : _decodeUtf8Polyfill(buf)
+}
 
-export const decodeUtf8 = utf8TextDecoder ? _decodeUtf8Native : _decodeUtf8Polyfill
-
-export const splice = (str: string, index: number, remove: number, insert = '') => str.slice(0, index) + insert + str.slice(index + remove)
+export function splice(str: string, index: number, remove: number, insert = '') {
+  return str.slice(0, index) + insert + str.slice(index + remove)
+}

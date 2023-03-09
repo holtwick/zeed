@@ -13,7 +13,6 @@ export function _encodeUtf8Polyfill(str: string): Uint8Array {
   const buf = new Uint8Array(len)
   for (let i = 0; i < len; i++)
     buf[i] = encodedString.codePointAt(i) || 0
-
   return buf
 }
 

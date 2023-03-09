@@ -1,4 +1,4 @@
-import { diffObjects } from '@/db/lib/diff'
+import { diffObjects } from './diff'
 
 describe('diff.spec', () => {
   it('should diff', async () => {

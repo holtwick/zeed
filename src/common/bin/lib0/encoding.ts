@@ -63,7 +63,7 @@ export function length(encoder: Encoder): number {
 /**
  * Transform to Uint8Array.
  */
-export function toUint8Array(encoder: Encoder): Uint8Array {
+export function encodeToUint8Array(encoder: Encoder): Uint8Array {
   const uint8arr = new Uint8Array(length(encoder))
   let curPos = 0
   for (let i = 0; i < encoder.bufs.length; i++) {
@@ -299,7 +299,7 @@ export function writeVarString(encoder: Encoder, str: string) {
  *                Encoders start with a rather big initial buffer.
  */
 export function writeBinaryEncoder(encoder: Encoder, append: Encoder) {
-  return writeUint8Array(encoder, toUint8Array(append))
+  return writeUint8Array(encoder, encodeToUint8Array(append))
 }
 
 /**

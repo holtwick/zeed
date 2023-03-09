@@ -5,7 +5,7 @@
  */
 
 import { createDecoder, readAny } from './decoding'
-import { createEncoder, toUint8Array, writeAny } from './encoding'
+import { createEncoder, encodeToUint8Array, writeAny } from './encoding'
 
 export function createUint8ArrayFromLen(len: number) {
   return new Uint8Array(len)
@@ -41,7 +41,7 @@ export function copyUint8Array(uint8Array: Uint8Array): Uint8Array {
 export function encodeAny(data: any): Uint8Array {
   const encoder = createEncoder()
   writeAny(encoder, data)
-  return toUint8Array(encoder)
+  return encodeToUint8Array(encoder)
 }
 
 /**

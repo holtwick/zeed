@@ -27,6 +27,26 @@ const isInteger = Number.isInteger || (num => typeof num === 'number' && isFinit
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER
 ```
 
+## Lazy initialization
+
+Sometimes you just need one object instance to work with and it logical to use a constant that holds the object, but this is not side effects free:
+
+```ts
+export const utf8TextEncoder = typeof TextEncoder !== 'undefined' ? new TextEncoder() : null
+```
+
+Better access it dynamically through a getter and instantiate on first use. This has only a small overhead. In this example `null` is used to indicate, that the native `TextEncoder` is not available therefore note the comparison with `undefined` (usually we would prefer `== null` in such a scenario):
+
+```ts
+let utf8TextEncoder: TextEncoder | undefined | null
+
+export function getUtf8TextEncoder(): TextEncoder | null {
+  if (utf8TextEncoder === undefined)
+    utf8TextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder() : null)
+  return utf8TextEncoder
+}
+```
+
 ## Avoid global factories
 
 You might want to use a fancy factory like
@@ -42,7 +62,7 @@ function makeEncoder(forBits:number) {
 const { encode: encode64, decode: decode64 } = makeEncoder(64)
 ```
 
-Great abstraction! But will live forever after tree-shaking. Instead, you'll have to do an extra loop and be more dynamic:
+Great abstraction! But it will live forever after tree-shaking. Instead, you'll have to do an extra loop and be more dynamic:
 
 ```ts
 let cache

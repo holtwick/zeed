@@ -19,6 +19,7 @@ describe('files.spec', () => {
         "filestorage.ts",
         "fs.spec.ts",
         "fs.ts",
+        "glob.spec.ts",
         "glob.ts",
         "index.ts",
         "log-context-node.ts",
@@ -39,9 +40,9 @@ describe('files.spec', () => {
     })
 
     expect(result).toMatchInlineSnapshot(`
-      Array [         
+      Array [
         "files.spec.ts",
-        "filestorage.spec.ts",        
+        "filestorage.spec.ts",
       ]
     `)
   })

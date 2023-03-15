@@ -169,6 +169,41 @@ export function memoizeAsync<In extends any[], Out extends Promise<any>>(fn: (..
 //   }
 // }
 
+// export default function memoizeMultiArguments<T extends Function>(func: T) {
+//   const cache = new Map()
+
+//   const memoized = function (...args: any[]) {
+//     let innerCache = cache
+
+//     // first layer of the map is the arguments length
+//     // if two calls have different number of arguments
+//     // then they cannot be the same call
+//     if (!innerCache.has(args.length))
+//       innerCache.set(args.length, new Map())
+
+//     innerCache = innerCache.get(args.length)
+
+//     // using args.length because func.length is 0 for variadic functions
+//     for (let i = 0; i < args.length - 1; i++) {
+//       const key = args[i]
+//       if (!innerCache.has(key))
+//         innerCache.set(key, new Map())
+
+//       innerCache = innerCache.get(key)
+//     }
+
+//     const key = args[args.length - 1]
+//     if (innerCache.has(key))
+//       return innerCache.get(key)
+
+//     const result = func(...args)
+//     innerCache.set(key, result)
+//     return result
+//   }
+
+//   return memoized
+// }
+
 /** Repeat `count` times. Starts with `0` */
 export function forTimes<T = undefined>(
   count: number,

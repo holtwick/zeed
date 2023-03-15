@@ -20,6 +20,10 @@ export async function exists(path: string): Promise<boolean> {
   return true
 }
 
+export function isHiddenPath(path: string): boolean {
+  return path.startsWith('.') || path.includes('/.')
+}
+
 export async function ensureFolder(...parts: string[]): Promise<string> {
   const path = joinPath(...parts)
   if (!(await exists(path)))

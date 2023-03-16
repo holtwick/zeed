@@ -1,26 +1,7 @@
 {
   "name": "zeed",
-  "type": "module",
   "version": "0.10.9",
   "description": "🌱 Simple foundation library",
-  "author": {
-    "name": "Dirk Holtwick",
-    "email": "dirk.holtwick@gmail.com",
-    "url": "https://holtwick.de"
-  },
-  "license": "MIT",
-  "funding": {
-    "type": "GitHub Sponsors ❤",
-    "url": "https://github.com/sponsors/holtwick"
-  },
-  "homepage": "https://github.com/holtwick/zeed",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/holtwick/zeed.git"
-  },
-  "bugs": {
-    "url": "https://github.com/holtwick/zeed/issues"
-  },
   "keywords": [
     "foundation",
     "typescript",
@@ -31,7 +12,26 @@
     "utils",
     "zeed"
   ],
+  "homepage": "https://github.com/holtwick/zeed",
+  "bugs": {
+    "url": "https://github.com/holtwick/zeed/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holtwick/zeed.git"
+  },
+  "funding": {
+    "type": "GitHub Sponsors ❤",
+    "url": "https://github.com/sponsors/holtwick"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Dirk Holtwick",
+    "email": "dirk.holtwick@gmail.com",
+    "url": "https://holtwick.de"
+  },
   "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.all.d.ts",
@@ -47,9 +47,6 @@
   "files": [
     "dist"
   ],
-  "engines": {
-    "node": ">=14.13.1"
-  },
   "scripts": {
     "build": "nr clean && nr build:tsup",
     "build:tsup": "tsup src/index.all.ts --dts-only && tsup src/index.browser.ts src/index.node.ts",
@@ -75,5 +72,8 @@
     "typescript": "^4.9.5",
     "vite": "^4.1.4",
     "vitest": "^0.29.2"
+  },
+  "engines": {
+    "node": ">=14.13.1"
   }
 }

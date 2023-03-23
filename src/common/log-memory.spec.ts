@@ -27,7 +27,10 @@ describe('log-memory', () => {
       log.assert(false, 'Fatal')
     } catch (err) { }
 
-    expect(messages).toMatchInlineSnapshot(`
+    expect(messages.map(msg => {
+      delete msg.timestamp
+      return msg
+    })).toMatchInlineSnapshot(`
       Array [
         Object {
           "level": 0,

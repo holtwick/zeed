@@ -4,8 +4,9 @@
 
 import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../common/log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../common/log-base'
+import { browserSelectColorByName } from '../common/log-colors'
 import { parseLogLevel, useNamespaceFilter } from '../common/log-filter'
-import { browserSelectColorByName, browserSupportsColors } from './log-colors'
+import { browserSupportsColors } from './log-colors'
 
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug

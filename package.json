@@ -1,7 +1,26 @@
 {
   "name": "zeed",
+  "type": "module",
   "version": "0.10.16",
   "description": "🌱 Simple foundation library",
+  "author": {
+    "name": "Dirk Holtwick",
+    "email": "dirk.holtwick@gmail.com",
+    "url": "https://holtwick.de"
+  },
+  "license": "MIT",
+  "funding": {
+    "type": "GitHub Sponsors ❤",
+    "url": "https://github.com/sponsors/holtwick"
+  },
+  "homepage": "https://github.com/holtwick/zeed",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holtwick/zeed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/holtwick/zeed/issues"
+  },
   "keywords": [
     "foundation",
     "typescript",
@@ -12,26 +31,7 @@
     "utils",
     "zeed"
   ],
-  "homepage": "https://github.com/holtwick/zeed",
-  "bugs": {
-    "url": "https://github.com/holtwick/zeed/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/holtwick/zeed.git"
-  },
-  "funding": {
-    "type": "GitHub Sponsors ❤",
-    "url": "https://github.com/sponsors/holtwick"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Dirk Holtwick",
-    "email": "dirk.holtwick@gmail.com",
-    "url": "https://holtwick.de"
-  },
   "sideEffects": false,
-  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.all.d.ts",
@@ -47,6 +47,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=14.13.1"
+  },
   "scripts": {
     "build": "nr clean && nr build:tsup",
     "build:tsup": "tsup src/index.all.ts --dts-only && tsup src/index.browser.ts src/index.node.ts",
@@ -62,18 +65,16 @@
     "watch": "nr build:tsup -- --watch"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.36.0",
+    "@antfu/eslint-config": "^0.37.0",
     "@antfu/ni": "^0.20.0",
-    "@types/node": "^18.15.3",
+    "@types/node": "^18.15.5",
     "c8": "^7.13.0",
     "cross-fetch": "^3.1.5",
+    "esbuild": "^0.17.12",
     "eslint": "^8.36.0",
-    "tsup": "^6.6.3",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4",
-    "vitest": "^0.29.2"
-  },
-  "engines": {
-    "node": ">=14.13.1"
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.2.1",
+    "vitest": "^0.29.7"
   }
 }

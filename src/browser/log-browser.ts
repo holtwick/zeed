@@ -4,9 +4,10 @@
 
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
+import { browserSelectColorByName } from '../common/log-colors'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
-import { browserSelectColorByName, browserSupportsColors } from './log-colors'
+import { browserSupportsColors } from './log-colors'
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'

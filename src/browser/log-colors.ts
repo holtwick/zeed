@@ -79,7 +79,7 @@ const colors = [
   '#FFCC33',
 ]
 
-export function supportsColors(): boolean {
+export function browserSupportsColors(): boolean {
   // NB: In an Electron preload script, document will be defined but not fully
   // initialized. Since we know we're in Chrome, we'll just detect this case
   // explicitly
@@ -128,7 +128,7 @@ export function supportsColors(): boolean {
   )
 }
 
-export function selectColor(namespace: string) {
+export function browserSelectColorByName(namespace: string) {
   let hash = 0
   for (let i = 0; i < namespace.length; i++) {
     hash = (hash << 5) - hash + namespace.charCodeAt(i)

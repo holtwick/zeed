@@ -20,7 +20,7 @@ let defaultUseColor: boolean | undefined
 
 const colors = [6, 2, 3, 4, 5, 1]
 
-function selectColor(namespace: string) {
+function nodeSelectColorByName(namespace: string) {
   let hash = 0
   for (let i = 0; i < namespace.length; i++) {
     hash = (hash << 5) - hash + namespace.charCodeAt(i)
@@ -129,7 +129,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     let ninfo = namespaces[name || '']
     if (ninfo == null) {
       ninfo = {
-        color: selectColor(name),
+        color: nodeSelectColorByName(name),
         // time: timeNow
       }
       namespaces[name] = ninfo

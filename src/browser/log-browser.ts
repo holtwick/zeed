@@ -6,13 +6,13 @@ import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-ba
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
 import { formatMilliseconds, getTimestamp } from '../common/time'
-import { selectColor, supportsColors } from './log-colors'
+import { browserSelectColorByName, browserSupportsColors } from './log-colors'
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
   const styleDefault = `${styleFont}`
   const styleBold = `font-weight: 600; ${styleFont}`
-  const useColors = supportsColors()
+  const useColors = browserSupportsColors()
   const namespaces: Record<string, any> = {}
   const startTime = getTimestamp()
 
@@ -39,7 +39,7 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
     let ninfo = namespaces[name || '']
     if (ninfo == null) {
       ninfo = {
-        color: selectColor(name),
+        color: browserSelectColorByName(name),
         // time: timeNow
       }
       namespaces[name] = ninfo

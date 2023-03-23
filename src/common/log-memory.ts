@@ -2,6 +2,7 @@
 
 import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
 import { useLevelFilter, useNamespaceFilter } from './log-filter'
+import { getTimestamp } from './time'
 
 /**
  * Collect messages in a list.
@@ -22,6 +23,7 @@ export function LoggerMemoryHandler(
       return
     if (!matchesNamespace(msg.name))
       return
+    msg.timestamp = getTimestamp()
     messages.push(msg)
   }
 }

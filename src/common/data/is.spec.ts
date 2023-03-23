@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { isNotNull, isNumber, isObject, isPrimitive, isRecord, isRecordPlain, isUint8Array, isValue } from './is'
+import { isEmpty, isNotEmpty, isNotNull, isNumber, isObject, isPrimitive, isRecord, isRecordPlain, isTruthy, isUint8Array, isValue } from './is'
 
 describe('is', () => {
   it('should identify Uint8Array', () => {
@@ -43,12 +43,12 @@ describe('is', () => {
     expect(isPrimitive(plain)).toBe(false)
     expect(isPrimitive([])).toBe(false)
     expect(isPrimitive(123)).toBe(true)
-    expect(isPrimitive(new Date())).toBe(false)  
+    expect(isPrimitive(new Date())).toBe(false)
   })
 
   it('should filter', async () => {
-    const test = ['a', null, undefined, 'b', false, 'c', true]
-    const r: (string | boolean)[] = test.filter(isNotNull)
+    const test = ['a', null, undefined, 'b', false, 'c', true, '', [], [1, 2, 3], {}, { a: 1 }]
+    const r: any[] = test.filter(isNotNull)
     expect(r).toMatchInlineSnapshot(`
       Array [
         "a",
@@ -56,15 +56,87 @@ describe('is', () => {
         false,
         "c",
         true,
+        "",
+        Array [],
+        Array [
+          1,
+          2,
+          3,
+        ],
+        Object {},
+        Object {
+          "a": 1,
+        },
       ]
     `)
 
-    const rr: string[] = test.filter(isValue)
+    const rr: any[] = test.filter(isValue)
     expect(rr).toMatchInlineSnapshot(`
       Array [
         "a",
         "b",
         "c",
+        "",
+        Array [],
+        Array [
+          1,
+          2,
+          3,
+        ],
+        Object {},
+        Object {
+          "a": 1,
+        },
+      ]
+    `)
+
+    const rrr: any[] = test.filter(isNotEmpty)
+    expect(rrr).toMatchInlineSnapshot(`
+      Array [
+        "a",
+        "b",
+        false,
+        "c",
+        true,
+        Array [
+          1,
+          2,
+          3,
+        ],
+        Object {
+          "a": 1,
+        },
+      ]
+    `)
+
+    const rrrr: any[] = test.filter(isEmpty)
+    expect(rrrr).toMatchInlineSnapshot(`
+      Array [
+        null,
+        undefined,
+        "",
+        Array [],
+        Object {},
+      ]
+    `)
+
+    const rrrrr: any[] = test.filter(isTruthy)
+    expect(rrrrr).toMatchInlineSnapshot(`
+      Array [
+        "a",
+        "b",
+        "c",
+        true,
+        Array [],
+        Array [
+          1,
+          2,
+          3,
+        ],
+        Object {},
+        Object {
+          "a": 1,
+        },
       ]
     `)
   })
@@ -75,5 +147,5 @@ describe('is', () => {
     expect(typeof nan === 'number').toBe(true)
     expect(isNumber(nan)).toBe(false)
   })
-  
+
 })

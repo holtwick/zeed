@@ -3,6 +3,8 @@
 // https://github.com/sindresorhus/type-fest
 // https://github.com/antfu/utils
 
+import { size } from './utils'
+
 export type Primitive =
   | null
   | undefined
@@ -70,13 +72,33 @@ export function isUint8Array(obj: unknown): obj is Uint8Array {
 
 // https://stackoverflow.com/a/46700791/140927
 
-/// Not `null` or `undefined`, use like `.filter(isNotEmpty)`
+/** Not `null` or `undefined`, use like `.filter(isNotNull)` */
 export function isNotNull<T>(value: T | null | undefined): value is T {
   return value != null
 }
 
-/// Not `null` or `undefined` or `boolean`, use like `.filter(isValue)`.
-// Usefull e.g. on conditional list: `[x && 'value', ...]`
+/** Empty means `null` or `undefined` or object or array without items, use like `.filter(isEmpty)` */
+export function isEmpty<T>(value: T | null | undefined): value is T {
+  return value == null || value === '' || (isObject(value) && size(value) <= 0)
+}
+
+/** Not `null` or `undefined` or object or array without items, use like `.filter(isNotEmpty)` */
+export function isNotEmpty<T>(value: T | null | undefined): value is T {
+  return !isEmpty(value)
+}
+
+/**
+ * Not `null` or `undefined` or `false`, use like `.filter(isValue)`.
+ * Usefull e.g. on conditional list: `[x && 'value', ...]`
+ */
 export function isValue<T>(value: T | null | undefined | boolean): value is T {
-  return value != null && value !== false && value !== true
+  return value != null && value !== false && value !== true // todo limit on false?
+}
+
+/**
+ * Not `null` or `undefined` or `false`, use like `.filter(isValue)`.
+ * Usefull e.g. on conditional list: `[x && 'value', ...]`
+ */
+export function isTruthy<T>(value: T | null | undefined | boolean): value is T {
+  return value != null && value !== false && value !== 0 && value !== ''
 }

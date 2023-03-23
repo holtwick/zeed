@@ -58,6 +58,10 @@ export function size(obj: any) {
   return 0
 }
 
+export function first<T>(array?: T[]): T | undefined {
+  return (array != null && array.length > 0) ? array[0] : undefined
+}
+
 export function last<T>(array?: T[]): T | undefined {
   return (array != null && array.length > 0) ? array[array.length - 1] : undefined
 }

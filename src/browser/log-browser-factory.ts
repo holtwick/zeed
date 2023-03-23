@@ -5,14 +5,14 @@
 import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../common/log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../common/log-base'
 import { parseLogLevel, useNamespaceFilter } from '../common/log-filter'
-import { selectColor, supportsColors } from './log-colors'
+import { browserSelectColorByName, browserSupportsColors } from './log-colors'
 
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
   const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
   const styleDefault = `${styleFont}`
   const styleBold = `font-weight: 600; ${styleFont}`
-  const useColors = supportsColors()
+  const useColors = browserSupportsColors()
   const noop: any = () => {}
 
   /// The trick is, that console called directly provides a reference to the source code.
@@ -30,7 +30,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
     if (matches(name) && level !== LogLevelOff) {
       const fixedArgs = []
       if (useColors) {
-        const color = selectColor(name)
+        const color = browserSelectColorByName(name)
         fixedArgs.push(`%c${name.padEnd(16, ' ')}%c \t%s`)
         fixedArgs.push(`color:${color}; ${styleBold}`)
         fixedArgs.push(styleDefault)

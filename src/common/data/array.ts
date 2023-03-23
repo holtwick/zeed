@@ -123,18 +123,16 @@ export function arrayRandomElement<T>(array: T[]): T {
 }
 
 export function arrayMax<T>(...array: NestedArray<T>[]): T {
-  // @ts-expect-error xxx
   return arrayFlatten(array).reduce(
-    (acc, value) => (acc != null ? (value > acc ? value : acc) : value),
-    undefined,
+    (acc: T, value: T) => (acc != null ? (value > acc ? value : acc) : value),
+    undefined as T,
   )
 }
 
 export function arrayMin<T>(...array: NestedArray<T>[]): T {
-  // @ts-expect-error xxx
   return arrayFlatten(array).reduce(
-    (acc, value) => (acc != null ? (value < acc ? value : acc) : value),
-    undefined,
+    (acc: T, value: T) => (acc != null ? (value < acc ? value : acc) : value),
+    undefined as T,
   )
 }
 

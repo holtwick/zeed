@@ -60,12 +60,13 @@ function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
 
 /**
  * Similar to JSON.stringify but can handle circular references.
+ * NOT SORTED!
  * From https://github.com/moll/json-stringify-safe/blob/master/stringify.js
  * License ISC
  */
 export function jsonStringifySafe(
   obj: any,
-  replacer: EntryProcessor | null | undefined = _sortedReplacer,
+  replacer?: EntryProcessor | null | undefined,
   spaces?: string | number | null,
   cycleReplacer?: EntryProcessor,
 ): string {

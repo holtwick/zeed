@@ -50,7 +50,7 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
       stack.push(value)
     }
 
-    value = _sortedReplacer(key, value)
+    // value = _sortedReplacer(key, value)
 
     try {
       return replacer == null ? value : replacer.call(this, key, value)
@@ -62,6 +62,8 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
 
 /**
  * Similar to JSON.stringify but can handle circular references
+ * From https://github.com/moll/json-stringify-safe/blob/master/stringify.js
+ * License ISC
  */
 export function jsonStringifySafe(
   obj: any,
@@ -80,10 +82,8 @@ export const jsonStringify = jsonStringifySafe
 // From https://github.com/unjs/destr MIT
 // https://github.com/fastify/secure-json-parse
 // https://github.com/hapijs/bourne
-const suspectProtoRx
-  = /"(?:_|\\u005[Ff])(?:_|\\u005[Ff])(?:p|\\u0070)(?:r|\\u0072)(?:o|\\u006[Ff])(?:t|\\u0074)(?:o|\\u006[Ff])(?:_|\\u005[Ff])(?:_|\\u005[Ff])"\s*:/
-const suspectConstructorRx
-  = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/
+const suspectProtoRx = /"(?:_|\\u005[Ff])(?:_|\\u005[Ff])(?:p|\\u0070)(?:r|\\u0072)(?:o|\\u006[Ff])(?:t|\\u0074)(?:o|\\u006[Ff])(?:_|\\u005[Ff])(?:_|\\u005[Ff])"\s*:/
+const suspectConstructorRx = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/
 
 const JsonSigRx = /^["{[]|^-?[0-9][0-9.]{0,14}$/
 

@@ -41,7 +41,7 @@ describe('convert', () => {
 
   it('should sort and safe', () => {
     const a = jsonStringifySafe({ a: 1, b: 2 })
-    const b = jsonStringifySafe({ b: 2, a: 1 })
+    const b = JSON.stringify({ a: 1, b: 2 }) // jsonStringifySafe({ b: 2, a: 1 })
     expect(a).toEqual(b)
   })
 

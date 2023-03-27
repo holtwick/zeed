@@ -1,6 +1,6 @@
 // From https://github.com/moll/json-stringify-safe License ISC
 
-const _sortedReplacer = (key: string, value: any) =>
+const _sortedReplacer: EntryProcessor = (key: string, value: any) =>
   (value instanceof Object && !(Array.isArray(value)))
     ? Object.keys(value)
       .sort()
@@ -24,12 +24,12 @@ export function jsonStringifySorted(
 
 type EntryProcessor = (key: string, value: any) => any
 
-function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
+function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
   const stack: any[] = []
   const keys: string[] = []
 
   if (cycleReplacer == null) {
-    cycleReplacer = function (key, value) {
+    cycleReplacer = function (_key, value) {
       if (stack[0] === value)
         return '[Circular ~]'
       return (
@@ -50,8 +50,6 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
       stack.push(value)
     }
 
-    // value = _sortedReplacer(key, value)
-
     try {
       return replacer == null ? value : replacer.call(this, key, value)
     }
@@ -61,18 +59,20 @@ function serializer(replacer: EntryProcessor, cycleReplacer?: EntryProcessor) {
 }
 
 /**
- * Similar to JSON.stringify but can handle circular references
+ * Similar to JSON.stringify but can handle circular references.
  * From https://github.com/moll/json-stringify-safe/blob/master/stringify.js
  * License ISC
  */
 export function jsonStringifySafe(
   obj: any,
-  replacer?: EntryProcessor | null,
+  replacer: EntryProcessor | null | undefined = _sortedReplacer,
   spaces?: string | number | null,
   cycleReplacer?: EntryProcessor,
 ): string {
-  // @ts-expect-error xxx
-  return JSON.stringify(obj, serializer(replacer, cycleReplacer), spaces)
+  return JSON.stringify(
+    obj,
+    serializer(replacer ?? undefined, cycleReplacer),
+    spaces ?? undefined)
 }
 
 export const jsonStringify = jsonStringifySafe

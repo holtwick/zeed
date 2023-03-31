@@ -5,6 +5,5 @@ export function escapeRegExp(value: RegExp | string): string {
     return ''
   if (value instanceof RegExp)
     return value.source
-
   return value.replace(rxEscape, '\\$&')
 }

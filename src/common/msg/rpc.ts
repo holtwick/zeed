@@ -3,11 +3,9 @@
 export type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 export type ReturnType<T> = T extends (...args: any) => infer R ? R : never
 
-export interface RPCOptions<Remote> {
+export interface RPCOptionsBasic {
   /** No return values expected */
   onlyEvents?: boolean
-  /** Names of remote functions that do not need response. */
-  eventNames?: (keyof Remote)[]
   /** Function to post raw message */
   post: (data: any) => void
   /** Listener to receive raw message */
@@ -16,6 +14,13 @@ export interface RPCOptions<Remote> {
   serialize?: (data: any) => any
   /** Custom function to deserialize data */
   deserialize?: (data: any) => any
+}
+
+export interface RPCOptions<Remote> extends RPCOptionsBasic {
+  // /** No return values expected */
+  // onlyEvents?: boolean
+  /** Names of remote functions that do not need response. */
+  eventNames?: (keyof Remote)[]
 }
 
 export interface RPCFn<T> {
@@ -45,6 +50,7 @@ type RPCMessage = [
   string | undefined | null, // method
 ]
 
+// eslint-disable-next-line antfu/top-level-function
 const defaultSerialize = (i: any) => i
 const defaultDeserialize = defaultSerialize
 
@@ -123,4 +129,91 @@ export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
       },
     },
   ) as any
+}
+
+export function useRPCHub(options: RPCOptionsBasic) {
+  const {
+    post,
+    on,
+    serialize = defaultSerialize,
+    deserialize = defaultDeserialize,
+  } = options
+
+  const eventNames: string[] = []
+  const functions: Record<string, any> = {}
+
+  const rpcPromiseMap = new Map<
+    number,
+    { resolve: (...args: any) => any; reject: (...args: any) => any }
+  >()
+
+  on(async (data) => {
+    const msg = deserialize(data) as RPCMessage
+    const [mode, args, id, method] = msg
+    if (mode === RPCMode.request || mode === RPCMode.event) {
+      let result, error: any
+      if (method != null) {
+        try {
+          const fn = functions[method]
+          result = await fn(...args)
+        }
+        catch (e) {
+          error = String(e)
+        }
+      }
+      else {
+        error = 'Method implementation missing'
+      }
+      if (mode === RPCMode.request && id) {
+        if (error)
+          post(serialize([RPCMode.reject, error, id]))
+        else
+          post(serialize([RPCMode.resolve, result, id]))
+      }
+    }
+    else if (id) {
+      const promise = rpcPromiseMap.get(id)
+      if (promise != null) {
+        if (mode === RPCMode.reject)
+          promise.reject(args)
+        else promise.resolve(args)
+      }
+      rpcPromiseMap.delete(id)
+    }
+  })
+
+  function createRPCProxy() {
+    return new Proxy(
+      {},
+      {
+        get(_, method) {
+          const sendEvent = (...args: any[]) => {
+            post(serialize([RPCMode.event, args, null, method]))
+          }
+          if (options.onlyEvents || eventNames.includes(method as any)) {
+            sendEvent.asEvent = sendEvent
+            return sendEvent
+          }
+          const sendCall = (...args: any[]) => {
+            return new Promise((resolve, reject) => {
+              const id = rpcCounter++
+              rpcPromiseMap.set(id, { resolve, reject })
+              post(serialize([RPCMode.request, args, id, method]))
+            })
+          }
+          sendCall.asEvent = sendEvent
+          return sendCall
+        },
+      },
+    ) as any
+  }
+
+  return function<RemoteFunctions = {}, LocalFunctions = {}>(
+    additionalFunctions?: LocalFunctions,
+    additionalEventNames: string[] = [],
+  ): RPCReturn<RemoteFunctions> {
+    Object.assign(functions, additionalFunctions ?? {})
+    eventNames.push(...additionalEventNames)
+    return createRPCProxy()
+  }
 }

@@ -2,8 +2,12 @@
 
 export type RoundingMode = (value: number) => number
 
-export const isHalf = (value: number) => Math.abs(value) % 1 === 0.5
-export const isEven = (value: number) => value % 2 === 0
+export function isHalf(value: number) {
+  return Math.abs(value) % 1 === 0.5
+}
+export function isEven(value: number) {
+  return value % 2 === 0
+}
 
 export const roundUp: RoundingMode = value => Math.ceil(value)
 export const roundDown: RoundingMode = value => Math.floor(value)

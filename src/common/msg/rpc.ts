@@ -217,3 +217,5 @@ export function useRPCHub(options: RPCOptionsBasic) {
     return createRPCProxy()
   }
 }
+
+export type UseRPCHubType = ReturnType<typeof useRPCHub>

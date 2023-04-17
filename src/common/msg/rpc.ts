@@ -45,6 +45,7 @@ type RPCMessage = [
   string | undefined | null, // method
 ]
 
+// eslint-disable-next-line antfu/top-level-function
 const defaultSerialize = (i: any) => i
 const defaultDeserialize = defaultSerialize
 

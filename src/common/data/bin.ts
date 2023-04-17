@@ -1,3 +1,4 @@
+/* eslint-disable n/prefer-global/buffer */
 /* eslint-disable no-control-regex */
 /* eslint-disable prefer-spread */
 

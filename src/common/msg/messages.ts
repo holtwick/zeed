@@ -48,18 +48,17 @@ export interface MessageHub {
 }
 
 // The async proxy, waiting for a response
-export const createPromiseProxy = <P extends object>(
-  fn: (name: string, args: any[], opt: any) => Promise<unknown>,
+export function createPromiseProxy<P extends object>(fn: (name: string, args: any[], opt: any) => Promise<unknown>,
   opt: MessagesOptions,
-  predefinedMethods: any = {},
-): P =>
-    new Proxy<P>(predefinedMethods, {
-      get: (target: any, name: any) => {
-        if (name in target)
-          return target[name]
-        return (...args: any): any => fn(name, args, opt)
-      },
-    })
+  predefinedMethods: any = {}): P {
+  return new Proxy<P>(predefinedMethods, {
+    get: (target: any, name: any) => {
+      if (name in target)
+        return target[name]
+      return (...args: any): any => fn(name, args, opt)
+    },
+  })
+}
 
 /**
  * RPC

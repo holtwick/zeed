@@ -214,7 +214,9 @@ interface Row extends SortedItem {
 
 const rows: Row[] = []
 
-const getSortedRows = () => sortedItems(rows)
+function getSortedRows() {
+  return sortedItems(rows)
+}
 ```
 
 Use `startSortWeight`, `endSortWeight` and `moveSortWeight` to get initial values for new entries or manipulate existing ones.
@@ -254,7 +256,7 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 `useDisposer` will simplify cleaning up objects. You just need to `track` a function or and object with `dispose` method to be called for cleanup. This can also be nested. A simple example is a timer:
 
 ```ts
-const disposableTimer = () => {
+function disposableTimer() {
   const timout = setTimeout(() => console.log('hello world'), 1000)
   return () => clearTimeout(timeout)
 }

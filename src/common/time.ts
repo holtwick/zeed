@@ -3,7 +3,9 @@
 /**
  * @returns Timestamp in miliseconds
  */
-export const getTimestamp = (): number => Date.now()
+export function getTimestamp(): number {
+  return Date.now()
+}
 // typeof performance !== "undefined" ? performance.now() : new Date().getTime()
 
 export function formatMilliseconds(ms: number): string {
@@ -39,7 +41,9 @@ export function parseDate(
 /**
  * @returns Timestamp in miliseconds
  */
-export const getPerformanceTimestamp = (): number => typeof performance !== 'undefined' ? performance.now() : Date.now()
+export function getPerformanceTimestamp(): number {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now()
+}
 
 export function duration() {
   const t0 = getPerformanceTimestamp()

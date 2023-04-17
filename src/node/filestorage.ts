@@ -9,6 +9,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { dirname, resolve } from 'node:path'
+import { Buffer } from 'node:buffer'
 import { jsonStringifySafe } from '../common/data/json'
 import { toValidFilename } from '../common/data/path'
 import { cloneObject } from '../common/data/utils'

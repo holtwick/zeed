@@ -7,7 +7,7 @@ kebab-case
 PascalCase // I won't be using this here, but it's only one small step further if you want to use it
 */
 
-export const toCamelCase = (s: string) => {
+export function toCamelCase(s: string) {
   // if only capital letters, convert to lower case
   if (s.length > 0) {
     if (/^[A-Z0-9_\-\ ]*$/g.test(s))

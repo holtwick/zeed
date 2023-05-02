@@ -65,16 +65,16 @@
     "watch": "nr build:tsup -- --watch"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.38.4",
+    "@antfu/eslint-config": "^0.38.5",
     "@antfu/ni": "^0.21.3",
-    "@types/node": "^18.15.11",
+    "@types/node": "^18.16.3",
     "c8": "^7.13.0",
     "cross-fetch": "^3.1.5",
-    "esbuild": "^0.17.17",
-    "eslint": "^8.38.0",
+    "esbuild": "^0.17.18",
+    "eslint": "^8.39.0",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",
-    "vite": "^4.2.1",
+    "vite": "^4.3.4",
     "vitest": "^0.30.1"
   }
 }

@@ -1,6 +1,6 @@
 import { isString } from './data'
 import { arrayFilterInPlace } from './data/array'
-import { isPromise, promisify } from './exec/promise'
+import { isPromise } from './exec/promise'
 import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log-base'
 
@@ -20,27 +20,24 @@ export interface Disposable {
 }
 
 /** Different kinds of implementations have grown, this should unify them  */
-async function callDisposer(disposable: Disposer): Promise<void> {
+function callDisposer(disposable: Disposer): Promise<void> | void {
+  let result
+
   if (typeof disposable === 'function')
-    await promisify(disposable())
-
+    result = disposable()
   else if (isPromise(disposable))
-    await disposable
-
+    result = disposable
   else if (typeof disposable.dispose === 'function')
-    await promisify(disposable.dispose())
-
+    result = disposable.dispose()
   else if (isPromise(disposable.dispose))
-    await disposable.dispose
-
+    result = disposable.dispose
   else if (typeof disposable.cleanup === 'function')
-    await promisify(disposable.cleanup())
-
+    result = disposable.cleanup()
   else if (isPromise(disposable.cleanup))
-    await disposable.cleanup
-}
+    result = disposable.cleanup
 
-// export function disposeFn()
+  if (isPromise(result)) return result
+}
 
 interface UseDisposeConfig {
   name?: string
@@ -61,34 +58,62 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
 
   const tracked: Disposer[] = []
 
-  const untrack = async (disposable: Disposer): Promise<void> => {
+  function untrack(disposable: Disposer): Promise<void> | void {
     if (disposable != null && tracked.includes(disposable)) {
       arrayFilterInPlace(tracked, el => el !== disposable)
-      await callDisposer(disposable)
+      const result = callDisposer(disposable)
+      if (isPromise(result))
+        return result
     }
   }
 
-  /** Dispose all tracked entries */
-  const dispose = async (): Promise<void> => {
-    if (name)
-      log.debug(`dispose "${name}": ${tracked.length} entries`)
-    while (tracked.length > 0)
-      await untrack(tracked[0]) // LIFO
-  }
-
-  const track = (obj?: Disposer): DisposerFunction | undefined => {
-    if (obj == null)
-      return
+  function track(obj?: Disposer): DisposerFunction | undefined {
+    if (obj == null) return
     tracked.unshift(obj) // LIFO
     return () => untrack(obj)
   }
 
+  /** Dispose all tracked entries */
+  function dispose(strictSync = false): Promise<any> | void {
+    if (name)
+      log.debug(`dispose "${name}": ${tracked.length} entries`)
+    const promises: any[] = []
+    while (tracked.length > 0) {
+      const fn = tracked[0]
+      const result = untrack(fn) // LIFO
+      if (isPromise(result)) {
+        if (strictSync)
+          throw new Error(`Async disposable found: ${fn} -> ${result}`)
+        else
+          promises.push(result)
+      }
+    }
+
+    if (promises.length > 0)
+      return Promise.all(promises)
+  }
+
+  /** Dispose all tracked entries in synchronous way. */
+  function disposeSync(): void {
+    void dispose(true)
+  }
+
   return Object.assign(dispose, {
+    add: track,
+    remove: untrack,
+
+    /** @deprecated use add */
     track,
-    add: track, // ?
-    untrack, // ?
+
+    /** @deprecated use remove */
+    untrack,
+
     dispose,
-    exec: dispose, // ?
+    disposeSync,
+    sync: disposeSync,
+
+    /** @deprecated use dispose */
+    exec: dispose,
     getSize() {
       return tracked.length
     },
@@ -99,9 +124,6 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
 }
 
 export type UseDispose = ReturnType<typeof useDispose>
-
-/** @deprecated use `useDispose` instead */
-export const useDisposer = useDispose
 
 export function useDefer(
   config: {
@@ -147,7 +169,6 @@ export function useDefer(
   const add = (obj: Disposer) => {
     if (mode === 'lifo')
       steps.unshift(obj)
-
     else
       steps.push(obj)
   }
@@ -193,18 +214,14 @@ export function useEventListener(
   ...args: any[]
 ): DisposerFunction {
   if (emitter == null)
-    return () => {}
-
+    return () => { }
   if (emitter.on)
     emitter.on(eventName, fn, ...args)
-
   else if (emitter.addEventListener)
     emitter.addEventListener(eventName, fn, ...args)
-
   return () => {
     if (emitter.off)
       emitter.off(eventName, fn, ...args)
-
     else if (emitter.removeEventListener)
       emitter.removeEventListener(eventName, fn, ...args)
   }

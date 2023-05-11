@@ -2,6 +2,7 @@
 
 import { DefaultLogger } from "./log"
 import { useDefer, useDispose } from './dispose-defer'
+import { sleep } from "./exec"
 
 const log = DefaultLogger("dispose-test")
 
@@ -51,7 +52,7 @@ describe('dispose', () => {
     expect(disposeCalls).toEqual([3, 1, 4, 2])
     expect(dispose.getSize()).toEqual(0)
 
-    await dispose.dispose()
+    await dispose()
     expect(disposeCalls).toEqual([3, 1, 4, 2])
     expect(dispose.getSize()).toEqual(0)
   })
@@ -96,4 +97,30 @@ describe('dispose', () => {
     await defer()
     expect(stack).toEqual(['a', 'b', 'c'])
   })
+
+  it('should dispose sync', async () => {
+    const stack: string[] = []
+    const dispose = useDispose()
+    dispose.add(() => stack.push('a'))
+    dispose.add(() => stack.push('b'))
+    dispose.add(() => stack.push('c'))
+    expect(stack).toEqual([])
+    await dispose(true)
+    expect(stack).toEqual(['c', 'b', 'a'])
+  })
+
+  it('should dispose sync 2', async () => {
+    const stack: string[] = []
+    const dispose = useDispose()
+    dispose.add(() => stack.push('a'))
+    dispose.add(() => stack.push('b'))
+    dispose.add(async () => {
+      await sleep(1)
+      stack.push('c')
+    })
+    expect(stack).toEqual([])
+    expect(dispose.sync).toThrowError() 
+    // expect(stack).toEqual(['b', 'a'])
+  })
+
 })

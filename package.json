@@ -62,7 +62,8 @@
     "start": "nr watch",
     "test": "vitest",
     "test:publish": "vitest --run",
-    "watch": "nr build:tsup -- --watch"
+    "watch": "nr build:tsup -- --watch",
+    "release": "na version patch && pa publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.6",

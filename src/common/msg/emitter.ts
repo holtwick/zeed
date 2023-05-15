@@ -32,7 +32,7 @@ export class Emitter<
   subscribers: any = {}
   subscribersOnAny: any[] = []
 
-  _logEmitter = DefaultLogger('zeed:emitter', 'error')
+  _logEmitter = DefaultLogger('zeed:emitter', 'warn')
 
   /** Unused, but here for historical reasons */
   dispose = useDispose()

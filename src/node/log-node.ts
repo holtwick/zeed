@@ -97,11 +97,24 @@ export function colorStringList(
   })
 }
 
+function shouldUseStack(): boolean {
+  try {
+    return valueToBoolean(process.env.ZEED_STACK, false)
+  }
+  catch (err) {}
+  return false
+}
+
+let defaultUseStack: boolean | undefined
+
 export const loggerStackTraceDebug = 'loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485'
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
   if (defaultUseColor == null)
     defaultUseColor = shouldUseColor()
+
+  if (defaultUseStack == null)
+    defaultUseStack = shouldUseStack()
 
   if (startTime == null)
     startTime = getTimestamp()
@@ -114,7 +127,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     nameBrackets = true,
     padding = 0,
     fill = 0,
-    stack = true,
+    stack = defaultUseStack,
     time = true,
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
@@ -169,6 +182,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       console.log(getStack())
     }
 
+    // Probably time consuming
     if (stack) {
       let line = ''
       if (typeof stack === 'boolean') {
@@ -186,6 +200,7 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
       if (line)
         args.push(colorString(`(${line})`, COLOR.GRAY))
     }
+
     const sep = '|'
     const charLevel = '.'
 

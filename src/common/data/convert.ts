@@ -15,13 +15,13 @@ export function stringToBoolean(value?: string, defaultValue = false): boolean {
 export function stringToInteger(value?: string, defaultValue = 0): number {
   if (value == null || typeof value !== 'string')
     return defaultValue
-  return parseInt(value.trim(), 10) ?? defaultValue
+  return Number.parseInt(value.trim(), 10) ?? defaultValue
 }
 
 export function stringToFloat(value?: string, defaultValue = 0.0): number {
   if (value == null || typeof value !== 'string')
     return defaultValue
-  return parseFloat(value.trim()) ?? defaultValue
+  return Number.parseFloat(value.trim()) ?? defaultValue
 }
 
 export function valueToBoolean(value?: any, defaultValue = false): boolean {
@@ -41,7 +41,7 @@ export function valueToInteger(value?: any, defaultValue = 0): number {
     return value ? 1 : 0
   if (typeof value === 'number')
     return Math.floor(value)
-  return parseInt(String(value).trim(), 10) ?? defaultValue
+  return Number.parseInt(String(value).trim(), 10) ?? defaultValue
 }
 
 export function valueToFloat(value?: any, defaultValue = 0.0): number {
@@ -51,7 +51,7 @@ export function valueToFloat(value?: any, defaultValue = 0.0): number {
     return value ? 1 : 0
   if (typeof value === 'number')
     return Math.floor(value)
-  return parseFloat(String(value).trim()) ?? defaultValue
+  return Number.parseFloat(String(value).trim()) ?? defaultValue
 }
 
 export function valueToString(value?: any, defaultValue = ''): string {

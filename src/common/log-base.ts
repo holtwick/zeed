@@ -201,7 +201,7 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     })
 
     log.assert = defineForLogLevel(LogLevelFatal, (condition: unknown, ...args: any) => {
-      if (condition == null || (typeof condition === 'number' && isNaN(condition)) || !condition)
+      if (condition == null || (typeof condition === 'number' && Number.isNaN(condition)) || !condition)
         log.fatal(...args)
     })
 

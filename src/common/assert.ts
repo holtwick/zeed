@@ -8,7 +8,7 @@ export function fatal(...messages: any[]): never {
 
 /** Throws if condition is not truthy. */
 export function assert(condition: unknown, ...messages: any[]): asserts condition {
-  if (condition == null || (typeof condition === 'number' && isNaN(condition)) || !condition)
+  if (condition == null || (typeof condition === 'number' && Number.isNaN(condition)) || !condition)
     fatal(...messages)
 }
 

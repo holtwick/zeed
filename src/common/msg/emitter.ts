@@ -210,7 +210,7 @@ export function lazyListener(
       lazyResolve = () => {
         // debug(name, "lazy resolve", key, listenerKey, events)
         while (events.length > 0) {
-          const ev = <LazyEvent>events.shift()
+          const ev = events.shift() as LazyEvent
           // debug(name, "  lazy analyze", ev)
           if (ev.key === key) {
             lazyResolve = undefined

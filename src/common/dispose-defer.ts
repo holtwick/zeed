@@ -36,7 +36,8 @@ function callDisposer(disposable: Disposer): Promise<void> | void {
   else if (isPromise(disposable.cleanup))
     result = disposable.cleanup
 
-  if (isPromise(result)) return result
+  if (isPromise(result))
+    return result
 }
 
 interface UseDisposeConfig {
@@ -68,7 +69,8 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
   }
 
   function track(obj?: Disposer): DisposerFunction | undefined {
-    if (obj == null) return
+    if (obj == null)
+      return
     tracked.unshift(obj) // LIFO
     return () => untrack(obj)
   }

@@ -97,7 +97,7 @@ export function toHex(bin: BinInput): string {
 
 export function fromHex(hexString: string): Uint8Array {
   return Uint8Array.from(
-    hexString.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)),
+    hexString.match(/.{1,2}/g)!.map(byte => Number.parseInt(byte, 16)),
   )
 }
 

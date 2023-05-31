@@ -42,7 +42,7 @@ export function isString(obj: unknown): obj is string {
 }
 
 export function isNumber(obj: unknown): obj is number {
-  return typeof obj === 'number' && !isNaN(obj) // wtf! Nan === type number
+  return typeof obj === 'number' && !Number.isNaN(obj) // wtf! Nan === type number
 }
 
 export function isInteger(obj: unknown): obj is number {

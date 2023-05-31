@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+
 // Global context across build systems etc.
 
 declare global {

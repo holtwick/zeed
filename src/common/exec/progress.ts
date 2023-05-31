@@ -142,7 +142,7 @@ export class Progress extends Emitter<{
     if (this.isIndeterminate())
       return 0
     let value = this.getCompletedUnits() / this.getTotalUnits()
-    if (isNaN(value))
+    if (Number.isNaN(value))
       value = 0
     return Math.min(1, Math.max(0, value))
   }

@@ -71,7 +71,7 @@ export function diffObjects(
       objValue !== newValue
       && !(
         areObjects
-        && (isNaN(objValue)
+        && (Number.isNaN(objValue)
           ? `${objValue}` === `${newValue}`
           : +objValue === +newValue)
       )

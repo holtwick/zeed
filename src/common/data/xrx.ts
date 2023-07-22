@@ -143,7 +143,7 @@ export class XRX {
     return matches
   }
 
-  replace(str: string, replacement: string | Function) {
+  replace(str: string, replacement: string | ((m: string) => string)) {
     const fn = typeof replacement === 'function' ? replacement : () => replacement
     return str.replace(this.rx, (m) => {
       // m = this._handleMatch(m)

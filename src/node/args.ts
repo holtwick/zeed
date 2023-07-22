@@ -1,5 +1,6 @@
 // Inspired by https://github.com/kof/node-argsparser/blob/master/lib/argsparser.js
 
+import process from 'node:process'
 import { toCamelCase } from '../common/data/camelcase'
 
 interface ParseConfig {

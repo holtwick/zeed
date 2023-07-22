@@ -53,7 +53,7 @@ type RPCMessage = [
 const defaultSerialize = (i: any) => i
 const defaultDeserialize = defaultSerialize
 
-export function useRPC<RemoteFunctions = {}, LocalFunctions = {}>(
+export function useRPC<RemoteFunctions = object, LocalFunctions = object>(
   functions: LocalFunctions,
   options: RPCOptions<RemoteFunctions>,
 ): RPCReturn<RemoteFunctions> {
@@ -207,7 +207,7 @@ export function useRPCHub(options: RPCOptionsBasic) {
     ) as any
   }
 
-  return function<RemoteFunctions = {}, LocalFunctions = {}>(
+  return function<RemoteFunctions = object, LocalFunctions = object>(
     additionalFunctions?: LocalFunctions,
     additionalEventNames: string[] = [],
   ): RPCReturn<RemoteFunctions> {

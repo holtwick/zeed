@@ -42,7 +42,7 @@ export function throttle<F extends (...args: any[]) => any>(
   let timeoutID: any = 0
   let checkpoint = 0
   let visited = 0
-  let trailingExec: Function | undefined
+  let trailingExec: () => void | undefined
 
   // const debugCheckpoint = Date.now()
 

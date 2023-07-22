@@ -1,5 +1,6 @@
 import { readdir, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
+import process from 'node:process'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
 

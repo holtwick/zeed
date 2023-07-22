@@ -1,15 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import {
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  unlinkSync,
-  writeFileSync,
-} from 'node:fs'
+import { mkdirSync, readFileSync, readdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { Buffer } from 'node:buffer'
+import process from 'node:process'
 import { jsonStringifySafe } from '../common/data/json'
 import { toValidFilename } from '../common/data/path'
 import { cloneObject } from '../common/data/utils'

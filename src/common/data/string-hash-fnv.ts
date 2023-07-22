@@ -1,11 +1,12 @@
 // Why FNV-1a (32-bit) https://softwareengineering.stackexchange.com/a/250750/366573
 // A simple implementation https://gist.github.com/vaiorabbit/5657561
 // This implementation  https://github.com/tjwebb/fnv-plus/blob/master/index.js#L341
+// Alternative implementation https://github.com/sindresorhus/fnv1a
 
 export function stringHashFNV1a(str: string): number {
-  let c
-  let i
   const l = str.length
+  let c: number
+  let i: number
   let t0 = 0
   let v0 = 0x9DC5
   let t1 = 0

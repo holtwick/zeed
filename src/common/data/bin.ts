@@ -119,6 +119,7 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
   return sb
 }
 
+/** Converts `+` -> `-` and `/` -> `_`. Always strips `=` */
 export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
@@ -129,6 +130,7 @@ export function toBase64Url(bin: BinInput): string {
   return btoa(s).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
+/** Also parses toBase64Url encoded strings. */
 export function fromBase64(s: string): Uint8Array {
   s = s.replaceAll('-', '+').replaceAll('_', '/')
   if (typeof Buffer !== 'undefined') {
@@ -142,6 +144,7 @@ export function fromBase64(s: string): Uint8Array {
   return bytes
 }
 
+/** Also parses toBase64Url encoded strings. */
 export function fromBase64String(s: string): string {
   return Uint8ArrayToString(fromBase64(s))
 }
@@ -172,7 +175,7 @@ export function Uint8ArrayToJson<T = any>(data: Uint8Array): T | never {
 
 // https://gist.github.com/igorgatis/d294fe714a4f523ac3a3
 export function Uint8ArrayToHexDump(
-  buffer: Uint8Array | ArrayBuffer | String | Array<number>,
+  buffer: Uint8Array | ArrayBuffer | string | Array<number>,
   blockSize?: number,
 ) {
   if (typeof buffer === 'string') {

@@ -1,3 +1,5 @@
+/* eslint-disable n/prefer-global/process */
+
 // Taken from https://github.com/visionmedia/debug/blob/master/src/browser.js#L27
 
 export function browserSupportsColors(): boolean {

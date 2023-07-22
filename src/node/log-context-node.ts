@@ -1,3 +1,4 @@
+import process from 'node:process'
 import type { LogLevelAliasType, LoggerInterface } from '../common'
 import { valueToBoolean } from '../common'
 import { getGlobalLogger } from '../common/log'

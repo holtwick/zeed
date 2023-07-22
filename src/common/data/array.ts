@@ -20,7 +20,7 @@ export function arrayUnion<T>(...a: T[][]): T[] {
 
 /** `[1,[2,3]]` becomes `[1,2,3]` */
 export function arrayFlatten<T>(...list: NestedArray<T>[]): T[] {
-  return (list as any).flat(Infinity)
+  return (list as any).flat(Number.POSITIVE_INFINITY)
 }
 
 export function arrayIntersection<T>(x: T[], y: T[]): T[] {
@@ -155,13 +155,14 @@ export function arrayBatches<T>(array: T[], chunckLength: number): T[][] {
 }
 
 export function createArray<T>(
-  size = 0,
-  item?: T | ((index: number) => T),
+  length = 0,
+  item?: T | ((index: number) => T), // todo remove optional
 ): T[] {
-  if (size <= 0)
+  if (length <= 0)
     return []
-  const arr = new Array(size)
-  for (let i = 0; i < size; i++)
+  const arr: T[] = Array.from({ length })
+  for (let i = 0; i < length; i++)
+    // @ts-expect-error xxx
     arr[i] = item instanceof Function ? item(i) : item
   return arr
 }

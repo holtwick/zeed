@@ -93,7 +93,10 @@ export function useMessageHub(
   let channel: Channel | undefined
   const queue: Message[] = []
   let queueRetryTimer: any
-  const waitingForResponse: Record<string, [Function, Function]> = {}
+  const waitingForResponse: Record<string, [
+    (result?: any) => any, // resolve
+    (result?: any) => any, // reject
+  ]> = {}
 
   const dispose = () => {
     clearTimeout(queueRetryTimer)

@@ -20,7 +20,7 @@ export function arrayUnion<T>(...a: T[][]): T[] {
 
 /** `[1,[2,3]]` becomes `[1,2,3]` */
 export function arrayFlatten<T>(...list: NestedArray<T>[]): T[] {
-  return (list as any).flat(Infinity)
+  return (list as any).flat(Number.POSITIVE_INFINITY)
 }
 
 export function arrayIntersection<T>(x: T[], y: T[]): T[] {

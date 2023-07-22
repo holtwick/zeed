@@ -42,7 +42,7 @@ function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
     if (stack.length > 0) {
       const thisPos = stack.indexOf(this)
       ~thisPos ? stack.splice(thisPos + 1) : stack.push(this)
-      ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key)
+      ~thisPos ? keys.splice(thisPos, Number.POSITIVE_INFINITY, key) : keys.push(key)
       if (~stack.indexOf(value))
         value = cycleReplacer?.call(this, key, value)
     }
@@ -110,10 +110,10 @@ export default function jsonParse(val: string): any {
     return null
 
   if (_lval === 'nan')
-    return NaN
+    return Number.NaN
 
   if (_lval === 'infinity')
-    return Infinity
+    return Number.POSITIVE_INFINITY
 
   if (_lval === 'undefined')
     return undefined

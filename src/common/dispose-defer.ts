@@ -6,6 +6,8 @@ import type { LoggerInterface } from './log-base'
 
 // https://blog.hediet.de/post/the_disposable_pattern_in_typescript
 
+// todo adopt for `using` https://www.totaltypescript.com/typescript-5-2-new-keyword-using
+
 export type DisposerFunction = () => any | Promise<any>
 
 export type Disposer =

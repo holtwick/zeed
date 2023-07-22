@@ -4,6 +4,7 @@
 
 import fs from 'node:fs'
 import { resolve } from 'node:path'
+import process from 'node:process'
 
 const NEWLINE = '\n'
 const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/

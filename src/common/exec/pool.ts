@@ -43,7 +43,7 @@ export type PoolTaskState = 'waiting' | 'running' | 'finished'
 export interface PoolTask<T> {
   readonly id: string
   readonly task: PoolTaskFn<T>
-  readonly done: Function
+  readonly done: (result?: any) => void
   readonly setMax: (max: number) => void
   readonly setResolved: (resolved: number) => void
   readonly incResolved: (inc?: number) => void

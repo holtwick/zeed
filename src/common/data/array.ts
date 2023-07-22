@@ -155,13 +155,14 @@ export function arrayBatches<T>(array: T[], chunckLength: number): T[][] {
 }
 
 export function createArray<T>(
-  size = 0,
-  item?: T | ((index: number) => T),
+  length = 0,
+  item?: T | ((index: number) => T), // todo remove optional
 ): T[] {
-  if (size <= 0)
+  if (length <= 0)
     return []
-  const arr = new Array(size)
-  for (let i = 0; i < size; i++)
+  const arr: T[] = Array.from({ length })
+  for (let i = 0; i < length; i++)
+    // @ts-expect-error xxx
     arr[i] = item instanceof Function ? item(i) : item
   return arr
 }

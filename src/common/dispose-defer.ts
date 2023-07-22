@@ -13,8 +13,8 @@ export type DisposerFunction = () => any | Promise<any>
 export type Disposer =
   | DisposerFunction
   | {
-    dispose?: Function | Promise<unknown>
-    cleanup?: Function | Promise<unknown> // deprecated, but used often in my old code
+    dispose?: DisposerFunction | Promise<unknown>
+    cleanup?: DisposerFunction | Promise<unknown> // deprecated, but used often in my old code
   }
 
 export interface Disposable {
@@ -189,7 +189,7 @@ export function useDefer(
 export type UseDefer = ReturnType<typeof useDefer>
 
 export function useTimeout(
-  fn: Function,
+  fn: DisposerFunction,
   timeout = 0,
 ): DisposerFunction {
   let timeoutHandle: any = setTimeout(fn, timeout)
@@ -201,7 +201,7 @@ export function useTimeout(
   }
 }
 
-export function useInterval(fn: Function, interval: number): DisposerFunction {
+export function useInterval(fn: DisposerFunction, interval: number): DisposerFunction {
   let intervalHandle: any = setInterval(fn, interval)
   return () => {
     if (intervalHandle) {

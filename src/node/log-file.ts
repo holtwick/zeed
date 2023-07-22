@@ -2,6 +2,7 @@
 
 import { createWriteStream, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
+import process from 'node:process'
 import { renderMessages } from '../common/data/convert'
 import type { LogHandlerOptions, LogMessage } from '../common/log-base'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'

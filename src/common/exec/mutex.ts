@@ -2,8 +2,8 @@
 
 import { isPromise } from './promise'
 
-export type Mutex = (fn: Function, elseFn?: Function) => boolean
-export type AsyncMutex = (fn: Function, elseFn?: Function) => Promise<boolean>
+export type Mutex = (fn: (() => void), elseFn?: (() => void)) => boolean
+export type AsyncMutex = (fn: (() => void), elseFn?: (() => void)) => Promise<boolean>
 
 export function useMutex(): Mutex {
   let token = true

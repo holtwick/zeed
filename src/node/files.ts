@@ -1,5 +1,6 @@
 import { readdirSync, statSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import process from 'node:process'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
 

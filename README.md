@@ -257,7 +257,7 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 
 ```ts
 function disposableTimer() {
-  const timout = setTimeout(() => console.log('hello world'), 1000)
+  const timeout = setTimeout(() => console.log('hello world'), 1000)
   return () => clearTimeout(timeout)
 }
 

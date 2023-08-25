@@ -123,4 +123,26 @@ describe('dispose', () => {
     // expect(stack).toEqual(['b', 'a'])
   })
 
+  // TODO future
+  // it("should use using", async () => {
+  //   class TempFile implements Disposable {
+
+  //     constructor(path: string) {
+  //       console.log('constructor')
+  //     }
+    
+  //     [Symbol.dispose]() {
+  //       console.log('dispose')
+  //     }
+  //   }
+
+  //   function fn() {
+  //     using f = new TempFile('abc')
+  //     console.log('fn return')
+  //   }
+
+  //   console.log('fn before')
+  //   fn()
+  //   console.log('fn after')
+  // })
 })

@@ -12,5 +12,6 @@
     "**/dist/**",
     "**/cypress/**",
     "**/.{idea,git,cache,output,temp}/**"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

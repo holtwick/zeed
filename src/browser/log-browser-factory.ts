@@ -8,6 +8,11 @@ import { browserSelectColorByName } from '../common/log-colors'
 import { parseLogLevel, useNamespaceFilter } from '../common/log-filter'
 import { browserSupportsColors } from './log-colors'
 
+/**
+ * Directly use console calls, this has the advantage to show the original source of the call
+ * i.e. it is possible to jump right into the code from the browser console logs. But other
+ * loggers will not work any more.
+ */
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
   const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'

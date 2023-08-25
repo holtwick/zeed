@@ -11,7 +11,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
+  <img alt="Vue logo" src="./assets/logo.png" width="80">
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
 </template>
 

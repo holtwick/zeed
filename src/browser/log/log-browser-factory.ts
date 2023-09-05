@@ -2,10 +2,10 @@
 
 /* eslint-disable no-console */
 
-import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../common/log-base'
-import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../common/log-base'
-import { browserSelectColorByName } from '../common/log-colors'
-import { parseLogLevel, useNamespaceFilter } from '../common/log-filter'
+import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
+import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../../common/log/log-base'
+import { browserSelectColorByName } from '../../common/log/log-colors'
+import { parseLogLevel, useNamespaceFilter } from '../../common/log/log-filter'
 import { browserSupportsColors } from './log-colors'
 
 /**

@@ -2,11 +2,11 @@
 
 import tty from 'node:tty'
 import process from 'node:process'
-import { renderMessages, valueToBoolean } from '../common/data/convert'
-import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
-import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
-import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
-import { formatMilliseconds, getTimestamp } from '../common/time'
+import { renderMessages, valueToBoolean } from '../../common/data/convert'
+import type { LogHandler, LogHandlerOptions, LogMessage } from '../../common/log/log-base'
+import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
+import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
+import { formatMilliseconds, getTimestamp } from '../../common/time'
 import { getSourceLocation, getSourceLocationByPrecedingPattern, getStack } from './log-util'
 
 function shouldUseColor(): boolean {

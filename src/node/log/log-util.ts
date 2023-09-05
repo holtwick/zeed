@@ -2,7 +2,7 @@
 
 import { resolve } from 'node:path'
 import process from 'node:process'
-import { isNotNull } from '../common'
+import { isNotNull } from '../../common'
 
 export function getStackLlocationList(stack: string): string[] {
   if (typeof stack !== 'string')

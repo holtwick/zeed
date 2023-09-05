@@ -1,8 +1,8 @@
 import process from 'node:process'
-import type { LogLevelAliasType, LoggerInterface } from '../common'
-import { valueToBoolean } from '../common'
-import { getGlobalLogger } from '../common/log'
-import { toPath } from './env'
+import { valueToBoolean } from '../../common'
+import { getGlobalLogger } from '../../common/log'
+import type { LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
+import { toPath } from '../env'
 import { LoggerFileHandler } from './log-file'
 import { LoggerNodeHandler } from './log-node'
 

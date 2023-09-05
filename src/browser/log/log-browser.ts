@@ -2,11 +2,11 @@
 
 /* eslint-disable no-console */
 
-import type { LogHandler, LogHandlerOptions, LogMessage } from '../common/log-base'
-import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../common/log-base'
-import { browserSelectColorByName } from '../common/log-colors'
-import { useLevelFilter, useNamespaceFilter } from '../common/log-filter'
-import { formatMilliseconds, getTimestamp } from '../common/time'
+import type { LogHandler, LogHandlerOptions, LogMessage } from '../../common/log/log-base'
+import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
+import { browserSelectColorByName } from '../../common/log/log-colors'
+import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
+import { formatMilliseconds, getTimestamp } from '../../common/time'
 import { browserSupportsColors } from './log-colors'
 
 export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {

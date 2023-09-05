@@ -1,8 +1,8 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+import { getTimestamp } from '../time'
 import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
 import { useLevelFilter, useNamespaceFilter } from './log-filter'
-import { getTimestamp } from './time'
 
 /**
  * Collect messages in a list.

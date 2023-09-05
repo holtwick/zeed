@@ -1,7 +1,7 @@
 import { valueToString } from '../data/convert'
 import { isPromise, tryTimeout } from '../exec/promise'
 import { DefaultLogger } from '../log'
-import type { LogLevelAliasType } from '../log-base'
+import type { LogLevelAliasType } from '../log/log-base'
 import type { Json } from '../types'
 import { uname, uuid } from '../uuid'
 import type { Channel } from './channel'

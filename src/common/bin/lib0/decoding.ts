@@ -27,7 +27,7 @@
  */
 
 import { BIT7, BIT8, BITS6, BITS7 } from './binary'
-import { createUint8ArrayViewFromArrayBuffer } from './buffer'
+import { createUint8ArrayViewFromArrayBuffer } from './create'
 import { getUtf8TextDecoder } from './string'
 
 const errorUnexpectedEndOfArray = 'Unexpected end of array'

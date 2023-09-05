@@ -12,20 +12,6 @@ export function createUint8ArrayFromLen(len: number) {
 }
 
 /**
- * Create Uint8Array with initial content from buffer
- */
-export function createUint8ArrayViewFromArrayBuffer(buffer: ArrayBuffer, byteOffset: number, length: number) {
-  return new Uint8Array(buffer, byteOffset, length)
-}
-
-/**
- * Create Uint8Array with initial content from buffer
- */
-export function createUint8ArrayFromArrayBuffer(buffer: ArrayBuffer) {
-  return new Uint8Array(buffer)
-}
-
-/**
  * Copy the content of an Uint8Array view to a new ArrayBuffer.
  */
 export function copyUint8Array(uint8Array: Uint8Array): Uint8Array {

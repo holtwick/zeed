@@ -1,4 +1,5 @@
 import type { DisposerFunction } from './dispose-types'
+import { promisify } from './exec'
 
 export function useTimeout(
   fn: DisposerFunction,
@@ -17,6 +18,29 @@ export function useInterval(fn: DisposerFunction, interval: number): DisposerFun
   let intervalHandle: any = setInterval(fn, interval)
   return () => {
     if (intervalHandle) {
+      clearInterval(intervalHandle)
+      intervalHandle = undefined
+    }
+  }
+}
+
+/** The interval starts only, when the function is finished. */
+export function useIntervalPause(fn: DisposerFunction, interval: number, immediately = false): DisposerFunction {
+  let intervalHandle: any
+  let stop = false
+
+  async function loop(exec = false) {
+    if (exec)
+      await promisify(fn())
+    if (!stop)
+      intervalHandle = setTimeout(() => loop(true), interval)
+  }
+
+  void loop(immediately)
+
+  return () => {
+    if (intervalHandle) {
+      stop = true
       clearInterval(intervalHandle)
       intervalHandle = undefined
     }

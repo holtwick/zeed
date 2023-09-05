@@ -1,10 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { getSecureRandomIfPossible } from '../data/math'
-import type { Disposable, DisposerFunction } from '../dispose-types'
 import { useDispose } from '../dispose-defer'
-import { getGlobalContext } from '../global'
+import type { DisposerFunction } from '../dispose-types'
 import { promisify } from '../exec/promise'
+import { getGlobalContext } from '../global'
 import { DefaultLogger } from '../log'
 
 export type EmitterHandler = (...objs: any[]) => void
@@ -28,7 +28,7 @@ export declare interface DefaultListener {
 export class Emitter<
   RemoteListener extends ListenerSignature<RemoteListener> = DefaultListener,
   LocalListener extends ListenerSignature<LocalListener> = RemoteListener,
-> implements Disposable {
+> {
   subscribers: any = {}
   subscribersOnAny: any[] = []
 

@@ -2,7 +2,7 @@
 
 import { getGlobalContext } from './global'
 import type { LogLevelAliasType, LoggerContextInterface, LoggerInterface } from './log-base'
-import { LoggerContext } from './log-base'
+import { LoggerContext } from './log-context'
 import { LoggerConsoleHandler } from './log-console'
 
 // Global logger to guarantee all submodules use the same logger instance

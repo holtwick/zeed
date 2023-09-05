@@ -1,10 +1,9 @@
-import type { Disposer, DisposerFunction } from './dispose-types'
 import { isString } from './data'
 import { arrayFilterInPlace } from './data/array'
+import type { Disposer, DisposerFunction } from './dispose-types'
 import { isPromise } from './exec/promise'
 import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log-base'
-import { useEventListener, useInterval, useTimeout } from './dispose-utils'
 
 /** Different kinds of implementations have grown, this should unify them  */
 function callDisposer(disposable: Disposer): Promise<void> | void {
@@ -111,9 +110,9 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
     },
 
     // Utils
-    timeout: (fn: DisposerFunction, timeout = 0) => track(useTimeout(fn, timeout)),
-    interval: (fn: DisposerFunction, interval = 0) => track(useInterval(fn, interval)),
-    on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => track(useEventListener(emitter, eventName, fn, ...args)),
+    // timeout: (fn: DisposerFunction, timeout = 0) => track(useTimeout(fn, timeout)),
+    // interval: (fn: DisposerFunction, interval = 0) => track(useInterval(fn, interval)),
+    // on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => track(useEventListener(emitter, eventName, fn, ...args)),
   })
 }
 

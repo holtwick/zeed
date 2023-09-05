@@ -63,6 +63,7 @@
     "test": "vitest",
     "test:publish": "vitest --run",
     "watch": "nr build:tsup -- --watch",
+    "circles": "nlx madge --circular --extensions ts src",
     "release": "na version patch && na publish"
   },
   "devDependencies": {

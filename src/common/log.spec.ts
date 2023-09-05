@@ -1,8 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import type { LoggerInterface, LogMessage } from './log-base'
-import { LogLevel, LoggerContext } from './log-base'
-import { DefaultLogger } from './log'
+import { LoggerContext } from './log-context'
 
 describe('Logger', () => {
   test('should log different levels', () => {

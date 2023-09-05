@@ -1,5 +1,5 @@
 import { LoggerInterface, LogLevelAll, LogMessage } from './log-base'
-import { LoggerContext } from './log-base'
+import { LoggerContext } from './log-context'
 import { LoggerMemoryHandler } from './log-memory'
 
 describe('log-memory', () => {

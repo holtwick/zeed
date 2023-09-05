@@ -2,11 +2,11 @@
 
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-import type { LogLevel, LoggerInterface } from '../log-base'
-import { LogLevelOff } from '../log-base'
 import { DefaultLogger } from '../log'
-import { uname } from '../uuid'
+import type { LogLevel, LoggerInterface } from '../log/log-base'
+import { LogLevelOff } from '../log/log-base'
 import { Emitter } from '../msg/emitter'
+import { uname } from '../uuid'
 
 type TaskResolver = any
 

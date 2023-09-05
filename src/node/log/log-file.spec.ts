@@ -3,7 +3,8 @@
 /* eslint-disable n/no-path-concat */
 
 import { rmSync, statSync, unlinkSync } from 'fs'
-import { DefaultLogger, sleep, LogLevelAll, getGlobalLogger } from '../common'
+import { sleep } from '../../common/exec/promise'
+import { DefaultLogger, LogLevelAll, getGlobalLogger } from '../../common/log'
 import { LoggerFileHandler } from './log-file'
 
 describe('Log File', () => {

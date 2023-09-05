@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getGlobalContext } from './global'
+import { getGlobalContext } from '../global'
 import type { LogLevelAliasType, LoggerContextInterface, LoggerInterface } from './log-base'
 import { LoggerContext } from './log-context'
 import { LoggerConsoleHandler } from './log-console'

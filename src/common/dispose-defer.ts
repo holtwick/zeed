@@ -3,7 +3,7 @@ import { arrayFilterInPlace } from './data/array'
 import type { Disposer, DisposerFunction } from './dispose-types'
 import { isPromise } from './exec/promise'
 import { DefaultLogger } from './log'
-import type { LoggerInterface } from './log-base'
+import type { LoggerInterface } from './log/log-base'
 
 /** Different kinds of implementations have grown, this should unify them  */
 function callDisposer(disposable: Disposer): Promise<void> | void {

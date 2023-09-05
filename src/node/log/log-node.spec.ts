@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getGlobalLogger, DefaultLogger, LogLevelAll } from '../common'
+import { getGlobalLogger, DefaultLogger, LogLevelAll } from '../../common/log'
 import { LoggerNodeHandler, loggerStackTraceDebug } from './log-node'
 
 describe('log-node', () => {

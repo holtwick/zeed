@@ -1,26 +1,7 @@
 {
   "name": "zeed",
-  "type": "module",
   "version": "0.12.0",
   "description": "🌱 Simple foundation library",
-  "author": {
-    "name": "Dirk Holtwick",
-    "email": "dirk.holtwick@gmail.com",
-    "url": "https://holtwick.de"
-  },
-  "license": "MIT",
-  "funding": {
-    "type": "GitHub Sponsors ❤",
-    "url": "https://github.com/sponsors/holtwick"
-  },
-  "homepage": "https://github.com/holtwick/zeed",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/holtwick/zeed.git"
-  },
-  "bugs": {
-    "url": "https://github.com/holtwick/zeed/issues"
-  },
   "keywords": [
     "foundation",
     "typescript",
@@ -31,7 +12,26 @@
     "utils",
     "zeed"
   ],
+  "homepage": "https://github.com/holtwick/zeed",
+  "bugs": {
+    "url": "https://github.com/holtwick/zeed/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holtwick/zeed.git"
+  },
+  "funding": {
+    "type": "GitHub Sponsors ❤",
+    "url": "https://github.com/sponsors/holtwick"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Dirk Holtwick",
+    "email": "dirk.holtwick@gmail.com",
+    "url": "https://holtwick.de"
+  },
   "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.all.d.ts",
@@ -47,24 +47,21 @@
   "files": [
     "dist"
   ],
-  "engines": {
-    "node": ">=18"
-  },
   "scripts": {
     "build": "nr clean && nr build:tsup",
     "build:tsup": "tsup src/index.all.ts --dts-only && tsup src/index.browser.ts src/index.node.ts",
     "check": "tsc --noEmit -p tsconfig.json",
+    "circles": "madge --circular --summary --orphans --leaves --warning --extensions ts src",
     "clean": "rm -rf dist",
     "coverage": "vitest --run --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepublishOnly": "nr build && nr test:publish",
+    "prepublishOnly": "nr build && nr circles && nr lint && nr test:publish",
+    "release": "na version patch && na publish",
     "start": "nr watch",
     "test": "vitest",
     "test:publish": "vitest --run",
-    "watch": "nr build:tsup -- --watch",
-    "circles": "nlx madge --circular --extensions ts src",
-    "release": "na version patch && na publish"
+    "watch": "nr build:tsup -- --watch"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.41.0",
@@ -74,9 +71,13 @@
     "cross-fetch": "^4.0.0",
     "esbuild": "^0.19.2",
     "eslint": "^8.48.0",
+    "madge": "^6.1.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vitest": "^0.34.3"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

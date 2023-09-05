@@ -22,13 +22,14 @@ describe('files.spec', () => {
         "glob.spec.ts",
         "glob.ts",
         "index.ts",
-        "log-context-node.ts",
-        "log-file.spec.ts",
-        "log-file.ts",
-        "log-node.spec.ts",
-        "log-node.ts",
-        "log-util.spec.ts",
-        "log-util.ts",
+        "log/index.ts",
+        "log/log-context-node.ts",
+        "log/log-file.spec.ts",
+        "log/log-file.ts",
+        "log/log-node.spec.ts",
+        "log/log-node.ts",
+        "log/log-util.spec.ts",
+        "log/log-util.ts",
       ]
     `)
   })

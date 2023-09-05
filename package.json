@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.41.0",
-    "@antfu/ni": "^0.21.6",
+    "@antfu/ni": "^0.21.8",
     "@types/node": "<20",
     "c8": "^8.0.1",
     "cross-fetch": "^4.0.0",

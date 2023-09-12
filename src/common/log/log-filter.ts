@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 /* eslint-disable n/prefer-global/process */
 
-import { isPrimitive, isString } from '../data'
+import { isString } from '../data'
 import type { LogLevel, LogLevelAliasType } from './log-base'
 import { LogLevelAlias, LogLevelAll, LogLevelOff } from './log-base'
 
@@ -136,9 +136,9 @@ export function useLevelFilter(
 }
 
 export function joinLogStrings(...messages: any[]) {
-  if (!isString(messages[1]))
-    return messages
-  return [`${String(messages[0])} ${String(messages[1])}`, ...messages.slice(2)]
+  if (isString(messages[1]))
+    return [`${String(messages[0])} ${String(messages[1])}`, ...messages.slice(2)]
+  return messages
 
   // let s = ''
   // for (let i = 0; i < messages.length; i++) {

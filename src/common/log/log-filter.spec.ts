@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelInfo, LogLevelOff, LogLevelWarn } from './log-base'
-import { getNamespaceFilterString,  parseLogLevel,  useLevelFilter,  useNamespaceFilter } from './log-filter'
+import { getNamespaceFilterString,  joinLogStrings,  parseLogLevel,  useLevelFilter,  useNamespaceFilter } from './log-filter'
 
 describe('log-filter', () => {
   test('should match', () => {
@@ -106,4 +106,11 @@ describe('log-filter', () => {
     expect(parseLogLevel(true)).toEqual(LogLevelAll)
     expect(parseLogLevel(2)).toEqual(LogLevelWarn)
   })
+
+  it('should join strings', () => {
+    expect(joinLogStrings('test')).toMatchInlineSnapshot(['test'])
+    expect(joinLogStrings('test', 'more', 1,2,3)).toMatchInlineSnapshot(['test more',1,2,3])
+    expect(joinLogStrings('test', {a:1})).toMatchInlineSnapshot(['test', {a:1}])
+    expect(joinLogStrings('test', 'a', 'b', true, undefined, null, {a:1})).toMatchInlineSnapshot(['test a', 'b', true, undefined, null, {a:1}])
+  });
 })

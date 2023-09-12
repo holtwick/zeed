@@ -1,7 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 /* eslint-disable n/prefer-global/process */
 
-import { isPrimitive, isString } from '../data'
+import { isString } from '../data'
 import type { LogLevel, LogLevelAliasType } from './log-base'
 import { LogLevelAlias, LogLevelAll, LogLevelOff } from './log-base'
 

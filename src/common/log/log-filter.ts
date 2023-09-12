@@ -1,6 +1,7 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 /* eslint-disable n/prefer-global/process */
 
+import { isPrimitive, isString } from '../data'
 import type { LogLevel, LogLevelAliasType } from './log-base'
 import { LogLevelAlias, LogLevelAll, LogLevelOff } from './log-base'
 
@@ -132,4 +133,20 @@ export function useLevelFilter(
 ): (level: number) => boolean {
   const filterLevel = parseLogLevel(filter)
   return level => level >= filterLevel
+}
+
+export function joinLogStrings(...messages: any[]) {
+  if (!isString(messages[1]))
+    return messages
+  return [`${String(messages[0])} ${String(messages[1])}`, ...messages.slice(2)]
+
+  // let s = ''
+  // for (let i = 0; i < messages.length; i++) {
+  //   const element = messages[i]
+  //   if (isString(element))
+  //     s += (s.length > 1 ? ' ' : '') + String(element)
+  //   else
+  //     return [s, ...messages.slice(i)]
+  // }
+  // return [s]
 }

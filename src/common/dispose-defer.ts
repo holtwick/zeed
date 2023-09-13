@@ -17,10 +17,10 @@ function callDisposer(disposable: Disposer): Promise<void> | void {
     result = disposable.dispose()
   else if (isPromise(disposable.dispose))
     result = disposable.dispose
-  else if (typeof disposable.cleanup === 'function')
-    result = disposable.cleanup()
-  else if (isPromise(disposable.cleanup))
-    result = disposable.cleanup
+  // else if (typeof disposable.cleanup === 'function')
+  //   result = disposable.cleanup()
+  // else if (isPromise(disposable.cleanup))
+  //   result = disposable.cleanup
 
   if (isPromise(result))
     return result

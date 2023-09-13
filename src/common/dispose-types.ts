@@ -3,8 +3,9 @@
 
 export type DisposerFunction = () => any | Promise<any>
 
-export type Disposer = DisposerFunction |
-{
-  dispose?: DisposerFunction | Promise<unknown>
-  cleanup?: DisposerFunction | Promise<unknown> // deprecated, but used often in my old code
+/** @deprecated conflicts with `using` feature */
+export type Disposer = DisposerFunction | {
+  dispose: DisposerFunction // | Promise<unknown>
+  // [Symbol.dispose]:
+  // cleanup?: DisposerFunction | Promise<unknown> // deprecated, but used often in my old code
 }

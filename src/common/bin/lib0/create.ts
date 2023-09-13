@@ -6,6 +6,9 @@
 
 /**
  * Create Uint8Array with initial content from buffer
+ * @param buffer
+ * @param byteOffset
+ * @param length
  */
 export function createUint8ArrayViewFromArrayBuffer(buffer: ArrayBuffer, byteOffset: number, length: number) {
   return new Uint8Array(buffer, byteOffset, length)
@@ -13,6 +16,7 @@ export function createUint8ArrayViewFromArrayBuffer(buffer: ArrayBuffer, byteOff
 
 /**
  * Create Uint8Array with initial content from buffer
+ * @param buffer
  */
 export function createUint8ArrayFromArrayBuffer(buffer: ArrayBuffer) {
   return new Uint8Array(buffer)

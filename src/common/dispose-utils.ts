@@ -24,7 +24,12 @@ export function useInterval(fn: DisposerFunction, interval: number): DisposerFun
   }
 }
 
-/** The interval starts only, when the function is finished. */
+/**
+ * The interval starts only, when the function is finished.
+ * @param fn
+ * @param interval
+ * @param immediately
+ */
 export function useIntervalPause(fn: DisposerFunction, interval: number, immediately = false): DisposerFunction {
   let intervalHandle: any
   let stop = false

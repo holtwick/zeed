@@ -2,6 +2,7 @@
 
 /**
  * The base implementation of `propertyOf` without support for deep paths.
+ * @param object
  */
 function basePropertyOf(object: any): any {
   return (key: any) => object == null ? undefined : object[key]

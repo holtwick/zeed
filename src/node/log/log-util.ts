@@ -60,7 +60,7 @@ function extractFileInfo(stackLine: string): string {
  *
  * @param level Number of levels to go down the stack trace
  * @param stripCwd Strip the current working directory, only reasonable for Node.js environment
- * @returns
+ * @returns Line
  */
 export function getSourceLocation(level = 2, stripCwd = true): string {
   const stack = new Error('stack').stack || ''

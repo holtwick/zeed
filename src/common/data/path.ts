@@ -18,7 +18,11 @@ function windowsReservedNameRegex() {
   return /^(con|prn|aux|nul|com\d|lpt\d)$/i
 }
 
-/** Ensure a valid file name. Unsupported characters get a `replacement`, default: `_` */
+/**
+ * Ensure a valid file name. Unsupported characters get a `replacement`, default: `_`
+ * @param string
+ * @param replacement
+ */
 export function toValidFilename(string: string, replacement = '_'): string | never {
   if (typeof string !== 'string')
     throw new TypeError('Expected a string')

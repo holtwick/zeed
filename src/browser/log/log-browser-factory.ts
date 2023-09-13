@@ -12,6 +12,7 @@ import { browserSupportsColors } from './log-colors'
  * Directly use console calls, this has the advantage to show the original source of the call
  * i.e. it is possible to jump right into the code from the browser console logs. But other
  * loggers will not work any more.
+ * @param opt
  */
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
@@ -87,7 +88,10 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   }
 }
 
-/** @deprecated This output is default for initial use of Logger in browser environments. */
+/**
+ * @param _opt
+ * @deprecated This output is default for initial use of Logger in browser environments.
+ */
 export function activateConsoleDebug(_opt: LogHandlerOptions = {}) {
   console.info('activateConsoleDebug is activated by default in browsers')
   //   Logger.setHandlers([LoggerBrowserHandler(opt)]) // Fallback for previously registered Loggers

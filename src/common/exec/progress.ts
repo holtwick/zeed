@@ -81,7 +81,10 @@ export class Progress extends Emitter<{
     }
   }
 
-  /** Add child progress, which count into its parents units. On `dispose` it will auto remove itself from parent. */
+  /**
+   * Add child progress, which count into its parents units. On `dispose` it will auto remove itself from parent.
+   * @param child
+   */
   addChild(child: Progress) {
     child.on('progressDispose', () => this.removeChild(child))
     child.on('progressChanged', () => this.update())
@@ -90,7 +93,10 @@ export class Progress extends Emitter<{
     this.update()
   }
 
-  /** Create child progress.  */
+  /**
+   * Create child progress.
+   * @param opt
+   */
   createChildProgress(opt?: ProgressOptions) {
     const progress = new Progress(opt)
     this.addChild(progress)
@@ -151,7 +157,11 @@ export class Progress extends Emitter<{
     return this._children.length
   }
 
-  /** Change total units. */
+  /**
+   * Change total units.
+   * @param units
+   * @param completedUnits
+   */
   setTotalUnits(units: number, completedUnits?: number) {
     this._totalUnits = units
     if (completedUnits != null)
@@ -159,13 +169,19 @@ export class Progress extends Emitter<{
     this.update()
   }
 
-  /** Relatively change total units. */
+  /**
+   * Relatively change total units.
+   * @param step
+   */
   incTotalUnits(step = 1) {
     this._totalUnits += step
     this.update()
   }
 
-  /** Set fixed number of completed units. */
+  /**
+   * Set fixed number of completed units.
+   * @param units
+   */
   setCompletetedUnits(units: number) {
     this._completedUnits = units
     this.update()
@@ -177,13 +193,19 @@ export class Progress extends Emitter<{
     this.update()
   }
 
-  /** Dynamically change completed units. */
+  /**
+   * Dynamically change completed units.
+   * @param step
+   */
   incCompletedUnits(step = 1) {
     this._completedUnits += step
     this.update()
   }
 
-  /** Progress tree to string for debuggin purposes. Consider using `name` attribute of Progress. */
+  /**
+   * Progress tree to string for debuggin purposes. Consider using `name` attribute of Progress.
+   * @param indent
+   */
   toString(indent = 0) {
     let s = `${'  '.repeat(indent)}${this.name}: ${this._completedUnits} of ${this._totalUnits} units, ${Math.floor(this.getFraction() * 100)} %, cancel=${this._isCancelled}\n`
     for (const child of this._children)

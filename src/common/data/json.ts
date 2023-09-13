@@ -63,6 +63,10 @@ function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
  * NOT SORTED!
  * From https://github.com/moll/json-stringify-safe/blob/master/stringify.js
  * License ISC
+ * @param obj
+ * @param replacer
+ * @param spaces
+ * @param cycleReplacer
  */
 export function jsonStringifySafe(
   obj: any,

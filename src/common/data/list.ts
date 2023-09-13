@@ -1,7 +1,12 @@
 export type FilterFunction<T> = (o: T) => boolean
 export type MapperFunction<T> = (o: T) => any
 
-/** Apply multiple filters, optionally transform through mappers, filter null/undefined items. */
+/**
+ * Apply multiple filters, optionally transform through mappers, filter null/undefined items.
+ * @param list
+ * @param filters
+ * @param mappers
+ */
 export function listQuery<T>(
   list: T[],
   filters: FilterFunction<T>[],
@@ -17,7 +22,11 @@ export function listQuery<T>(
     .filter(o => o != null)
 }
 
-/** Split up a list by `key` resulting in a Record of `key` and sub-list. */
+/**
+ * Split up a list by `key` resulting in a Record of `key` and sub-list.
+ * @param list
+ * @param key
+ */
 export function listGroupBy<T extends Record<string, any>>(
   list: T[],
   key: keyof T,
@@ -29,7 +38,11 @@ export function listGroupBy<T extends Record<string, any>>(
   }, {})
 }
 
-/** Returns a list of values of a certain `key`. No duplicates. */
+/**
+ * Returns a list of values of a certain `key`. No duplicates.
+ * @param list
+ * @param key
+ */
 export function listDistinctUnion<T extends Record<string, any>>(
   list: T[],
   key: keyof T,
@@ -42,7 +55,11 @@ export function listDistinctUnion<T extends Record<string, any>>(
   )
 }
 
-/** Returns a list of values of a certain `key`. */
+/**
+ * Returns a list of values of a certain `key`.
+ * @param list
+ * @param key
+ */
 export function listOfKey<T extends Record<string, any>>(
   list: T[],
   key: keyof T,

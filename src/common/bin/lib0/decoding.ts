@@ -81,8 +81,8 @@ export function readUint8Array(decoder: Decoder, len: number): Uint8Array {
 /**
  * Read unsigned integer (32bit) with variable length.
  * 1/8th of the storage is used as encoding overhead.
- *  * numbers < 2^7 is stored in one bytlength
- *  * numbers < 2^14 is stored in two bylength
+ * numbers < 2^7 is stored in one bytlength
+ * numbers < 2^14 is stored in two bylength
  */
 export function readVarUint(decoder: Decoder): number {
   let num = 0
@@ -200,8 +200,8 @@ export function peekUint32(decoder: Decoder): number {
 /**
  * Read signed integer (32bit) with variable length.
  * 1/8th of the storage is used as encoding overhead.
- *  * numbers < 2^7 is stored in one bytlength
- *  * numbers < 2^14 is stored in two bylength
+ * numbers < 2^7 is stored in one bytlength
+ * numbers < 2^14 is stored in two bylength
  * @todo This should probably create the inverse ~num if number is negative - but this would be a breaking change.
  */
 export function readVarInt(decoder: Decoder): number {
@@ -285,7 +285,7 @@ function _readVarStringPolyfill(decoder: Decoder): string {
 
 /**
  * Read string of variable length
- * * varUint is used to store the length of the string
+ * varUint is used to store the length of the string
  */
 export function readVarString(decoder: Decoder): string {
   const utf8TextDecoder = getUtf8TextDecoder()
@@ -338,13 +338,9 @@ const readAnyLookupTable: Array<((arg0: Decoder) => any)> = [
   readVarString, // CASE 119: string
   (decoder) => { // CASE 118: object<string,any>
     const len = readVarUint(decoder)
-    /**
-     * @type {Object<string,any>}
-     */
     const obj: { [s: string]: any } = {}
     for (let i = 0; i < len; i++) {
       const key = readVarString(decoder)
-
       obj[key] = readAny(decoder)
     }
     return obj

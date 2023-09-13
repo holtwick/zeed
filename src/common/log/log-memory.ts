@@ -4,12 +4,7 @@ import { getTimestamp } from '../time'
 import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
 import { useLevelFilter, useNamespaceFilter } from './log-filter'
 
-/**
- * Collect messages in a list.
- *
- * @param level Log level
- * @returns Logger
- */
+/** Collect messages in a list. */
 export function LoggerMemoryHandler(
   opt: LogHandlerOptions & {
     messages: LogMessage[]

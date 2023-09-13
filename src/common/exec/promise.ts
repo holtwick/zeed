@@ -23,7 +23,10 @@ export function createPromise<T>(): [Promise<T>, any, any] {
   return [promise, resolve, reject]
 }
 
-/** Sleep for `milliSeconds`. Example 1s: `await sleep(1000)` */
+/**
+ * Sleep for `milliSeconds`. Example 1s: `await sleep(1000)`
+ * @param milliSeconds
+ */
 export async function sleep(milliSeconds: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, milliSeconds))
 }
@@ -101,7 +104,12 @@ export async function tryTimeout<T>(
   })
 }
 
-/** Wait for `event` on `obj` to emit. Resolve with result or reject on `timeout` */
+/**
+ * Wait for `event` on `obj` to emit. Resolve with result or reject on `timeout`
+ * @param obj
+ * @param event
+ * @param timeoutMS
+ */
 export function waitOn(
   obj: any,
   event: string,
@@ -144,7 +152,10 @@ export function isPromise<T>(value: Promise<T> | T): value is Promise<T> {
   return Boolean(value && (value instanceof Promise || typeof (value as any).then === 'function'))
 }
 
-/** This is exactly what Prose.resolve(x) is supposed to be: return a Promise no matter what type x is */
+/**
+ * This is exactly what Prose.resolve(x) is supposed to be: return a Promise no matter what type x is
+ * @param value
+ */
 export function promisify<T>(value: Promise<T> | T): Promise<T> {
   return Promise.resolve(value)
 }

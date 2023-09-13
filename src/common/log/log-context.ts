@@ -93,7 +93,10 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     logHandlers.push(handler)
   }
 
-  /** @deprecated */
+  /**
+   * @param namespaces
+   * @deprecated
+   */
   Logger.setFilter = function (namespaces: string) {
     logCheckNamespace = useNamespaceFilter(namespaces)
   }
@@ -113,7 +116,10 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
 
   Logger.level = LogLevelAll
 
-  /** @deprecated */
+  /**
+   * @param level
+   * @deprecated
+   */
   Logger.setLogLevel = function (level: LogLevel = LogLevelAll) {
     if (logLock)
       return

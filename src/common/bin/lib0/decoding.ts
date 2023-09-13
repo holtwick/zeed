@@ -59,6 +59,8 @@ export function hasContent(decoder: Decoder): boolean {
 /**
  * Clone a decoder instance.
  * Optionally set a new position parameter.
+ * @param decoder
+ * @param newPos
  */
 export function clone(decoder: Decoder, newPos: number = decoder.pos): Decoder {
   const _decoder = createDecoder(decoder.arr)
@@ -71,6 +73,8 @@ export function clone(decoder: Decoder, newPos: number = decoder.pos): Decoder {
  *
  * Important: The Uint8Array still points to the underlying ArrayBuffer. Make sure to discard the result as soon as possible to prevent any memory leaks.
  *            Use `buffer.copyUint8Array` to copy the result into a new Uint8Array.
+ * @param decoder
+ * @param len
  */
 export function readUint8Array(decoder: Decoder, len: number): Uint8Array {
   const view = createUint8ArrayViewFromArrayBuffer(decoder.arr.buffer, decoder.pos + decoder.arr.byteOffset, len)
@@ -81,8 +85,9 @@ export function readUint8Array(decoder: Decoder, len: number): Uint8Array {
 /**
  * Read unsigned integer (32bit) with variable length.
  * 1/8th of the storage is used as encoding overhead.
- *  * numbers < 2^7 is stored in one bytlength
- *  * numbers < 2^14 is stored in two bylength
+ *  numbers < 2^7 is stored in one bytlength
+ *  numbers < 2^14 is stored in two bylength
+ * @param decoder
  */
 export function readVarUint(decoder: Decoder): number {
   let num = 0
@@ -106,6 +111,7 @@ export function readVarUint(decoder: Decoder): number {
  *
  * Important: The Uint8Array still points to the underlying ArrayBuffer. Make sure to discard the result as soon as possible to prevent any memory leaks.
  *            Use `buffer.copyUint8Array` to copy the result into a new Uint8Array.
+ * @param decoder
  */
 export function readVarUint8Array(decoder: Decoder): Uint8Array {
   return readUint8Array(decoder, readVarUint(decoder))
@@ -113,6 +119,7 @@ export function readVarUint8Array(decoder: Decoder): Uint8Array {
 
 /**
  * Read the rest of the content as an ArrayBuffer
+ * @param decoder
  */
 export function readTailAsUint8Array(decoder: Decoder): Uint8Array {
   return readUint8Array(decoder, decoder.arr.length - decoder.pos)
@@ -120,6 +127,7 @@ export function readTailAsUint8Array(decoder: Decoder): Uint8Array {
 
 /**
  * Skip one byte, jump to the next position.
+ * @param decoder
  */
 export function skip8(decoder: Decoder): number {
   return decoder.pos++
@@ -127,6 +135,7 @@ export function skip8(decoder: Decoder): number {
 
 /**
  * Read one byte as unsigned integer.
+ * @param decoder
  */
 export function readUint8(decoder: Decoder): number {
   return decoder.arr[decoder.pos++]
@@ -134,6 +143,7 @@ export function readUint8(decoder: Decoder): number {
 
 /**
  * Read 2 bytes as unsigned integer.
+ * @param decoder
  */
 export function readUint16(decoder: Decoder): number {
   const uint = decoder.arr[decoder.pos]
@@ -144,6 +154,7 @@ export function readUint16(decoder: Decoder): number {
 
 /**
  * Read 4 bytes as unsigned integer.
+ * @param decoder
  */
 export function readUint32(decoder: Decoder): number {
   const uint = (decoder.arr[decoder.pos]
@@ -157,6 +168,7 @@ export function readUint32(decoder: Decoder): number {
 /**
  * Read 4 bytes as unsigned integer in big endian order.
  * (most significant byte first)
+ * @param decoder
  */
 export function readUint32BigEndian(decoder: Decoder): number {
   const uint = (decoder.arr[decoder.pos + 3]
@@ -170,6 +182,7 @@ export function readUint32BigEndian(decoder: Decoder): number {
 /**
  * Look ahead without incrementing the position
  * to the next byte and read it as unsigned integer.
+ * @param decoder
  */
 export function peekUint8(decoder: Decoder): number {
   return decoder.arr[decoder.pos]
@@ -178,6 +191,7 @@ export function peekUint8(decoder: Decoder): number {
 /**
  * Look ahead without incrementing the position
  * to the next byte and read it as unsigned integer.
+ * @param decoder
  */
 export function peekUint16(decoder: Decoder): number {
   return decoder.arr[decoder.pos]
@@ -187,6 +201,7 @@ export function peekUint16(decoder: Decoder): number {
 /**
  * Look ahead without incrementing the position
  * to the next byte and read it as unsigned integer.
+ * @param decoder
  */
 export function peekUint32(decoder: Decoder): number {
   return (
@@ -200,8 +215,9 @@ export function peekUint32(decoder: Decoder): number {
 /**
  * Read signed integer (32bit) with variable length.
  * 1/8th of the storage is used as encoding overhead.
- *  * numbers < 2^7 is stored in one bytlength
- *  * numbers < 2^14 is stored in two bylength
+ *  numbers < 2^7 is stored in one bytlength
+ *  numbers < 2^14 is stored in two bylength
+ * @param decoder
  * @todo This should probably create the inverse ~num if number is negative - but this would be a breaking change.
  */
 export function readVarInt(decoder: Decoder): number {
@@ -230,6 +246,7 @@ export function readVarInt(decoder: Decoder): number {
 
 /**
  * Look ahead and read varUint without incrementing position
+ * @param decoder
  */
 export function peekVarUint(decoder: Decoder): number {
   const pos = decoder.pos
@@ -240,6 +257,7 @@ export function peekVarUint(decoder: Decoder): number {
 
 /**
  * Look ahead and read varUint without incrementing position
+ * @param decoder
  */
 export function peekVarInt(decoder: Decoder): number {
   const pos = decoder.pos
@@ -256,6 +274,7 @@ export function peekVarInt(decoder: Decoder): number {
  * when String.fromCodePoint is fed with all characters as arguments.
  * But most environments have a maximum number of arguments per functions.
  * For effiency reasons we apply a maximum of 10000 characters at once.
+ * @param decoder
  */
 function _readVarStringPolyfill(decoder: Decoder): string {
   let remainingLen = readVarUint(decoder)
@@ -285,7 +304,8 @@ function _readVarStringPolyfill(decoder: Decoder): string {
 
 /**
  * Read string of variable length
- * * varUint is used to store the length of the string
+ * varUint is used to store the length of the string
+ * @param decoder
  */
 export function readVarString(decoder: Decoder): string {
   const utf8TextDecoder = getUtf8TextDecoder()
@@ -296,6 +316,7 @@ export function readVarString(decoder: Decoder): string {
 
 /**
  * Look ahead and read varString without incrementing position
+ * @param decoder
  */
 export function peekVarString(decoder: Decoder): string {
   const pos = decoder.pos
@@ -338,13 +359,9 @@ const readAnyLookupTable: Array<((arg0: Decoder) => any)> = [
   readVarString, // CASE 119: string
   (decoder) => { // CASE 118: object<string,any>
     const len = readVarUint(decoder)
-    /**
-     * @type {Object<string,any>}
-     */
     const obj: { [s: string]: any } = {}
     for (let i = 0; i < len; i++) {
       const key = readVarString(decoder)
-
       obj[key] = readAny(decoder)
     }
     return obj

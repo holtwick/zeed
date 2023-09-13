@@ -1,6 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-/** @deprecated */
+/**
+ * @param base64String
+ * @deprecated
+ */
 export function urlBase64ToUint8Array(
   base64String: string,
 ): Uint8Array | undefined {

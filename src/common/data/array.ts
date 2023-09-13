@@ -18,7 +18,10 @@ export function arrayUnion<T>(...a: T[][]): T[] {
   return arrayUnique(a.reduce((acc: T[] = [], value) => acc.concat(value), []))
 }
 
-/** `[1,[2,3]]` becomes `[1,2,3]` */
+/**
+ * `[1,[2,3]]` becomes `[1,2,3]`
+ * @param {...any} list
+ */
 export function arrayFlatten<T>(...list: NestedArray<T>[]): T[] {
   return (list as any).flat(Number.POSITIVE_INFINITY)
 }
@@ -46,7 +49,11 @@ export function arrayRemoveElement<T>(arr: T[], el: T): T[] {
   return []
 }
 
-/** Only have it once in the set */
+/**
+ * Only have it once in the set
+ * @param arr
+ * @param el
+ */
 export function arraySetElement<T>(arr: T[], el: T): T[] {
   if (!arr.includes(el))
     arr.push(el)
@@ -107,7 +114,10 @@ export function arrayShuffle<T>(array: T[]): T[] {
   return arrayShuffleInPlace(Array.from(array))
 }
 
-/** Randomly shuffle the order of the array's elements. Force to have a different order if array has more than one element. */
+/**
+ * Randomly shuffle the order of the array's elements. Force to have a different order if array has more than one element.
+ * @param array
+ */
 export function arrayShuffleForce<T>(array: T[]): T[] {
   while (array.length > 1) {
     const copy = Array.from(array)

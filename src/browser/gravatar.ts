@@ -2,7 +2,15 @@
 // https://github.com/mazondo/gravatarjs/blob/master/gravatar.js
 // https://en.gravatar.com/site/implement/images/
 
-/** @deprecated Due to privacy concerns. Prefer local or custom solutions. */
+/**
+ * @param email
+ * @param options
+ * @param options.size
+ * @param options.backup
+ * @param options.secure
+ * @param options.rating
+ * @deprecated Due to privacy concerns. Prefer local or custom solutions.
+ */
 function gravatar(
   email: string,
   options: { size?: any; backup?: any; secure?: any; rating?: any },

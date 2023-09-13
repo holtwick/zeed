@@ -69,6 +69,8 @@ function parse(src: string, _options: csvOptions = {}) {
 
 /**
  * Return a path relative to the current working directory
+ * @param value
+ * @param defaultValue
  */
 export function stringToPath(
   value?: string,
@@ -98,7 +100,10 @@ export function getEnvVariableRelaxed(
   }
 }
 
-/** Populates process.env from .env file. */
+/**
+ * Populates process.env from .env file.
+ * @param options
+ */
 export function setupEnv(options: csvOptions = {}) {
   const dotenvPath: string
     = options?.path ?? toPath(options?.filename ?? '.env')

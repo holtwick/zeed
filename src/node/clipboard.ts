@@ -1,4 +1,7 @@
-/** Copy string to clipboard */
+/**
+ * Copy string to clipboard
+ * @param data
+ */
 export function pbcopy(data: string) {
   return new Promise(
     (resolve, reject) => {

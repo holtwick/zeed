@@ -1,7 +1,10 @@
 import type { BinInput } from './data/bin'
 import { equalBinary, toUint8Array } from './data/bin'
 
-/** Get random bytes using window.crypto if available. Else use a poor fallback solution. */
+/**
+ * Get random bytes using window.crypto if available. Else use a poor fallback solution.
+ * @param length
+ */
 export function randomUint8Array(length = 16): Uint8Array {
   const randomBytes = new Uint8Array(length)
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {

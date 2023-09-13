@@ -18,7 +18,10 @@ export function isObject(obj: unknown): obj is object {
   return obj != null && typeof obj === 'object'
 }
 
-/** Something like number, string, boolean */
+/**
+ * Something like number, string, boolean
+ * @param obj
+ */
 export function isPrimitive(obj: unknown): obj is Primitive {
   return Object(obj) !== obj
 }
@@ -27,12 +30,18 @@ export function isArray(obj: unknown): obj is Array<any> {
   return Array.isArray(obj)
 }
 
-/** Object that is not an array. But could also be an object defined by a class. */
+/**
+ * Object that is not an array. But could also be an object defined by a class.
+ * @param obj
+ */
 export function isRecord(obj: unknown): obj is Record<string, any> {
   return isObject(obj) && !isArray(obj)
 }
 
-/** Just data, like constructed via `{...}`. */
+/**
+ * Just data, like constructed via `{...}`.
+ * @param obj
+ */
 export function isRecordPlain(obj: unknown): obj is Record<string, any> {
   return obj?.constructor === Object
 }
@@ -49,7 +58,10 @@ export function isInteger(obj: unknown): obj is number {
   return isNumber(obj) && Number.isInteger(obj)
 }
 
-/** Integer with full precision i.e. its value is in the signed 53 bit range.  */
+/**
+ * Integer with full precision i.e. its value is in the signed 53 bit range.
+ * @param obj
+ */
 export function isSafeInteger(obj: unknown): obj is number {
   return isNumber(obj) && Number.isSafeInteger(obj)
 }
@@ -58,7 +70,10 @@ export function isBoolean(obj: unknown): obj is boolean {
   return typeof obj === 'boolean'
 }
 
-/** @deprecated use `isNull` */
+/**
+ * @param obj
+ * @deprecated use `isNull`
+ */
 export function isNullOrUndefined(obj: unknown): obj is null | undefined {
   return obj == null
 }
@@ -72,17 +87,26 @@ export function isUint8Array(obj: unknown): obj is Uint8Array {
 
 // https://stackoverflow.com/a/46700791/140927
 
-/** Not `null` or `undefined`, use like `.filter(isNotNull)` */
+/**
+ * Not `null` or `undefined`, use like `.filter(isNotNull)`
+ * @param value
+ */
 export function isNotNull<T>(value: T | null | undefined): value is T {
   return value != null
 }
 
-/** Empty means `null` or `undefined` or object or array without items, use like `.filter(isEmpty)` */
+/**
+ * Empty means `null` or `undefined` or object or array without items, use like `.filter(isEmpty)`
+ * @param value
+ */
 export function isEmpty<T>(value: T | null | undefined): value is T {
   return value == null || value === '' || (isObject(value) && size(value) <= 0)
 }
 
-/** Not `null` or `undefined` or object or array without items, use like `.filter(isNotEmpty)` */
+/**
+ * Not `null` or `undefined` or object or array without items, use like `.filter(isNotEmpty)`
+ * @param value
+ */
 export function isNotEmpty<T>(value: T | null | undefined): value is T {
   return !isEmpty(value)
 }
@@ -90,6 +114,7 @@ export function isNotEmpty<T>(value: T | null | undefined): value is T {
 /**
  * Not `null` or `undefined` or `false`, use like `.filter(isValue)`.
  * Usefull e.g. on conditional list: `[x && 'value', ...]`
+ * @param value
  */
 export function isValue<T>(value: T | null | undefined | boolean): value is T {
   return value != null && value !== false && value !== true // todo limit on false?
@@ -98,6 +123,7 @@ export function isValue<T>(value: T | null | undefined | boolean): value is T {
 /**
  * Not `null` or `undefined` or `false`, use like `.filter(isValue)`.
  * Usefull e.g. on conditional list: `[x && 'value', ...]`
+ * @param value
  */
 export function isTruthy<T>(value: T | null | undefined | boolean): value is T {
   return value != null && value !== false && value !== 0 && value !== ''

@@ -71,7 +71,12 @@ export function parseBasicAuth(url: string) {
   }
 }
 
-/** Simplified `fetch` that returns `undefined` on non 200 status */
+/**
+ * Simplified `fetch` that returns `undefined` on non 200 status
+ * @param url
+ * @param fetchOptions
+ * @param fetchFn
+ */
 export async function fetchBasic(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
@@ -124,7 +129,12 @@ export async function fetchBasic(
   }
 }
 
-/** Fetch for JSON  */
+/**
+ * Fetch for JSON
+ * @param url
+ * @param fetchOptions
+ * @param fetchFn
+ */
 export async function fetchJson<T = Json>(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
@@ -153,7 +163,12 @@ export async function fetchJson<T = Json>(
   }
 }
 
-/** Fetch for text */
+/**
+ * Fetch for text
+ * @param url
+ * @param fetchOptions
+ * @param fetchFn
+ */
 export async function fetchText(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
@@ -176,7 +191,11 @@ export async function fetchText(
 
 ///
 
-/** Options for fetchBasic to send data as application/x-www-form-urlencoded */
+/**
+ * Options for fetchBasic to send data as application/x-www-form-urlencoded
+ * @param data
+ * @param method
+ */
 export function fetchOptionsFormURLEncoded(
   data: object,
   method: httpMethod = 'POST',
@@ -191,7 +210,11 @@ export function fetchOptionsFormURLEncoded(
   }
 }
 
-/** Options to send data as JSON  */
+/**
+ * Options to send data as JSON
+ * @param data
+ * @param method
+ */
 export function fetchOptionsJson(
   data: object,
   method: httpMethod = 'POST',
@@ -207,7 +230,11 @@ export function fetchOptionsJson(
   }
 }
 
-/** Options to pass basic auth */
+/**
+ * Options to pass basic auth
+ * @param username
+ * @param password
+ */
 export function fetchOptionsBasicAuth(
   username: string,
   password: string,

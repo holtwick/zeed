@@ -1,6 +1,10 @@
 import { getSecureRandomIfPossible } from './math'
 
-/** CRDT compatible sorting with a single operation. Default name is `sort` */
+/**
+ * CRDT compatible sorting with a single operation. Default name is `sort`
+ * @param config
+ * @param config.getter
+ */
 export function useSorted<S extends Record<string, any>>(
   config: {
     getter?: (item: S) => number
@@ -12,27 +16,40 @@ export function useSorted<S extends Record<string, any>>(
     // setter = (item: any, value) => (item.sort = value),
   } = config
 
-  /** Return sorted list from low to high. */
+  /**
+   * Return sorted list from low to high.
+   * @param items
+   */
   function items<T extends S>(items: T[]): T[] {
     items.sort((a, b) => (getter(a) || 0) - (getter(b) || 0))
     return items
   }
 
-  /** Get a sort suitable for adding to start of list. */
+  /**
+   * Get a sort suitable for adding to start of list.
+   * @param items
+   */
   function start(items: S[]): number {
     return (
       items.reduce((acc, item) => Math.min(acc, getter(item) || 0), 0) - 1 - getSecureRandomIfPossible()
     )
   }
 
-  /** Get a sort suitable for adding to end of list. */
+  /**
+   * Get a sort suitable for adding to end of list.
+   * @param items
+   */
   function end(items: S[]): number {
     return (
       items.reduce((acc, item) => Math.max(acc, getter(item) || 0), 0) + 1 + getSecureRandomIfPossible()
     )
   }
 
-  /** Find a suitable value inbetween a lower and upper bound. */
+  /**
+   * Find a suitable value inbetween a lower and upper bound.
+   * @param lower
+   * @param upper
+   */
   function between(lower?: number, upper?: number): number {
     if (lower == null)
       lower = (upper ?? 0) - 1
@@ -47,7 +64,12 @@ export function useSorted<S extends Record<string, any>>(
     return middle + fuzzy
   }
 
-  /** Mainly for drag and drop movements, where an item has to be moved to another index. Respects its own move as well. */
+  /**
+   * Mainly for drag and drop movements, where an item has to be moved to another index. Respects its own move as well.
+   * @param newIndex
+   * @param oldIndex
+   * @param sortableItems
+   */
   function move(
     newIndex: number,
     oldIndex: number,

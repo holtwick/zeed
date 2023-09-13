@@ -25,7 +25,6 @@ export function fromCamelCase(s: string, separator: string): string {
 
 /**
  * Compute the utf8ByteLength
- * @param str
  */
 export function utf8ByteLength(str: string): number {
   return unescape(encodeURIComponent(str)).length

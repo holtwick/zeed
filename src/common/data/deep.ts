@@ -69,11 +69,7 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
   return true
 }
 
-/**
- * Strip properties with value `undefined` in place
- * @param a
- * @param hash
- */
+/** Strip properties with value `undefined` in place */
 export function deepStripUndefinedInPlace(a: any, hash = new WeakSet()) {
   // Cyclic
   if (hash.has(a))

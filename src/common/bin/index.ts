@@ -21,30 +21,21 @@ export class BinaryEncoder implements Encoder {
 
 // Json like
 
-/**
- * Encode any object, including Uint8Array data
- * @param data
- */
+/** Encode any object, including Uint8Array data */
 export function encodeJson(data: any): Uint8Array {
   const dataEncoder = createEncoder()
   writeAny(dataEncoder, data)
   return encodeToUint8Array(dataEncoder)
 }
 
-/**
- * Decode any object, including Uint8Array data
- * @param data
- */
+/** Decode any object, including Uint8Array data */
 export function decodeJson(data: Uint8Array | ArrayBuffer): any {
   return readAny(createDecoder(toUint8Array(data)))
 }
 
 // Stream like
 
-/**
- * Incrementally encode binary data
- * @param initialData
- */
+/** Incrementally encode binary data */
 export function createBinaryStreamEncoder(initialData?: BinInput) {
   const dataEncoder = createEncoder()
 
@@ -52,11 +43,7 @@ export function createBinaryStreamEncoder(initialData?: BinInput) {
     writeUint8Array(dataEncoder, toUint8Array(initialData))
 
   return {
-    /**
-     * Just writes the bytes. Length is not stored!
-     * @param data
-     * @param expectedLength
-     */
+    /** Just writes the bytes. Length is not stored! */
     writeBytes: (data: BinInput, expectedLength: number) => {
       const bin = toUint8Array(data)
       assertCondition(!(expectedLength != null && bin.length !== expectedLength), `Expected ${expectedLength} bytes, got ${bin.length}`)
@@ -76,10 +63,7 @@ export function createBinaryStreamEncoder(initialData?: BinInput) {
   }
 }
 
-/**
- * Incrementally decode binary data
- * @param data
- */
+/** Incrementally decode binary data */
 export function createBinaryStreamDecoder(data: BinInput) {
   const dataDecoder = createDecoder(toUint8Array(data))
   return {

@@ -101,11 +101,7 @@ export function fromHex(hexString: string): Uint8Array {
   )
 }
 
-/**
- * Regular base64
- * @param bin
- * @param stripPadding
- */
+/** Regular base64 */
 export function toBase64(bin: BinInput, stripPadding = false): string {
   const bytes = toUint8Array(bin)
   let sb = ''
@@ -123,10 +119,7 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
   return sb
 }
 
-/**
- * Converts `+` -> `-` and `/` -> `_`. Always strips `=`
- * @param bin
- */
+/** Converts `+` -> `-` and `/` -> `_`. Always strips `=` */
 export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
@@ -137,10 +130,7 @@ export function toBase64Url(bin: BinInput): string {
   return btoa(s).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
-/**
- * Also parses toBase64Url encoded strings.
- * @param s
- */
+/** Also parses toBase64Url encoded strings. */
 export function fromBase64(s: string): Uint8Array {
   s = s.replaceAll('-', '+').replaceAll('_', '/')
   if (typeof Buffer !== 'undefined') {
@@ -154,19 +144,12 @@ export function fromBase64(s: string): Uint8Array {
   return bytes
 }
 
-/**
- * Also parses toBase64Url encoded strings.
- * @param s
- */
+/** Also parses toBase64Url encoded strings. */
 export function fromBase64String(s: string): string {
   return Uint8ArrayToString(fromBase64(s))
 }
 
-/**
- * Compare contents of binary arrays
- * @param a
- * @param b
- */
+/** Compare contents of binary arrays */
 export function equalBinary(
   a: ArrayBuffer | Uint8Array,
   b: ArrayBuffer | Uint8Array,

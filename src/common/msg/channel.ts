@@ -17,7 +17,7 @@ export interface ChannelMessageEvent {
  * Inspired by
  * http://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel
  * https://deno.com/deploy/docs/runtime-broadcast-channel
- */
+ * */
 export abstract class Channel extends Emitter<{
   message(event: ChannelMessageEvent): void
   messageerror(event: ChannelMessageEvent): void // optional

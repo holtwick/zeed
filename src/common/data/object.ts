@@ -1,10 +1,6 @@
 import { isArray, isObject } from './is'
 
-/**
- * Like `.map()` for object. Return new key and value or `undefined` to delete.
- * @param obj
- * @param fn
- */
+/** Like `.map()` for object. Return new key and value or `undefined` to delete. */
 export function objectMap<T = any>(
   obj: any,
   fn: (
@@ -27,11 +23,7 @@ export function objectMap<T = any>(
   )
 }
 
-/**
- * Merge right into left object. If dispose is defined, it will be combined. Left can be a complex object i.e. a insantiated class.
- * @param a
- * @param b
- */
+/** Merge right into left object. If dispose is defined, it will be combined. Left can be a complex object i.e. a insantiated class. */
 export function objectMergeDisposable<A extends object, B extends object>(
   a: A,
   b: B,

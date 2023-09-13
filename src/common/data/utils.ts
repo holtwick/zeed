@@ -10,9 +10,6 @@ import { jsonStringifySafe } from './json'
  * function createRoom(room, rooms) { return new Room() }
  * ensureKey(rooms, room, createRoom).enter()
  * ```
- * @param obj
- * @param key
- * @param createFn
  */
 export function ensureKey<T>(
   obj: Record<string, T>,
@@ -34,9 +31,6 @@ export function ensureKey<T>(
  * async function fetchItem(id, cache) { ... }
  * let data = await ensureKey(cache, id, fetchItem)
  * ```
- * @param obj
- * @param key
- * @param createFn
  */
 export async function ensureKeyAsync<T>(
   obj: Record<string, T>,
@@ -134,7 +128,6 @@ export function cloneJsonObject<T = Json>(obj: T): T {
  * const square = memoize((value) => value * value)`
  * square(2) // == 2
  * ```
- * @param fn
  */
 export function memoize<In, Out>(fn: (arg: In) => Out): (arg: In) => Out {
   const cache = new Map<In, Out>()
@@ -215,11 +208,7 @@ export function memoizeAsync<In extends any[], Out extends Promise<any>>(fn: (..
 //   return memoized
 // }
 
-/**
- * Repeat `count` times. Starts with `0`
- * @param count
- * @param fn
- */
+/** Repeat `count` times. Starts with `0` */
 export function forTimes<T = undefined>(
   count: number,
   fn: (i: number, count: number) => T,

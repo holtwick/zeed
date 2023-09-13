@@ -17,11 +17,6 @@ import { promisify } from './promise'
  * This avoids timewise too close calls.
  * It is possible to `cancel` the timeout and to `flush` a call, e.g. if
  * leaving UI situation where a final call is required to write data or similar.
- * @param callback
- * @param opt
- * @param opt.delay
- * @param opt.trailing
- * @param opt.leading
  */
 export function throttle<F extends (...args: any[]) => any>(
   callback: F,
@@ -142,9 +137,6 @@ export function throttle<F extends (...args: any[]) => any>(
  * For UI event filtering throttle is probably a better choice.
  *
  * **Functionality:**  It only fires after triggers pause for `delay` ms.
- * @param callback
- * @param opt
- * @param opt.delay
  */
 export function debounce<F extends (...args: any[]) => any | Promise<any>>(
   callback: F,

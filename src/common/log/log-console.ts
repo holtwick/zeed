@@ -9,7 +9,9 @@ import { joinLogStrings, useLevelFilter, useNamespaceFilter } from './log-filter
 /**
  * Very basic logger. Please take a look at the browser and node
  * optimized loggers. This one is just the absolute fallback option.
- * @param opt
+ *
+ * @param level Log level
+ * @returns Logger
  */
 export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
   const {

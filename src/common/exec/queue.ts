@@ -100,13 +100,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
       this.waitToFinish.shift()()
   }
 
-  /**
-   * Enqueue task to be executed when all other tasks are done. Except `immediate = true`.
-   * @param task
-   * @param opt
-   * @param opt.immediate
-   * @param opt.name
-   */
+  /** Enqueue task to be executed when all other tasks are done. Except `immediate = true`. */
   async enqueue<T>(
     task: TaskFn<T>,
     opt: { immediate?: boolean; name?: string } = {},
@@ -132,12 +126,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
     })
   }
 
-  /**
-   * If a task is already performing, execute immediately. Otherwise enqueue as usual.
-   * @param task
-   * @param opt
-   * @param opt.name
-   */
+  /** If a task is already performing, execute immediately. Otherwise enqueue as usual. */
   async enqueueReentrant<T>(
     task: TaskFn<T>,
     opt: { name?: string } = {},
@@ -148,10 +137,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
     })
   }
 
-  /**
-   * Remove all tasks from queue that are not yet executing.
-   * @param _unblock
-   */
+  /** Remove all tasks from queue that are not yet executing. */
   async cancelAll(_unblock = true) {
     this.log('cancelAll')
     void this.emit('didCancel')

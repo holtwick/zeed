@@ -13,7 +13,6 @@ export function createUint8ArrayFromLen(len: number) {
 
 /**
  * Copy the content of an Uint8Array view to a new ArrayBuffer.
- * @param uint8Array
  */
 export function copyUint8Array(uint8Array: Uint8Array): Uint8Array {
   const newBuf = createUint8ArrayFromLen(uint8Array.byteLength)
@@ -24,7 +23,6 @@ export function copyUint8Array(uint8Array: Uint8Array): Uint8Array {
 /**
  * Encode anything as a UInt8Array. It's a pun on typescripts's `any` type.
  * See encoding.writeAny for more information.
- * @param data
  */
 export function encodeAny(data: any): Uint8Array {
   const encoder = createEncoder()
@@ -34,7 +32,6 @@ export function encodeAny(data: any): Uint8Array {
 
 /**
  * Decode an any-encoded value.
- * @param buf
  */
 export function decodeAny(buf: Uint8Array): any {
   return readAny(createDecoder(buf))

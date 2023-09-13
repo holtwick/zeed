@@ -28,10 +28,6 @@ interface Options {
  * }
  * ...]
  * ```
- * @param obj
- * @param newObj
- * @param options
- * @param _stack
  */
 export function diffObjects(
   obj: Record<string, any> | any[],

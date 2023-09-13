@@ -6,7 +6,9 @@ import { useLevelFilter, useNamespaceFilter } from './log-filter'
 
 /**
  * Collect messages in a list.
- * @param opt
+ *
+ * @param level Log level
+ * @returns Logger
  */
 export function LoggerMemoryHandler(
   opt: LogHandlerOptions & {

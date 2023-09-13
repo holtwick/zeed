@@ -145,11 +145,7 @@ export function dayDiff(left: DayValue, right: DayValue): number {
   return Math.round((dayToTimestamp(right) - dayToTimestamp(left)) / DAY_MS)
 }
 
-/**
- * List of dates for loops
- * @param left
- * @param right
- */
+/** List of dates for loops */
 export function dayRange(left: DayValue, right?: DayValue): number[] {
   const list: number[] = []
 
@@ -166,11 +162,7 @@ export function dayRange(left: DayValue, right?: DayValue): number[] {
   return list
 }
 
-/**
- * Iterator, see dayRange
- * @param left
- * @param right
- */
+/** Iterator, see dayRange */
 export function* dayIterator(left: DayValue, right?: DayValue) {
   const list: number[] = []
 

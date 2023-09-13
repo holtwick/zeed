@@ -25,18 +25,18 @@ export function toHumanReadableUrl(url: string): string {
 
 //
 
-export function encodeQuery(data: Record<string, any>) {
+export function encodeQuery(data: Record<string, any>, filterValue?: (value: any) => boolean) {
   const pairs = []
   for (let [key, value] of Object.entries(data)) {
     if (value != null) {
       if (!Array.isArray(value))
         value = [value]
       for (const v of value) {
-        if (v != null) {
-          pairs.push(
-            `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`,
-          )
-        }
+        if (filterValue && !filterValue(v))
+          continue
+        else if (v == null)
+          continue
+        pairs.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`)
       }
     }
   }

@@ -5,10 +5,7 @@ import { isPromise } from './exec/promise'
 import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log/log-base'
 
-/**
- * Different kinds of implementations have grown, this should unify them
- * @param disposable
- */
+/** Different kinds of implementations have grown, this should unify them  */
 function callDisposer(disposable: Disposer): Promise<void> | void {
   let result
 
@@ -64,10 +61,7 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
     return () => untrack(obj)
   }
 
-  /**
-   * Dispose all tracked entries
-   * @param strictSync
-   */
+  /** Dispose all tracked entries */
   function dispose(strictSync = false): Promise<any> | void {
     if (name)
       log.debug(`dispose "${name}": ${tracked.length} entries`)
@@ -135,7 +129,6 @@ export function useDefer(
   /**
    * Excutes all steps. If all steps are not Promises, they are executed immediately,
    * otherwise a Promise is returned
-   * @param expectSync
    */
   const exec = async (expectSync = false) => {
     while (steps.length > 0) {

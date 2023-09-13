@@ -67,14 +67,6 @@ export function createPromiseProxy<P extends object>(fn: (name: string, args: an
  * - Waits for connection
  * - Retries after fail
  * - Timeouts
- * @param opt
- * @param opt.name
- * @param opt.channel
- * @param opt.encoder
- * @param opt.retryAfter
- * @param opt.ignoreUnhandled
- * @param opt.debug
- * @param opt.logLevel
  */
 export function useMessageHub(
   opt: {

@@ -15,7 +15,6 @@ export const roundHalfUp: RoundingMode = value => Math.round(value)
 
 /**
  * Round a number with half values to nearest odd integer.
- * @param value
  */
 export const roundHalfOdd: RoundingMode = (value) => {
   const rounded = Math.round(value)
@@ -27,7 +26,6 @@ export const roundHalfOdd: RoundingMode = (value) => {
 
 /**
  * Round a number with half values to nearest integer farthest from zero.
- * @param value
  */
 export const roundHalfAwayFromZero: RoundingMode = (value) => {
   return isHalf(value)
@@ -37,7 +35,6 @@ export const roundHalfAwayFromZero: RoundingMode = (value) => {
 
 /**
  * Round a number with half values down.
- * @param value
  */
 export const roundHalfDown: RoundingMode = value =>
   isHalf(value) ? Math.floor(value) : Math.round(value)
@@ -45,7 +42,6 @@ export const roundHalfDown: RoundingMode = value =>
 /**
  * Round a number with half values to nearest even integer.
  * https://wiki.c2.com/?BankersRounding
- * @param value
  */
 export const roundHalfEven: RoundingMode = (value) => {
   const rounded = Math.round(value)
@@ -57,7 +53,6 @@ export const roundHalfEven: RoundingMode = (value) => {
 
 /**
  * Round a number with half values to nearest integer closest to zero.
- * @param value
  */
 export const roundHalfTowardsZero: RoundingMode = value =>
   isHalf(value)

@@ -154,10 +154,7 @@ export class Day {
     return Day.from([this.year, 1, 1])!
   }
 
-  /**
-   * Very stupid approach, only works for days <= 28
-   * @param offset
-   */
+  /** Very stupid approach, only works for days <= 28 */
   monthOffset(offset: number): Day {
     const m = this.month + offset
     let mm = Math.floor((m - 1) % 12) + 1
@@ -207,10 +204,7 @@ export function today(): Day {
   return new Day()
 }
 
-/**
- * @param days
- * @deprecated
- */
+/** @deprecated */
 export function day(days?: DayInputLegacy): Day {
   return new Day(days)
 }

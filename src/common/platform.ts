@@ -109,7 +109,6 @@ export function isBrowser() {
 /**
  * Before closing the tab/window or quitting the node process
  * allow to do something important first
- * @param handler
  */
 export function useExitHandler(handler: () => void) {
   if (isBrowser())

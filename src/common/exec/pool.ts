@@ -293,30 +293,21 @@ export function usePool<T = any>(config: PoolConfig = {}) {
       payload: config.payload,
       progress: taskProgress,
 
-      /**
-       * @param units
-       * @deprecated should use `.progress`
-       */
+      /** @deprecated should use `.progress` */
       setMax(units) {
         taskProgress.setTotalUnits(units)
         tasks[id].max = units
         didUpdate()
       },
 
-      /**
-       * @param units
-       * @deprecated should use `.progress`
-       */
+      /** @deprecated should use `.progress` */
       setResolved(units) {
         taskProgress.setCompletetedUnits(units)
         tasks[id].resolved = units
         didUpdate()
       },
 
-      /**
-       * @param inc
-       * @deprecated should use `.progress`
-       */
+      /** @deprecated should use `.progress` */
       incResolved(inc = 1) {
         taskProgress.incCompletedUnits(inc)
         tasks[id].resolved += inc

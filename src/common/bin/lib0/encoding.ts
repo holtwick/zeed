@@ -51,7 +51,6 @@ export function createEncoder(): Encoder {
 
 /**
  * The current length of the encoded data.
- * @param encoder
  */
 export function length(encoder: Encoder): number {
   let len = encoder.cpos
@@ -63,7 +62,6 @@ export function length(encoder: Encoder): number {
 
 /**
  * Transform to Uint8Array.
- * @param encoder
  */
 export function encodeToUint8Array(encoder: Encoder): Uint8Array {
   const uint8arr = new Uint8Array(length(encoder))
@@ -80,8 +78,6 @@ export function encodeToUint8Array(encoder: Encoder): Uint8Array {
 /**
  * Verify that it is possible to write `len` bytes wtihout checking. If
  * necessary, a new Buffer with the required length is attached.
- * @param encoder
- * @param len
  */
 export function verifyLen(encoder: Encoder, len: number) {
   const bufferLen = encoder.cbuf.length
@@ -94,8 +90,6 @@ export function verifyLen(encoder: Encoder, len: number) {
 
 /**
  * Write one byte to the encoder.
- * @param encoder
- * @param num
  */
 export function write(encoder: Encoder, num: number) {
   const bufferLen = encoder.cbuf.length
@@ -110,9 +104,6 @@ export function write(encoder: Encoder, num: number) {
 /**
  * Write one byte at a specific position.
  * Position must already be written (i.e. encoder.length > pos)
- * @param encoder
- * @param pos
- * @param num
  */
 export function set(encoder: Encoder, pos: number, num: number) {
   let buffer = null
@@ -144,8 +135,6 @@ export const setUint8 = set
 
 /**
  * Write two bytes as an unsigned integer.
- * @param encoder
- * @param num
  */
 export function writeUint16(encoder: Encoder, num: number) {
   write(encoder, num & BITS8)
@@ -153,9 +142,6 @@ export function writeUint16(encoder: Encoder, num: number) {
 }
 /**
  * Write two bytes as an unsigned integer at a specific location.
- * @param encoder
- * @param pos
- * @param num
  */
 export function setUint16(encoder: Encoder, pos: number, num: number) {
   set(encoder, pos, num & BITS8)
@@ -164,8 +150,6 @@ export function setUint16(encoder: Encoder, pos: number, num: number) {
 
 /**
  * Write two bytes as an unsigned integer
- * @param encoder
- * @param num
  */
 export function writeUint32(encoder: Encoder, num: number) {
   for (let i = 0; i < 4; i++) {
@@ -177,8 +161,6 @@ export function writeUint32(encoder: Encoder, num: number) {
 /**
  * Write two bytes as an unsigned integer in big endian order.
  * (most significant byte first)
- * @param encoder
- * @param num
  */
 export function writeUint32BigEndian(encoder: Encoder, num: number) {
   for (let i = 3; i >= 0; i--)
@@ -187,9 +169,6 @@ export function writeUint32BigEndian(encoder: Encoder, num: number) {
 
 /**
  * Write two bytes as an unsigned integer at a specific location.
- * @param encoder
- * @param pos
- * @param num
  */
 export function setUint32(encoder: Encoder, pos: number, num: number) {
   for (let i = 0; i < 4; i++) {
@@ -200,8 +179,6 @@ export function setUint32(encoder: Encoder, pos: number, num: number) {
 
 /**
  * Write a variable length unsigned integer. Max encodable integer is 2^53.
- * @param encoder
- * @param num
  */
 export function writeVarUint(encoder: Encoder, num: number) {
   while (num > BITS7) {
@@ -219,8 +196,6 @@ export function isNegativeZero(n: number) {
  * Write a variable length integer.
  *
  * We use the 7th bit instead for signaling that this is a negative number.
- * @param encoder
- * @param num
  */
 export function writeVarInt(encoder: Encoder, num: number) {
   const isNegative = isNegativeZero(num)
@@ -241,8 +216,6 @@ export function writeVarInt(encoder: Encoder, num: number) {
 
 /**
  * Append fixed-length Uint8Array to the encoder.
- * @param encoder
- * @param uint8Array
  */
 export function writeUint8Array(encoder: Encoder, uint8Array: Uint8Array) {
   const bufferLen = encoder.cbuf.length
@@ -265,8 +238,6 @@ export function writeUint8Array(encoder: Encoder, uint8Array: Uint8Array) {
 
 /**
  * Append an Uint8Array to Encoder.
- * @param encoder
- * @param uint8Array
  */
 export function writeVarUint8Array(encoder: Encoder, uint8Array: Uint8Array) {
   writeVarUint(encoder, uint8Array.byteLength)
@@ -281,8 +252,6 @@ let _maxStrBSize: number
 
 /**
  * Write a variable length string.
- * @param encoder
- * @param str
  */
 function _writeVarStringNative(encoder: Encoder, str: string) {
   if (_strBuffer == null) {
@@ -304,8 +273,6 @@ function _writeVarStringNative(encoder: Encoder, str: string) {
 
 /**
  * Write a variable length string.
- * @param encoder
- * @param str
  */
 function _writeVarStringPolyfill(encoder: Encoder, str: string) {
   const encodedString = unescape(encodeURIComponent(str))
@@ -317,8 +284,6 @@ function _writeVarStringPolyfill(encoder: Encoder, str: string) {
 
 /**
  * Write a variable length string.
- * @param encoder
- * @param str
  */
 export function writeVarString(encoder: Encoder, str: string) {
   return getUtf8TextEncoder()?.encodeInto
@@ -329,8 +294,6 @@ export function writeVarString(encoder: Encoder, str: string) {
 /**
  * Write the content of another Encoder.
  *
- * @param encoder
- * @param append
  * @TODO: can be improved!
  *        - Note: Should consider that when appending a lot of small Encoders, we should rather clone than referencing the old structure.
  *                Encoders start with a rather big initial buffer.
@@ -351,8 +314,6 @@ export function writeBinaryEncoder(encoder: Encoder, append: Encoder) {
  * const dv = readFromDataView(encoder, 4)
  * dv.getFloat32(0) // => 1.100000023841858 (leaving it to the reader to find out why this is the correct result)
  * ```
- * @param encoder
- * @param len
  */
 export function writeOnDataView(encoder: Encoder, len: number): DataView {
   verifyLen(encoder, len)
@@ -381,7 +342,6 @@ let floatTestBed: DataView
 
 /**
  * Check if a number can be encoded as a 32 bit float.
- * @param num
  */
 function isFloat32(num: number): boolean {
   if (floatTestBed == null)
@@ -423,8 +383,6 @@ function isFloat32(num: number): boolean {
  *          (defined by the function that uses this library)
  * [31-127] the end of the data range is used for data encoding by
  *          lib0/encoding.js
- * @param encoder
- * @param data
  */
 export function writeAny(encoder: Encoder, data: undefined | null | number | bigint | boolean | string | { [s: string]: any } | Array<any> | Uint8Array) {
   switch (typeof data) {

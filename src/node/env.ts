@@ -11,7 +11,7 @@ const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/
 const RE_NEWLINES = /\\n/g
 const NEWLINES_MATCH = /\n|\r|\r\n/
 
-interface csvOptions {
+interface EnvOptions {
   /** @deprecated will probably be replaced by logLevel */
   debug?: boolean
   path?: string
@@ -19,10 +19,11 @@ interface csvOptions {
   encoding?: BufferEncoding
   prefix?: string
   env?: Record<string, string>
+  mode?: string
 }
 
 // Parses src into an Object
-function parse(src: string, _options: csvOptions = {}) {
+function parse(src: string, _options: EnvOptions = {}) {
   const obj: Record<string, string> = {}
 
   // convert Buffers before splitting into lines and processing
@@ -99,26 +100,34 @@ export function getEnvVariableRelaxed(
 }
 
 /** Populates process.env from .env file. */
-export function setupEnv(options: csvOptions = {}) {
-  const dotenvPath: string
-    = options?.path ?? toPath(options?.filename ?? '.env')
+export function setupEnv(options: EnvOptions = {}) {
+  const dotenvPath: string = options?.path ?? toPath(options?.filename ?? '.env')
   const encoding: BufferEncoding = options?.encoding ?? 'utf8'
   const debug = options?.debug || false
 
   try {
-    // specifying an encoding returns a string instead of a buffer
-    const parsedEnv = fs.existsSync(dotenvPath)
-      ? parse(fs.readFileSync(dotenvPath, { encoding }), { debug })
-      : {}
-    const parsedEnvLocal = fs.existsSync(`${dotenvPath}.local`)
-      ? parse(fs.readFileSync(`${dotenvPath}.local`, { encoding }), { debug })
-      : {}
+    const parsed: Record<string, string> = {}
 
-    const parsed: Record<string, string> = Object.assign(
-      {},
-      parsedEnv,
-      parsedEnvLocal,
+    function envOf(name: string) {
+      return fs.existsSync(name)
+        ? parse(fs.readFileSync(name, { encoding }), { debug })
+        : {}
+    }
+
+    Object.assign(
+      parsed,
+      envOf(dotenvPath),
+      envOf(`${dotenvPath}.local`),
     )
+
+    if (options.mode) {
+      Object.assign(
+        parsed,
+        envOf(`${dotenvPath}.${options.mode}`),
+        envOf(`${dotenvPath}.${options.mode}.local`),
+      )
+    }
+
     const env = options?.env ?? process.env
 
     Object.entries(parsed).forEach(([key, value]) => {

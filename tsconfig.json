@@ -1,35 +1,35 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "baseUrl": ".",
-    "declaration": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
+    "target": "ES2020",
     "lib": [
       "ESNext",
       "DOM",
       "DOM.Iterable"
     ],
+    "jsx": "preserve",
     "module": "ES2020",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "target": "ES2020",
+    "baseUrl": ".",
     "types": [
       "node",
       "vitest/globals"
-    ]
+    ],
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "declaration": true,
+    "sourceMap": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true
   },
+  "include": [
+    "src/**/*.ts",
+    "vitest-setup.ts"
+  ],
   "exclude": [
     "_archive",
     "node_modules",
     "dist"
-  ],
-  "include": [
-    "src/**/*.ts",
-    "vitest-setup.ts"
   ]
 }

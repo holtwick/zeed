@@ -28,6 +28,8 @@ export abstract class Channel extends Emitter<{
   id: string = uuid()
   abstract isConnected?: boolean
   abstract postMessage(data: any): void
+
+  /** @deprecated use .dispose() */
   close() {
     void this.dispose()
   }

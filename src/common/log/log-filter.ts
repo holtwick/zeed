@@ -80,9 +80,9 @@ export function useNamespaceFilter(
       }
       const template = split[i].replace(/\*/g, '.*?')
       if (template[0] === '-')
-        reject.push(new RegExp(`^${template.substr(1)}$`))
+        reject.push(new RegExp(`^${template.substr(1)}`))
       else
-        accept.push(new RegExp(`^${template}$`))
+        accept.push(new RegExp(`^${template}`))
     }
 
     fn = function (name: string) {

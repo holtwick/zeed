@@ -1,4 +1,4 @@
-import { UInt8ArrayToWords } from "./wordlist"
+import { Uint8ArrayToWords, wordsToUint8Array } from "./wordlist"
 
 describe("wordlist.spec", () => {
   it("should match", async () => {
@@ -11,7 +11,12 @@ describe("wordlist.spec", () => {
     // console.log('const wordsOdd = ' + JSON.stringify(wordsOdd.split(' ')))
     // console.log('const wordsEven = ' + JSON.stringify(wordsEven.split(' ')))
 
-    expect(UInt8ArrayToWords(new Uint8Array([1,2,255,254]), '-', ' / ')).toMatchInlineSnapshot('"absurd-aggregate / Zulu-yesteryear"')
-    expect(UInt8ArrayToWords(new Uint8Array([1,2,88]), '-', ' / ')).toMatchInlineSnapshot('"absurd-aggregate / endorse"')
+    // See example https://en.wikipedia.org/wiki/PGP_word_list but they have a different word list
+    let values = new Uint8Array( [0xE5, 0x82, 0x94, 0xF2, 0xE9, 0xA2, 0x27, 0x48, 0x6E, 0x8B, 0x06, 0x1B, 0x31, 0xCC, 0x52, 0x8F, 0xD7, 0xFA, 0x3F, 0x19])
+    // let result = 'topmost Istanbul Pluto vagabond treadmill Pacific brackish dictator goldfish Medusa afflict bravado chatter revolver Dupont midsummer stopwatch whimsical cowbell bottomless'
+
+    expect(Uint8ArrayToWords(new Uint8Array([0, 0, 1, 1]), '-', ' / ')).toMatchInlineSnapshot('"aardvark-adroitness / absurd-adviser"')
+    expect(Uint8ArrayToWords(values)).toMatchInlineSnapshot('"tracker leprosy physique versatile Trojan paperweight brackish disbelief glucose microwave afflict Burlington chatter sandalwood Dupont misnomer stockman whimsical cowbell Brazilian"')
+    expect( wordsToUint8Array(Uint8ArrayToWords(values).split(' '))).toEqual(values)
   })
 })

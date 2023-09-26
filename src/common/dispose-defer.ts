@@ -26,7 +26,7 @@ function callDisposer(disposable: Disposer): Promise<void> | void {
     return result
 }
 
-interface UseDisposeConfig {
+export interface UseDisposeConfig {
   name?: string
   log?: LoggerInterface
 }
@@ -108,11 +108,6 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
     isDisposed() {
       return tracked.length <= 0
     },
-
-    // Utils
-    // timeout: (fn: DisposerFunction, timeout = 0) => track(useTimeout(fn, timeout)),
-    // interval: (fn: DisposerFunction, interval = 0) => track(useInterval(fn, interval)),
-    // on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => track(useEventListener(emitter, eventName, fn, ...args)),
   })
 }
 

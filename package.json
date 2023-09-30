@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.13.16",
+  "version": "0.13.17",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",
@@ -72,12 +72,12 @@
     "@types/node": "^20",
     "c8": "^8.0.1",
     "cross-fetch": "^4.0.0",
-    "esbuild": "^0.19.3",
+    "esbuild": "^0.19.4",
     "eslint": "^8.50.0",
     "madge": "^6.1.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
-    "vitest": "^0.34.5"
+    "vitest": "^0.34.6"
   }
 }

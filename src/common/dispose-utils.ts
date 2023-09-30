@@ -102,3 +102,5 @@ export function useDisposeWithUtils(config?: string | UseDisposeConfig | LoggerI
   })
   return dispose
 }
+
+export type UseDisposeWithUtils = ReturnType<typeof useDisposeWithUtils>

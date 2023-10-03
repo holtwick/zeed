@@ -93,14 +93,13 @@ export function useEventListenerOnce(
 /** Like useDispose but with shorthands for emitter and timers */
 export function useDisposeWithUtils(config?: string | UseDisposeConfig | LoggerInterface) {
   const dispose = useDispose(config)
-  Object.assign(dispose, {
+  return Object.assign(dispose, {
     timeout: (fn: DisposerFunction, timeout = 0) => dispose.add(useTimeout(fn, timeout)),
     interval: (fn: DisposerFunction, interval = 0) => dispose.add(useInterval(fn, interval)),
     intervalPause: (fn: DisposerFunction, interval = 0) => dispose.add(useIntervalPause(fn, interval)),
     on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListener(emitter, eventName, fn, ...args)),
     once: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListenerOnce(emitter, eventName, fn, ...args)),
   })
-  return dispose
 }
 
 export type UseDisposeWithUtils = ReturnType<typeof useDisposeWithUtils>

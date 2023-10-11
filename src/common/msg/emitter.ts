@@ -25,12 +25,21 @@ export declare interface DefaultListener {
   [k: string]: (...args: any[]) => any
 }
 
+interface EmitterSubscriber {
+  fn: EmitterHandler // (...args: any[]) => any
+  priority: number
+}
+
+interface EmitterSubscriberOptions {
+  priority?: number
+}
+
 export class Emitter<
   RemoteListener extends ListenerSignature<RemoteListener> = DefaultListener,
   LocalListener extends ListenerSignature<LocalListener> = RemoteListener,
 > {
-  subscribers: any = {}
-  subscribersOnAny: any[] = []
+  private subscribers: Record<any, EmitterSubscriber[]> = {}
+  private subscribersOnAny: any[] = []
 
   _logEmitter = DefaultLogger('zeed:emitter', 'warn')
 
@@ -44,14 +53,11 @@ export class Emitter<
           await this.emit(name, ...args),
   })
 
-  public async emit<U extends keyof RemoteListener>(
-    event: U,
-    ...args: Parameters<RemoteListener[U]>
-  ): Promise<boolean> {
+  public async emit<U extends keyof RemoteListener>(event: U, ...args: Parameters<RemoteListener[U]>): Promise<boolean> {
     let ok = false
 
     try {
-      const subscribers = (this.subscribers[event] || []) as EmitterHandler[]
+      const subscribers = (this.subscribers[event] || []) as EmitterSubscriber[]
       this._logEmitter.debug('emit', this?.constructor?.name, event, ...args, subscribers)
 
       this.subscribersOnAny.forEach(fn => fn(event, ...args))
@@ -59,7 +65,7 @@ export class Emitter<
       if (subscribers.length > 0) {
         const all = subscribers.map((fn) => {
           try {
-            return promisify(fn(...args))
+            return promisify(fn.fn(...args))
           }
           catch (err) {
             this._logEmitter.warn('emit warning:', err)
@@ -83,9 +89,14 @@ export class Emitter<
   public on<U extends keyof LocalListener>(
     event: U,
     listener: LocalListener[U],
+    opt: EmitterSubscriberOptions = {},
   ): DisposerFunction {
-    const subscribers = (this.subscribers[event] || []) as EmitterHandler[]
-    subscribers.push(listener)
+    const { priority = 0 } = opt
+    const subscribers = (this.subscribers[event] || [])
+    subscribers.push({
+      fn: listener,
+      priority,
+    })
     this.subscribers[event] = subscribers
     return () => {
       this.off(event, listener)
@@ -116,9 +127,7 @@ export class Emitter<
     listener: LocalListener[U],
   ): this {
     // log("off", key)
-    this.subscribers[event] = (this.subscribers[event] || []).filter(
-      (f: any) => listener && f !== listener,
-    )
+    this.subscribers[event] = (this.subscribers[event] || []).filter(f => listener && f.fn !== listener)
     return this
   }
 

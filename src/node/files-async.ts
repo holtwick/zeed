@@ -70,3 +70,8 @@ export async function filesAsync(opt: {
 
   return paths
 }
+
+// export function glob(patterns: string[], opt: {
+//   cwd?: string,
+//   dot?: boolean
+// })

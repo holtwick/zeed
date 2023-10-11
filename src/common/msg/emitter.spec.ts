@@ -191,9 +191,96 @@ describe('Emitter', () => {
           ],
         ],
         "instances": Array [
-          undefined,
-          undefined,
-          undefined,
+          Object {
+            "fn": [MockFunction spy] {
+              "calls": Array [
+                Array [
+                  1,
+                ],
+                Array [
+                  1,
+                ],
+                Array [
+                  2,
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "priority": 0,
+          },
+          Object {
+            "fn": [MockFunction spy] {
+              "calls": Array [
+                Array [
+                  1,
+                ],
+                Array [
+                  1,
+                ],
+                Array [
+                  2,
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "priority": 0,
+          },
+          Object {
+            "fn": [MockFunction spy] {
+              "calls": Array [
+                Array [
+                  1,
+                ],
+                Array [
+                  1,
+                ],
+                Array [
+                  2,
+                ],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "priority": 0,
+          },
         ],
         "invocationCallOrder": Array [
           4,

@@ -2,6 +2,7 @@ import { MessageChannel } from 'worker_threads'
 import { useRPC, useRPCHub } from './rpc'
 import { decodeJson, encodeJson } from '../bin'
 
+
 let bobCount = 0
 
 const Bob = {
@@ -39,14 +40,14 @@ describe('rpc', () => {
     const serialize = (data: any) => encodeJson(data)
     const deserialize = (data: any) => decodeJson(data)
 
-    const bob = useRPC<AliceFunctions>(Bob, {
+    const bob = useRPC<BobFunctions, AliceFunctions>(Bob, {
       post: data => channel.port1.postMessage(data),
       on: data => channel.port1.on('message', data),
       serialize,
       deserialize,
     })
 
-    const alice = useRPC<BobFunctions>(Alice, {
+    const alice = useRPC<AliceFunctions, BobFunctions>(Alice, {
       // mark bob's `bump` as an event without response
       eventNames: ['bump'],
       post: data => channel.port2.postMessage(data),
@@ -82,9 +83,9 @@ describe('rpc', () => {
       deserialize,
     })
 
-    let bob = bobHub<AliceFunctions>(Bob)
+    let bob = bobHub<BobFunctions, AliceFunctions>(Bob)
 
-    const alice = useRPC<BobFunctions>(Alice, {
+    const alice = useRPC<AliceFunctions, BobFunctions>(Alice, {
       // mark bob's `bump` as an event without response
       eventNames: ['bump'],
       post: data => channel.port2.postMessage(data),

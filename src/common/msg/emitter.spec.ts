@@ -220,4 +220,21 @@ describe('Emitter', () => {
       }
     `)
   })
+
+  it('should respect priorities', async () => {
+    const e = new Emitter()
+
+    let l: any = []
+
+    e.on('p', () => l.push(2), { priority: 100 })
+    e.on('p', () => l.push(5), { priority: -1 })
+    e.on('p', () => l.push(6), { priority: -2 })
+    e.on('p', () => l.push(1), { priority: 110 })
+    e.on('p', () => l.push(3))
+    e.on('p', () => l.push(4)) // this one has same prio as previous one, but was registered later!
+
+    await e.emit('p')
+
+    expect(l).toEqual([1,2,3,4,5,6]) 
+  })
 })

@@ -30,7 +30,7 @@ interface EmitterSubscriber {
   priority: number
 }
 
-interface EmitterSubscriberOptions {
+export interface EmitterSubscriberOptions {
   priority?: number
 }
 
@@ -63,9 +63,9 @@ export class Emitter<
       this.subscribersOnAny.forEach(fn => fn(event, ...args))
 
       if (subscribers.length > 0) {
-        const all = subscribers.map((fn) => {
+        const all = subscribers.map(({ fn }) => {
           try {
-            return promisify(fn.fn(...args))
+            return promisify(fn(...args))
           }
           catch (err) {
             this._logEmitter.warn('emit warning:', err)
@@ -88,18 +88,29 @@ export class Emitter<
 
   public on<U extends keyof LocalListener>(
     event: U,
-    listener: LocalListener[U],
+    fn: LocalListener[U],
     opt: EmitterSubscriberOptions = {},
   ): DisposerFunction {
     const { priority = 0 } = opt
     const subscribers = (this.subscribers[event] || [])
-    subscribers.push({
-      fn: listener,
-      priority,
-    })
-    this.subscribers[event] = subscribers
+    const slen = subscribers.length
+    const sobj = { fn, priority }
+    if (slen <= 0) {
+      this.subscribers[event] = [sobj]
+    }
+    else {
+      let pos = slen
+      for (let i = subscribers.length - 1; i >= 0; i--) {
+        const s = subscribers[i]
+        // Insert after last entry of same priority
+        if (priority <= s.priority)
+          break
+        pos -= 1
+      }
+      subscribers.splice(pos, 0, sobj) // in place
+    }
     return () => {
-      this.off(event, listener)
+      this.off(event, fn)
     }
   }
 

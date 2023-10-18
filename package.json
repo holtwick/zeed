@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.13.21",
+  "version": "0.13.22",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",

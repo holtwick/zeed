@@ -11,6 +11,7 @@ import {
   arrayMin,
   arrayMinus,
   arrayRemoveElement,
+  arraySetArrayInPlace,
   arrayShuffleForce,
   arraySorted,
   arraySortedNumbers,
@@ -25,6 +26,12 @@ describe('Array', () => {
   it('should remove items', () => {
     const r = arrayRemoveElement([1, 2, 3, 2, 4], 2)
     expect(r).toEqual([1, 3, 4])
+  })
+
+  it('should set in place items', () => {
+    const r = [1, 2, 3]
+    arraySetArrayInPlace(r, [9, 8, 7])
+    expect(r).toEqual([9, 8, 7])
   })
 
   it('should intersect', () => {

@@ -1,6 +1,6 @@
 // From https://github.com/antfu/birpc/blob/main/src/index.ts MIT
 
-import { LoggerInterface } from "../log/log-base"
+import type { LoggerInterface } from '../log/log-base'
 
 export type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 export type ReturnType<T> = T extends (...args: any) => infer R ? R : never

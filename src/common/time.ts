@@ -9,7 +9,7 @@ export function getTimestamp(): number {
 // typeof performance !== "undefined" ? performance.now() : new Date().getTime()
 
 export function formatMilliseconds(ms: number): string {
-  return ms > 999 ? `${(ms / 1000).toFixed(1)}s` : `${ms.toFixed(2)}ms`
+  return ms > 999 ? `${(ms / 1000).toFixed(1)} s` : `${ms.toFixed(2)} ms`
 }
 
 export function parseDate(

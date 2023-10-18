@@ -73,6 +73,11 @@ export function arrayEmptyInPlace<T>(array: T[]): T[] {
   return array
 }
 
+export function arraySetArrayInPlace<T>(array: T[], newContent: T[]): T[] {
+  array.splice(0, array.length, ...newContent)
+  return array
+}
+
 export function arraySorted<T>(
   arr: Iterable<T> | ArrayLike<T>,
   cond: ((a: T, b: T) => number) | undefined = cmp,

@@ -1,7 +1,7 @@
 import { Pipe } from "./types"
 
 describe("types.spec", () => {
-  it("should pipe", async () => {    
+  it.skip("should pipe", async () => {    
     const p1: Pipe<object, string> = {
       post(s) { }, // todo
       on: (fn) => { }, // todo

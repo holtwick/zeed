@@ -69,15 +69,15 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.43.1",
     "@antfu/ni": "^0.21.8",
-    "@types/node": "^20",
+    "@types/node": "^20.8.7",
     "c8": "^8.0.1",
     "cross-fetch": "^4.0.0",
     "esbuild": "^0.19.5",
-    "eslint": "^8.51.0",
+    "eslint": "^8.52.0",
     "madge": "^6.1.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
-    "vite": "^4.4.11",
+    "vite": "^4.5.0",
     "vitest": "^0.34.6"
   }
 }

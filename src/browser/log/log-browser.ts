@@ -5,7 +5,7 @@
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../../common/log/log-base'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
 import { browserSelectColorByName } from '../../common/log/log-colors'
-import { joinLogStrings, useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
+import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 import { formatMilliseconds, getTimestamp } from '../../common/time'
 import { browserSupportsColors } from './log-colors'
 

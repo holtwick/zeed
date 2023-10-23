@@ -5,7 +5,7 @@
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../../common/log/log-base'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
 import { browserSelectColorByName } from '../../common/log/log-colors'
-import { joinLogStrings, useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
+import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 import { formatMilliseconds, getTimestamp } from '../../common/time'
 import { browserSupportsColors } from './log-colors'
 
@@ -84,22 +84,22 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
       case LogLevelInfo:
         if (opt.levelHelper)
           args[0] = `I|*   ${args[0]}`
-        console.info(...joinLogStrings(...args))
+        console.info(...args)
         break
       case LogLevelWarn:
         if (opt.levelHelper)
           args[0] = `W|**  ${args[0]}`
-        console.warn(...joinLogStrings(...args))
+        console.warn(...args)
         break
       case LogLevelError:
         if (opt.levelHelper)
           args[0] = `E|*** ${args[0]}`
-        console.error(...joinLogStrings(...args))
+        console.error(...args)
         break
       default:
         if (opt.levelHelper)
           args[0] = `D|    ${args[0]}`
-        console.debug(...joinLogStrings(...args))
+        console.debug(...args)
         break
     }
   }

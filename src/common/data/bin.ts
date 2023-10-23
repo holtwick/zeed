@@ -101,6 +101,8 @@ export function fromHex(hexString: string): Uint8Array {
   )
 }
 
+// Learn about Base64 in browsers: https://web.dev/articles/base64-encoding
+
 /** Regular base64 */
 export function toBase64(bin: BinInput, stripPadding = false): string {
   const bytes = toUint8Array(bin)

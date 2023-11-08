@@ -1,6 +1,4 @@
 // Required until node18
-import 'cross-fetch/polyfill'
-
 import * as crypto from 'node:crypto'
 
 if (globalThis.crypto == null) {

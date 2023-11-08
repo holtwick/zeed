@@ -1,8 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
+/* eslint-disable node/prefer-global/buffer */
+
 import { estimateSizeForBase, useBase } from './basex'
 
-describe('BaseX', () => {
+describe('baseX', () => {
   it('should encode base16', () => {
     const { encode, decode } = useBase(16)
     expect(encode([0x01, 0x09, 0x0, 0xFF])).toBe('10900ff')
@@ -68,17 +70,16 @@ describe('BaseX', () => {
   })
 
   it('should support custom', () => {
-    const { encode, decode } =  useBase('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567')
-    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])    
+    const { encode, decode } = useBase('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567')
+    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
     expect(encode(buf)).toBe('QSAH7')
     expect(decode('QSAH7')).toEqual(new Uint8Array([1, 9, 0, 255]))
-  });
+  })
 
   it('should support 32-zbase', () => {
-    const { encode, decode } =  useBase('32-zbase')
-    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])    
+    const { encode, decode } = useBase('32-zbase')
+    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
     expect(encode(buf)).toBe('o1y89')
     expect(decode('o1y89')).toEqual(new Uint8Array([1, 9, 0, 255]))
-  });
-
+  })
 })

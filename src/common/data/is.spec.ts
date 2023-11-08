@@ -143,9 +143,8 @@ describe('is', () => {
 
   it('should handle NaN', () => {
     const nan = +'abc'
-    expect(isNaN(nan)).toBe(true)
+    expect(Number.isNaN(nan)).toBe(true)
     expect(typeof nan === 'number').toBe(true)
     expect(isNumber(nan)).toBe(false)
   })
-
 })

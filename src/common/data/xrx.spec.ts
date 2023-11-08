@@ -1,7 +1,7 @@
 import { XRX } from './xrx'
 
 describe('xrx', () => {
-  it('Simple', () => {
+  it('simple', () => {
     const xrx = new XRX(String.raw`([a-z]+)`, 'gim')
     const rx = xrx.rx
     const sample = '123 Hello World'
@@ -21,7 +21,7 @@ describe('xrx', () => {
     )
   })
 
-  it('Negative Look Around in RX', () => {
+  it('negative Look Around in RX', () => {
     const xrx = new XRX(String.raw`(?<!\.)(\d+)(?!\.)`, 'gim')
     const sample = '1 .2 3..4. 555 a666'
     const result = xrx.execAll(sample)
@@ -34,7 +34,7 @@ describe('xrx', () => {
     expect(result.length).toBe(3)
   })
 
-  it('Extended Flag', () => {
+  it('extended Flag', () => {
     const xrx = new XRX(
       String.raw`
         
@@ -54,7 +54,7 @@ describe('xrx', () => {
     expect(result.length).toBe(2)
   })
 
-  it('Named Groups', () => {
+  it('named Groups', () => {
     const xrx = new XRX(String.raw`(?<chars>[a-z]+)|(?<nums>\d+)`, 'gim')
     const sample = 'Hello 123 World'
     const result = xrx.execAll(sample)

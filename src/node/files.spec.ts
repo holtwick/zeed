@@ -4,7 +4,7 @@ describe('files.spec', () => {
   it('should fetch some', async () => {
     const result = walkSync(__dirname)
 
-    expect(result).toMatchInlineSnapshot( `
+    expect(result).toMatchInlineSnapshot(`
       Array [
         "args.spec.ts",
         "args.ts",
@@ -34,7 +34,7 @@ describe('files.spec', () => {
     `)
   })
 
-  it('should fetch some', async () => {
+  it('should fetch some 2', async () => {
     const result = files({
       basePath: __dirname,
       pattern: 'files*.spec.ts',

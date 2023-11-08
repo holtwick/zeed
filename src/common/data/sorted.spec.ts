@@ -1,32 +1,32 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { arrayShuffleForce, arrayShuffleInPlace, last } from ".."
+import { arrayShuffleForce, arrayShuffleInPlace, last } from '..'
 
-import { useSorted } from "./sorted"
+import { useSorted } from './sorted'
 
 interface SItem {
   name: string
   sort: number
 }
 
-describe("sorted", () => {
+describe('sorted', () => {
   const sorted = useSorted()
 
   const list = [-0.2, -0.001, 0, 0.001, 2]
   const items = list.map((sort, index) => ({ index, sort }))
 
-  it("should add correctly", () => {
+  it('should add correctly', () => {
     expect(sorted.start(items)).toBeLessThan(list[0])
     expect(sorted.end(items)).toBeGreaterThan(last(list) || 0)
   })
 
-  it("should sort correctly", () => {
-    let shuffledItems = arrayShuffleForce(items)
-    expect(shuffledItems.map((el) => el.sort)).not.toEqual(list)
-    expect(sorted.items(shuffledItems).map((el) => el.sort)).toEqual(list)
+  it('should sort correctly', () => {
+    const shuffledItems = arrayShuffleForce(items)
+    expect(shuffledItems.map(el => el.sort)).not.toEqual(list)
+    expect(sorted.items(shuffledItems).map(el => el.sort)).toEqual(list)
   })
 
-  it("should move correctly", () => {
+  it('should move correctly', () => {
     let items: SItem[] = []
     for (let i = 0; i < 10; i++) {
       items.push({
@@ -38,22 +38,22 @@ describe("sorted", () => {
     expect(
       sorted
         .items(items)
-        .map((o) => o.name)
-        .join("")
-    ).toEqual("0123456789")
+        .map(o => o.name)
+        .join(''),
+    ).toEqual('0123456789')
 
-    let moveItem = items[8]
+    const moveItem = items[8]
     moveItem.sort = sorted.move(1, 8, items)
 
     expect(
       sorted
         .items(items)
-        .map((o) => o.name)
-        .join("")
-    ).toEqual("0812345679")
+        .map(o => o.name)
+        .join(''),
+    ).toEqual('0812345679')
 
     items = sorted.items(items)
-    let moveItem2 = items[1]
+    const moveItem2 = items[1]
 
     arrayShuffleInPlace(items)
     moveItem2.sort = sorted.move(8, 1, items)
@@ -61,8 +61,8 @@ describe("sorted", () => {
     expect(
       sorted
         .items(items)
-        .map((o) => o.name)
-        .join("")
-    ).toEqual("0123456789")
+        .map(o => o.name)
+        .join(''),
+    ).toEqual('0123456789')
   })
 })

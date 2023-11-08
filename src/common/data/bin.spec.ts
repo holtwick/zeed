@@ -1,7 +1,9 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toHex, toUint8Array, toBase64Url, fromBase64String, } from './bin'
-import { Uint8ArrayToJson, fromBase64, jsonToUint8Array, createArray } from '.'
+/* eslint-disable node/prefer-global/buffer */
+
+import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toBase64Url, toHex, toUint8Array } from './bin'
+import { Uint8ArrayToJson, createArray, fromBase64, jsonToUint8Array } from '.'
 
 describe('bin', () => {
   it('should compare', () => {
@@ -266,7 +268,7 @@ Uint8Array [
   })
 
   it('should dump', () => {
-    let values = createArray(256, i => i)
+    const values = createArray(256, i => i)
     const data = new Uint8Array(values)
     const hex = Uint8ArrayToHexDump(data)
     expect(hex).toMatchInlineSnapshot(`
@@ -290,10 +292,10 @@ Uint8Array [
   })
 
   it('should base64Url', () => {
-    let email = 'example123+my@example.com'
-    let b64 = toBase64Url(email)
+    const email = 'example123+my@example.com'
+    const b64 = toBase64Url(email)
     expect(b64).toMatchInlineSnapshot('"ZXhhbXBsZTEyMytteUBleGFtcGxlLmNvbQ"')
-    let dec = fromBase64String(b64)
+    const dec = fromBase64String(b64)
     expect(dec).toEqual(email)
   })
 })

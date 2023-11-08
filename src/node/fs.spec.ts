@@ -1,3 +1,5 @@
+/* eslint-disable node/prefer-global/process */
+
 import { toHumanReadableFilePath } from './fs'
 
 describe('fs.spec', () => {

@@ -22,7 +22,7 @@ import {
   createArray,
 } from './array'
 
-describe('Array', () => {
+describe('array', () => {
   it('should remove items', () => {
     const r = arrayRemoveElement([1, 2, 3, 2, 4], 2)
     expect(r).toEqual([1, 3, 4])

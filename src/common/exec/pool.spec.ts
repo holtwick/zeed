@@ -106,7 +106,7 @@ describe('pool', () => {
     await sleep(1)
 
     expect(pool.progress.getTotalUnits()).toBe(0)
-    expect(pool.progress.getCompletedUnits()).toBe(0)    
+    expect(pool.progress.getCompletedUnits()).toBe(0)
     expect(pool.progress.getFraction()).toBe(0)
     expect(pool.progress.toString()).toMatchInlineSnapshot('"pool-0: 0 of 0 units, 0 %, cancel=false"')
 

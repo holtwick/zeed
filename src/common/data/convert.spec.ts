@@ -23,7 +23,7 @@ describe('convert', () => {
         { a: 1, b: null },
         null,
         undefined,
-        NaN,
+        Number.NaN,
         1e2,
         'string',
       ]),

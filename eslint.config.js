@@ -1,0 +1,56 @@
+import antfu from '@antfu/eslint-config'
+
+export default antfu(
+  {
+    typescript: true,
+    vue: true,
+    ignores: [
+      'dist',
+      'node_modules',
+      'build',
+      'tmp',
+      'demos',
+      'coverage',
+      '_archive',
+      '*.spec.*',
+      'vitest.config.ts',
+    ],
+  },
+  {},
+  {
+    rules: {
+      'unused-imports/no-unused-vars': 'off',
+      'antfu/consistent-list-newline': 'off',
+      'eslint-disable-unused-imports/no-unused-imports': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/require-await': 'off',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+    },
+  },
+)
+
+// "@typescript-eslint/no-unsafe-argument": 0,
+// "@typescript-eslint/no-unsafe-assignment": 0,
+// "@typescript-eslint/no-unsafe-call": 0,
+// "@typescript-eslint/no-unsafe-member-access": 0,
+// "@typescript-eslint/no-unsafe-return": 0,
+// "@typescript-eslint/require-await": 0,
+// "@typescript-eslint/restrict-template-expressions": 0,
+// "@typescript-eslint/no-misused-promises": 0,
+// "jsdoc/require-jsdoc": "off",
+// "jsdoc/require-param-type": "off",
+// "jsdoc/require-param-description": "off",
+// "jsdoc/tag-lines": "off",
+// "jsdoc/check-values": "off",
+// "jsdoc/check-tag-names": "off",
+// "jsdoc/no-undefined-types": "off",
+// "jsdoc/require-param": "off",
+// "jsdoc/require-returns": "off",
+// "jsdoc/require-returns-type": "off",
+// "jsdoc/require-throws": "off",
+// "jsdoc/require-yields": "off"

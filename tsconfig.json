@@ -1,27 +1,27 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "jsx": "preserve",
     "lib": [
       "ESNext",
       "DOM",
       "DOM.Iterable"
     ],
-    "jsx": "preserve",
+    "baseUrl": ".",
     "module": "ES2020",
     "moduleResolution": "node",
-    "baseUrl": ".",
+    "resolveJsonModule": true,
     "types": [
       "node",
       "vitest/globals"
     ],
-    "resolveJsonModule": true,
     "allowJs": true,
+    "strict": true,
+    "strictNullChecks": true,
     "declaration": true,
     "sourceMap": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
-    "strict": true,
-    "strictNullChecks": true
+    "isolatedModules": true
   },
   "include": [
     "src/**/*.ts",

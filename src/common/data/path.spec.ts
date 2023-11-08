@@ -1,8 +1,8 @@
-import { toValidFilename } from "./path"
+import { toValidFilename } from './path'
 
-describe("path.spec", () => {
-  it("should fix filenames", async () => {
-    let samples = [
+describe('path.spec', () => {
+  it('should fix filenames', async () => {
+    const samples = [
       'prn',
       'a/b/c/d.txt',
       'a\\b\\c\\d.txt',
@@ -10,7 +10,7 @@ describe("path.spec", () => {
       '...leading',
       'illegal start \\/:*?"<>| end',
       'crazy \t white \n space \0 nil',
-      'fancy 👨‍👩‍👧‍👦 family ⇒ ∅ ❌ 😂.txt'
+      'fancy 👨‍👩‍👧‍👦 family ⇒ ∅ ❌ 😂.txt',
     ]
     expect(samples.map(s => toValidFilename(s, ' '))).toMatchInlineSnapshot(`
       Array [

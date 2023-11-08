@@ -14,7 +14,7 @@ interface SItem extends SortableItem {
   name: string
 }
 
-describe('Sortable', () => {
+describe('sortable', () => {
   const list = [-0.2, -0.001, 0, 0.001, 2]
   const items = list.map((sort_weight, index) => ({ index, sort_weight }))
 

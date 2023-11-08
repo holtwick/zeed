@@ -2,18 +2,18 @@ import {
   dayDiff,
   dayFromDate,
   dayFromString,
+  dayIterator,
   dayMonthStart,
   dayOffset,
+  dayRange,
   dayToParts,
   dayToString,
   dayYearStart,
-  dayRange,
-  dayIterator
 } from './day'
 import { Day, dateStringToDays, forEachDay } from './day-legacy'
 
-describe('Days', () => {
-  it('Day Simple Approach', () => {
+describe('days', () => {
+  it('day Simple Approach', () => {
     // https://stackoverflow.com/a/21101949/140927
     const date = new Date('1987-12-31T00:02:03')
     const simpleDateInteger
@@ -27,7 +27,7 @@ describe('Days', () => {
     expect(fromSimpleDateInteger.toDateString()).toEqual(date.toDateString())
   })
 
-  it('Day Continuous Approach', () => {
+  it('day Continuous Approach', () => {
     const date = new Date('1987-12-31T00:01:02')
     const DAY_IN_MILLISECONDS = 86400 * 1000
     const timeZoneInMilliSeconds = date.getTimezoneOffset() * 60 * 1000

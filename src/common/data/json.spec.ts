@@ -5,15 +5,14 @@ import jsonParse, { jsonStringifySafe, jsonStringifySorted } from './json'
 describe('convert', () => {
   it('should jsonStringify', () => {
     const circularObj = {}
-    // @ts-expect-error
+    // @ts-expect-error xxx
     circularObj.circularRef = circularObj
-    // @ts-expect-error
+    // @ts-expect-error xxx
     circularObj.list = [circularObj, circularObj]
     expect(jsonStringifySafe(circularObj)).toBe(
       '{"circularRef":"[Circular ~]","list":["[Circular ~]","[Circular ~]"]}',
     )
   })
-
 
   it('should jsonStringify class', () => {
     class TestBase { }
@@ -24,7 +23,7 @@ describe('convert', () => {
         this.id = databaseID
       }
     }
-    let t = new Test(new Uint8Array([1, 2, 3]))
+    const t = new Test(new Uint8Array([1, 2, 3]))
     expect(jsonStringifySafe(t)).toMatchInlineSnapshot('"{\\"id\\":{\\"0\\":1,\\"1\\":2,\\"2\\":3}}"')
   })
 
@@ -44,5 +43,4 @@ describe('convert', () => {
     const b = JSON.stringify({ a: 1, b: 2 }) // jsonStringifySafe({ b: 2, a: 1 })
     expect(a).toEqual(b)
   })
-
 })

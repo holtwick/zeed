@@ -3,12 +3,12 @@
 import { getSourceLocation, getStackLlocationList } from './log-util'
 
 describe('log-util', () => {
-  test('should find correct source file line', () => {
+  it('should find correct source file line', () => {
     const source = getSourceLocation(1, true)
     expect(source.startsWith('src/node/log/log-util.spec.ts:')).toBe(true)
   })
 
-  test('should parse stack', () => {
+  it('should parse stack', () => {
     const sample = `
     at getSourceLocation (file:///Users/dirk/work/public/zeed/dist/esm/node/log-util.js:13:17)
     at file:///Users/dirk/work/public/zeed/dist/esm/node/log-node.js:105:26

@@ -24,8 +24,20 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
       return () => {}
     }
 
+    const emit = (msg: LogMessage) => {
+      // if (log.active === true) {
+      //   if (msg.level >= Logger.level && msg.level >= log.level) {
+      if (logCheckNamespace(name)) {
+        for (const handler of logHandlers) {
+          if (handler)
+            handler(msg)
+        }
+      }
+      // }
+      // }
+    }
+
     const log = defineForLogLevel(LogLevelDebug, (...messages: any[]) => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       emit({
         name,
         messages,
@@ -38,19 +50,6 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
 
     log.extend = function (prefix: string): LoggerInterface {
       return logFactory(name ? `${name}:${prefix}` : prefix)
-    }
-
-    const emit = (msg: LogMessage) => {
-      // if (log.active === true) {
-      //   if (msg.level >= Logger.level && msg.level >= log.level) {
-      if (logCheckNamespace(name)) {
-        for (const handler of logHandlers) {
-          if (handler)
-            handler(msg)
-        }
-      }
-      // }
-      // }
     }
 
     log.debug = defineForLogLevel(LogLevelDebug, (...messages: any[]) => {

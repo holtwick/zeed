@@ -1,13 +1,13 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-/* eslint-disable n/no-path-concat */
+/* eslint-disable node/no-path-concat */
 
-import { rmSync, statSync, unlinkSync } from 'fs'
+import { rmSync, statSync, unlinkSync } from 'node:fs'
 import { sleep } from '../../common/exec/promise'
 import { DefaultLogger, LogLevelAll, getGlobalLogger } from '../../common/log'
 import { LoggerFileHandler } from './log-file'
 
-describe('Log File', () => {
+describe('log File', () => {
   afterAll(() => {
     rmSync(`${__dirname}/tmp`, { recursive: true, force: true })
   })

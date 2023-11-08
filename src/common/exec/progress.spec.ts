@@ -1,11 +1,11 @@
 import { Progress } from './progress'
 
-describe("progress.spec", () => {
-  it("should track progress", async () => {
+describe('progress.spec', () => {
+  it('should track progress', async () => {
     // Simple progress
-    let p = new Progress({
+    const p = new Progress({
       name: 'root',
-      totalUnits: 10
+      totalUnits: 10,
     })
     expect(p.getFraction()).toBe(0)
     p.incCompletedUnits()
@@ -14,7 +14,7 @@ describe("progress.spec", () => {
     expect(p.getFraction()).toBe(0.1)
 
     // Child progress
-    let pp = new Progress()
+    const pp = new Progress()
     // expect(pp.isFinished()).toBe(true)
 
     p.addChild(pp)
@@ -41,7 +41,7 @@ describe("progress.spec", () => {
     expect(p.getChildrenCount()).toBe(0)
     expect(pp.isFinished()).toBe(true)
 
-    // Child auto removed    
+    // Child auto removed
     expect(p.getTotalUnits()).toBe(10)
     expect(p.getCompletedUnits()).toBe(1)
     expect(p.getFraction()).toBe(0.1)
@@ -53,9 +53,9 @@ describe("progress.spec", () => {
     expect(p.isFinished()).toBe(true)
   })
 
-  it("should cancel and auto reset", async () => {
-    let p = new Progress({
-      totalUnits: 10
+  it('should cancel and auto reset', async () => {
+    const p = new Progress({
+      totalUnits: 10,
     })
     expect(p.isCancelled()).toBe(false)
     await p.cancel()

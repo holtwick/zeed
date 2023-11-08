@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
-/* eslint-disable n/prefer-global/process */
+/* eslint-disable node/prefer-global/process */
+
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 export function getWindow(): any | undefined {
@@ -19,7 +20,7 @@ export function getGlobal(): any {
     ? self
     : typeof global !== 'undefined'
       ? global
-      // eslint-disable-next-line no-new-func, @typescript-eslint/no-implied-eval
+      // eslint-disable-next-line no-new-func
       : Function('return this;')()
 }
 

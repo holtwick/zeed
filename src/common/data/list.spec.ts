@@ -8,7 +8,6 @@ const sampleList = [
 
 describe('list', () => {
   it('should query', () => {
-
     expect(listOfKey(sampleList, 'age')).toMatchInlineSnapshot(`
       Array [
         22,
@@ -52,15 +51,11 @@ describe('list', () => {
       listQuery(
         sampleList,
         [e => e.title.startsWith('a'), e => e.id <= 2],
-        [e => ((e.age += 1), e)],
+        [e => (e.age += 1)],
       ),
     ).toMatchInlineSnapshot(`
       Array [
-        Object {
-          "age": 23,
-          "id": 1,
-          "title": "aaa",
-        },
+        23,
       ]
     `)
   })

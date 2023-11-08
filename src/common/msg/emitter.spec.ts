@@ -5,7 +5,7 @@ import { detect } from '../platform'
 import { sleep, waitOn } from '../exec/promise'
 import { Emitter, getGlobalEmitter, lazyListener } from './emitter'
 
-let platform = detect()
+const platform = detect()
 
 declare global {
   interface ZeedGlobalEmitter {
@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-describe('Emitter', () => {
+describe('emitter', () => {
   it('should emit', async () => {
     expect.assertions(4)
 
@@ -224,7 +224,7 @@ describe('Emitter', () => {
   it('should respect priorities', async () => {
     const e = new Emitter()
 
-    let l: any = []
+    const l: any = []
 
     e.on('p', () => l.push(2), { priority: 100 })
     e.on('p', () => l.push(5), { priority: -1 })
@@ -235,6 +235,6 @@ describe('Emitter', () => {
 
     await e.emit('p')
 
-    expect(l).toEqual([1,2,3,4,5,6]) 
+    expect(l).toEqual([1, 2, 3, 4, 5, 6])
   })
 })

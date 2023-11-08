@@ -1,10 +1,10 @@
 // (C)opyright 20210922 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { DefaultLogger } from "./log"
+import { DefaultLogger } from './log'
 import { useDefer, useDispose } from './dispose-defer'
-import { sleep } from "./exec"
+import { sleep } from './exec'
 
-const log = DefaultLogger("dispose-test")
+const log = DefaultLogger('dispose-test')
 
 describe('dispose', () => {
   it('should dispose correctly', async () => {
@@ -119,7 +119,7 @@ describe('dispose', () => {
       stack.push('c')
     })
     expect(stack).toEqual([])
-    expect(dispose.sync).toThrowError() 
+    expect(dispose.sync).toThrowError()
     // expect(stack).toEqual(['b', 'a'])
   })
 
@@ -130,7 +130,7 @@ describe('dispose', () => {
   //     constructor(path: string) {
   //       console.log('constructor')
   //     }
-    
+
   //     [Symbol.dispose]() {
   //       console.log('dispose')
   //     }

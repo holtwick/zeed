@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getGlobalLogger, DefaultLogger, LogLevelAll } from '../../common/log'
+import { DefaultLogger, LogLevelAll, getGlobalLogger } from '../../common/log'
 import { LoggerNodeHandler, loggerStackTraceDebug } from './log-node'
 
 describe('log-node', () => {
@@ -14,7 +14,7 @@ describe('log-node', () => {
     log.error('error')
   })
 
-  test('should find pattern', () => {
+  it('should find pattern', () => {
     getGlobalLogger().setHandlers([
       LoggerNodeHandler({
         level: LogLevelAll,

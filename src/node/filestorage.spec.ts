@@ -2,7 +2,7 @@
 
 import { FileStorage } from './filestorage'
 
-describe('FileStorage', () => {
+describe('fileStorage', () => {
   it('should store data and read it again', () => {
     {
       const db = new FileStorage<any>()

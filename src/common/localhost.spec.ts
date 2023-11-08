@@ -2,7 +2,7 @@
 
 import { isLocalHost } from './localhost'
 
-describe('Localhost', () => {
+describe('localhost', () => {
   it('should be accurate', () => {
     const samples = {
       '1.1.1.1': false,

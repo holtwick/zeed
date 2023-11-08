@@ -2,7 +2,7 @@
 
 import { composeOrderby, parseOrderby, sortedOrderby } from './orderby'
 
-describe('Order by', () => {
+describe('order by', () => {
   it('should order correctly', () => {
     expect(parseOrderby('timestamp asc')).toEqual({
       asc: true,

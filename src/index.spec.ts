@@ -1,8 +1,8 @@
+import { resolve } from 'node:path'
 import * as esbuild from 'esbuild'
-import { resolve } from 'path'
 
-describe("treeshake", () => {
-  it("should shake it", async () => {
+describe('treeshake', () => {
+  it('should shake it', async () => {
     const code = `    
       import { arrayUnion } from './index.browser.ts'
  
@@ -11,19 +11,19 @@ describe("treeshake", () => {
 
       console.log('result arrayUnion', aa)
     `
-    
-    const opt = {      
+
+    const opt = {
       stdin: {
         contents: code,
-        resolveDir: resolve(__dirname)
+        resolveDir: resolve(__dirname),
       },
       write: false,
       bundle: true,
       treeShaking: true,
-      minify: false       
+      minify: false,
     }
-     
-    let result1 = await esbuild.build(opt)
+
+    const result1 = await esbuild.build(opt)
     //  let result2 = await esbuild.build(options)
     expect(result1?.outputFiles?.[0]?.text).toMatchInlineSnapshot(`
       "(() => {

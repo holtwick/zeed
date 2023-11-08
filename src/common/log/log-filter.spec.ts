@@ -4,7 +4,7 @@ import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelInfo, LogLevelOff, L
 import { getNamespaceFilterString, joinLogStrings, parseLogLevel, useLevelFilter, useNamespaceFilter } from './log-filter'
 
 describe('log-filter', () => {
-  test('should match', () => {
+  it('should match', () => {
     // {
     //   // This one depends on the calling tester, therefore not deterministic
     //

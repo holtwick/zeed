@@ -10,21 +10,19 @@ import {
   suidDate,
   uname,
   uuid,
-  uuidDecodeB32,
-  uuidEncodeB32,
   uuid32bit,
   uuidB32,
   uuidBytes,
   uuidDecode,
+  uuidDecodeB32,
   uuidDecodeV4,
   uuidEncode,
+  uuidEncodeB32,
   uuidEncodeV4,
   uuidv4,
-  setUuidDefaultEncoding,
 } from './uuid'
 
 describe('uuid', () => {
-    
   // beforeAll(() => setUuidDefaultEncoding('base32'))
 
   it('should not certain length', () => {

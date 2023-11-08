@@ -1,10 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import type { LoggerInterface, LogMessage } from './log-base'
+import type { LogMessage, LoggerInterface } from './log-base'
 import { LoggerContext } from './log-context'
 
-describe('Logger', () => {
-  test('should log different levels', () => {
+describe('logger', () => {
+  it('should log different levels', () => {
     const messages: LogMessage[] = []
 
     const logger = LoggerContext()
@@ -15,7 +15,7 @@ describe('Logger', () => {
 
     logger.setHandlers([LoggerTestHandler])
 
-    const log:LoggerInterface = logger('test')
+    const log: LoggerInterface = logger('test')
 
     log('Simple') // shortcut
     log.debug('Hello')
@@ -25,7 +25,8 @@ describe('Logger', () => {
 
     try {
       log.assert(false, 'Fatal')
-    } catch (err) { }
+    }
+    catch (err) { }
 
     expect(messages).toEqual([
       {
@@ -61,7 +62,7 @@ describe('Logger', () => {
     ])
   })
 
-  test('should log filter level', () => {
+  it('should log filter level', () => {
     const messages: LogMessage[] = []
     function LoggerTestHandler(msg: LogMessage) {
       messages.push(msg)
@@ -82,7 +83,8 @@ describe('Logger', () => {
 
     try {
       log.assert(false, 'Fatal')
-    } catch (err) { }
+    }
+    catch (err) { }
 
     expect(messages).toEqual([
       { name: 'test', messages: ['Hello'], level: 0 }, // xxx
@@ -101,7 +103,8 @@ describe('Logger', () => {
 
       try {
         log2.assert(false, 'Fatal')
-      } catch (err) { }
+      }
+      catch (err) { }
 
       // console.dir(messages)
 
@@ -122,7 +125,7 @@ describe('Logger', () => {
     // logger.setLogLevel(LogLevel.all)
   })
 
-  test('should log filter namespace', () => {
+  it('should log filter namespace', () => {
     const messages: LogMessage[] = []
     function LoggerTestHandler(msg: LogMessage) {
       messages.push(msg)
@@ -167,7 +170,7 @@ describe('Logger', () => {
     ])
   })
 
-  test('should fake log', () => {
+  it('should fake log', () => {
     const messages: LogMessage[] = []
     const logger = LoggerContext()
 
@@ -200,6 +203,6 @@ describe('Logger', () => {
   //     return data // Type 'string | undefined' is not assignable to type 'string'. Type 'undefined' is not assignable to type 'string'.(2322)
   //   }
 
-  //   t1() 
+  //   t1()
   // })
 })

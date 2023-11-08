@@ -6,7 +6,7 @@ import { createLocalChannelPair } from './channel'
 
 const log = DefaultLogger('test:channel')
 
-describe('Channel', () => {
+describe('channel', () => {
   // it('should fake', (done) => {
   //   // log.info("done", done.toSource())
   //   expect.assertions(1)

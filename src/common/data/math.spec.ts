@@ -1,10 +1,7 @@
-import {
-  getSecureRandom,
-  isPrime,
-  isPrimeRX,
-  randomBoolean,
-  seededRandom,
-} from './math'
+import { getSecureRandom, isPrime, isPrimeRX, randomBoolean, seededRandom } from './math'
+
+/* eslint-disable no-cond-assign */
+/* eslint-disable prefer-spread */
 
 describe('math', () => {
   it('should not have collisions', () => {

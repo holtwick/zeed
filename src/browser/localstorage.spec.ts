@@ -4,7 +4,7 @@ export {}
 // import { isBrowser } from "../common/platform"
 // import { LocalStorage } from "./localStorage"
 
-describe('LocalStorage', () => {
+describe('localStorage', () => {
   it('should store data and read it again', () => {
     // if (isBrowser()) {
     //   {

@@ -58,7 +58,7 @@ describe('size', () => {
     expect(size(true)).toBe(0)
     expect(size(null)).toBe(0)
     expect(size(undefined)).toBe(0)
-    expect(size(NaN)).toBe(0)
+    expect(size(Number.NaN)).toBe(0)
   })
 })
 
@@ -100,7 +100,7 @@ describe('empty', () => {
     expect(empty(true)).toBe(true)
     expect(empty(null)).toBe(true)
     expect(empty(undefined)).toBe(true)
-    expect(empty(NaN)).toBe(true)
+    expect(empty(Number.NaN)).toBe(true)
   })
 
   it('should ensure key', () => {

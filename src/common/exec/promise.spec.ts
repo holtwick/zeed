@@ -5,10 +5,10 @@ import {
   isPromise,
   promisify,
   sleep,
-  timeout,  
+  timeout,
 } from './promise'
 
-describe('Promises', () => {
+describe('promises', () => {
   async function demo() {
     return 999
   }

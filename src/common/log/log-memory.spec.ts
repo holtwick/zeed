@@ -1,4 +1,5 @@
-import { LoggerInterface, LogLevelAll, LogMessage } from './log-base'
+import type { LogMessage, LoggerInterface } from './log-base'
+import { LogLevelAll } from './log-base'
 import { LoggerContext } from './log-context'
 import { LoggerMemoryHandler } from './log-memory'
 
@@ -25,9 +26,10 @@ describe('log-memory', () => {
 
     try {
       log.assert(false, 'Fatal')
-    } catch (err) { }
+    }
+    catch (err) { }
 
-    expect(messages.map(msg => {
+    expect(messages.map((msg) => {
       delete msg.timestamp
       return msg
     })).toMatchInlineSnapshot(`

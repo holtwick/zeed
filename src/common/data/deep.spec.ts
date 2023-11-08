@@ -1,12 +1,13 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
- 
+/* eslint-disable no-new-wrappers */
+
 import { DefaultLogger } from '../log'
 import { deepEqual, deepMerge, deepStripUndefinedInPlace } from './deep'
 
 const log = DefaultLogger('test:deep')
 
-describe('Deep', () => {
+describe('deep', () => {
   it('should deep without self reference', () => {
     const sample: any = {
       a: 1,
@@ -24,12 +25,12 @@ describe('Deep', () => {
   })
 
   it('should compare arays', () => {
-    const a = [1,2,3]
-    const b = [3,2,1]
-    expect(deepEqual(a,b)).toBe(false)  
-    const c = [3,2,1,0]
-    expect(deepEqual(a,c)).toBe(false)  
-  });
+    const a = [1, 2, 3]
+    const b = [3, 2, 1]
+    expect(deepEqual(a, b)).toBe(false)
+    const c = [3, 2, 1, 0]
+    expect(deepEqual(a, c)).toBe(false)
+  })
 
   // it('should clone simple', () => {
   //   let a = {

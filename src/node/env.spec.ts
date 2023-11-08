@@ -2,7 +2,7 @@
 
 import { getEnvVariableRelaxed, setupEnv } from './env'
 
-describe('ENV', () => {
+describe('eNV', () => {
   it('should respect both files', () => {
     const env = {}
     setupEnv({

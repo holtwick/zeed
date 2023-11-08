@@ -1,7 +1,6 @@
-import { MessageChannel } from 'worker_threads'
-import { useRPC, useRPCHub } from './rpc'
+import { MessageChannel } from 'node:worker_threads'
 import { decodeJson, encodeJson } from '../bin'
-
+import { useRPC, useRPCHub } from './rpc'
 
 let bobCount = 0
 
@@ -83,7 +82,7 @@ describe('rpc', () => {
       deserialize,
     })
 
-    let bob = bobHub<BobFunctions, AliceFunctions>(Bob)
+    const bob = bobHub<BobFunctions, AliceFunctions>(Bob)
 
     const alice = useRPC<AliceFunctions, BobFunctions>(Alice, {
       // mark bob's `bump` as an event without response
@@ -109,4 +108,3 @@ describe('rpc', () => {
     channel.port2.close()
   })
 })
-

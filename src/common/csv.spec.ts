@@ -1,11 +1,11 @@
 import { csvParse, csvParseToObjects, csvStringify } from './csv'
 
-describe("csv.spec", () => {
-  it("should generate csv", async () => {
-    let txt = csvStringify([
-      [1, "one", 1e10, '1e10', 1.23],
-      [2, "two\nlines", null, undefined, true],
-      [3, "tree \"drei\"", {}, { a: 1 }, [1, 2, 3]],
+describe('csv.spec', () => {
+  it('should generate csv', async () => {
+    const txt = csvStringify([
+      [1, 'one', 1e10, '1e10', 1.23],
+      [2, 'two\nlines', null, undefined, true],
+      [3, 'tree "drei"', {}, { a: 1 }, [1, 2, 3]],
     ])
     expect(txt).toMatchInlineSnapshot(`
       "1,one,10000000000,1e10,1.23
@@ -56,7 +56,7 @@ describe("csv.spec", () => {
 "27.10.2022, 00:10";"1666829401";"154";"4";"6";"148";"80";"9";"0";"0";"0";"137";"0";"10102"
 "27.10.2022, 00:20";"1666830001";"150";"4";"7";"147";"80";"9";"0";"0";"0";"137";"0";"10102"`
 
-    let objs = csvParseToObjects(sample, { separator: ';' })
+    const objs = csvParseToObjects(sample, { separator: ';' })
     expect(objs.slice(0, 3)).toMatchInlineSnapshot(`
       Array [
         Object {
@@ -110,7 +110,7 @@ describe("csv.spec", () => {
       ]
     `)
 
-    let data = csvParse(sample, { separator: ';' })
+    const data = csvParse(sample, { separator: ';' })
     expect(data.slice(0, 3)).toMatchInlineSnapshot(`
       Array [
         Array [
@@ -163,6 +163,5 @@ describe("csv.spec", () => {
         ],
       ]
     `)
-
   })
 })

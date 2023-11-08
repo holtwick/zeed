@@ -4,10 +4,10 @@
 
 import { detect } from './platform'
 
-describe('Platform', () => {
+describe('platform', () => {
   it('should detect', () => {
-    let platform = detect()
-    
+    const platform = detect()
+
     if (globalThis.isNodeTestEnv) {
       expect(platform.node).toBe(true)
       expect(platform.test).toBe(true)

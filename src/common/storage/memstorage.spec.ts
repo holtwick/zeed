@@ -2,7 +2,7 @@
 
 import { MemStorage } from './memstorage'
 
-describe('MemStorage', () => {
+describe('memStorage', () => {
   it('should store data and read it again', () => {
     const db = new MemStorage()
     db.clear()

@@ -29,7 +29,7 @@ function parse(src: string, _options: EnvOptions = {}) {
   // convert Buffers before splitting into lines and processing
   String(src)
     .split(NEWLINES_MATCH)
-    // eslint-disable-next-line unused-imports/no-unused-vars
+
     .forEach((line, idx) => {
       // matching "KEY' and 'VAL' in 'KEY=VAL'
       const keyValueArr = line.match(RE_INI_KEY_VAL)

@@ -41,7 +41,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
 
   name: string
 
-  constructor(opt: { name?: string; logLevel?: LogLevel } = {}) {
+  constructor(opt: { name?: string, logLevel?: LogLevel } = {}) {
     super()
     const { name = uname('queue'), logLevel } = opt
     this.name = name
@@ -103,7 +103,7 @@ export class SerialQueue extends Emitter<TaskEvents> {
   /** Enqueue task to be executed when all other tasks are done. Except `immediate = true`. */
   async enqueue<T>(
     task: TaskFn<T>,
-    opt: { immediate?: boolean; name?: string } = {},
+    opt: { immediate?: boolean, name?: string } = {},
   ): Promise<T> {
     const { immediate = false, name = uname(this.name) } = opt
     if (immediate) {

@@ -6,5 +6,6 @@
   ],
   "treeshake": true,
   "minify": true,
-  "sourcemap": true
+  "sourcemap": true,
+  "clean": true
 }

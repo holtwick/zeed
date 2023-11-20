@@ -55,8 +55,8 @@ export class Day {
         ? Day.fromString(date.toISOString().substr(0, 10))
         : Day.from(
           date.getFullYear() * 10000
-              + (date.getMonth() + 1) * 100
-              + date.getDate(),
+          + (date.getMonth() + 1) * 100
+          + date.getDate(),
         )
     ) as Day
   }
@@ -168,7 +168,7 @@ export class Day {
   daysUntil(otherDay: DayInputLegacy): number {
     return Math.round(
       (new Day(otherDay)?.toDateGMT().getTime() - this.toDateGMT().getTime())
-        / DAY_MS,
+      / DAY_MS,
     )
   }
 

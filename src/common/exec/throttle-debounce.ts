@@ -26,17 +26,17 @@ export function throttle<F extends (...args: any[]) => any>(
     leading?: boolean
   } = {},
 ): F & {
-    /** Stop all timers, do not exec nothing */
-    cancel: () => void
+  /** Stop all timers, do not exec nothing */
+  cancel: () => void
 
-    /** Stop all timers and execute right now. */
-    immediate: (...args: Parameters<F>) => Promise<void>
+  /** Stop all timers and execute right now. */
+  immediate: (...args: Parameters<F>) => Promise<void>
 
-    /** Stop all timers and execute trailing call, if exists. */
-    stop: () => void
+  /** Stop all timers and execute trailing call, if exists. */
+  stop: () => void
 
-    dispose: () => void
-  } {
+  dispose: () => void
+} {
   const { delay = 100, trailing = true, leading = true } = opt
 
   let timeoutID: any = 0
@@ -144,10 +144,10 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     delay?: number
   } = {},
 ): F & {
-    cancel: () => void
-    immediate: (...args: Parameters<F>) => Promise<void>
-    dispose: () => void
-  } {
+  cancel: () => void
+  immediate: (...args: Parameters<F>) => Promise<void>
+  dispose: () => void
+} {
   const { delay = 100 } = opt
   let timeoutID: any = 0
 

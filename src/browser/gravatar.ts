@@ -5,7 +5,7 @@
 /** @deprecated Due to privacy concerns. Prefer local or custom solutions. */
 function gravatar(
   email: string,
-  options: { size?: any; backup?: any; secure?: any; rating?: any },
+  options: { size?: any, backup?: any, secure?: any, rating?: any },
 ) {
   const hex_chr = '0123456789abcdef'.split('')
 

@@ -17,7 +17,7 @@ export interface MessageAction {
 export interface MessageResult {
   id: string
   result?: Json
-  error?: { stack?: string; name: string; message: string }
+  error?: { stack?: string, name: string, message: string }
 }
 
 export type Message = MessageAction | MessageResult

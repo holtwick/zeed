@@ -73,8 +73,8 @@ export function dayFromDate(date: Date, gmt = false): DayValue {
     gmt
       ? dayFromString(date.toISOString())
       : date.getFullYear() * 10000
-        + (date.getMonth() + 1) * 100
-        + date.getDate()
+      + (date.getMonth() + 1) * 100
+      + date.getDate()
   )!
 }
 

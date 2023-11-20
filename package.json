@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",
@@ -36,6 +36,7 @@
     ".": {
       "types": "./dist/index.all.d.ts",
       "browser": "./dist/index.browser.js",
+      "import": "./dist/index.node.js",
       "require": "./dist/index.node.cjs",
       "node": "./dist/index.node.js",
       "default": "./dist/index.browser.js"
@@ -67,17 +68,17 @@
     "watch": "nr build:tsup -- --watch"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^1.1.0",
-    "@antfu/ni": "^0.21.8",
-    "@types/node": "^20.9.0",
+    "@antfu/eslint-config": "^2.0.0",
+    "@antfu/ni": "^0.21.9",
+    "@types/node": "^20.9.2",
     "c8": "^8.0.1",
     "cross-fetch": "^4.0.0",
-    "esbuild": "^0.19.5",
-    "eslint": "^8.53.0",
+    "esbuild": "^0.19.6",
+    "eslint": "^8.54.0",
     "madge": "^6.1.0",
-    "tsup": "^7.2.0",
+    "tsup": "^8.0.0",
     "typescript": "^5.2.2",
-    "vite": "^4.5.0",
+    "vite": "^5.0.0",
     "vitest": "^0.34.6"
   }
 }

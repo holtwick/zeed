@@ -9,7 +9,7 @@
     ],
     "baseUrl": ".",
     "module": "ES2020",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "types": [
       "node",

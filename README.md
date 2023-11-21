@@ -2,11 +2,11 @@
 
 > Plant the "zeed" for your next Typescript project and let it grow with this useful lib, providing basic functionalities handy in most projects.
 
-- Strict TypeScript
-- No dependencies and lightweight
-- Covered by tests
-- Universal for node.js and browsers
-- Modern ESM, fallback to CommonJS
+- Strict **TypeScript**
+- **Zero dependencies** and lightweight, **tree-shakable**
+- **Universal** for browsers, as well as node, deno and bun 
+- Modern **ESM**, fallback to CommonJS available
+- Mostly covered by **tests**
 
 Get started like this:
 
@@ -253,7 +253,7 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 
 ## Disposer
 
-`useDisposer` will simplify cleaning up objects. You just need to `track` a function or and object with `dispose` method to be called for cleanup. This can also be nested. A simple example is a timer:
+`useDispose` will simplify cleaning up objects. You just need to `add` a function or and object with `dispose` method to be called for cleanup. This can also be nested. A simple example is a timer:
 
 ```ts
 function disposableTimer() {
@@ -261,20 +261,19 @@ function disposableTimer() {
   return () => clearTimeout(timeout)
 }
 
-const disposer = useDisposer()
+const dispose = useDispose()
 
 const obj = disposableTimer()
-disposer.track(obj)
+dispose.add(obj)
 
 // or
 
-const untrackTimer = disposer.track(disposableTimer())
-
-// then later one of these
-
-disposer.untrack(obj) // dispose single object
+const untrackTimer = dispose.add(disposableTimer())
 untrackTimer() // dispose single object by return value of .track
-disposer.dispose() // will dispose all tracked elements
+
+// then later dispose all
+
+dispose()
 ```
 
 You can also `untrack` single entries. Entries are untracked LIFO. Disposers can also return a Promise and therefore `await` async disposals.
@@ -285,17 +284,21 @@ The disposer itself is also a call to dispose i.e. for convenience you can add i
 class DisposeExample {
   // the trick is to assign to member `dispose`, will be both
   // the destructor and the registration point for disposables
-  dispose = useDisposer()
+  dispose = useDispose()
 
   constructor() {
-    this.dispose.track(disposableTimer())
+    this.dispose.add(disposableTimer())
   }
 }
 
 const obj = new DisposeExample()
 // ...
-obj.dispose()
+obj.dispose() // or async via `await obj.dispose()`
 ```
+
+## Much more...
+
+...browse the source!
 
 ## Related and Links
 

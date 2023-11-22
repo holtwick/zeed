@@ -43,6 +43,8 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
   const name = opt?.name
   const log = opt?.log ?? DefaultLogger('zeed:dispose')
 
+  let disposed = 0
+
   const tracked: Disposer[] = []
 
   function untrack(disposable: Disposer): Promise<void> | void {
@@ -65,6 +67,9 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
   function dispose(strictSync = false): Promise<any> | void {
     if (name)
       log.debug(`dispose "${name}": ${tracked.length} entries`)
+
+    disposed += 1
+
     const promises: any[] = []
     while (tracked.length > 0) {
       const fn = tracked[0]
@@ -87,6 +92,9 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
   }
 
   return Object.assign(dispose, {
+    /** Counter that incremends, each time dispose has been called */
+    disposed,
+
     add: track,
     remove: untrack,
 

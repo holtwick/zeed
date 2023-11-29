@@ -1,7 +1,5 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { getSecureRandomIfPossible } from '../data/math'
-import { useDispose } from '../dispose-defer'
 import type { DisposerFunction } from '../dispose-types'
 import { promisify } from '../exec/promise'
 import { getGlobalContext } from '../global'
@@ -42,9 +40,6 @@ export class Emitter<
   private subscribersOnAny: any[] = []
 
   _logEmitter = DefaultLogger('zeed:emitter', 'warn')
-
-  /** Unused, but here for historical reasons */
-  dispose = useDispose()
 
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
@@ -164,92 +159,4 @@ export function getGlobalEmitter(): Emitter<ZeedGlobalEmitter> {
     getGlobalContext().emitter = emitter
   }
   return emitter as any
-}
-
-// For debugging
-
-interface LazyEvent {
-  key: string
-  obj: any
-}
-
-export function lazyListener(
-  emitter: any,
-  listenerKey?: string,
-): (key?: string, skipUnmatched?: boolean) => Promise<any> {
-  const name = Math.round(getSecureRandomIfPossible() * 100)
-
-  const events: LazyEvent[] = []
-  let lazyResolve: (() => void) | undefined
-
-  const incoming = (key: string, obj: any) => {
-    const ev = { key, obj }
-    // debug(name, "  lazy push", ev)
-    events.push(ev)
-    lazyResolve && lazyResolve()
-  }
-
-  if (listenerKey) {
-    if (emitter.on) {
-      emitter.on(listenerKey, (obj: any) => {
-        incoming(listenerKey, obj)
-      })
-    }
-    else if (emitter.addEventListener) {
-      emitter.addEventListener(listenerKey, (obj: any) => {
-        incoming(listenerKey, obj)
-      })
-    }
-    else {
-      emitter.log.error(name, 'Cannot listen to key')
-    }
-  }
-  else {
-    if (emitter.onAny) {
-      emitter.onAny((key: string, obj: any) => {
-        incoming(key, obj)
-      })
-    }
-    else {
-      emitter.log.error(name, 'cannot listen to all for', emitter)
-    }
-  }
-
-  const on = (key?: string, skipUnmatched = true): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        key = listenerKey
-        if (!key) {
-          if (events.length) {
-            // no key specified? just take the first one!
-            key = events[0].key
-          }
-        }
-      }
-      // debug(name, "lazy resolve on2", key, skipUnmatched, events)
-      lazyResolve = () => {
-        // debug(name, "lazy resolve", key, listenerKey, events)
-        while (events.length > 0) {
-          const ev = events.shift() as LazyEvent
-          // debug(name, "  lazy analyze", ev)
-          if (ev.key === key) {
-            lazyResolve = undefined
-            resolve(ev.obj)
-          }
-          else {
-            if (skipUnmatched) {
-              // log.warn(name, `Unhandled event ${key} with value: ${ev.obj}`)
-              continue
-            }
-            reject(new Error(`Expected ${key}, but found ${ev.key} with value=${ev.obj}`))
-            // log.error(name, `Unhandled event ${key} with value: ${ev.obj}`)
-          }
-          break
-        }
-      }
-      lazyResolve()
-    })
-  }
-
-  return on
 }

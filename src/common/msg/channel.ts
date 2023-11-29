@@ -29,10 +29,10 @@ export abstract class Channel extends Emitter<{
   abstract isConnected?: boolean
   abstract postMessage(data: any): void
 
-  /** @deprecated use .dispose() */
-  close() {
-    void this.dispose()
-  }
+  // /** @deprecated use .dispose() */
+  // close() {
+  //   void this.dispose()
+  // }
 }
 
 /** Very basic channel demonstrating local communication */

@@ -1,5 +1,6 @@
 // Inspired by https://developer.apple.com/documentation/foundation/progress
 
+import { useDispose } from '../dispose-defer'
 import { arrayRemoveElement } from '../data'
 import { Emitter } from '../msg'
 import { uname } from '../uuid'
@@ -32,6 +33,7 @@ export class Progress extends Emitter<{
   private _resetWhenFinished = true
   private _children: Progress[] = []
 
+  dispose = useDispose()
   name: string
 
   constructor(opt: ProgressOptions = {}) {

@@ -76,7 +76,7 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
     return resolve(this.dirname, this.keyToFilename(key) + this.extension)
   }
 
-  getBuffer(key: string): Buffer {
+  getBuffer(key: string): any {
     const path = this.getPath(key)
     return Buffer.from(readFileSync(path))
   }

@@ -4,7 +4,7 @@ import process from 'node:process'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
 
-export async function getStatAsync(path: string) {
+async function getStatAsync(path: string): Promise<any> {
   try {
     return await stat(path)
   }

@@ -1,9 +1,10 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-// import { Logger } from "../log"
+import { useDisposeWithUtils } from '..'
 import { uuid } from '../uuid'
 import { Emitter } from './emitter'
 
+// import { Logger } from "../log"
 // const log = Logger("zeed:channel")
 
 /** See http://developer.mozilla.org/en-US/docs/Web/API/MessageEvent */
@@ -29,10 +30,12 @@ export abstract class Channel extends Emitter<{
   abstract isConnected?: boolean
   abstract postMessage(data: any): void
 
-  // /** @deprecated use .dispose() */
-  // close() {
-  //   void this.dispose()
-  // }
+  dispose = useDisposeWithUtils()
+
+  /** @deprecated use .dispose() */
+  close() {
+    void this.dispose()
+  }
 }
 
 /** Very basic channel demonstrating local communication */

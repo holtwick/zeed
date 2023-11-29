@@ -4,7 +4,7 @@ import process from 'node:process'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
 
-function getStat(path: string): any {
+export function getStat(path: string): any {
   try {
     return statSync(path)
   }

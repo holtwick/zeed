@@ -1,6 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
-import { useDisposeWithUtils } from '..'
+import { useDispose } from '../dispose-defer'
 import { uuid } from '../uuid'
 import { Emitter } from './emitter'
 
@@ -30,7 +30,7 @@ export abstract class Channel extends Emitter<{
   abstract isConnected?: boolean
   abstract postMessage(data: any): void
 
-  dispose = useDisposeWithUtils()
+  dispose = useDispose()
 
   /** @deprecated use .dispose() */
   close() {

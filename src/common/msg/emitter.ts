@@ -152,7 +152,7 @@ declare global {
 }
 
 /** Global emitter that will listen even across modules */
-export function getGlobalEmitter(): Emitter<ZeedGlobalEmitter> {
+export function getGlobalEmitter<T extends ListenerSignature<T> = ZeedGlobalEmitter>(): Emitter<T> {
   let emitter = getGlobalContext().emitter
   if (!emitter) {
     emitter = new Emitter()

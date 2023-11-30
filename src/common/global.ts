@@ -10,6 +10,7 @@ interface ZeedGlobalIntegration {
   _zeedGlobal?: ZeedGlobalContext
 }
 
+/** Identify the right global for the environment. Might be obsolete these days, due to globalThis. */
 function _global(): ZeedGlobalIntegration {
   if (typeof self !== 'undefined')
     return self as ZeedGlobalIntegration
@@ -22,10 +23,10 @@ function _global(): ZeedGlobalIntegration {
   throw new Error('unable to locate global object')
 }
 
-export function getGlobalContext(): ZeedGlobalContext {
+/** Global object to work across module boundaries as well. Internally already used for logger and emitter. */
+export function getGlobalContext<T = ZeedGlobalContext>(defaultValue = {}): T {
   const gcontext = _global()
   if (gcontext._zeedGlobal == null)
-    gcontext._zeedGlobal = {}
-
-  return gcontext._zeedGlobal
+    gcontext._zeedGlobal = defaultValue
+  return gcontext._zeedGlobal as T
 }

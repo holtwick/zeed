@@ -16,7 +16,7 @@
   "homepage": "https://github.com/holtwick/zeed",
   "repository": {
     "type": "git",
-    "url": "https://github.com/holtwick/zeed.git"
+    "url": "git+https://github.com/holtwick/zeed.git"
   },
   "bugs": {
     "url": "https://github.com/holtwick/zeed/issues"

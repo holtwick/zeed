@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.15.15",
+  "version": "0.15.16",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",
@@ -16,7 +16,7 @@
   "homepage": "https://github.com/holtwick/zeed",
   "repository": {
     "type": "git",
-    "url": "https://github.com/holtwick/zeed.git"
+    "url": "git+https://github.com/holtwick/zeed.git"
   },
   "bugs": {
     "url": "https://github.com/holtwick/zeed/issues"

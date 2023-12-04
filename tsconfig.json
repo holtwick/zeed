@@ -30,6 +30,7 @@
   "exclude": [
     "_archive",
     "node_modules",
-    "dist"
+    "dist",
+    "docs"
   ]
 }

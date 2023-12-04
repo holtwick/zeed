@@ -10,6 +10,7 @@ export default antfu(
       'build',
       'tmp',
       'demos',
+      'docs',
       'coverage',
       '_archive',
       '*.spec.*',

@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - 'release/*'
+      - 'release*'
 
 jobs:
   release:
@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 16.x
 
       - run: npx changelogithub
         env:

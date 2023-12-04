@@ -14,6 +14,11 @@ Get started like this:
 npm i zeed
 ```
 
+Links:
+
+- API docs at https://zeed.holtwick.de/
+- Github repo at https://github.com/holtwick/zeed
+
 ## Universal Logging
 
 Powerful logging for browser and terminal.

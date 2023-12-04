@@ -5,12 +5,17 @@ permissions:
 
 on:
   push:
-    branches:
-      - main
-      - master
-  release:
-    types: [created]
-  # workflow_dispatch:
+    tags:
+      - 'release/*'
+
+# on:
+#   push:
+#     branches:
+#       - main
+#       - master
+#   release:
+#     types: [created]
+#   # workflow_dispatch:
 
 jobs:
   build:

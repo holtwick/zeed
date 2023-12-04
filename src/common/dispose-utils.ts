@@ -4,10 +4,9 @@ import type { DisposerFunction } from './dispose-types'
 import { promisify } from './exec'
 import type { LoggerInterface } from './log/log-base'
 
-export function useTimeout(
-  fn: DisposerFunction,
-  timeout = 0,
-): DisposerFunction {
+export type TimerExecFunction = () => void | Promise<void>
+
+export function useTimeout(fn: TimerExecFunction, timeout = 0): DisposerFunction {
   let timeoutHandle: any = setTimeout(fn, timeout)
   return () => {
     if (timeoutHandle) {
@@ -17,7 +16,7 @@ export function useTimeout(
   }
 }
 
-export function useInterval(fn: DisposerFunction, interval: number): DisposerFunction {
+export function useInterval(fn: TimerExecFunction, interval: number): DisposerFunction {
   let intervalHandle: any = setInterval(fn, interval)
   return () => {
     if (intervalHandle) {
@@ -28,7 +27,7 @@ export function useInterval(fn: DisposerFunction, interval: number): DisposerFun
 }
 
 /** The interval starts only, when the function is finished. */
-export function useIntervalPause(fn: DisposerFunction, interval: number, immediately = false): DisposerFunction {
+export function useIntervalPause(fn: TimerExecFunction, interval: number, immediately = false): DisposerFunction {
   let intervalHandle: any
   let stop = false
 
@@ -94,9 +93,9 @@ export function useEventListenerOnce(
 export function useDisposeWithUtils(config?: string | UseDisposeConfig | LoggerInterface) {
   const dispose = useDispose(config)
   return Object.assign(dispose, {
-    timeout: (fn: DisposerFunction, timeout = 0) => dispose.add(useTimeout(fn, timeout)),
-    interval: (fn: DisposerFunction, interval = 0) => dispose.add(useInterval(fn, interval)),
-    intervalPause: (fn: DisposerFunction, interval = 0) => dispose.add(useIntervalPause(fn, interval)),
+    timeout: (fn: TimerExecFunction, timeout = 0) => dispose.add(useTimeout(fn, timeout)),
+    interval: (fn: TimerExecFunction, interval = 0) => dispose.add(useInterval(fn, interval)),
+    intervalPause: (fn: TimerExecFunction, interval = 0) => dispose.add(useIntervalPause(fn, interval)),
     on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListener(emitter, eventName, fn, ...args)),
     once: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListenerOnce(emitter, eventName, fn, ...args)),
   })

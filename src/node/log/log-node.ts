@@ -179,8 +179,11 @@ export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
     }
 
     if (msg.messages?.[0] === loggerStackTraceDebug) {
-      // eslint-disable-next-line no-console
-      console.log(getStack())
+      try {
+        // eslint-disable-next-line no-console
+        console.log(getStack())
+      }
+      catch (err) { }
     }
 
     // Probably time consuming

@@ -45,7 +45,7 @@ describe('args.spec', () => {
           "listItem",
         ],
         "someNumber": 123,
-        "someOne": "\\"empty string\\"",
+        "someOne": ""empty string"",
       }
     `)
   })

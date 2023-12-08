@@ -1,0 +1,7 @@
+{
+  "upgrade": true,
+  "install": "prompt",
+  "packageManager": "pnpm",
+  "reject": [
+  ]
+}

@@ -24,7 +24,7 @@ describe('convert', () => {
       }
     }
     const t = new Test(new Uint8Array([1, 2, 3]))
-    expect(jsonStringifySafe(t)).toMatchInlineSnapshot('"{\\"id\\":{\\"0\\":1,\\"1\\":2,\\"2\\":3}}"')
+    expect(jsonStringifySafe(t)).toMatchInlineSnapshot(`"{"id":{"0":1,"1":2,"2":3}}"`)
   })
 
   it('should jsonParse', () => {

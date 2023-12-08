@@ -202,21 +202,21 @@ describe('deep', () => {
     // Haha, this is simpler :) But not working in lists
     expect(JSON.stringify(sample, null, 2)).toMatchInlineSnapshot(`
       "{
-        \\"hello\\": {
-          \\"world\\": -1,
-          \\"null1\\": null,
-          \\"sea\\": \\"none\\"
+        "hello": {
+          "world": -1,
+          "null1": null,
+          "sea": "none"
         },
-        \\"other\\": [
+        "other": [
           {
-            \\"fish\\": 8
+            "fish": 8
           },
           null,
           null,
-          \\"Hello\\"
+          "Hello"
         ],
-        \\"before\\": {
-          \\"magic\\": 666
+        "before": {
+          "magic": 666
         }
       }"
     `)

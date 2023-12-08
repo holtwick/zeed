@@ -38,7 +38,7 @@ describe('treeshake', () => {
         // <stdin>
         var a = [1, 2, 3, 3];
         var aa = arrayUnion(a);
-        console.log(\\"result arrayUnion\\", aa);
+        console.log("result arrayUnion", aa);
       })();
       "
     `)

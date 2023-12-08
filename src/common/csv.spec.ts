@@ -9,9 +9,9 @@ describe('csv.spec', () => {
     ])
     expect(txt).toMatchInlineSnapshot(`
       "1,one,10000000000,1e10,1.23
-      2,\\"two
-      lines\\",,,1
-      3,\\"tree \\"\\"drei\\"\\"\\",{},\\"{\\"\\"a\\"\\":1}\\",\\"[1,2,3]\\"
+      2,"two
+      lines",,,1
+      3,"tree ""drei""",{},"{""a"":1}","[1,2,3]"
       "
     `)
 
@@ -34,9 +34,9 @@ describe('csv.spec', () => {
         ],
         Array [
           "3",
-          "tree \\"drei\\"",
+          "tree "drei"",
           "{}",
-          "{\\"a\\":1}",
+          "{"a":1}",
           "[1,2,3]",
         ],
       ]

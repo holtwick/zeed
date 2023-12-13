@@ -1,6 +1,6 @@
 import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
-import { objectMap, objectMergeDisposable } from './object'
+import { objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick } from './object'
 
 describe('object.spec', () => {
   it('should map it', async () => {
@@ -60,4 +60,27 @@ describe('object.spec', () => {
   //   await m.dispose()
   //   expect(x).toBe(3)
   // })
+
+  it('should omit and pick', () => {
+    const o = { a: 1, b: 2, c: 3, d: 4 }
+    expect(objectPick(o, 'a', 'c')).toMatchInlineSnapshot(`
+      Object {
+        "a": 1,
+        "c": 3,
+      }
+    `)
+    expect(objectOmit(o, 'a', 'c')).toMatchInlineSnapshot(`
+      Object {
+        "b": 2,
+        "d": 4,
+      }
+    `)
+    expect(objectInclusivePick(o, 'a', 'c', 'x')).toMatchInlineSnapshot(`
+      Object {
+        "a": 1,
+        "c": 3,
+        "x": undefined,
+      }
+    `)
+  })
 })

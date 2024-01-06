@@ -211,7 +211,7 @@ const deburredLetters = {
  * @param {string} letter The matched letter to deburr.
  * @returns {string} Returns the deburred letter.
  */
-const deburrLetter = basePropertyOf(deburredLetters)
+let deburrLetter: any
 
 /** Used to match Latin Unicode letters (excluding mathematical operators). */
 const reLatin = /[\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u017F]/g
@@ -250,5 +250,7 @@ const reComboMark = RegExp(rsCombo, 'g')
  * // => 'deja vu'
  */
 export function deburr(string: string): string {
+  if (deburrLetter == null)
+    deburrLetter = basePropertyOf(deburredLetters)
   return string && string.replace(reLatin, deburrLetter).replace(reComboMark, '')
 }

@@ -78,7 +78,7 @@ Uint8Array [
 
     expect(enc(1)).toMatchInlineSnapshot('"01"')
     expect(enc(127)).toMatchInlineSnapshot('"7f"')
-    expect(enc(128)).toMatchInlineSnapshot('"0001"')
+    expect(enc(128)).toMatchInlineSnapshot(`"8001"`)
     expect(enc(255)).toMatchInlineSnapshot('"ff01"')
     expect(enc(256)).toMatchInlineSnapshot('"8002"')
     expect(enc(691529286)).toMatchInlineSnapshot('"c6ccdfc902"')

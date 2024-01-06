@@ -116,16 +116,6 @@ describe('treeshake', () => {
           return u2(e5.reduce((r9 = [], n9) => r9.concat(n9), []));
         }
 
-        // dist/chunk-GL7MJCWF.js
-        var s4 = "\\\\u0300-\\\\u036f";
-        var t2 = "\\\\ufe20-\\\\ufe2f";
-        var c6 = "\\\\u20d0-\\\\u20ff";
-        var f3 = "\\\\u1ab0-\\\\u1aff";
-        var i3 = "\\\\u1dc0-\\\\u1dff";
-        var l6 = s4 + t2 + c6 + f3 + i3;
-        var d4 = \`[\${l6}]\`;
-        var g2 = RegExp(d4, "g");
-
         // <stdin>
         var a19 = [1, 2, 3, 3, 4];
         var aa = a8(a19);

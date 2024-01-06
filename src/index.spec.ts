@@ -108,10 +108,6 @@ describe('treeshake', () => {
     const result1 = await esbuild.build(opt)
     expect(result1?.outputFiles?.[0]?.text).toMatchInlineSnapshot(`
       "(() => {
-        // dist/chunk-CEZXZXMN.js
-        var fromCharCode = String.fromCharCode;
-        var fromCodePoint = String.fromCodePoint;
-
         // dist/chunk-PYEUK3HW.js
         var BIT18 = 1 << 17;
         var BIT19 = 1 << 18;

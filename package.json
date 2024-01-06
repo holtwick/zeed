@@ -61,7 +61,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "nr build && nr circles && nr test:publish",
-    "release": "na version patch && na publish",
     "start": "nr watch",
     "test": "nr build && vitest",
     "test:publish": "vitest --run",

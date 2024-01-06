@@ -7,17 +7,16 @@ const env = process.env.NODE_ENV
 // https://github.com/orabazu/tsup-library-template/tree/main
 
 export const tsup: Options = {
+  sourcemap: true,
+  clean: true,
+  dts: true,
+  format: ['esm', 'cjs'],
+  minify: false,
   splitting: true,
-  sourcemap: env === 'production', // source map is only available in prod
-  clean: true, // rimraf disr
-  dts: true, // generate dts file for main module
-  format: ['esm', 'cjs'], // generate cjs and esm files
-  minify: false, // env === 'production',
-  bundle: false, // env === 'production',
-  // skipNodeModulesBundle: true,
+  bundle: true,
+  skipNodeModulesBundle: true,
   entryPoints: ['src/index.all.ts'],
-  // watch: env === 'development',
   target: 'es2020',
-  outDir: 'dist', // env === 'production' ? 'dist' : 'lib',
+  outDir: 'dist',
   entry: ['src/**/*.ts'],
 }

@@ -4,8 +4,8 @@
  * Utility module to work with strings.
  */
 
-export const fromCharCode = String.fromCharCode
-export const fromCodePoint = String.fromCodePoint
+// export const fromCharCode = String.fromCharCode
+// export const fromCodePoint = String.fromCodePoint
 
 function toLowerCase(s: string): string {
   return s.toLowerCase()

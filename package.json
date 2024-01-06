@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",
@@ -31,7 +31,6 @@
     "utils",
     "zeed"
   ],
-  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.all.d.ts",

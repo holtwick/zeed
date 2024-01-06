@@ -211,29 +211,17 @@ const deburredLetters = {
  * @param {string} letter The matched letter to deburr.
  * @returns {string} Returns the deburred letter.
  */
-const deburrLetter = basePropertyOf(deburredLetters)
+let deburrLetter: any
 
 /** Used to match Latin Unicode letters (excluding mathematical operators). */
 const reLatin = /[\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u017F]/g
-
-/** Used to compose unicode character classes. */
-const rsComboMarksRange = '\\u0300-\\u036f'
-const reComboHalfMarksRange = '\\ufe20-\\ufe2f'
-const rsComboSymbolsRange = '\\u20d0-\\u20ff'
-const rsComboMarksExtendedRange = '\\u1ab0-\\u1aff'
-const rsComboMarksSupplementRange = '\\u1dc0-\\u1dff'
-const rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange + rsComboMarksExtendedRange + rsComboMarksSupplementRange
-
-/** Used to compose unicode capture groups. */
-const rsCombo = `[${rsComboRange}]`
 
 /**
  * Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks) and
  * [combining diacritical marks for symbols](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks_for_Symbols).
  */
 
-// eslint-disable-next-line no-misleading-character-class
-const reComboMark = RegExp(rsCombo, 'g')
+let reComboMark: RegExp | undefined
 
 /**
  * Deburrs `string` by converting
@@ -250,5 +238,21 @@ const reComboMark = RegExp(rsCombo, 'g')
  * // => 'deja vu'
  */
 export function deburr(string: string): string {
+  if (reComboMark == null) {
+    /** Used to compose unicode character classes. */
+    const rsComboMarksRange = '\\u0300-\\u036f'
+    const reComboHalfMarksRange = '\\ufe20-\\ufe2f'
+    const rsComboSymbolsRange = '\\u20d0-\\u20ff'
+    const rsComboMarksExtendedRange = '\\u1ab0-\\u1aff'
+    const rsComboMarksSupplementRange = '\\u1dc0-\\u1dff'
+    const rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange + rsComboMarksExtendedRange + rsComboMarksSupplementRange
+
+    /** Used to compose unicode capture groups. */
+    const rsCombo = `[${rsComboRange}]`
+    // eslint-disable-next-line no-misleading-character-class
+    reComboMark = RegExp(rsCombo, 'g')
+  }
+  if (deburrLetter == null)
+    deburrLetter = basePropertyOf(deburredLetters)
   return string && string.replace(reLatin, deburrLetter).replace(reComboMark, '')
 }

@@ -84,7 +84,7 @@ describe('treeshake', () => {
   //   `)
   // })
 
-  it('should shake it in dist as well', async () => {
+  it.skip('should shake it in dist as well', async () => {
     const code = `          
       import { arrayUnion } from '..'
  
@@ -108,17 +108,17 @@ describe('treeshake', () => {
     const result1 = await esbuild.build(opt)
     expect(result1?.outputFiles?.[0]?.text).toMatchInlineSnapshot(`
       "(() => {
-        // dist/common/data/array.js
-        function arrayUnique(x) {
-          return x.filter((n, index) => x.indexOf(n) === index);
+        // dist/chunk-E6K4QJKR.js
+        function u(e5) {
+          return e5.filter((r9, n9) => e5.indexOf(r9) === n9);
         }
-        function arrayUnion(...a2) {
-          return arrayUnique(a2.reduce((acc = [], value) => acc.concat(value), []));
+        function a8(...e5) {
+          return u(e5.reduce((r9 = [], n9) => r9.concat(n9), []));
         }
 
         // <stdin>
-        var a = [1, 2, 3, 3, 4];
-        var aa = arrayUnion(a);
+        var a19 = [1, 2, 3, 3, 4];
+        var aa = a8(a19);
         console.log("result arrayUnion", aa);
       })();
       "

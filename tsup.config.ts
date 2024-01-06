@@ -11,14 +11,13 @@ export const tsup: Options = {
   sourcemap: env === 'production', // source map is only available in prod
   clean: true, // rimraf disr
   dts: true, // generate dts file for main module
-  format: ['cjs', 'esm'], // generate cjs and esm files
+  format: ['esm', 'cjs'], // generate cjs and esm files
   minify: false, // env === 'production',
   bundle: false, // env === 'production',
-  skipNodeModulesBundle: true,
+  // skipNodeModulesBundle: true,
   entryPoints: ['src/index.all.ts'],
   // watch: env === 'development',
   target: 'es2020',
   outDir: 'dist', // env === 'production' ? 'dist' : 'lib',
-  // entry: ['src/**/*[!.spec].ts'],
   entry: ['src/**/*.ts'],
 }

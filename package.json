@@ -63,9 +63,9 @@
     "prepublishOnly": "nr build && nr circles && nr test:publish",
     "release": "na version patch && na publish",
     "start": "nr watch",
-    "test": "nr build:dev && vitest",
+    "test": "nr build && vitest",
     "test:publish": "vitest --run",
-    "watch": "nr build:tsup -- --watch"
+    "watch": "nr build -- --watch"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.6.1",

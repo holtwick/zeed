@@ -4,7 +4,7 @@
 
 - Strict **TypeScript**
 - **Zero dependencies** and lightweight, **tree-shakable**
-- **Universal** for browsers, as well as node, deno and bun 
+- **Universal** for browsers, as well as node, deno and bun
 - Modern **ESM**, fallback to CommonJS available
 - Mostly covered by **tests**
 

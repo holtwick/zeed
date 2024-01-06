@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.15.26",
+  "version": "0.16.0",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",
@@ -52,8 +52,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "nr clean && nr build:tsup",
-    "build:tsup": "tsup src/index.all.ts --clean --dts-only && tsup src/index.browser.ts src/index.node.ts",
+    "build": "nr clean && NODE_ENV=production tsup",
     "build:docs": "typedoc src/index.all.ts",
     "check": "tsc --noEmit -p tsconfig.json",
     "circles": "madge --circular --summary --orphans --leaves --warning --extensions ts src",
@@ -62,25 +61,24 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "nr build && nr circles && nr test:publish",
-    "release": "na version patch && na publish",
     "start": "nr watch",
-    "test": "vitest",
+    "test": "nr build && vitest",
     "test:publish": "vitest --run",
-    "watch": "nr build:tsup -- --watch"
+    "watch": "nr build -- --watch"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.4.5",
+    "@antfu/eslint-config": "^2.6.1",
     "@antfu/ni": "^0.21.12",
-    "@types/node": "^20.10.4",
-    "c8": "^8.0.1",
+    "@types/node": "^20.10.6",
+    "c8": "^9.0.0",
     "cross-fetch": "^4.0.0",
-    "esbuild": "^0.19.9",
-    "eslint": "^8.55.0",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.56.0",
     "madge": "^6.1.0",
     "tsup": "^8.0.1",
-    "typedoc": "^0.25.4",
+    "typedoc": "^0.25.6",
     "typescript": "^5.3.3",
-    "vite": "^5.0.8",
-    "vitest": "^1.0.4"
+    "vite": "^5.0.11",
+    "vitest": "^1.1.3"
   }
 }

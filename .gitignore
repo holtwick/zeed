@@ -14,3 +14,4 @@ coverage
 _archive
 .npmrc
 .npmrc*
+lib

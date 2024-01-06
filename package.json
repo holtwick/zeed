@@ -35,9 +35,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.all.d.ts",
-      "browser": "./dist/index.browser.js",
-      "import": "./dist/index.node.js",
-      "require": "./dist/index.node.cjs",
       "node": "./dist/index.node.js",
       "default": "./dist/index.browser.js"
     }

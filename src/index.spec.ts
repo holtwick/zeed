@@ -86,7 +86,7 @@ describe('treeshake', () => {
 
   it('should shake it in dist as well', async () => {
     const code = `          
-      import { arrayUnion } from '../dist/index.browser.js'
+      import { arrayUnion } from '..'
  
       let a = [1,2,3,3,4]
       let aa = arrayUnion(a)

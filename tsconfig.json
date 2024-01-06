@@ -25,6 +25,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "tsup.config.ts",
     "vitest-setup.ts"
   ],
   "exclude": [

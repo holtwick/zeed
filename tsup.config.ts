@@ -11,7 +11,7 @@ export const tsup: Options = {
   clean: true,
   dts: true,
   format: ['esm', 'cjs'],
-  minify: false,
+  minify: true, // fixes sideEffects in binary.ts where like 1 << 31
   splitting: true,
   bundle: true,
   skipNodeModulesBundle: true,

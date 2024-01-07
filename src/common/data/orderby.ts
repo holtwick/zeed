@@ -24,7 +24,7 @@ export function composeOrderby(field: string, asc = true): string {
 export function cmp(a: any, b: any, asc = true): -1 | 0 | 1 {
   const aa = a || 0
   const bb = b || 0
-  return aa > bb ? (asc ? 1 : -1) : aa < bb ? (asc ? -1 : 1) : 0
+  return aa > bb ? (asc ? 1 : -1) : aa < bb ? (asc ? -1 : 1) : 0 // use Math.sign(?) for performance?
 }
 
 // todo: support localeCompare()

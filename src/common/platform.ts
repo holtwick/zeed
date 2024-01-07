@@ -53,9 +53,7 @@ export function detect(
   info.windows = !!_navigator?.platform?.startsWith('Win')
 
   info.beaker = _window?.beaker != null // https://github.com/beakerbrowser/beaker
-  info.electron
-    = (_navigator?.userAgent?.toLowerCase()?.indexOf(' electron/') || -1) > -1
-    && !info.beaker
+  info.electron = (_navigator?.userAgent?.toLowerCase()?.indexOf(' electron/') || -1) > -1 && !info.beaker
   info.wkwebview = _window?.webkit?.messageHandlers != null // Apple embedded
 
   info.pwa = _navigator?.serviceWorker != null

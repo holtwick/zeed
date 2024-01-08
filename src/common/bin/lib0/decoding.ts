@@ -208,7 +208,7 @@ export function readVarInt(decoder: Decoder): number {
   let r = decoder.arr[decoder.pos++]
   let num = r & BITS6
   let mult = 64
-  const sign = (r & BIT7) > 0 ? -1 : 1
+  const sign = (r & BIT7) > 0 ? -1 : 1 // use Math.sign(?) for performance?
   if ((r & BIT8) === 0) {
     // don't continue reading
     return sign * num

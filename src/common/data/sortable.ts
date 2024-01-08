@@ -44,7 +44,7 @@ export function moveSortWeight(
   // Make sure they are sorted
   items = sortedItems([...items])
 
-  const step = moveLower ? -1 : 0
+  const step = moveLower ? -1 : 0 // use Math.sign(?) for performance?
   const lower = items[newIndex + step].sort_weight || 0
   const upper = items[newIndex + step + 1].sort_weight || 0
   const distance = upper - lower

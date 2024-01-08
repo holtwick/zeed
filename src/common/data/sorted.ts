@@ -65,7 +65,7 @@ export function useSorted<S extends Record<string, any>>(
     // Make sure they are sorted
     sortableItems = items([...sortableItems])
 
-    const step = moveLower ? -1 : 0
+    const step = moveLower ? -1 : 0 // use Math.sign(?) for performance?
     const lower = getter(sortableItems[newIndex + step]) || 0
     const upper = getter(sortableItems[newIndex + step + 1]) || 0
     const distance = upper - lower

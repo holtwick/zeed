@@ -3,10 +3,7 @@ import { isArray, isObject } from './is'
 /** Like `.map()` for object. Return new key and value or `undefined` to delete. */
 export function objectMap<T = any>(
   obj: any,
-  fn: (
-    key: string,
-    value: any
-  ) => [key: string, value: T] | T | undefined | null,
+  fn: (key: string, value: any) => [key: string, value: T] | T | undefined | null,
 ): Record<string, T> {
   if (!isObject(obj))
     return {}
@@ -16,7 +13,6 @@ export function objectMap<T = any>(
         const r = fn(k, v)
         if (isArray(r) && r.length === 2)
           return r
-
         return [k, r]
       })
       .filter(v => v != null),

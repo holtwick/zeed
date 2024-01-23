@@ -8,17 +8,17 @@ export function browserSupportsColors(): boolean {
   // explicitly
   if (
     typeof window !== 'undefined'
-      && window.process
+    && window.process
     // @ts-expect-error xxx
-      && (window.process.type === 'renderer' || window.process.__nwjs)
+    && (window.process.type === 'renderer' || window.process.__nwjs)
   )
     return true
 
   // Internet Explorer and Edge do not support colors.
   if (
     typeof navigator !== 'undefined'
-      && navigator.userAgent
-      && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)
+    && navigator.userAgent
+    && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)
   )
     return false
 

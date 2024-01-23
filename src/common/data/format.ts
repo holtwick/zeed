@@ -1,5 +1,5 @@
 /** Just a simple yet fast helper. Alternatively you may use Intl formatters http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat */
-export function formatBytesToHuman(bytes: number, decimals = 2) {
+export function formatBytesToHumanBase1024(bytes: number, decimals = 2) {
   // https://en.wikipedia.org/wiki/Orders_of_magnitude_(data)
   const units = ['bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'] // etc
   const c = 1 / 1023 // change it to 1024 and see the diff
@@ -12,7 +12,25 @@ export function formatBytesToHuman(bytes: number, decimals = 2) {
     if (h >= c)
       break
   }
+  return (`${(1 / h).toFixed(i > 0 ? decimals : 0).toLocaleString()} ${units[i]}`)
+}
 
+export const formatBytesToHuman = formatBytesToHumanBase1024
+
+/** Just a simple yet fast helper. Alternatively you may use Intl formatters http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat */
+export function formatBytesToHumanBase1000(bytes: number, decimals = 2) {
+  // https://en.wikipedia.org/wiki/Orders_of_magnitude_(data)
+  const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'] // etc
+  const c = 1 / 999
+  let i = 0
+  let h = 0
+  if (bytes < 0)
+    bytes = 0
+  for (; h < c && i < units.length; i++) {
+    h = 1000 ** i / bytes
+    if (h >= c)
+      break
+  }
   return (`${(1 / h).toFixed(i > 0 ? decimals : 0).toLocaleString()} ${units[i]}`)
 }
 

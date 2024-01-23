@@ -5,9 +5,9 @@ export function setupWebCrypto() {
   try {
     if (
       typeof globalThis !== 'undefined'
-        && typeof globalThis.crypto === 'undefined'
-        && nodeCrypto
-        && nodeCrypto.webcrypto
+      && typeof globalThis.crypto === 'undefined'
+      && nodeCrypto
+      && nodeCrypto.webcrypto
     ) {
       // @ts-expect-error this is a workaround for node environment
       globalThis.crypto = nodeCrypto.webcrypto

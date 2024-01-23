@@ -1,14 +1,14 @@
-import { formatBytesToHuman, formatBytesToHumanBase1000, formatSecondsToTime } from './format'
+import { formatBytesToHumanBase1000, formatBytesToHumanBase1024, formatSecondsToTime } from './format'
 
 describe('format.spec', () => {
   it('should format bytes in 1024 steps', async () => {
-    expect(formatBytesToHuman(123)).toMatchInlineSnapshot('"123 bytes"')
-    expect(formatBytesToHuman(16 * 1024)).toMatchInlineSnapshot('"16.00 KiB"')
-    expect(formatBytesToHuman(16 * 1024 * 1024)).toMatchInlineSnapshot('"16.00 MiB"')
-    expect(formatBytesToHuman(16 * 1024 + 123)).toMatchInlineSnapshot('"16.12 KiB"')
-    expect(formatBytesToHuman(16 * 1024 + 123, 0)).toMatchInlineSnapshot('"16 KiB"')
-    expect(formatBytesToHuman(-123)).toMatchInlineSnapshot('"0 bytes"')
-    expect(formatBytesToHuman(0)).toMatchInlineSnapshot('"0 bytes"')
+    expect(formatBytesToHumanBase1024(123)).toMatchInlineSnapshot('"123 bytes"')
+    expect(formatBytesToHumanBase1024(16 * 1024)).toMatchInlineSnapshot('"16.00 KiB"')
+    expect(formatBytesToHumanBase1024(16 * 1024 * 1024)).toMatchInlineSnapshot('"16.00 MiB"')
+    expect(formatBytesToHumanBase1024(16 * 1024 + 123)).toMatchInlineSnapshot('"16.12 KiB"')
+    expect(formatBytesToHumanBase1024(16 * 1024 + 123, 0)).toMatchInlineSnapshot('"16 KiB"')
+    expect(formatBytesToHumanBase1024(-123)).toMatchInlineSnapshot('"0 bytes"')
+    expect(formatBytesToHumanBase1024(0)).toMatchInlineSnapshot('"0 bytes"')
   })
 
   it('should format bytes in 1000 steps', async () => {

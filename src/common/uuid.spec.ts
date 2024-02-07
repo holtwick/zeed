@@ -69,7 +69,22 @@ describe('uuid', () => {
 
     // Extract the date from the suid
     const dateSuid = new Uint8Array([
-      0, 0, 141, 33, 250, 205, 174, 58, 31, 221, 187, 156, 31, 221, 187, 156,
+      0,
+      0,
+      141,
+      33,
+      250,
+      205,
+      174,
+      58,
+      31,
+      221,
+      187,
+      156,
+      31,
+      221,
+      187,
+      156,
     ])
     expect(suidBytesDate(dateSuid)).toEqual(
       new Date('2020-10-10T22:10:14.349Z'),
@@ -83,7 +98,22 @@ describe('uuid', () => {
 
     expect(decode('000FcTTJiOtjzrDGJVhfoa', 16)).toEqual(
       new Uint8Array([
-        0, 0, 141, 33, 250, 205, 174, 58, 31, 221, 187, 156, 31, 221, 187, 156,
+        0,
+        0,
+        141,
+        33,
+        250,
+        205,
+        174,
+        58,
+        31,
+        221,
+        187,
+        156,
+        31,
+        221,
+        187,
+        156,
       ]),
     )
 

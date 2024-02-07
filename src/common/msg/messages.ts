@@ -48,9 +48,7 @@ export interface MessageHub {
 }
 
 // The async proxy, waiting for a response
-export function createPromiseProxy<P extends object>(fn: (name: string, args: any[], opt: any) => Promise<unknown>,
-  opt: MessagesOptions,
-  predefinedMethods: any = {}): P {
+export function createPromiseProxy<P extends object>(fn: (name: string, args: any[], opt: any) => Promise<unknown>, opt: MessagesOptions, predefinedMethods: any = {}): P {
   return new Proxy<P>(predefinedMethods, {
     get: (target: any, name: any) => {
       if (name in target)

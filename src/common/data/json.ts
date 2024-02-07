@@ -73,7 +73,8 @@ export function jsonStringifySafe(
   return JSON.stringify(
     obj,
     serializer(replacer ?? undefined, cycleReplacer),
-    spaces ?? undefined)
+    spaces ?? undefined,
+  )
 }
 
 export const jsonStringify = jsonStringifySafe

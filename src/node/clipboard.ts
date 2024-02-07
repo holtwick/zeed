@@ -9,5 +9,6 @@ export function pbcopy(data: string) {
         proc.stdin.write(data)
         proc.stdin.end()
       }).catch(() => {})
-    })
+    },
+  )
 }

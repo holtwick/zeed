@@ -53,13 +53,13 @@ export interface LoggerInterface {
 
   level: LogLevel
 
-  debug(...messages: any[]): void
+  debug: (...messages: any[]) => void
 
-  info(...messages: any[]): void
+  info: (...messages: any[]) => void
 
-  warn(...messages: any[]): void
+  warn: (...messages: any[]) => void
 
-  error(...messages: any[]): void
+  error: (...messages: any[]) => void
 
   /**
    * Throws if condition is not truthy.
@@ -73,7 +73,7 @@ export interface LoggerInterface {
    *
    * Bug https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
    */
-  assert(condition: unknown, ...messages: any[]): asserts condition
+  assert: (condition: unknown, ...messages: any[]) => asserts condition
 
   /**
    * Always throws.
@@ -87,9 +87,9 @@ export interface LoggerInterface {
    *
    * Bug https://github.com/microsoft/TypeScript/issues/50363#issuecomment-1219811447
    */
-  fatal(...messages: any[]): never
+  fatal: (...messages: any[]) => never
 
-  extend(prefix: string): LoggerInterface
+  extend: (prefix: string) => LoggerInterface
 
   factory?: LoggerContextInterface
 
@@ -99,20 +99,20 @@ export interface LoggerInterface {
 export interface LoggerContextInterface {
   (name?: string, level?: LogLevelAliasType): LoggerInterface
 
-  registerHandler(handler: LogHandler): void
+  registerHandler: (handler: LogHandler) => void
 
-  setFilter(namespaces: string): void
+  setFilter: (namespaces: string) => void
 
-  setHandlers(handlers?: (LogHandler | undefined | null)[]): void
+  setHandlers: (handlers?: (LogHandler | undefined | null)[]) => void
 
-  setLock(lock: boolean): void
+  setLock: (lock: boolean) => void
 
   /** When true emits a short log message for each Logger when being set up first time. */
-  setDebug(debug: boolean): void
+  setDebug: (debug: boolean) => void
 
-  setLogLevel(level?: LogLevel): void
+  setLogLevel: (level?: LogLevel) => void
 
-  setFactory(factory: (name?: string) => LoggerInterface): void
+  setFactory: (factory: (name?: string) => LoggerInterface) => void
 }
 
 export interface LogHandlerOptions {

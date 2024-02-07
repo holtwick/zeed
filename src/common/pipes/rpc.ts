@@ -1,21 +1,15 @@
 // From https://github.com/antfu/birpc/blob/main/src/index.ts MIT
 
+import { createPromise } from '..'
 import type { LoggerInterface } from '../log/log-base'
+import type { PipeAsync } from './types'
 
 export type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 export type ReturnType<T> = T extends (...args: any) => infer R ? R : never
 
-export interface RPCOptionsBasic {
+export interface RPCOptionsBasic extends PipeAsync {
   /** No return values expected */
   onlyEvents?: boolean
-  /** Function to post raw message */
-  post: (data: any) => void
-  /** Listener to receive raw message */
-  on: (fn: (data: any) => void) => void
-  /** Custom function to serialize data */
-  serialize?: (data: any) => any
-  /** Custom function to deserialize data */
-  deserialize?: (data: any) => any
   /** Custom logger */
   log?: LoggerInterface
 }
@@ -54,7 +48,7 @@ type RPCMessage = [
   string | undefined | null, // method
 ]
 
-const defaultSerialize = (i: any) => i
+const defaultSerialize = async (i: any) => i
 const defaultDeserialize = defaultSerialize
 
 function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: string[] = []) {
@@ -70,7 +64,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
 
   on(async (data) => {
     try {
-      const msg = deserialize(data) as RPCMessage
+      const msg = await deserialize(data) as RPCMessage
       const [mode, args, id, method] = msg
       if (mode === RPCMode.request || mode === RPCMode.event) {
         let result, error: any
@@ -89,10 +83,10 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         if (error)
           log?.warn('error', msg, error)
         if (mode === RPCMode.request && id) {
-          if (error)
-            post(serialize([RPCMode.reject, error, id]))
-          else
-            post(serialize([RPCMode.resolve, result, id]))
+          const data = await serialize(error
+            ? [RPCMode.reject, error, id]
+            : [RPCMode.resolve, result, id])
+          await post(data)
         }
       }
       else if (id) {
@@ -112,19 +106,20 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
 
   const proxyHandler = {
     get(_: any, method: string) {
-      const sendEvent = (...args: any[]) => {
-        post(serialize([RPCMode.event, args, null, method]))
+      const sendEvent = async (...args: any[]) => {
+        await post(await serialize([RPCMode.event, args, null, method]))
       }
       if (options.onlyEvents || eventNames.includes(method)) {
         sendEvent.asEvent = sendEvent
         return sendEvent
       }
-      const sendCall = (...args: any[]) => {
-        return new Promise((resolve, reject) => {
-          const id = rpcCounter++
-          rpcPromiseMap.set(id, { resolve, reject })
-          post(serialize([RPCMode.request, args, id, method]))
-        })
+      const sendCall = async (...args: any[]) => {
+        const [promise, resolve, reject] = createPromise()
+        const id = rpcCounter++
+        rpcPromiseMap.set(id, { resolve, reject })
+        const data = await serialize([RPCMode.request, args, id, method])
+        await post(data)
+        return promise
       }
       sendCall.asEvent = sendEvent
       return sendCall
@@ -134,7 +129,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
   return { post, serialize, rpcPromiseMap, proxyHandler }
 }
 
-export function useRPC<LocalFunctions, RemoteFunctions = LocalFunctions>(
+export function useRPCAsync<LocalFunctions, RemoteFunctions = LocalFunctions>(
   functions: LocalFunctions,
   options: RPCOptions<RemoteFunctions>,
 ): RPCReturn<RemoteFunctions> {
@@ -144,7 +139,7 @@ export function useRPC<LocalFunctions, RemoteFunctions = LocalFunctions>(
   return new Proxy({}, proxyHandler)
 }
 
-export function useRPCHub(options: RPCOptionsBasic) {
+export function useRPCAsyncHub(options: RPCOptionsBasic) {
   const eventNames: string[] = []
   const functions: Record<string, any> = {}
 
@@ -165,7 +160,7 @@ export function useRPCHub(options: RPCOptionsBasic) {
   }
 }
 
-export type UseRPCHubType = ReturnType<typeof useRPCHub>
+export type UseRPCAsyncHubType = ReturnType<typeof useRPCAsyncHub>
 
 // Syntax test case
 // const hub: UseRPCHubType = {} as any

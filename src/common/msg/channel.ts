@@ -20,11 +20,11 @@ export interface ChannelMessageEvent {
  * https://deno.com/deploy/docs/runtime-broadcast-channel
  */
 export abstract class Channel extends Emitter<{
-  message(event: ChannelMessageEvent): void
-  messageerror(event: ChannelMessageEvent): void // optional
-  connect(): void // optional
-  disconnect(): void // optional
-  close(): void
+  message: (event: ChannelMessageEvent) => void
+  messageerror: (event: ChannelMessageEvent) => void // optional
+  connect: () => void // optional
+  disconnect: () => void // optional
+  close: () => void
 }> {
   id: string = uuid()
   abstract isConnected?: boolean

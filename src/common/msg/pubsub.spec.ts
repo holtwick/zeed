@@ -6,7 +6,7 @@ import { usePubSub } from './pubsub'
 // const log = Logger('test:connection')
 
 interface SampleProtocol {
-  bla(a: string, b: number): void
+  bla: (a: string, b: number) => void
 }
 
 describe('connection', () => {

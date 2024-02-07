@@ -19,10 +19,10 @@ interface TaskInfo {
 }
 
 export interface TaskEvents {
-  didUpdate(max: number, resolved: number): void
-  didStart(max: number): void
-  didCancel(): void
-  didFinish(): void
+  didUpdate: (max: number, resolved: number) => void
+  didStart: (max: number) => void
+  didCancel: () => void
+  didFinish: () => void
   // didResolve(value: any): void
   // didReject(error: any): void
   // didPause(max: number): void

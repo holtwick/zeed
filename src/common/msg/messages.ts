@@ -27,9 +27,9 @@ export interface MessagesOptions {
 }
 
 export interface MessagesDefaultMethods<L> {
-  dispose(): void
-  connect?(channel: Channel): void
-  options(opt: MessagesOptions): L
+  dispose: () => void
+  connect?: (channel: Channel) => void
+  options: (opt: MessagesOptions) => L
 }
 
 export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
@@ -41,10 +41,10 @@ export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 export type MessageDefinitions = Record<any, (...args: any) => Promise<any>>
 
 export interface MessageHub {
-  dispose(): void
+  dispose: () => void
   connect: (newChannel: Channel) => void
-  listen<L extends MessageDefinitions>(newHandlers: L): void
-  send<L extends MessageDefinitions>(): MessagesMethods<L>
+  listen: <L extends MessageDefinitions>(newHandlers: L) => void
+  send: <L extends MessageDefinitions>() => MessagesMethods<L>
 }
 
 // The async proxy, waiting for a response

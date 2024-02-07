@@ -61,17 +61,17 @@ export interface PoolTask<T> {
 }
 
 export interface PoolTaskEvents {
-  didUpdate(
+  didUpdate: (
     max: number,
     resolved: number,
     presentMax: number,
     presentResolved: number
-  ): void
-  didStart(id: string): void
-  didCancel(id: string): void
-  didFinish(): void
-  didResolve(id: string, value: any): void
-  didReject(id: string, error: any): void
+  ) => void
+  didStart: (id: string) => void
+  didCancel: (id: string) => void
+  didFinish: () => void
+  didResolve: (id: string, value: any) => void
+  didReject: (id: string, error: any) => void
 }
 
 // todo: barrier

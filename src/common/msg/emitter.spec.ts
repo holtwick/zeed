@@ -10,8 +10,8 @@ const platform = detect()
 
 declare global {
   interface ZeedGlobalEmitter {
-    a(n: number): void
-    b(n: number): void
+    a: (n: number) => void
+    b: (n: number) => void
   }
 }
 
@@ -108,8 +108,8 @@ describe('emitter', () => {
     expect.assertions(4)
 
     interface TestMessages {
-      test(x: number, y: number): void
-      long(): Promise<void>
+      test: (x: number, y: number) => void
+      long: () => Promise<void>
     }
 
     let ctr = 0
@@ -140,8 +140,8 @@ describe('emitter', () => {
 
   it('should work', async () => {
     interface TestMessages {
-      a(): void
-      b(): void
+      a: () => void
+      b: () => void
     }
 
     const e1 = new Emitter<TestMessages>()

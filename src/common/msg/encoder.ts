@@ -2,8 +2,8 @@ import { decrypt, encrypt } from '../crypto'
 import { Uint8ArrayToJson, jsonToUint8Array } from '../data/bin'
 
 export interface Encoder {
-  encode(data: any): Promise<Uint8Array>
-  decode(data: Uint8Array): Promise<any>
+  encode: (data: any) => Promise<Uint8Array>
+  decode: (data: Uint8Array) => Promise<any>
 }
 
 export class NoopEncoder implements Encoder {

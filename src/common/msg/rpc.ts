@@ -66,10 +66,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
     log,
   } = options
 
-  const rpcPromiseMap = new Map<
-    number,
-    { resolve: (...args: any) => any, reject: (...args: any) => any }
-  >()
+  const rpcPromiseMap = new Map<number, { resolve: (...args: any) => any, reject: (...args: any) => any }>()
 
   on(async (data) => {
     try {

@@ -1,6 +1,4 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
-import { isNotNull } from '..'
+import { isNotNull } from '../data/is'
 import type { LogHandler, LogLevel, LogLevelAliasType, LogMessage, LoggerContextInterface, LoggerInterface } from './log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelWarn } from './log-base'
 import { LoggerConsoleHandler } from './log-console'

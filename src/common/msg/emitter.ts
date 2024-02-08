@@ -1,7 +1,4 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import type { DisposerFunction } from '../dispose-types'
-import { promisify } from '../exec/promise'
 import { getGlobalContext } from '../global'
 import { DefaultLogger } from '../log'
 
@@ -60,7 +57,7 @@ export class Emitter<
       if (subscribers.length > 0) {
         const all = subscribers.map(({ fn }) => {
           try {
-            return promisify(fn(...args))
+            return Promise.resolve(fn(...args))
           }
           catch (err) {
             this._logEmitter.warn('emit warning:', err)
@@ -120,7 +117,7 @@ export class Emitter<
   ): DisposerFunction {
     const onceListener = async (...args: any[]) => {
       this.off(event, onceListener as any)
-      return await promisify(listener(...args))
+      return await Promise.resolve(listener(...args))
     }
     this.on(event, onceListener as any)
     return () => {

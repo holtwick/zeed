@@ -228,8 +228,7 @@ export function decodeBase32(s: string, padding = -1) {
     .replaceAll('l', '1')
     .replaceAll('s', '5')
     .replaceAll('o', '0')
-    .replaceAll('i', '1'),
-  padding)
+    .replaceAll('i', '1'), padding)
 }
 
 export function encodeBase16(bin: BinInput, padding = -1) {

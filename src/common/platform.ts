@@ -1,8 +1,6 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable node/prefer-global/process */
 
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 export function getWindow(): any | undefined {
   if (typeof window !== 'undefined')
     return window
@@ -20,10 +18,11 @@ export function getGlobal(): any {
     ? self
     : typeof global !== 'undefined'
       ? global
-      // eslint-disable-next-line no-new-func
+      // eslint-disable-next-line no-new-func, ts/no-implied-eval
       : Function('return this;')()
 }
 
+/** @deprecated */
 export function detect(
   info = {
     ios: false,
@@ -58,20 +57,16 @@ export function detect(
 
   info.pwa = _navigator?.serviceWorker != null
 
-  info.pwaInstalled = _navigator?.standalone
-  || _window?.matchMedia?.('(display-mode: standalone)')?.matches
+  info.pwaInstalled = _navigator?.standalone || _window?.matchMedia?.('(display-mode: standalone)')?.matches
 
-  info.node
-    = typeof process !== 'undefined' && process?.release?.name === 'node'
+  info.node = typeof process !== 'undefined' && process?.release?.name === 'node'
   info.browser = !info.electron && !info.wkwebview && !info.node
 
   // info.worker = typeof importScripts === 'function'
-  info.worker
-    // @ts-expect-error xxx
-    = typeof WorkerGlobalScope !== 'undefined'
-    // @ts-expect-error xxx
-    && self instanceof WorkerGlobalScope
   // @ts-expect-error xxx
+  info.worker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope
+  // @ts-expect-error xxx
+
   info.jest = typeof jest !== 'undefined' || typeof vitest !== 'undefined'
   info.test = info.jest
 
@@ -80,30 +75,15 @@ export function detect(
   info.appleNative = info.wkwebview
 
   // https://github.com/viljamis/feature.js/blob/master/feature.js#L203
-  info.touch
-    = (_window && 'ontouchstart' in _window)
-    || (_navigator?.maxTouchPoints || 0) > 1
-    || (_navigator?.msPointerEnabled && _window?.MSGesture)
-    // @ts-expect-error xxx
-    || (_window?.DocumentTouch && document instanceof DocumentTouch)
+  // @ts-expect-error xxx
+  info.touch = (_window && 'ontouchstart' in _window) || (_navigator?.maxTouchPoints || 0) > 1 || (_navigator?.msPointerEnabled && _window?.MSGesture) || (_window?.DocumentTouch && document instanceof DocumentTouch)
 
   return info
 }
 
-// https://stackoverflow.com/a/31090240/140927
-// export const isBrowser = new Function(
-//   "try {return this===window;}catch(e){ return false;}"
-// )
-
-// export const isNode = new Function(
-//   "try {return this===global;}catch(e){return false;}"
-// )
-
 export function isBrowser() {
   return typeof window !== 'undefined' && globalThis === window
 }
-
-// export const platform = detect()
 
 /**
  * Before closing the tab/window or quitting the node process

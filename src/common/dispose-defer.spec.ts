@@ -72,7 +72,7 @@ describe('dispose', () => {
     const obj = new Some()
     expect(x).toBe(1)
 
-    obj.dispose()
+    void obj.dispose()
     expect(x).toBe(2)
   })
 
@@ -83,7 +83,7 @@ describe('dispose', () => {
     defer.add(() => stack.push('b'))
     defer.add(() => stack.push('c'))
     expect(stack).toEqual([])
-    defer(true)
+    void defer(true)
     expect(stack).toEqual(['c', 'b', 'a'])
   })
 

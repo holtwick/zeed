@@ -4,7 +4,7 @@ Some rules to follow to keep code [sideEffects](https://webpack.js.org/guides/tr
 
 ## Never use `export enum`
 
-This is a major pain point because it will always create some code, i.e. an object to map values and names to. 
+This is a major pain point because it will always create some code, i.e. an object to map values and names to.
 
 Better use strings, like `type MyStates = 'sleep' | 'code' | 'eat'`.
 
@@ -84,7 +84,7 @@ function encode64(data) {
 }
 ```
 
-## Lazy logging 
+## Lazy logging
 
 Logging often follows this pattern at the top level of a file:
 
@@ -92,7 +92,7 @@ Logging often follows this pattern at the top level of a file:
 const log = Logger("fancy")
 ```
 
-This is a constant that stays, whether used or not. 
+This is a constant that stays, whether used or not.
 
 Avoid logging or do it lazily inside the function. As for [zeed](https://github.com/holtwick/zeed), I go even further and only use logging if the importing application uses logging, which looks like this
 

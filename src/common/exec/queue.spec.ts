@@ -11,15 +11,15 @@ describe('queue', () => {
 
     const list: any = []
     const queue = new SerialQueue() // { logLevel })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(100)
       list.push('a')
     })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(200)
       list.push('b')
     })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(1)
       list.push('c')
     })
@@ -32,15 +32,15 @@ describe('queue', () => {
 
     const list: any = []
 
-    ;(async () => {
+    void (async () => {
       await sleep(100)
       list.push('a')
     })()
-    ;(async () => {
+    void (async () => {
       await sleep(200)
       list.push('b')
     })()
-    ;(async () => {
+    void (async () => {
       await sleep(1)
       list.push('c')
     })()
@@ -55,7 +55,7 @@ describe('queue', () => {
 
     const list: any = []
     const queue = new SerialQueue() // { logLevel })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(100)
       list.push('a')
     })
@@ -80,15 +80,15 @@ describe('queue', () => {
     const events: any = []
     queue.onAny((...args) => events.push(args))
 
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(100)
       list.push('a')
     })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(200)
       list.push('b')
     })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(1)
       list.push('c')
     })
@@ -153,15 +153,15 @@ describe('queue', () => {
 
     await queue.pause()
 
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(100)
       list.push('a')
     })
-    queue.enqueue(async () => {
+    void queue.enqueue(async () => {
       await sleep(200)
       list.push('b')
     })
-    queue
+    void queue
       .enqueue(async () => {
         await sleep(1)
         list.push('c')

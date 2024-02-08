@@ -158,7 +158,7 @@ Typed and async emitter:
 
 ```ts
 interface MyEvents {
-  inc(count: number): number
+  inc: (count: number) => number
 }
 
 const counter = 0
@@ -188,7 +188,7 @@ You can also use a global emitter that will be available even over module bounda
 ```ts
 declare global {
   interface ZeedGlobalEmitter {
-    test(x: string): void
+    test: (x: string) => void
   }
 }
 

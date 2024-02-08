@@ -23,9 +23,9 @@ interface ProgressOptions {
  * - On `dispose` child removes itself from parent.
  */
 export class Progress extends Emitter<{
-  progressCancelled(progress: Progress): void
-  progressChanged(progress: Progress): void
-  progressDispose(progress: Progress): void
+  progressCancelled: (progress: Progress) => void
+  progressChanged: (progress: Progress) => void
+  progressDispose: (progress: Progress) => void
 }> {
   private _totalUnits: number
   private _completedUnits: number

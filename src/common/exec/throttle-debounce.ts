@@ -176,6 +176,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
         if (lastArguments != null) {
           clearExistingTimeout()
           // log('exec trigger next')
+
           timeoutID = setTimeout(exec, delay)
         }
       }
@@ -188,6 +189,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     clearExistingTimeout()
     // log('trigger')
     if (running === false)
+
       timeoutID = setTimeout(exec, delay)
   }
 

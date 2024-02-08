@@ -27,9 +27,9 @@ export interface MessagesOptions {
 }
 
 export interface MessagesDefaultMethods<L> {
-  dispose(): void
-  connect?(channel: Channel): void
-  options(opt: MessagesOptions): L
+  dispose: () => void
+  connect?: (channel: Channel) => void
+  options: (opt: MessagesOptions) => L
 }
 
 export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
@@ -41,16 +41,14 @@ export type MessagesMethods<L> = L & MessagesDefaultMethods<L>
 export type MessageDefinitions = Record<any, (...args: any) => Promise<any>>
 
 export interface MessageHub {
-  dispose(): void
+  dispose: () => void
   connect: (newChannel: Channel) => void
-  listen<L extends MessageDefinitions>(newHandlers: L): void
-  send<L extends MessageDefinitions>(): MessagesMethods<L>
+  listen: <L extends MessageDefinitions>(newHandlers: L) => void
+  send: <L extends MessageDefinitions>() => MessagesMethods<L>
 }
 
 // The async proxy, waiting for a response
-export function createPromiseProxy<P extends object>(fn: (name: string, args: any[], opt: any) => Promise<unknown>,
-  opt: MessagesOptions,
-  predefinedMethods: any = {}): P {
+export function createPromiseProxy<P extends object>(fn: (name: string, args: any[], opt: any) => Promise<unknown>, opt: MessagesOptions, predefinedMethods: any = {}): P {
   return new Proxy<P>(predefinedMethods, {
     get: (target: any, name: any) => {
       if (name in target)
@@ -119,6 +117,7 @@ export function useMessageHub(
         }
       }
       if (queue.length > 0 && retryAfter > 0)
+
         queueRetryTimer = setTimeout(postNext, retryAfter)
     }
   }
@@ -131,7 +130,9 @@ export function useMessageHub(
 
   const connect = async (newChannel: Channel) => {
     channel = newChannel
+
     channel.on('connect', postNext)
+
     channel.on('message', async (msg: any) => {
       log('onmessage', typeof msg)
       const { name, args, id, result, error } = await encoder.decode(msg.data)
@@ -229,6 +230,7 @@ export function useMessageHub(
 
   return {
     dispose,
+
     connect,
     listen<L extends object>(newHandlers: L) {
       Object.assign(handlers, newHandlers)

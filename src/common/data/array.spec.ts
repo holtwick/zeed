@@ -37,10 +37,18 @@ describe('array', () => {
   it('should intersect', () => {
     expect(arrayIntersection([1, 1, 2, 2, 3], [2, 2, 3, 5, 6])).toEqual([2, 3])
     expect(arraySymmetricDifference([1, 1, 2, 2, 3], [2, 2, 3, 5, 6])).toEqual([
-      1, 5, 6,
+      1,
+      5,
+      6,
     ])
     expect(arrayUnion([1, 1, 2, 2, 3], [2, 2, 3, 5, 6], [7, 8])).toEqual([
-      1, 2, 3, 5, 6, 7, 8,
+      1,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
     ])
     expect(arrayMinus([1, 1, 2, 2, 3], [2, 2, 3, 5, 6])).toEqual([1])
   })
@@ -96,7 +104,16 @@ describe('array', () => {
 
   it('should create array', () => {
     expect(createArray(10, i => i + 2)).toEqual([
-      2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
     ])
     expect(createArray(3)).toEqual([undefined, undefined, undefined])
     expect(createArray(3, 'hello')).toEqual(['hello', 'hello', 'hello'])

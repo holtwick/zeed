@@ -36,6 +36,7 @@ export function browserSupportsColors(): boolean {
     // @ts-expect-error xxx
     && (window.console.firebug
     // @ts-expect-error xxx
+    // eslint-disable-next-line ts/unbound-method
     || (window.console.exception && window.console.table)))
     // Is firefox >= v31?
     // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages

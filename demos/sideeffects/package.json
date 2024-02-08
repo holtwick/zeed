@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "description": "Just a demo",
   "author": "Dirk Holtwick",
-  "main": "index.js",
   "sideEffects": false,
+  "main": "index.js",
   "scripts": {
     "start": "pnpm run build && ZEED=* node dist/node/index.js",
     "build:zeed": "(cd ../.. && pnpm build)",

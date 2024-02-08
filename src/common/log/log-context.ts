@@ -1,5 +1,4 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
+import { isNotNull } from '../data/is'
 import type { LogHandler, LogLevel, LogLevelAliasType, LogMessage, LoggerContextInterface, LoggerInterface } from './log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelWarn } from './log-base'
 import { LoggerConsoleHandler } from './log-console'
@@ -101,13 +100,11 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
 
   Logger.setDebug = (debug = true) => (logDebug = debug)
 
-  Logger.setHandlers = function (handlers: LogHandler[] = []) {
+  Logger.setHandlers = (handlers?: (LogHandler | undefined | null)[]) => {
     if (logFactory !== LoggerBaseFactory)
       logFactory = LoggerBaseFactory
-
-    if (logLock)
-      return
-    logHandlers = [...handlers].filter(h => typeof h === 'function')
+    if (handlers != null && !logLock)
+      logHandlers = [...handlers].filter(isNotNull)
   }
 
   Logger.level = LogLevelAll

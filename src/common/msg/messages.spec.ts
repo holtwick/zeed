@@ -5,11 +5,11 @@ import type { MessageDefinitions } from './messages'
 import { useMessageHub } from './messages'
 
 interface TestMessages1 extends MessageDefinitions {
-  ping(value: number): Promise<number>
+  ping: (value: number) => Promise<number>
 }
 
 interface TestMessages2 extends MessageDefinitions {
-  aping(value: number | string): Promise<number | string>
+  aping: (value: number | string) => Promise<number | string>
 }
 
 // interface TestMessages2 {

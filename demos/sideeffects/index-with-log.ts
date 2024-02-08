@@ -1,11 +1,10 @@
-/* eslint-disable no-console */
+import type { LoggerInterface } from 'zeed'
+import { Logger, arrayUnion } from 'zeed'
 
-import { arrayUnion, Logger, LoggerInterface } from 'zeed'
+const log: LoggerInterface = Logger('test')
 
-const log: LoggerInterface = Logger("test")
-
-let a = [1,2,3,3]
-let aa = arrayUnion(a)
+const a = [1, 2, 3, 3]
+const aa = arrayUnion(a)
 
 log('result arrayUnion', aa)
 

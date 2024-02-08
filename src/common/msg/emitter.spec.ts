@@ -10,8 +10,8 @@ const platform = detect()
 
 declare global {
   interface ZeedGlobalEmitter {
-    a(n: number): void
-    b(n: number): void
+    a: (n: number) => void
+    b: (n: number) => void
   }
 }
 
@@ -108,8 +108,8 @@ describe('emitter', () => {
     expect.assertions(4)
 
     interface TestMessages {
-      test(x: number, y: number): void
-      long(): Promise<void>
+      test: (x: number, y: number) => void
+      long: () => Promise<void>
     }
 
     let ctr = 0
@@ -140,8 +140,8 @@ describe('emitter', () => {
 
   it('should work', async () => {
     interface TestMessages {
-      a(): void
-      b(): void
+      a: () => void
+      b: () => void
     }
 
     const e1 = new Emitter<TestMessages>()
@@ -154,21 +154,21 @@ describe('emitter', () => {
     e2.on('a', () => counter--)
     e2.on('b', () => counter--)
 
-    e1.emit('a')
+    void e1.emit('a')
 
     expect(counter).toBe(100)
 
-    e2.emit('a')
-    e2.emit('b')
+    void e2.emit('a')
+    void e2.emit('b')
 
     expect(counter).toBe(98)
 
     e1.on('a', () => counter++)
-    e1.emit('a') // twice!
+    void e1.emit('a') // twice!
     expect(counter).toBe(100)
 
     e1.removeAllListeners()
-    e1.emit('a') // no listeners!
+    void e1.emit('a') // no listeners!
     expect(counter).toBe(100)
   })
 
@@ -178,7 +178,7 @@ describe('emitter', () => {
     const e1 = new Emitter()
 
     setTimeout(() => {
-      e1.emit('f', 1)
+      void e1.emit('f', 1)
     }, 100)
 
     const v = await waitOn(e1, 'f')
@@ -233,9 +233,9 @@ describe('emitter', () => {
 
     e.once('a', v => expect(v).toBe(1))
 
-    e.emit('a', 1)
-    e.emit('a', 2)
-    e.emit('a', 3)
+    void e.emit('a', 1)
+    void e.emit('a', 2)
+    void e.emit('a', 3)
   })
 
   it('should mock events', async () => {

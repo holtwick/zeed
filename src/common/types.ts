@@ -30,11 +30,11 @@ export type Json =
 // Implemented by MemStorage, LocalStorage, FileStorage
 // Similar to https://github.com/unjs/unstorage
 export interface ObjectStorage<T = any> {
-  setItem(key: string, value: T): void
-  getItem(key: string): T | undefined
-  removeItem(key: string): void
-  clear(): void
-  allKeys(): string[]
+  setItem: (key: string, value: T) => void
+  getItem: (key: string) => T | undefined
+  removeItem: (key: string) => void
+  clear: () => void
+  allKeys: () => string[]
 }
 
 // https://stackoverflow.com/a/68349501/140927

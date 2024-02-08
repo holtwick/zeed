@@ -31,7 +31,7 @@ Same API as `Emitter` for easily sending event like messages via a `Channel`. It
 
 ```ts
 interface MyProtocol {
-  doSomething(using: string, count: number): void
+  doSomething: (using: string, count: number) => void
 }
 
 const hub = usePubSub<MyProtocol>({ channel })
@@ -67,8 +67,8 @@ Messages are defined via `interface`. Typescript checks for valid calls:
 
 ```ts
 interface MyMessages {
-  echo(data: any): Promise<any>
-  pong(data: any): Promise<void>
+  echo: (data: any) => Promise<any>
+  pong: (data: any) => Promise<void>
 }
 ```
 

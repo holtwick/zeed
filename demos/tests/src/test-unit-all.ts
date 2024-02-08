@@ -16,15 +16,15 @@ console.log('load all browser')
 
 {
   const candidates = import.meta.glob('../../../src/browser/*.spec.*')
-  handleCandidates(candidates)
+  void handleCandidates(candidates)
 }
 
 {
   const candidates = import.meta.glob('../../../src/common/*.spec.*')
-  handleCandidates(candidates)
+  void handleCandidates(candidates)
 }
 
 {
   const candidates = import.meta.glob('../../../src/common/**/*.spec.*')
-  handleCandidates(candidates)
+  void handleCandidates(candidates)
 }

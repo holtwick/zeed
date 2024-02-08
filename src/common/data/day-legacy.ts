@@ -195,7 +195,6 @@ export async function forEachDay(
     const result = handler(start)
     if (isPromise(result))
       await result
-
     start = start.dayOffset(+1)
   }
 }

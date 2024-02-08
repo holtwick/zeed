@@ -176,7 +176,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
         if (lastArguments != null) {
           clearExistingTimeout()
           // log('exec trigger next')
-          // eslint-disable-next-line ts/no-misused-promises
+
           timeoutID = setTimeout(exec, delay)
         }
       }
@@ -189,7 +189,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     clearExistingTimeout()
     // log('trigger')
     if (running === false)
-      // eslint-disable-next-line ts/no-misused-promises
+
       timeoutID = setTimeout(exec, delay)
   }
 

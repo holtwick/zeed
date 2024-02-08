@@ -36,7 +36,7 @@ describe('object.spec', () => {
     const m = objectMergeDisposable(emitter, obj)
     expect(m.f()).toBe(42)
     m.on('a', () => x++)
-    m.emit('a')
+    void m.emit('a')
     expect(x).toBe(2)
     await m.dispose()
     expect(x).toBe(3)

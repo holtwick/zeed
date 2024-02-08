@@ -41,6 +41,7 @@ describe('rpc async', () => {
 
     const bob = useRPCAsync<BobFunctions, AliceFunctions>(Bob, {
       post: async data => channel.port1.postMessage(data),
+
       on: data => channel.port1.on('message', data),
       serialize,
       deserialize,
@@ -50,6 +51,7 @@ describe('rpc async', () => {
       // mark bob's `bump` as an event without response
       eventNames: ['bump'],
       post: async data => channel.port2.postMessage(data),
+
       on: data => channel.port2.on('message', data),
       serialize,
       deserialize,
@@ -77,6 +79,7 @@ describe('rpc async', () => {
 
     const bobHub = useRPCAsyncHub({
       post: async data => channel.port1.postMessage(data),
+
       on: data => channel.port1.on('message', data),
       serialize,
       deserialize,
@@ -88,6 +91,7 @@ describe('rpc async', () => {
       // mark bob's `bump` as an event without response
       eventNames: ['bump'],
       post: async data => channel.port2.postMessage(data),
+
       on: data => channel.port2.on('message', data),
       serialize,
       deserialize,

@@ -45,7 +45,7 @@ describe('days', () => {
 
   it('should iterate days', () => {
     const list: any = []
-    forEachDay(20101230, 20110102, x => list.push(x.toString()))
+    void forEachDay(20101230, 20110102, x => list.push(x.toString()))
     expect(list).toEqual([
       '2010-12-30',
       '2010-12-31',
@@ -54,7 +54,7 @@ describe('days', () => {
     ])
 
     const list2: any = []
-    forEachDay(19991030, 19991102, x => list2.push(x.toString()))
+    void forEachDay(19991030, 19991102, x => list2.push(x.toString()))
     expect(list2).toEqual([
       '1999-10-30',
       '1999-10-31',

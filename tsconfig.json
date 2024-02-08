@@ -25,13 +25,17 @@
   },
   "include": [
     "src/**/*.ts",
-    "tsup.config.ts",
-    "vitest-setup.ts"
+    "demos/**/*.ts",
+    "*.ts"
+    // "tsup.config.ts",
+    // "vitest-setup.ts",
+    // "vitest.config.ts"
   ],
   "exclude": [
     "_archive",
     "node_modules",
     "dist",
-    "docs"
+    "docs",
+    "*.md"
   ]
 }

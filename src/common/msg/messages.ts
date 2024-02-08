@@ -117,6 +117,7 @@ export function useMessageHub(
         }
       }
       if (queue.length > 0 && retryAfter > 0)
+
         queueRetryTimer = setTimeout(postNext, retryAfter)
     }
   }
@@ -129,7 +130,9 @@ export function useMessageHub(
 
   const connect = async (newChannel: Channel) => {
     channel = newChannel
+
     channel.on('connect', postNext)
+
     channel.on('message', async (msg: any) => {
       log('onmessage', typeof msg)
       const { name, args, id, result, error } = await encoder.decode(msg.data)
@@ -227,6 +230,7 @@ export function useMessageHub(
 
   return {
     dispose,
+
     connect,
     listen<L extends object>(newHandlers: L) {
       Object.assign(handlers, newHandlers)

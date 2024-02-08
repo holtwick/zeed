@@ -2,7 +2,6 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu(
   {
-    typescript: true,
     vue: true,
     ignores: [
       'dist',
@@ -13,17 +12,21 @@ export default antfu(
       'docs',
       'coverage',
       '_archive',
+      '*.md',
       // '*.spec.*',
-      'vitest.config.ts',
+      // 'vitest.config.ts',
     ],
-    // typescript: {
-    //   tsconfigPath: 'tsconfig.json',
-    // },
-  },
-  // {},
-  {
+    typescript: {
+      tsconfigPath: './tsconfig.json',
+    },
     rules: {
       'unused-imports/no-unused-vars': 'off',
+      'ts/no-unsafe-assignment': 'off',
+      'ts/no-unsafe-return': 'off',
+      'ts/no-unsafe-member-access': 'off',
+      'ts/no-unsafe-argument': 'off',
+      'ts/no-unsafe-call': 'off',
+      // 'ts/no-floating-promises': 'error',
       // 'ts/require-await': 'error',
     },
   },

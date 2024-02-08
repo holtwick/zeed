@@ -11,7 +11,7 @@ export interface RPCOptionsBasic {
   /** Function to post raw message */
   post: (data: any) => void
   /** Listener to receive raw message */
-  on: (fn: (data: any) => void) => void
+  on: (fn: (data: any) => void | Promise<void>) => void
   /** Custom function to serialize data */
   serialize?: (data: any) => any
   /** Custom function to deserialize data */

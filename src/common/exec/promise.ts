@@ -1,7 +1,6 @@
 // (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
 
 /* eslint-disable ts/no-use-before-define */
-/* eslint-disable no-async-promise-executor */
 
 /**
  * Promise to be used with `await`. Example:
@@ -46,7 +45,7 @@ export async function timeout<T>(
   milliSeconds: number,
   timeoutValue = 'timeoutReached',
 ): Promise<T | typeof timeoutValue> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let done = false
 
     const timeout = setTimeout(() => {
@@ -54,17 +53,17 @@ export async function timeout<T>(
       resolve(timeoutValue)
     }, milliSeconds)
 
-    try {
-      const result = await promise
-      clearTimeout(timeout)
-      if (!done)
-        resolve(result)
-    }
-    catch (err) {
-      clearTimeout(timeout)
-      if (!done)
-        reject(err)
-    }
+    promise
+      .then((result) => {
+        clearTimeout(timeout)
+        if (!done)
+          resolve(result)
+      })
+      .catch((err) => {
+        clearTimeout(timeout)
+        if (!done)
+          reject(err)
+      })
   })
 }
 
@@ -79,7 +78,7 @@ export async function tryTimeout<T>(
   if (milliSeconds <= 0)
     return await promise
 
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let done = false
 
     const timeout = setTimeout(() => {
@@ -87,17 +86,17 @@ export async function tryTimeout<T>(
       reject(new Error('Timeout reached'))
     }, milliSeconds)
 
-    try {
-      const result = await promise
-      clearTimeout(timeout)
-      if (!done)
-        resolve(result)
-    }
-    catch (err) {
-      clearTimeout(timeout)
-      if (!done)
-        reject(err)
-    }
+    promise
+      .then((result) => {
+        clearTimeout(timeout)
+        if (!done)
+          resolve(result)
+      })
+      .catch((err) => {
+        clearTimeout(timeout)
+        if (!done)
+          reject(err)
+      })
   })
 }
 

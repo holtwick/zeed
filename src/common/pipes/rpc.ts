@@ -70,7 +70,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         let result, error: any
         if (method != null) {
           try {
-            const fn = functions[method]
+            const fn = functions[method] as Function
             result = await fn(...args)
           }
           catch (e) {

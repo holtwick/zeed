@@ -15,6 +15,6 @@ export default defineConfig({
     globals: true,
     alias: {
       '@/': `${resolve(process.cwd(), 'src')}/`,
-    },
+    },    
   },
 })

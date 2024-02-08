@@ -1,23 +1,23 @@
 // From https://github.com/antfu/birpc/blob/main/src/index.ts MIT
 
+import { createPromise } from '../exec/promise'
 import type { LoggerInterface } from '../log/log-base'
+import type { Pipe } from './pipe'
 
 export type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 export type ReturnType<T> = T extends (...args: any) => infer R ? R : never
 
-export interface RPCOptionsBasic {
+export interface RPCOptionsBasic extends Pipe {
   /** No return values expected */
   onlyEvents?: boolean
-  /** Function to post raw message */
-  post: (data: any) => void
-  /** Listener to receive raw message */
-  on: (fn: (data: any) => void | Promise<void>) => void
-  /** Custom function to serialize data */
-  serialize?: (data: any) => any
-  /** Custom function to deserialize data */
-  deserialize?: (data: any) => any
+  /** Maximum timeout for waiting for response, in milliseconds */
+  timeout?: number
   /** Custom logger */
   log?: LoggerInterface
+  /** Custom error handler */
+  onError?: (error: Error, functionName: string, args: any[]) => boolean | void
+  /** Custom error handler for timeouts */
+  onTimeoutError?: (functionName: string, args: any[]) => boolean | void
 }
 
 export interface RPCOptions<Remote> extends RPCOptionsBasic {
@@ -59,24 +59,32 @@ const defaultDeserialize = defaultSerialize
 
 function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: string[] = []) {
   const {
+    log,
     post,
     on,
     serialize = defaultSerialize,
     deserialize = defaultDeserialize,
-    log,
+    timeout = 60e3,
+    onError,
+    onTimeoutError,
+    onlyEvents = false,
   } = options
 
-  const rpcPromiseMap = new Map<number, { resolve: (...args: any) => any, reject: (...args: any) => any }>()
+  const rpcPromiseMap = new Map<number, {
+    resolve: (...args: any) => any
+    reject: (...args: any) => any
+    timeoutId: Parameters<typeof clearTimeout>[0]
+  }>()
 
   on(async (data) => {
     try {
-      const msg = deserialize(data) as RPCMessage
+      const msg = await deserialize(data) as RPCMessage
       const [mode, args, id, method] = msg
       if (mode === RPCMode.request || mode === RPCMode.event) {
         let result, error: any
         if (method != null) {
           try {
-            const fn = functions[method]
+            const fn = functions[method] as Function
             result = await fn(...args)
           }
           catch (e) {
@@ -86,21 +94,25 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         else {
           error = 'Method implementation missing'
         }
-        if (error)
+        if (error) {
           log?.warn('error', msg, error)
+          onError?.(error, method ?? '', args)
+        }
         if (mode === RPCMode.request && id) {
-          if (error)
-            post(serialize([RPCMode.reject, error, id]))
-          else
-            post(serialize([RPCMode.resolve, result, id]))
+          const data = await serialize(error
+            ? [RPCMode.reject, error, id]
+            : [RPCMode.resolve, result, id])
+          await post(data)
         }
       }
       else if (id) {
         const promise = rpcPromiseMap.get(id)
         if (promise != null) {
+          clearTimeout(promise.timeoutId)
           if (mode === RPCMode.reject)
             promise.reject(args)
-          else promise.resolve(args)
+          else
+            promise.resolve(args)
         }
         rpcPromiseMap.delete(id)
       }
@@ -112,19 +124,38 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
 
   const proxyHandler = {
     get(_: any, method: string) {
-      const sendEvent = (...args: any[]) => {
-        post(serialize([RPCMode.event, args, null, method]))
+      const sendEvent = async (...args: any[]) => {
+        await post(await serialize([RPCMode.event, args, null, method]))
       }
-      if (options.onlyEvents || eventNames.includes(method)) {
+
+      if (onlyEvents || eventNames.includes(method)) {
         sendEvent.asEvent = sendEvent
         return sendEvent
       }
-      const sendCall = (...args: any[]) => {
-        return new Promise((resolve, reject) => {
-          const id = rpcCounter++
-          rpcPromiseMap.set(id, { resolve, reject })
-          post(serialize([RPCMode.request, args, id, method]))
-        })
+
+      const sendCall = async (...args: any[]) => {
+        const [promise, resolve, reject] = createPromise()
+        const id = rpcCounter++
+
+        let timeoutId
+        if (timeout >= 0) {
+          timeoutId = setTimeout(() => {
+            try {
+              // Custom onTimeoutError handler can throw its own error too
+              onTimeoutError?.(method, args)
+              throw new Error(`rpc timeout on calling "${method}"`)
+            }
+            catch (e) {
+              reject(e)
+            }
+            rpcPromiseMap.delete(id)
+          }, timeout).unref?.()
+        }
+
+        rpcPromiseMap.set(id, { resolve, reject, timeoutId })
+        const data = await serialize([RPCMode.request, args, id, method])
+        await post(data)
+        return promise
       }
       sendCall.asEvent = sendEvent
       return sendCall
@@ -139,6 +170,7 @@ export function useRPC<LocalFunctions, RemoteFunctions = LocalFunctions>(
   options: RPCOptions<RemoteFunctions>,
 ): RPCReturn<RemoteFunctions> {
   const { eventNames = [] } = options
+
   const { proxyHandler } = setupRPCBasic(options, functions, eventNames as any)
 
   return new Proxy({}, proxyHandler)
@@ -165,7 +197,7 @@ export function useRPCHub(options: RPCOptionsBasic) {
   }
 }
 
-export type UseRPCHubType = ReturnType<typeof useRPCHub>
+export type UseRPCAsyncHubType = ReturnType<typeof useRPCHub>
 
 // Syntax test case
 // const hub: UseRPCHubType = {} as any

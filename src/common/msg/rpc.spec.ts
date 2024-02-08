@@ -35,15 +35,11 @@ describe('rpc async', () => {
   it('basic', async () => {
     const channel = new MessageChannel()
 
-    // const serialize = (data: any) => JSON.stringify(data)
-    // const deserialize = (data: any) => JSON.parse(data)
-
     const serialize = (data: any) => encodeJson(data)
     const deserialize = (data: any) => decodeJson(data)
 
     const bob = useRPC<BobFunctions, AliceFunctions>(Bob, {
       post: data => channel.port1.postMessage(data),
-
       on: data => channel.port1.on('message', data),
       serialize,
       deserialize,

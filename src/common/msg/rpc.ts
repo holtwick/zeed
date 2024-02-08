@@ -49,9 +49,9 @@ enum RPCMode {
 
 type RPCMessage = [
   RPCMode,
-  any, // args
-  number | undefined | null, // id
-  string | undefined | null, // method
+  number,
+  string | any,
+  ...any,
 ]
 
 const defaultSerialize = (i: any) => i
@@ -79,7 +79,9 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
   on(async (data) => {
     try {
       const msg = await deserialize(data) as RPCMessage
-      const [mode, args, id, method] = msg
+      const mode = msg?.[0]
+      const id = mode === RPCMode.event ? 0 : msg?.[1]
+      const [method, ...args] = msg.slice(mode === RPCMode.event ? 1 : 2)
       if (mode === RPCMode.request || mode === RPCMode.event) {
         let result, error: any
         if (method != null) {
@@ -98,10 +100,10 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
           log?.warn('error', msg, error)
           onError?.(error, method ?? '', args)
         }
-        if (mode === RPCMode.request && id) {
+        if (id > 0) {
           const data = await serialize(error
-            ? [RPCMode.reject, error, id]
-            : [RPCMode.resolve, result, id])
+            ? [RPCMode.reject, id, error]
+            : [RPCMode.resolve, id, result])
           await post(data)
         }
       }
@@ -110,9 +112,9 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         if (promise != null) {
           clearTimeout(promise.timeoutId)
           if (mode === RPCMode.reject)
-            promise.reject(args)
+            promise.reject(method)
           else
-            promise.resolve(args)
+            promise.resolve(method)
         }
         rpcPromiseMap.delete(id)
       }
@@ -124,9 +126,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
 
   const proxyHandler = {
     get(_: any, method: string) {
-      const sendEvent = async (...args: any[]) => {
-        await post(await serialize([RPCMode.event, args, null, method]))
-      }
+      const sendEvent = async (...args: any[]) => await post(await serialize([RPCMode.event, method, ...args]))
 
       if (onlyEvents || eventNames.includes(method)) {
         sendEvent.asEvent = sendEvent
@@ -153,7 +153,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         }
 
         rpcPromiseMap.set(id, { resolve, reject, timeoutId })
-        const data = await serialize([RPCMode.request, args, id, method])
+        const data = await serialize([RPCMode.request, id, method, ...args])
         await post(data)
         return promise
       }

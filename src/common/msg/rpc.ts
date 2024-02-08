@@ -197,7 +197,7 @@ export function useRPCHub(options: RPCOptionsBasic) {
   }
 }
 
-export type UseRPCAsyncHubType = ReturnType<typeof useRPCHub>
+export type UseRPCHubType = ReturnType<typeof useRPCHub>
 
 // Syntax test case
 // const hub: UseRPCHubType = {} as any

@@ -2,6 +2,7 @@
 
 /* eslint-disable no-console */
 
+import process from 'node:process'
 import { Logger, setupEnv } from 'zeed'
 
 // Read .env file

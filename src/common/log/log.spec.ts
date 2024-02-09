@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import type { LogMessage, LoggerInterface } from './log-base'
 import { LoggerContext } from './log-context'
 

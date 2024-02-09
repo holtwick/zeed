@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 /* eslint-disable node/prefer-global/buffer */
 
 import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toBase64Url, toHex, toUint8Array } from './bin'

@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { vi } from 'vitest'
 import { DefaultLogger } from '../log'
 import { createLocalChannelPair } from './channel'

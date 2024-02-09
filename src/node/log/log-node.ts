@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import tty from 'node:tty'
 import process from 'node:process'
 import { renderMessages, valueToBoolean } from '../../common/data/convert'

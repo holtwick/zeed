@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 export type LogLevel = number
 
 export const LogLevelAll = -1
@@ -67,7 +65,7 @@ export interface LoggerInterface {
    * **Attention!**  Due to a bug in typescript you will need to explicitly set the `LoggerInterface` type in
    * order to have the assertions having an effect on unreachable code. Example:
    *
-   * ```ts
+   * ```
    * const log: LoggerInterface = Logger('xxx')
    * ```
    *
@@ -81,7 +79,7 @@ export interface LoggerInterface {
    * **Attention!** Due to a bug in typescript you will need to explicitly set the `LoggerInterface` type in
    * order to have the assertions having an effect on unreachable code. Example:
    *
-   * ```ts
+   * ```
    * const log: LoggerInterface = Logger('xxx')
    * ```
    *

@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { getSourceLocation, getStackLlocationList } from './log-util'
 
 describe('log-util', () => {

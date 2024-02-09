@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { randomUint8Array } from './crypto'
 import { fromHex, toHex } from './data'
 import { decodeBase32, decodeBase62, encodeBase32, encodeBase62 } from './data/basex'

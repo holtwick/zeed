@@ -156,7 +156,7 @@ Overview of available IDs:
 
 Typed and async emitter:
 
-```ts
+```
 interface MyEvents {
   inc: (count: number) => number
 }
@@ -169,13 +169,13 @@ await e.emit('inc', 1) // counter === 1
 
 It is also possible to alternatively use a Proxy called `.call` that makes nice dynamic function calls of the events:
 
-```ts
+```
 await e.call.inc(1)
 ```
 
 We can also alternatively declare the listeners this way:
 
-```ts
+```
 e.onCall({
   async inc(count: number): number {
     return counter + 1
@@ -185,7 +185,7 @@ e.onCall({
 
 You can also use a global emitter that will be available even over module boundaries:
 
-```ts
+```
 declare global {
   interface ZeedGlobalEmitter {
     test: (x: string) => void
@@ -200,7 +200,7 @@ getGlobalEmitter().call.test('Hello World')
 
 Communicating to servers or other remote parts through messages as if they were methods on a local object in a type safe way:
 
-```ts
+```
 const m = useMessageHub({ cannel }).send<MyMessages>()
 m.echo({ hello: 'world' })
 ```
@@ -211,7 +211,7 @@ m.echo({ hello: 'world' })
 
 A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.
 
-```ts
+```
 interface Row extends SortedItem {
   id: string
   title: string
@@ -260,7 +260,7 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 
 `useDispose` will simplify cleaning up objects. You just need to `add` a function or and object with `dispose` method to be called for cleanup. This can also be nested. A simple example is a timer:
 
-```ts
+```
 function disposableTimer() {
   const timeout = setTimeout(() => console.log('hello world'), 1000)
   return () => clearTimeout(timeout)
@@ -285,7 +285,7 @@ You can also `untrack` single entries. Entries are untracked LIFO. Disposers can
 
 The disposer itself is also a call to dispose i.e. for convenience you can add it to objects and provide `dispose` easily like this:
 
-```ts
+```
 class DisposeExample {
   // the trick is to assign to member `dispose`, will be both
   // the destructor and the registration point for disposables

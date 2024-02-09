@@ -18,7 +18,7 @@ We differentiate between the following parts:
 
 Channels are a uniform abstraction for sending and receiving data usually in binary format. It uses the [commonly known `MessageEvent` pattern](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent), with send via `postMessage` and listening on `message`. It is extended to optionally reflect connection states.
 
-```ts
+```
 channel.postMessage('Hello World')
 channel.on('message', (msg) => {
   log(`Received data=${data}`)
@@ -29,7 +29,7 @@ channel.on('message', (msg) => {
 
 Same API as `Emitter` for easily sending event like messages via a `Channel`. It is type safe, if you pass an interface as the generic.
 
-```ts
+```
 interface MyProtocol {
   doSomething: (using: string, count: number) => void
 }
@@ -44,7 +44,7 @@ hub.on('doSomething', (using, count) => {
 
 You can also use the alternative more PubSub like syntax ;)
 
-```ts
+```
 hub.publish('doSomething', 'hello', 2)
 hub.subscribe('doSomething', (using, count) => {})
 ```
@@ -65,7 +65,7 @@ Messages are a high level abstraction for communicating through channels. They p
 
 Messages are defined via `interface`. Typescript checks for valid calls:
 
-```ts
+```
 interface MyMessages {
   echo: (data: any) => Promise<any>
   pong: (data: any) => Promise<void>
@@ -74,14 +74,14 @@ interface MyMessages {
 
 Using the messages is easy:
 
-```ts
+```
 const hub = useMessageHub({ channel }).send<MyMessages>()
 const echoResponse = await hub.echo({ hello: 'world' })
 ```
 
 On the receiver part implementation is also straight forward:
 
-```ts
+```
 useMessageHub({ channel }).listen<MyMessages>({
   async echo(data) {
     return data

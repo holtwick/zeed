@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { getSecureRandomIfPossible } from './math'
 
 // Get a sort_weight suitable for adding to top of list

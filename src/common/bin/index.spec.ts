@@ -13,8 +13,8 @@ describe('encoder', () => {
     const bin = stream.getUint8Array()
 
     expect(Uint8ArrayToHexDump(bin)).toMatchInlineSnapshot(`
-      "0000  01 00 00 00 76 01 01 61 77 02 39 39 01 02 03 7D  ....v..aw.99...}
-      0010  BB 01                                            ».              "
+      "0000  01 00 00 00 76 01 01 61 77 02 39 39 01 02 03 7d  ....v..aw.99...}
+      0010  bb 01                                            ».              "
     `)
 
     expect(stream.getLength()).toBe(18)

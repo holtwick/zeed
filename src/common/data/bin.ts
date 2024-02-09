@@ -206,7 +206,7 @@ export function Uint8ArrayToHexDump(
 
   blockSize = blockSize || 16
   const lines = []
-  const hex = '0123456789ABCDEF'
+  const hex = '0123456789abcdef' // '0123456789ABCDEF'
   for (let b = 0; b < buffer.length; b += blockSize) {
     const block = buffer.slice(b, Math.min(b + blockSize, buffer.length))
     const addr = (`0000${b.toString(16)}`).slice(-4)

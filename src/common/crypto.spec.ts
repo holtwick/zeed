@@ -3,13 +3,7 @@
 /* eslint-disable prefer-spread */
 /* eslint-disable no-cond-assign */
 
-import {
-  decrypt,
-  deriveKeyPbkdf2,
-  digest,
-  encrypt,
-  randomUint8Array,
-} from './crypto'
+import { decrypt, deriveKeyPbkdf2, digest, encrypt, randomUint8Array } from './crypto'
 import { equalBinary, toHex } from './data/bin'
 import { DefaultLogger } from '.'
 

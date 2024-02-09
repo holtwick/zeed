@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { useDispose } from '../dispose-defer'
 import { uuid } from '../uuid'
 import { Emitter } from './emitter'

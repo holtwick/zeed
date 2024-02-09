@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { isPromise } from './promise'
 
 export type Mutex = (fn: (() => void), elseFn?: (() => void)) => boolean

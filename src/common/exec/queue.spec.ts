@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { sleep } from './promise'
 import { SerialQueue } from './queue'
 

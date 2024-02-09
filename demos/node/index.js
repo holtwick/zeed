@@ -1,5 +1,7 @@
 // Simple demo for node and CommonJS loading
 
+import process from 'node:process'
+
 import {
   Logger,
   digest,

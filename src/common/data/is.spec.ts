@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { isEmpty, isNotEmpty, isNotNull, isNumber, isObject, isPrimitive, isRecord, isRecordPlain, isTruthy, isUint8Array, isValue } from './is'
 
 describe('is', () => {

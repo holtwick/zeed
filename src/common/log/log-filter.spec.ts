@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelInfo, LogLevelOff, LogLevelWarn } from './log-base'
 import { getNamespaceFilterString, joinLogStrings, parseLogLevel, useLevelFilter, useNamespaceFilter } from './log-filter'
 

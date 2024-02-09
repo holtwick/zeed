@@ -1,5 +1,3 @@
-// (C)opyright 2021-07-15 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { cloneObject } from '../data/utils'
 import type { Json, ObjectStorage } from '../types'
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createApp } from 'vue'
 
 // import { Logger } from 'zeed'

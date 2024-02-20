@@ -23,6 +23,7 @@ export const CRYPTO_DEFAULT_HASH_ALG = 'SHA-256'
 export const CRYPTO_DEFAULT_ALG = 'AES-GCM'
 export const CRYPTO_DEFAULT_DERIVE_ALG = 'PBKDF2'
 export const CRYPTO_DEFAULT_DERIVE_ITERATIONS = 100000
+export const CRYPTO_DEFAULT_IV_LENGTH = 12
 
 export async function digest(
   message: BinInput,
@@ -74,7 +75,7 @@ export async function encrypt(
   key: CryptoKey,
 ): Promise<Uint8Array> {
   const MAGIC_ID = getMagicId()
-  const iv = randomUint8Array(12)
+  const iv = randomUint8Array(CRYPTO_DEFAULT_IV_LENGTH)
   const cipher = await crypto.subtle.encrypt(
     { name: CRYPTO_DEFAULT_ALG, iv },
     key,
@@ -100,8 +101,8 @@ export async function decrypt(
   if (!equalBinary(magic, getMagicId()))
     return Promise.reject(new Error(`Unknown magic ${magic}`))
 
-  const iv = data.subarray(2, 2 + 12)
-  const cipher = data.subarray(2 + 12, data.length)
+  const iv = data.subarray(2, 2 + CRYPTO_DEFAULT_IV_LENGTH)
+  const cipher = data.subarray(2 + CRYPTO_DEFAULT_IV_LENGTH, data.length)
   const plain = await crypto.subtle.decrypt(
     { name: CRYPTO_DEFAULT_ALG, iv },
     key,

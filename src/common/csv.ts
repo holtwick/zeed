@@ -5,9 +5,13 @@ const defaultSeparator = ','
 export function csvStringify(data: any[], opt: {
   // header?: string[]
   separator?: string
+  addBom?: boolean // option to add byte order mark for improved Excel support
 } = {}): string {
   const { separator = defaultSeparator } = opt
   let body = ''
+  if (opt.addBom) {
+    body = '\ufeff'
+  }
 
   // Append the header row to the response if requested
   // if (header)

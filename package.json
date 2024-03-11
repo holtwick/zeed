@@ -50,7 +50,7 @@
   "scripts": {
     "build": "nr clean && NODE_ENV=production tsup",
     "build:docs": "nlx typedoc src/index.all.ts",
-    "check": "tsc --noEmit -p tsconfig.json",
+    "check": "tsc --noEmit --skipLibCheck",
     "credits": "nlx credits-cli",
     "circles": "nlx madge --circular --summary --orphans --leaves --warning --extensions ts src",
     "upload:docs": "nr build:docs && rsync -avz docs/* cy:public_html/zeed.holtwick.de",
@@ -65,15 +65,15 @@
     "watch": "nr build -- --watch"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.6.4",
+    "@antfu/eslint-config": "^2.8.0",
     "@antfu/ni": "^0.21.12",
-    "@types/node": "^20.11.16",
-    "@vitest/coverage-v8": "^1.2.2",
-    "esbuild": "^0.20.0",
-    "eslint": "^8.56.0",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.12",
-    "vitest": "^1.2.2"
+    "@types/node": "^20.11.25",
+    "@vitest/coverage-v8": "^1.3.1",
+    "esbuild": "^0.20.1",
+    "eslint": "^8.57.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.6",
+    "vitest": "^1.3.1"
   }
 }

@@ -9,9 +9,8 @@ export function csvStringify(data: any[], opt: {
 } = {}): string {
   const { separator = defaultSeparator } = opt
   let body = ''
-  if (opt.addBom) {
-    body = '\ufeff'
-  }
+  if (opt.addBom)
+    body = '\uFEFF'
 
   // Append the header row to the response if requested
   // if (header)

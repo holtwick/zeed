@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 /* eslint-disable no-console */
 
 export {}

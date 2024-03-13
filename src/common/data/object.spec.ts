@@ -158,4 +158,13 @@ describe('objectPlain', () => {
       },
     })
   })
+  it('should handle removeUndefined', () => {
+    const obj = {
+      a: 1,
+      b: undefined,
+      c: [1, undefined],
+    }
+    const result = objectPlain(obj, { removeUndefined: true })
+    expect(result).toEqual({ a: 1, c: [1] })
+  })
 })

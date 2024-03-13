@@ -54,28 +54,61 @@ export function objectOmit<T extends object, K extends keyof T>(obj: T, ...keys:
 }
 
 /// Convert object to plain object with max depth.
-export function objectPlain(obj: any, maxDepth = 99): any {
+export function objectPlain(obj: any, opt?: {
+  maxDepth?: number
+  maxDepthValue?: any
+  circleValue?: any
+  removeUndefined?: boolean
+  removeNull?: boolean
+  removeEmptyString?: boolean
+  removeEmptyArray?: boolean
+}): any {
+  const {
+    maxDepth = 99,
+    circleValue,
+    maxDepthValue,
+    removeEmptyArray = false,
+    removeEmptyString = false,
+    removeNull = false,
+    removeUndefined = false,
+  } = opt ?? {}
+
   const cycle: any = []
 
+  function keepValue(value: any) {
+    if (removeUndefined && value === undefined)
+      return false
+    if (removeNull && value === null)
+      return false
+    if (removeEmptyString && value === '')
+      return false
+    if (removeEmptyArray && isArray(value) && value.length <= 0)
+      return false
+    return true
+  }
+
   function handleObject(obj: any, depth: number): any {
-    if (depth >= maxDepth)
-      return undefined // '*** MAX DEPTH ***'
+    if (depth > maxDepth)
+      return maxDepthValue // '*** MAX DEPTH ***'
 
     if (isPrimitive(obj))
       return obj
 
     if (cycle.includes(obj))
-      return undefined // '*** CYCLE ***'
+      return circleValue // '*** CYCLE ***'
 
     cycle.push(obj)
 
     if (Array.isArray(obj))
-      return obj.map(o => handleObject(o, depth + 1))
+      return obj.map(o => handleObject(o, depth + 1)).filter(keepValue)
 
     if (isObject(obj)) {
       const nobj: any = {}
-      for (const [key, value] of Object.entries(obj))
-        nobj[key] = handleObject(value, depth + 1)
+      for (const [key, value] of Object.entries(obj)) {
+        if (keepValue(value))
+          nobj[key] = handleObject(value, depth + 1)
+      }
+
       return nobj
     }
 

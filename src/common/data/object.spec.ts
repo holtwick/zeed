@@ -103,11 +103,11 @@ describe('objectPlain', () => {
       a: 1,
     }
     obj.b = obj
-    const result = objectPlain(obj)
+    const result = objectPlain(obj, { circleValue: '*** CIRCULAR ***' })
     expect(result).toMatchInlineSnapshot(`
       Object {
         "a": 1,
-        "b": undefined,
+        "b": "*** CIRCULAR ***",
       }
     `)
   })
@@ -147,13 +147,24 @@ describe('objectPlain', () => {
         },
       },
     }
-    const result = objectPlain(obj, 3)
+    const result = objectPlain(obj, { maxDepth: 3, maxDepthValue: '*** MAX DEPTH ***' })
     expect(result).toEqual({
       a: {
         b: {
-          c: undefined,
+          c: {
+            d: '*** MAX DEPTH ***',
+          },
         },
       },
     })
+  })
+  it('should handle removeUndefined', () => {
+    const obj = {
+      a: 1,
+      b: undefined,
+      c: [1, undefined],
+    }
+    const result = objectPlain(obj, { removeUndefined: true })
+    expect(result).toEqual({ a: 1, c: [1] })
   })
 })

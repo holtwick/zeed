@@ -12,6 +12,7 @@ describe('files.spec', () => {
         "crypto.ts",
         "env.spec.ts",
         "env.ts",
+        "files-async.spec.ts",
         "files-async.ts",
         "files.spec.ts",
         "files.ts",
@@ -42,6 +43,7 @@ describe('files.spec', () => {
 
     expect(result).toMatchInlineSnapshot(`
       Array [
+        "files-async.spec.ts",
         "files.spec.ts",
         "filestorage.spec.ts",
       ]

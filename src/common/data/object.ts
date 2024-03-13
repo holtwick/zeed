@@ -58,34 +58,16 @@ export function objectPlain(obj: any, opt?: {
   maxDepth?: number
   maxDepthValue?: any
   circleValue?: any
-  removeUndefined?: boolean
-  removeNull?: boolean
-  removeEmptyString?: boolean
-  removeEmptyArray?: boolean
+  filter?: (value: any) => boolean
 }): any {
   const {
     maxDepth = 99,
     circleValue,
     maxDepthValue,
-    removeEmptyArray = false,
-    removeEmptyString = false,
-    removeNull = false,
-    removeUndefined = false,
+    filter = () => true,
   } = opt ?? {}
 
   const cycle: any = []
-
-  function keepValue(value: any) {
-    if (removeUndefined && value === undefined)
-      return false
-    if (removeNull && value === null)
-      return false
-    if (removeEmptyString && value === '')
-      return false
-    if (removeEmptyArray && isArray(value) && value.length <= 0)
-      return false
-    return true
-  }
 
   function handleObject(obj: any, depth: number): any {
     if (depth > maxDepth)
@@ -100,12 +82,12 @@ export function objectPlain(obj: any, opt?: {
     cycle.push(obj)
 
     if (Array.isArray(obj))
-      return obj.map(o => handleObject(o, depth + 1)).filter(keepValue)
+      return obj.map(o => handleObject(o, depth + 1)).filter(filter)
 
     if (isObject(obj)) {
       const nobj: any = {}
       for (const [key, value] of Object.entries(obj)) {
-        if (keepValue(value))
+        if (filter(value))
           nobj[key] = handleObject(value, depth + 1)
       }
 

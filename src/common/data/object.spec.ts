@@ -1,5 +1,6 @@
 import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
+import { isNotNull } from './is'
 import { objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick, objectPlain } from './object'
 
 describe('object.spec', () => {
@@ -158,13 +159,14 @@ describe('objectPlain', () => {
       },
     })
   })
+  
   it('should handle removeUndefined', () => {
     const obj = {
       a: 1,
       b: undefined,
       c: [1, undefined],
     }
-    const result = objectPlain(obj, { removeUndefined: true })
+    const result = objectPlain(obj, { filter: isNotNull })
     expect(result).toEqual({ a: 1, c: [1] })
   })
 })

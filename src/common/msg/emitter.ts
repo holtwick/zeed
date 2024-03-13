@@ -38,6 +38,7 @@ export class Emitter<
 
   _logEmitter = DefaultLogger('zeed:emitter', 'warn')
 
+  /** RPC like emitting of events. */
   call: RemoteListener = new Proxy<RemoteListener>({} as any, {
     get:
       (target: any, name: any) =>
@@ -45,6 +46,13 @@ export class Emitter<
           await this.emit(name, ...args),
   })
 
+  /**
+   * Emits an event to all subscribers and executes their corresponding event handlers.
+   * 
+   * @param event - The event to emit.
+   * @param args - The arguments to pass to the event handlers.
+   * @returns A promise that resolves to a boolean indicating whether the event was successfully emitted.
+   */
   public async emit<U extends keyof RemoteListener>(event: U, ...args: Parameters<RemoteListener[U]>): Promise<boolean> {
     let ok = false
 

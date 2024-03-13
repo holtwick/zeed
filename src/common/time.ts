@@ -10,6 +10,12 @@ export function formatMilliseconds(ms: number): string {
   return ms > 999 ? `${(ms / 1000).toFixed(1)} s` : `${ms.toFixed(2)} ms`
 }
 
+/**
+ * Parses the given date candidates and returns the first valid Date object found.
+ * 
+ * @param dateCandidates - The date candidates to parse, which can be either strings or Date objects.
+ * @returns The parsed Date object, or undefined if no valid date is found.
+ */
 export function parseDate(
   ...dateCandidates: (string | Date)[]
 ): Date | undefined {

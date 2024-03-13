@@ -6,6 +6,14 @@ import type { LoggerInterface } from './log/log-base'
 
 export type TimerExecFunction = () => void | Promise<void>
 
+/**
+ * Executes a function after a specified timeout and returns a disposer function
+ * that can be used to cancel the timeout.
+ *
+ * @param fn - The function to execute after the timeout.
+ * @param timeout - The timeout duration in milliseconds (default: 0).
+ * @returns A disposer function that can be used to cancel the timeout.
+ */
 export function useTimeout(fn: TimerExecFunction, timeout = 0): DisposerFunction {
   let timeoutHandle: any = setTimeout(fn, timeout)
   return () => {
@@ -16,6 +24,14 @@ export function useTimeout(fn: TimerExecFunction, timeout = 0): DisposerFunction
   }
 }
 
+/**
+ * Executes a function repeatedly at a specified interval and returns a disposer function
+ * that can be used to stop the execution.
+ *
+ * @param fn - The function to be executed at the specified interval.
+ * @param interval - The interval (in milliseconds) at which the function should be executed.
+ * @returns A disposer function that can be used to stop the execution of the function.
+ */
 export function useInterval(fn: TimerExecFunction, interval: number): DisposerFunction {
   let intervalHandle: any = setInterval(fn, interval)
   return () => {

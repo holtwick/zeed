@@ -1,16 +1,28 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable node/prefer-global/process */
 
+/**
+ * Retrieves the global `window` object.
+ * @returns The global `window` object if available, otherwise `undefined`.
+ */
 export function getWindow(): any | undefined {
   if (typeof window !== 'undefined')
     return window
 }
 
+/**
+ * Retrieves the navigator object if it is available.
+ * @returns The navigator object if available, otherwise undefined.
+ */
 export function getNavigator(): any | undefined {
   if (typeof navigator !== 'undefined')
     return navigator
 }
 
+/**
+ * Retrieves the global object in the current environment.
+ * @returns The global object.
+ */
 export function getGlobal(): any {
   return getWindow()
     // @ts-expect-error xxx

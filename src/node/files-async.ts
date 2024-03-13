@@ -1,18 +1,34 @@
 import { readdir, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import process from 'node:process'
+import type { Stats } from 'node:fs'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
 
-export async function getStatAsync(path: string): Promise<any> {
+/**
+ * Retrieves the file system stats for the specified path asynchronously.
+ * @param path - The path to the file or directory.
+ * @returns A Promise that resolves to the file system stats (Stats) or undefined if an error occurs.
+ */
+export async function getStatAsync(path: string): Promise<Stats | undefined> {
   try {
     return await stat(path)
   }
   catch (err) { }
 }
 
-export async function getFingerprintAsync(path: string) {
-  const { mtimeMs, size } = await getStatAsync(path) ?? {}
+/**
+ * Retrieves the fingerprint of a file asynchronously.
+ * The fingerprint is a string representation of the file's path, modification time, and size.
+ *
+ * @param path - The path of the file.
+ * @returns A promise that resolves to the fingerprint string, or undefined if the file does not exist.
+ */
+export async function getFingerprintAsync(path: string): Promise<string | undefined> {
+  const stat = await getStatAsync(path)
+  if (stat == null)
+    return
+  const { mtimeMs, size } = stat
   return `${path}|${mtimeMs}|${size}`
 }
 

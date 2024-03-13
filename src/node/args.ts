@@ -3,6 +3,9 @@
 import process from 'node:process'
 import { toCamelCase } from '../common/data/camelcase'
 
+/**
+ * Represents the configuration options for parsing command line arguments.
+ */
 interface ParseConfig {
   args?: string[]
   alias?: Record<string, string[]>
@@ -12,6 +15,12 @@ interface ParseConfig {
   numberArgs?: string | string[]
 }
 
+/**
+ * Parses command line arguments and returns an object containing the parsed options.
+ *
+ * @param config - Configuration options for parsing the arguments.
+ * @returns An object containing the parsed options.
+ */
 export function parseArgs(config: ParseConfig = {}) {
   const {
     args = process.argv.slice(1),

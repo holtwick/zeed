@@ -14,6 +14,7 @@ describe('is', () => {
     }
     const x = new X()
     const plain = { hello: 'world' }
+    function fn() { return 'hello' }
 
     expect(isObject(X)).toBe(false)
     expect(isObject(x)).toBe(true)
@@ -21,6 +22,7 @@ describe('is', () => {
     expect(isObject([])).toBe(true)
     expect(isObject(123)).toBe(false)
     expect(isObject(new Date())).toBe(true)
+    expect(isObject(fn)).toBe(false)
 
     expect(isRecord(X)).toBe(false)
     expect(isRecord(x)).toBe(true)
@@ -28,6 +30,7 @@ describe('is', () => {
     expect(isRecord([])).toBe(false)
     expect(isRecord(123)).toBe(false)
     expect(isRecord(new Date())).toBe(true)
+    expect(isRecord(fn)).toBe(false)
 
     expect(isRecordPlain(X)).toBe(false)
     expect(isRecordPlain(x)).toBe(false)
@@ -35,6 +38,7 @@ describe('is', () => {
     expect(isRecordPlain([])).toBe(false)
     expect(isRecordPlain(123)).toBe(false)
     expect(isRecordPlain(new Date())).toBe(false)
+    expect(isRecordPlain(fn)).toBe(false)
 
     expect(isPrimitive(X)).toBe(false)
     expect(isPrimitive(x)).toBe(false)
@@ -42,6 +46,7 @@ describe('is', () => {
     expect(isPrimitive([])).toBe(false)
     expect(isPrimitive(123)).toBe(true)
     expect(isPrimitive(new Date())).toBe(false)
+    expect(isPrimitive(fn)).toBe(false)
   })
 
   it('should filter', async () => {

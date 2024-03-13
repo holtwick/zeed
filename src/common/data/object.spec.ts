@@ -1,6 +1,6 @@
 import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
-import { objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick } from './object'
+import { objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick, objectPlain } from './object'
 
 describe('object.spec', () => {
   it('should map it', async () => {
@@ -82,5 +82,78 @@ describe('object.spec', () => {
         "x": undefined,
       }
     `)
+  })
+})
+
+describe('objectPlain', () => {
+  it('should return the plain object', () => {
+    const obj = {
+      a: 1,
+      b: {
+        c: 2,
+        d: [3, 4],
+      },
+    }
+    const result = objectPlain(obj)
+    expect(result).toEqual(obj)
+  })
+
+  it('should handle circular references', () => {
+    const obj: any = {
+      a: 1,
+    }
+    obj.b = obj
+    const result = objectPlain(obj)
+    expect(result).toMatchInlineSnapshot(`
+      Object {
+        "a": 1,
+        "b": undefined,
+      }
+    `)
+  })
+
+  it('should handle nested objects', () => {
+    const obj = {
+      a: 1,
+      b: {
+        c: 2,
+        d: {
+          e: 3,
+        },
+      },
+    }
+    const result = objectPlain(obj)
+    expect(result).toEqual(obj)
+  })
+
+  it('should handle arrays', () => {
+    const obj = {
+      a: 1,
+      b: [2, 3, 4],
+    }
+    const result = objectPlain(obj)
+    expect(result).toEqual(obj)
+  })
+
+  it('should handle max depth', () => {
+    const obj = {
+      a: {
+        b: {
+          c: {
+            d: {
+              e: 1,
+            },
+          },
+        },
+      },
+    }
+    const result = objectPlain(obj, 3)
+    expect(result).toEqual({
+      a: {
+        b: {
+          c: undefined,
+        },
+      },
+    })
   })
 })

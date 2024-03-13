@@ -1,4 +1,4 @@
-import { isArray, isObject } from './is'
+import { isArray, isObject, isPrimitive } from './is'
 
 /** Like `.map()` for object. Return new key and value or `undefined` to delete. */
 export function objectMap<T = any>(
@@ -51,4 +51,36 @@ export function objectInclusivePick<T extends object, K extends (string | number
 
 export function objectOmit<T extends object, K extends keyof T>(obj: T, ...keys: K[]) {
   return Object.fromEntries(Object.entries(obj).filter(([key]) => !keys.includes(key as K))) as Omit<T, K>
+}
+
+/// Convert object to plain object with max depth.
+export function objectPlain(obj: any, maxDepth = 99): any {
+  const cycle: any = []
+
+  function handleObject(obj: any, depth: number): any {
+    if (depth >= maxDepth)
+      return undefined // '*** MAX DEPTH ***'
+
+    if (isPrimitive(obj))
+      return obj
+
+    if (cycle.includes(obj))
+      return undefined // '*** CYCLE ***'
+
+    cycle.push(obj)
+
+    if (Array.isArray(obj))
+      return obj.map(o => handleObject(o, depth + 1))
+
+    if (isObject(obj)) {
+      const nobj: any = {}
+      for (const [key, value] of Object.entries(obj))
+        nobj[key] = handleObject(value, depth + 1)
+      return nobj
+    }
+
+    return undefined
+  }
+
+  return handleObject(obj, 0)
 }

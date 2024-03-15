@@ -18,6 +18,9 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const useColors = browserSupportsColors()
   const noop: any = () => {}
 
+  // logCaptureConsole will override the console methods, so we need to get the original ones
+  const originalConsole = getGlobalConsole()
+
   /**
    * The trick is, that console called directly provides a reference to the source code.
    * For the regular implementation this information is lost. But this approach has other
@@ -49,9 +52,6 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
           return fn
         return () => {}
       }
-
-      // logCaptureConsole will override the console methods, so we need to get the original ones
-      const originalConsole = getGlobalConsole()
 
       log = defineForLogLevel(LogLevelDebug, originalConsole.debug.bind(originalConsole.console, ...fixedArgs) as LoggerInterface)
       log.debug = defineForLogLevel(LogLevelDebug, originalConsole.debug.bind(originalConsole.console, ...fixedArgs))

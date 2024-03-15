@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
-
 import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../../common/log/log-base'
 import { browserSelectColorByName } from '../../common/log/log-colors'
+import { getGlobalConsole } from '../../common/log/log-console-original'
 import { parseLogLevel, useNamespaceFilter } from '../../common/log/log-filter'
 import { browserSupportsColors } from './log-colors'
 
@@ -19,9 +18,11 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const useColors = browserSupportsColors()
   const noop: any = () => {}
 
-  /// The trick is, that console called directly provides a reference to the source code.
-  /// For the regular implementation this information is lost. But this approach has other
-  /// drawbacks, therefore only use it in the Browser when actively debugging.
+  /**
+   * The trick is, that console called directly provides a reference to the source code.
+   * For the regular implementation this information is lost. But this approach has other
+   * drawbacks, therefore only use it in the Browser when actively debugging.
+   */
   return function LoggerBrowserDebugFactory(
     name = '',
     logLevel?: LogLevelAliasType,
@@ -32,7 +33,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
     const level = parseLogLevel(logLevel ?? LogLevelAll)
 
     if (matches(name) && level !== LogLevelOff) {
-      const fixedArgs = []
+      const fixedArgs: string[] = []
       if (useColors) {
         const color = browserSelectColorByName(name)
         fixedArgs.push(`%c${name.padEnd(16, ' ')}%c \t%s`)
@@ -49,11 +50,31 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
         return () => {}
       }
 
-      log = defineForLogLevel(LogLevelDebug, console.debug.bind(console, ...fixedArgs) as LoggerInterface)
-      log.debug = defineForLogLevel(LogLevelDebug, console.debug.bind(console, ...fixedArgs))
-      log.info = defineForLogLevel(LogLevelInfo, console.info.bind(console, ...fixedArgs))
-      log.warn = defineForLogLevel(LogLevelWarn, console.warn.bind(console, ...fixedArgs))
-      log.error = defineForLogLevel(LogLevelError, console.error.bind(console, ...fixedArgs))
+      // logCaptureConsole will override the console methods, so we need to get the original ones
+      const originalConsole = getGlobalConsole()
+
+      log = defineForLogLevel(LogLevelDebug, originalConsole.debug.bind(originalConsole.console, ...fixedArgs) as LoggerInterface)
+      log.debug = defineForLogLevel(LogLevelDebug, originalConsole.debug.bind(originalConsole.console, ...fixedArgs))
+      log.info = defineForLogLevel(LogLevelInfo, originalConsole.info.bind(originalConsole.console, ...fixedArgs))
+      log.warn = defineForLogLevel(LogLevelWarn, originalConsole.warn.bind(originalConsole.console, ...fixedArgs))
+      log.error = defineForLogLevel(LogLevelError, originalConsole.error.bind(originalConsole.console, ...fixedArgs))
+
+      /**
+       * Takes log level as argument, but will fail to show all the debug info
+       * as the others do like file name and line number of the originating call
+       */
+      log.generic = (logLevel: LogLevel, ...args) => {
+        if (level <= logLevel) {
+          if (logLevel === LogLevelError)
+            originalConsole.error(...fixedArgs, ...args)
+          else if (logLevel === LogLevelWarn)
+            originalConsole.warn(...fixedArgs, ...args)
+          else if (logLevel === LogLevelInfo)
+            originalConsole.info(...fixedArgs, ...args)
+          else
+            originalConsole.debug(...fixedArgs, ...args)
+        }
+      }
 
       log.fatal = defineForLogLevel(LogLevelFatal, (...args: any) => {
         log.error(...args)

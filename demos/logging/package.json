@@ -16,6 +16,6 @@
     "filtered": "LEVEL=info ZEED=demo2 node index.js"
   },
   "dependencies": {
-    "zeed": "file:../.."
+    "zeed": "../.."
   }
 }

@@ -24,26 +24,22 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     }
 
     const emit = (msg: LogMessage) => {
-      // if (log.active === true) {
-      //   if (msg.level >= Logger.level && msg.level >= log.level) {
       if (logCheckNamespace(name)) {
         for (const handler of logHandlers) {
           if (handler)
             handler(msg)
         }
       }
-      // }
-      // }
     }
 
     const log = defineForLogLevel(LogLevelDebug, (...messages: any[]) => {
       emit({ name, messages, level: LogLevelDebug })
     })
 
-    log.generic = function (level: LogLevel, ...messages: any[]) {
-      if (logLevel <= level)
-        emit({ name, messages, level })
-    }
+    // log.generic = function (level: LogLevel, ...messages: any[]) {
+    //   if (logLevel <= level)
+    //     emit({ name, messages, level })
+    // }
 
     log.label = name
     // log.active = true

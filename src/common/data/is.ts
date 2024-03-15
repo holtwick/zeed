@@ -5,6 +5,7 @@
 
 import { size } from './utils'
 
+// https://developer.mozilla.org/en-US/docs/Glossary/Primitive
 export type Primitive =
   | null
   | undefined
@@ -16,6 +17,24 @@ export type Primitive =
 
 export function isObject(obj: unknown): obj is object {
   return obj != null && typeof obj === 'object'
+}
+
+export function isFunction(obj: unknown): obj is Function {
+  return obj != null && typeof obj === 'function'
+}
+
+export function isBinaryArray<T>(obj: unknown): obj is T {
+  return obj instanceof Uint8Array
+    || obj instanceof Uint8ClampedArray
+    || obj instanceof Uint16Array
+    || obj instanceof Uint32Array
+    || obj instanceof Int8Array
+    || obj instanceof Int16Array
+    || obj instanceof Int32Array
+    || obj instanceof Float32Array
+    || obj instanceof Float64Array
+    || obj instanceof BigInt64Array
+    || obj instanceof BigUint64Array
 }
 
 /** Something like number, string, boolean */
@@ -56,6 +75,10 @@ export function isSafeInteger(obj: unknown): obj is number {
 
 export function isBoolean(obj: unknown): obj is boolean {
   return typeof obj === 'boolean'
+}
+
+export function isSymbol(obj: unknown): obj is symbol {
+  return typeof obj === 'symbol'
 }
 
 /** @deprecated use `isNull` */

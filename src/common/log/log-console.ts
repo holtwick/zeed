@@ -1,7 +1,6 @@
-/* eslint-disable no-console */
-
 import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from './log-base'
+import { getGlobalConsole } from './log-console-original'
 import { joinLogStrings, useLevelFilter, useNamespaceFilter } from './log-filter'
 
 /**
@@ -19,6 +18,10 @@ export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
+
+  // logCaptureConsole will override the console methods, so we need to get the original ones
+  const originalConsole = getGlobalConsole()
+
   return (msg: LogMessage) => {
     if (!matchesLevel(msg.level))
       return
@@ -27,16 +30,16 @@ export function LoggerConsoleHandler(opt: LogHandlerOptions = {}): LogHandler {
     const name = msg.name ? `[${msg.name}]` : ''
     switch (msg.level) {
       case LogLevelInfo:
-        console.info(...joinLogStrings(`I|*   ${name}`, ...msg.messages))
+        originalConsole.info(...joinLogStrings(`I|*   ${name}`, ...msg.messages))
         break
       case LogLevelWarn:
-        console.warn(...joinLogStrings(`W|**  ${name}`, ...msg.messages))
+        originalConsole.warn(...joinLogStrings(`W|**  ${name}`, ...msg.messages))
         break
       case LogLevelError:
-        console.error(...joinLogStrings(`E|*** ${name}`, ...msg.messages))
+        originalConsole.error(...joinLogStrings(`E|*** ${name}`, ...msg.messages))
         break
       default:
-        console.debug(...joinLogStrings(`D|    ${name}`, ...msg.messages))
+        originalConsole.debug(...joinLogStrings(`D|    ${name}`, ...msg.messages))
         break
     }
   }

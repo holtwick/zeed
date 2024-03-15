@@ -25,6 +25,10 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
+
+  // logCaptureConsole will override the console methods, so we need to get the original ones
+  const originalConsole = getGlobalConsole()
+
   return (msg: LogMessage) => {
     if (!matchesLevel(msg.level))
       return
@@ -77,28 +81,26 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
       return arg
     }) as any
 
-    const console = getGlobalConsole()
-
     switch (msg.level) {
       case LogLevelInfo:
         if (opt.levelHelper)
           args[0] = `I|*   ${args[0]}`
-        console.info(...args)
+        originalConsole.info(...args)
         break
       case LogLevelWarn:
         if (opt.levelHelper)
           args[0] = `W|**  ${args[0]}`
-        console.warn(...args)
+        originalConsole.warn(...args)
         break
       case LogLevelError:
         if (opt.levelHelper)
           args[0] = `E|*** ${args[0]}`
-        console.error(...args)
+        originalConsole.error(...args)
         break
       default:
         if (opt.levelHelper)
           args[0] = `D|    ${args[0]}`
-        console.debug(...args)
+        originalConsole.debug(...args)
         break
     }
   }

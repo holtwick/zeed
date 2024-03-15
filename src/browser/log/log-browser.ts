@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
-
 import type { LogHandler, LogHandlerOptions, LogMessage } from '../../common/log/log-base'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
 import { browserSelectColorByName } from '../../common/log/log-colors'
+import { getGlobalConsole } from '../../common/log/log-console-original'
 import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 import { formatMilliseconds, getTimestamp } from '../../common/time'
 import { browserSupportsColors } from './log-colors'
@@ -77,6 +76,8 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
         return `<Uint8Array size=${arg.length}>`
       return arg
     }) as any
+
+    const console = getGlobalConsole()
 
     switch (msg.level) {
       case LogLevelInfo:

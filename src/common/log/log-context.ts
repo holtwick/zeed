@@ -37,12 +37,13 @@ export function LoggerContext(_prefix = ''): LoggerContextInterface {
     }
 
     const log = defineForLogLevel(LogLevelDebug, (...messages: any[]) => {
-      emit({
-        name,
-        messages,
-        level: LogLevelDebug,
-      })
+      emit({ name, messages, level: LogLevelDebug })
     })
+
+    log.generic = function (level: LogLevel, ...messages: any[]) {
+      if (logLevel <= level)
+        emit({ name, messages, level })
+    }
 
     log.label = name
     // log.active = true

@@ -92,14 +92,11 @@ export function formatMessages(
     if (obj && typeof obj === 'object') {
       if (pretty && (obj instanceof Uint8Array || obj instanceof ArrayBuffer))
         return `\n${Uint8ArrayToHexDump(obj)}\n`
-
       if (obj instanceof Error) {
         if (!trace)
           return `${obj.name || 'Error'}: ${obj.message}`
-
         return `${obj.name || 'Error'}: ${obj.message}\n${obj.stack}`
       }
-
       try {
         return pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj)
       }

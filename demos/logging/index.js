@@ -3,13 +3,15 @@
 /* eslint-disable no-console */
 
 import process from 'node:process'
-import { Logger, setupEnv } from 'zeed'
+import { Logger, logCaptureConsole, setupEnv } from 'zeed'
 
 // Read .env file
 
 setupEnv({ mode: 'test' })
 
 // Some basic logging
+
+logCaptureConsole(Logger('console'))
 
 {
   const log = Logger('demo')
@@ -28,7 +30,7 @@ setupEnv({ mode: 'test' })
   log.warn('Warning')
   log.error('Error')
 
-  log('Some binary data', new Uint8Array(1, 2, 3, 99, 100, 101))
+  log('Some binary data', new Uint8Array([1, 2, 3, 99, 100, 101]))
 }
 
 console.log('Hello World')

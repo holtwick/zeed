@@ -51,6 +51,8 @@ export interface LoggerInterface {
 
   level: LogLevel
 
+  generic: (level: LogLevel, ...messages: any[]) => void
+
   debug: (...messages: any[]) => void
 
   info: (...messages: any[]) => void

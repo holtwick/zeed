@@ -59,22 +59,22 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       log.warn = defineForLogLevel(LogLevelWarn, originalConsole.warn.bind(originalConsole.console, ...fixedArgs))
       log.error = defineForLogLevel(LogLevelError, originalConsole.error.bind(originalConsole.console, ...fixedArgs))
 
-      /**
-       * Takes log level as argument, but will fail to show all the debug info
-       * as the others do like file name and line number of the originating call
-       */
-      log.generic = (logLevel: LogLevel, ...args) => {
-        if (level <= logLevel) {
-          if (logLevel === LogLevelError)
-            originalConsole.error(...fixedArgs, ...args)
-          else if (logLevel === LogLevelWarn)
-            originalConsole.warn(...fixedArgs, ...args)
-          else if (logLevel === LogLevelInfo)
-            originalConsole.info(...fixedArgs, ...args)
-          else
-            originalConsole.debug(...fixedArgs, ...args)
-        }
-      }
+      // /**
+      //  * Takes log level as argument, but will fail to show all the debug info
+      //  * as the others do like file name and line number of the originating call
+      //  */
+      // log.generic = (logLevel: LogLevel, ...args) => {
+      //   if (level <= logLevel) {
+      //     if (logLevel === LogLevelError)
+      //       originalConsole.error(...fixedArgs, ...args)
+      //     else if (logLevel === LogLevelWarn)
+      //       originalConsole.warn(...fixedArgs, ...args)
+      //     else if (logLevel === LogLevelInfo)
+      //       originalConsole.info(...fixedArgs, ...args)
+      //     else
+      //       originalConsole.debug(...fixedArgs, ...args)
+      //   }
+      // }
 
       log.fatal = defineForLogLevel(LogLevelFatal, (...args: any) => {
         log.error(...args)

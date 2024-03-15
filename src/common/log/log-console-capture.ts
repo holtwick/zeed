@@ -17,17 +17,17 @@ export function logCaptureConsole(log: LoggerInterface) {
 
   onlyOnce = true
 
-  globalThis.console.log = (...args: any[]) => log.generic(LogLevelDebug, ...args)
-  globalThis.console.debug = (...args: any[]) => log.generic(LogLevelDebug, ...args)
-  globalThis.console.warn = (...args: any[]) => log.generic(LogLevelWarn, ...args)
-  globalThis.console.error = (...args: any[]) => log.generic(LogLevelError, ...args)
-  globalThis.console.info = (...args: any[]) => log.generic(LogLevelInfo, ...args)
+  globalThis.console.log = (...args: any[]) => log.debug(LogLevelDebug, ...args)
+  globalThis.console.debug = (...args: any[]) => log.debug(LogLevelDebug, ...args)
+  globalThis.console.warn = (...args: any[]) => log.warn(LogLevelWarn, ...args)
+  globalThis.console.error = (...args: any[]) => log.error(LogLevelError, ...args)
+  globalThis.console.info = (...args: any[]) => log.info(LogLevelInfo, ...args)
 
   globalThis.addEventListener?.('unhandledrejection', (event: any) => {
-    log.generic(LogLevelError, 'onUnhandledrejection', event)
+    log.error('onUnhandledrejection', event)
   })
 
   globalThis.addEventListener?.('error', (event: any) => {
-    log.generic(LogLevelError, 'onError', event)
+    log.error('onError', event)
   })
 }

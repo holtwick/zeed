@@ -175,7 +175,8 @@ describe('uuid', () => {
   })
 
   it('should generate 32bit', () => {
-    expect(uuid32bit()).not.toBe(0)
+    expect(uuid32bit()).not.toBe(0) // todo there is a little chance that this will fail
+    expect(uuid32bit()).not.toBe(uuid32bit()) // todo there is a little chance that this will fail
     expect(Number.isSafeInteger(uuid32bit())).toBe(true)
   })
 

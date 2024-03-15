@@ -117,7 +117,7 @@ export function suidBytesDate(id: Uint8Array): Date {
 
 // 32 bit UUID
 
-export function uuid32bit() {
+export function uuid32bit(): number {
   return new Uint32Array(randomUint8Array(4))[0]
 }
 

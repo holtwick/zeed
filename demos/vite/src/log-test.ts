@@ -1,8 +1,17 @@
 /* eslint-disable no-console */
-import { logCaptureConsole } from '../../../src/common'
+import type { LogMessage } from '../../../src/common'
+import { LogLevelAll, LoggerMemoryHandler, getGlobalLogger, logCaptureConsole } from '../../../src/common'
 import { Logger } from '../../../src/index.browser'
 
 export function logTest() {
+  const messages: LogMessage[] = []
+
+  getGlobalLogger().registerHandler(LoggerMemoryHandler({
+    level: LogLevelAll,
+    filter: '*',
+    messages,
+  }))
+
   logCaptureConsole(Logger('console'))
 
   {

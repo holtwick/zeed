@@ -1,5 +1,5 @@
 import type { LoggerInterface } from './log-base'
-import { LogLevelDebug, LogLevelError, LogLevelInfo, LogLevelWarn } from './log-base'
+import { getGlobalConsole } from './log-console-original'
 
 let onlyOnce: boolean | undefined
 
@@ -17,11 +17,14 @@ export function logCaptureConsole(log: LoggerInterface) {
 
   onlyOnce = true
 
-  globalThis.console.log = (...args: any[]) => log.debug(LogLevelDebug, ...args)
-  globalThis.console.debug = (...args: any[]) => log.debug(LogLevelDebug, ...args)
-  globalThis.console.warn = (...args: any[]) => log.warn(LogLevelWarn, ...args)
-  globalThis.console.error = (...args: any[]) => log.error(LogLevelError, ...args)
-  globalThis.console.info = (...args: any[]) => log.info(LogLevelInfo, ...args)
+  // Save the original console methods
+  getGlobalConsole()
+
+  globalThis.console.log = (...args: any[]) => log.debug(...args)
+  globalThis.console.debug = (...args: any[]) => log.debug(...args)
+  globalThis.console.warn = (...args: any[]) => log.warn(...args)
+  globalThis.console.error = (...args: any[]) => log.error(...args)
+  globalThis.console.info = (...args: any[]) => log.info(...args)
 
   globalThis.addEventListener?.('unhandledrejection', (event: any) => {
     log.error('onUnhandledrejection', event)

@@ -1,4 +1,4 @@
-import { isEmpty, isNotEmpty, isNotNull, isNumber, isObject, isPrimitive, isRecord, isRecordPlain, isTruthy, isUint8Array, isValue } from './is'
+import { isBinaryArray, isEmpty, isFunction, isNotEmpty, isNotNull, isNumber, isObject, isPrimitive, isRecord, isRecordPlain, isSymbol, isTruthy, isUint8Array, isValue } from './is'
 
 describe('is', () => {
   it('should identify Uint8Array', () => {
@@ -150,4 +150,63 @@ describe('is', () => {
     expect(typeof nan === 'number').toBe(true)
     expect(isNumber(nan)).toBe(false)
   })
+
+  it('should identify function correctly', () => {
+    function fn() { return 'hello' }
+    const arrowFn = () => 'world'
+    const obj = { method() { return 'foo' } }
+    const classObj = new (class {
+      method() { return 'bar' }
+    })()
+
+    expect(isFunction(fn)).toBe(true)
+    expect(isFunction(arrowFn)).toBe(true)
+    // eslint-disable-next-line ts/unbound-method
+    expect(isFunction(obj.method)).toBe(true)
+    // eslint-disable-next-line ts/unbound-method
+    expect(isFunction(classObj.method)).toBe(true)
+
+    expect(isFunction({})).toBe(false)
+    expect(isFunction([])).toBe(false)
+    expect(isFunction(123)).toBe(false)
+    expect(isFunction('hello')).toBe(false)
+    expect(isFunction(true)).toBe(false)
+    expect(isFunction(null)).toBe(false)
+    expect(isFunction(undefined)).toBe(false)
+  })
+
+  it('should identify symbol correctly', () => {
+    const symbol = Symbol('test')
+    expect(isSymbol(symbol)).toBe(true)
+    expect(isSymbol('test')).toBe(false)
+    expect(isSymbol(123)).toBe(false)
+    expect(isSymbol({})).toBe(false)
+    expect(isSymbol([])).toBe(false)
+    expect(isSymbol(null)).toBe(false)
+    expect(isSymbol(undefined)).toBe(false)
+  })
+
+  it('should identify binary arrays correctly', () => {
+    expect(isBinaryArray(new Uint8Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Uint8ClampedArray([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Uint16Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Uint32Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Int8Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Int16Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Int32Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Float32Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new Float64Array([1, 2, 3]))).toBe(true)
+    expect(isBinaryArray(new BigInt64Array([1n, 2n, 3n]))).toBe(true)
+    expect(isBinaryArray(new BigUint64Array([1n, 2n, 3n]))).toBe(true)
+
+    expect(isBinaryArray([])).toBe(false)
+    expect(isBinaryArray({})).toBe(false)
+    expect(isBinaryArray(123)).toBe(false)
+    expect(isBinaryArray('hello')).toBe(false)
+    expect(isBinaryArray(true)).toBe(false)
+    expect(isBinaryArray(null)).toBe(false)
+    expect(isBinaryArray(undefined)).toBe(false)
+  })
+
+  // ...
 })

@@ -116,7 +116,7 @@ export function renderMessages(
 //
 
 // Awesome trick from https://stackoverflow.com/a/5396742/140927
-export function fixBrokenUth8String(brokenString: string): string {
+export function fixBrokenUtf8String(brokenString: string): string {
   try {
     return decodeURIComponent(escape(brokenString))
   }

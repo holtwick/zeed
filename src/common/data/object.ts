@@ -1,4 +1,4 @@
-import { isArray, isObject, isPrimitive } from './is'
+import { isArray, isBinaryArray, isFunction, isObject, isPrimitive, isSymbol } from './is'
 
 /** Like `.map()` for object. Return new key and value or `undefined` to delete. */
 export function objectMap<T = any>(
@@ -58,13 +58,17 @@ export function objectPlain(obj: any, opt?: {
   maxDepth?: number
   maxDepthValue?: any
   circleValue?: any
+  errorTrace?: boolean
   filter?: (value: any) => boolean
+  keepAsIs?: (value: any) => boolean
 }): any {
   const {
     maxDepth = 99,
     circleValue,
     maxDepthValue,
+    errorTrace = true,
     filter = () => true,
+    keepAsIs = () => false,
   } = opt ?? {}
 
   const cycle: any = []
@@ -72,6 +76,12 @@ export function objectPlain(obj: any, opt?: {
   function handleObject(obj: any, depth: number): any {
     if (depth > maxDepth)
       return maxDepthValue // '*** MAX DEPTH ***'
+
+    if (keepAsIs(obj))
+      return obj
+
+    if (isSymbol(obj))
+      return String(obj)
 
     if (isPrimitive(obj))
       return obj
@@ -81,16 +91,33 @@ export function objectPlain(obj: any, opt?: {
 
     cycle.push(obj)
 
-    if (Array.isArray(obj))
-      return obj.map(o => handleObject(o, depth + 1)).filter(filter)
+    if (obj instanceof Date)
+      return obj.toISOString()
 
-    if (isObject(obj)) {
+    if (obj instanceof RegExp)
+      return obj.toString()
+
+    if (obj instanceof Map)
+      obj = Object.fromEntries(obj)
+
+    if (obj instanceof Set || isBinaryArray(obj))
+      obj = Array.from(obj as any)
+
+    if (obj instanceof Error)
+      return `${obj.name || 'Error'}: ${obj.message}${errorTrace ? `\n${obj.stack}` : ''}`
+
+    if (Array.isArray(obj)) {
+      return obj
+        .filter(filter)
+        .map(o => handleObject(o, depth + 1))
+    }
+
+    if (isObject(obj) || isFunction(obj)) {
       const nobj: any = {}
       for (const [key, value] of Object.entries(obj)) {
         if (filter(value))
           nobj[key] = handleObject(value, depth + 1)
       }
-
       return nobj
     }
 

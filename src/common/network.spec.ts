@@ -1,4 +1,4 @@
-import { fetchJson, fetchText, parseBasicAuth } from './network'
+import { fetchText, parseBasicAuth } from './network'
 
 describe('network', () => {
   it('should fetch', async () => {

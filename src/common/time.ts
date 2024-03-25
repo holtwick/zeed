@@ -12,7 +12,7 @@ export function formatMilliseconds(ms: number): string {
 
 /**
  * Parses the given date candidates and returns the first valid Date object found.
- * 
+ *
  * @param dateCandidates - The date candidates to parse, which can be either strings or Date objects.
  * @returns The parsed Date object, or undefined if no valid date is found.
  */

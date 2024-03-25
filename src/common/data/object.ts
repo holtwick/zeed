@@ -1,4 +1,4 @@
-import { isArray, isBinaryArray, isFunction, isObject, isPrimitive, isSymbol } from './is'
+import { isArray, isBinaryArray, isObject, isPrimitive, isSymbol } from './is'
 
 /** Like `.map()` for object. Return new key and value or `undefined` to delete. */
 export function objectMap<T = any>(
@@ -112,16 +112,16 @@ export function objectPlain(obj: any, opt?: {
         .map(o => handleObject(o, depth + 1))
     }
 
-    if (isObject(obj) || isFunction(obj)) {
-      const nobj: any = {}
-      for (const [key, value] of Object.entries(obj)) {
-        if (filter(value))
-          nobj[key] = handleObject(value, depth + 1)
-      }
-      return nobj
+    // if (isObject(obj) || isFunction(obj)) {
+    const nobj: any = {}
+    for (const [key, value] of Object.entries(obj)) {
+      if (filter(value))
+        nobj[key] = handleObject(value, depth + 1)
     }
+    return nobj
+    // }
 
-    return undefined
+    // return undefined
   }
 
   return handleObject(obj, 0)

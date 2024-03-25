@@ -48,7 +48,7 @@ export class Emitter<
 
   /**
    * Emits an event to all subscribers and executes their corresponding event handlers.
-   * 
+   *
    * @param event - The event to emit.
    * @param args - The arguments to pass to the event handlers.
    * @returns A promise that resolves to a boolean indicating whether the event was successfully emitted.

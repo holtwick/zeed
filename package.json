@@ -65,7 +65,7 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.9.0",
+    "@antfu/eslint-config": "^2.11.4",
     "@antfu/ni": "^0.21.12",
     "@types/node": "^20.11.30",
     "@vitest/coverage-v8": "^1.4.0",

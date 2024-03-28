@@ -1,4 +1,7 @@
+import { arraySum } from './array'
 import {
+  roundArrayOfNumbersToMatchSum,
+  roundArrayOfObjectsToMatchSum,
   roundDown,
   roundHalfAwayFromZero,
   roundHalfDown,
@@ -180,5 +183,65 @@ describe('currency', () => {
     it('rounds up with a negative float above half', () => {
       expect(roundUp(-1.6)).toBe(-1)
     })
+  })
+
+  it('distribute percentages', () => {
+    const values = [13.626332, 47.989636, 9.596008, 28.788024]
+
+    const objs = [{
+      name: '13',
+      percent: 13.626332,
+    }, {
+      name: '47',
+      percent: 47.989636,
+    }, {
+      name: '9',
+      percent: 9.596008,
+    }, {
+      name: '28',
+      percent: 28.788024,
+    }]
+
+    expect(arraySum(roundArrayOfNumbersToMatchSum(values))).toEqual(100)
+    expect(arraySum(roundArrayOfNumbersToMatchSum(values, 95, 2))).toEqual(95)
+
+    expect(roundArrayOfNumbersToMatchSum(values)).toMatchInlineSnapshot(`
+      Array [
+        14,
+        48,
+        9,
+        29,
+      ]
+    `)
+
+    expect(roundArrayOfNumbersToMatchSum(values, 95, 2)).toMatchInlineSnapshot(`
+      Array [
+        12.94,
+        45.59,
+        9.12,
+        27.35,
+      ]
+    `)
+
+    expect(roundArrayOfObjectsToMatchSum(objs, 'percent')).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "name": "13",
+          "percent": 14,
+        },
+        Object {
+          "name": "47",
+          "percent": 48,
+        },
+        Object {
+          "name": "9",
+          "percent": 9,
+        },
+        Object {
+          "name": "28",
+          "percent": 29,
+        },
+      ]
+    `)
   })
 })

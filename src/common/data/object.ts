@@ -114,7 +114,8 @@ export function objectPlain(obj: any, opt?: {
 
     // if (isObject(obj) || isFunction(obj)) {
     const nobj: any = {}
-    for (const [key, value] of Object.entries(obj)) {
+    for (const key in obj) {
+      const value = obj[key]
       if (filter(value))
         nobj[key] = handleObject(value, depth + 1)
     }

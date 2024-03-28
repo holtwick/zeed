@@ -177,6 +177,10 @@ describe('objectPlain', () => {
     fn.prototype.x = 2
     fn.z = 6
 
+    class Klass {
+      name = 'test'
+    }
+
     const obj = {
       a: 1,
       b: {
@@ -198,6 +202,8 @@ describe('objectPlain', () => {
         uint16: new Uint16Array([1, 2, 3]),
         c: 2,
         d: [3, 4, 5],
+        Klass,
+        newKlass: new Klass(),
       },
     }
     const result = objectPlain(obj, {
@@ -209,6 +215,7 @@ describe('objectPlain', () => {
       Object {
         "a": 1,
         "b": Object {
+          "Klass": Object {},
           "c": 2,
           "d": Array [
             3,
@@ -226,6 +233,9 @@ describe('objectPlain', () => {
             "true": "bool",
           },
           "nan": NaN,
+          "newKlass": Object {
+            "name": "test",
+          },
           "rx": "/.*?.test/gim",
           "set": Array [
             1,

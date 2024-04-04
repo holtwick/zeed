@@ -1,6 +1,8 @@
-import { isEmpty } from '../../common'
-import { getGlobalLogger } from '../../common/log'
+import { isEmpty } from '../../common/data/is'
+import { getGlobalLogger } from '../../common/log/log'
 import type { LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
+import type { LogConfig } from '../../common/log/log-config'
+import { _LoggerFromConfig } from '../../common/log/log-config'
 import { isBrowser } from '../../common/platform'
 import { LoggerBrowserHandler } from './log-browser'
 import { LoggerBrowserSetupDebugFactory } from './log-browser-factory'
@@ -12,4 +14,9 @@ export function Logger(name?: string, level?: LogLevelAliasType): LoggerInterfac
       context.setFactory(LoggerBrowserSetupDebugFactory({}))
     }
   })(name, level)
+}
+
+/** See LogConfig */
+export function LoggerFromConfig(config: LogConfig, name: string, level?: LogLevelAliasType): LoggerInterface {
+  return _LoggerFromConfig(Logger, config, name, level)
 }

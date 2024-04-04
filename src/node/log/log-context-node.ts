@@ -1,8 +1,10 @@
 import process from 'node:process'
-import { valueToBoolean } from '../../common'
-import { getGlobalLogger } from '../../common/log'
+import { valueToBoolean } from '../../common/data/convert'
+import type { LogConfig } from '../../common/log/log-config'
+import { getGlobalLogger } from '../../common/log/log'
 import type { LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
 import { toPath } from '../env'
+import { _LoggerFromConfig } from '../../common/log/log-config'
 import { LoggerFileHandler } from './log-file'
 import { LoggerNodeHandler } from './log-node'
 
@@ -24,4 +26,9 @@ export function Logger(name?: string, level?: LogLevelAliasType): LoggerInterfac
 
     context.setHandlers(handlers)
   })(name, level)
+}
+
+/** See LogConfig */
+export function LoggerFromConfig(config: LogConfig, name: string, level?: LogLevelAliasType): LoggerInterface {
+  return _LoggerFromConfig(Logger, config, name, level)
 }

@@ -41,6 +41,13 @@ export interface LogMessage {
   timestamp?: number
 }
 
+export type LogMessageCompact = [
+  timestamp: number,
+  level: LogLevel,
+  name: string,
+  ...messages: any[],
+]
+
 export type LogHandler = (msg: LogMessage) => void
 
 export interface LoggerInterface {

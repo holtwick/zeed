@@ -1,14 +1,20 @@
 import { getTimestamp } from '../time'
-import type { LogHandler, LogHandlerOptions, LogMessage } from './log-base'
+import type { LogHandler, LogHandlerOptions, LogMessage, LogMessageCompact } from './log-base'
 import { useLevelFilter, useNamespaceFilter } from './log-filter'
+
+export function logMessageFromCompact(m: LogMessageCompact): LogMessage {
+  const [timestamp, level, name, ...messages] = m
+  return { timestamp, level, name, messages }
+}
 
 /** Collect messages in a list. */
 export function LoggerMemoryHandler(
   opt: LogHandlerOptions & {
-    messages: LogMessage[]
+    compact?: boolean
+    messages: LogMessageCompact[] | LogMessage[]
   },
 ): LogHandler {
-  const { level = undefined, filter = undefined, messages = [] } = opt
+  const { level = undefined, filter = undefined, compact = false, messages = [] } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
   return (msg: LogMessage) => {
@@ -16,7 +22,10 @@ export function LoggerMemoryHandler(
       return
     if (!matchesNamespace(msg.name))
       return
-    msg.timestamp = getTimestamp()
-    messages.push(msg)
+    msg.timestamp ??= getTimestamp()
+    if (compact === true)
+      (messages as LogMessageCompact[]).push([msg.timestamp, msg.level, msg.name, ...msg.messages])
+    else
+      (messages as LogMessage[]).push(msg)
   }
 }

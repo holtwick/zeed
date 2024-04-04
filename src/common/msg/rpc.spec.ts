@@ -1,6 +1,6 @@
 import { MessageChannel } from 'node:worker_threads'
 import { decodeJson, encodeJson } from '../bin'
-import { createLocalChannelPair } from '../msg/channel'
+import { createLocalChannelPair } from '../msg/channel-local'
 import { sleep } from '../exec/promise'
 import { useRPC, useRPCHub } from './rpc'
 

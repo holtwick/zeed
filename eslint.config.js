@@ -3,6 +3,10 @@ import antfu from '@antfu/eslint-config'
 export default antfu(
   {
     vue: true,
+    typescript: true,
+    // typescript: {
+    //   tsconfigPath: './tsconfig.json',
+    // },
     ignores: [
       'dist',
       'node_modules',
@@ -16,9 +20,6 @@ export default antfu(
       // '*.spec.*',
       // 'vitest.config.ts',
     ],
-    typescript: {
-      tsconfigPath: './tsconfig.json',
-    },
     rules: {
       'unused-imports/no-unused-vars': 'off',
       'ts/no-unsafe-assignment': 'off',

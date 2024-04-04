@@ -11,7 +11,6 @@ describe('platform', () => {
       expect(platform.test).toBe(true)
       expect(platform.browser).toBe(false)
 
-      // eslint-disable-next-line ts/no-implied-eval
       const isBrowser = new Function('try {return this===window;}catch(e){ return false;}')
       expect(isBrowser()).toBe(false)
     }
@@ -20,7 +19,6 @@ describe('platform', () => {
       expect(platform.test).toBe(false)
       expect(platform.browser).toBe(true)
 
-      // eslint-disable-next-line ts/no-implied-eval
       const isBrowser = new Function('try {return this===window;}catch(e){ return false;}')
       expect(isBrowser()).toBe(true)
     }

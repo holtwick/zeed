@@ -14,7 +14,10 @@ describe('is', () => {
     }
     const x = new X()
     const plain = { hello: 'world' }
-    function fn() { return 'hello' }
+
+    function fn() {
+      return 'hello'
+    }
 
     expect(isObject(X)).toBe(false)
     expect(isObject(x)).toBe(true)
@@ -152,18 +155,29 @@ describe('is', () => {
   })
 
   it('should identify function correctly', () => {
-    function fn() { return 'hello' }
+    function fn() {
+      return 'hello'
+    }
+
     const arrowFn = () => 'world'
-    const obj = { method() { return 'foo' } }
+
+    const obj = {
+      method() {
+        return 'foo'
+      },
+    }
+
     const classObj = new (class {
-      method() { return 'bar' }
+      method() {
+        return 'bar'
+      }
     })()
 
     expect(isFunction(fn)).toBe(true)
     expect(isFunction(arrowFn)).toBe(true)
-    // eslint-disable-next-line ts/unbound-method
+
     expect(isFunction(obj.method)).toBe(true)
-    // eslint-disable-next-line ts/unbound-method
+
     expect(isFunction(classObj.method)).toBe(true)
 
     expect(isFunction({})).toBe(false)

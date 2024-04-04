@@ -30,7 +30,7 @@ export function getGlobal(): any {
     ? self
     : typeof global !== 'undefined'
       ? global
-      // eslint-disable-next-line no-new-func, ts/no-implied-eval
+      // eslint-disable-next-line no-new-func
       : Function('return this;')()
 }
 

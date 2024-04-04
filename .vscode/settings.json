@@ -50,5 +50,6 @@
     "**/cypress/**",
     "**/.{idea,git,cache,output,temp}/**"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "javascript.preferences.importModuleSpecifier": "relative"
 }

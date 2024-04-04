@@ -65,15 +65,15 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.11.4",
+    "@antfu/eslint-config": "^2.12.1",
     "@antfu/ni": "^0.21.12",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.4",
     "@vitest/coverage-v8": "^1.4.0",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "tsup": "^8.0.2",
     "typescript": "^5.4.3",
-    "vite": "^5.2.6",
+    "vite": "^5.2.8",
     "vitest": "^1.4.0"
   }
 }

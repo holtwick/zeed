@@ -1,3 +1,6 @@
+export * from './channel-debug'
+export * from './channel-local'
+export * from './channel-resilient'
 export * from './channel'
 export * from './emitter'
 export * from './encoder'

@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import { DefaultLogger } from '../log'
-import { createLocalChannelPair } from './channel'
+import { createLocalChannelPair } from './channel-local'
 
 const log = DefaultLogger('test:channel')
 

@@ -1,4 +1,4 @@
-import { createLocalChannelPair } from './channel'
+import { createLocalChannelPair } from './channel-local'
 import { usePubSub } from './pubsub'
 
 // const log = Logger('test:connection')

@@ -1,6 +1,5 @@
+/* eslint-disable node/prefer-global/process */
 // Simple demo for node and CommonJS loading
-
-import process from 'node:process'
 
 const {
   Logger,

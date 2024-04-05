@@ -2,7 +2,6 @@
 /* eslint-disable no-console */
 /* eslint-disable eqeqeq */
 
-import { Buffer } from 'node:buffer'
 import { format } from 'pretty-format'
 import { fn } from 'jest-mock'
 import { Logger, deepEqual, isPromise } from '../../../src/index.browser'
@@ -205,7 +204,7 @@ Object.assign(window, {
   beforeAll,
   afterAll,
   describe,
-  Buffer,
+  // Buffer,
   jest: { fn },
 })
 

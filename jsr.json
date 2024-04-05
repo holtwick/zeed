@@ -1,5 +1,0 @@
-{
-  "name": "@ho/zeed",
-  "version": "0.17.0",
-  "exports": "./src/index.all.ts"
-}

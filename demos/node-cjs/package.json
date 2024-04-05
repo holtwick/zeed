@@ -9,7 +9,7 @@
     "node": ">=14.13.1"
   },
   "scripts": {
-    "start": "ZEED=* node index.js"
+    "start": "ZEED=* node index.cjs"
   },
   "dependencies": {
     "zeed": "file:../.."

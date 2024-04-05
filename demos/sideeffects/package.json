@@ -14,10 +14,10 @@
     "build": "pnpm run build:zeed && pnpm run build:browser && pnpm run build:node"
   },
   "dependencies": {
-    "zeed": "../.."
+    "zeed": "file:../.."
   },
   "devDependencies": {
-    "esbuild": "^0.17.11",
-    "prettier": "^2.8.4"
+    "esbuild": "^0.20.2",
+    "prettier": "^3.2.5"
   }
 }

@@ -1,5 +1,5 @@
 import { sleep } from './exec'
-import { duration, parseDate } from './time'
+import { datetimeToLocal, datetimeToUTC, duration, parseDate } from './time'
 
 describe('time.spec', () => {
   it('should measure', async () => {
@@ -26,5 +26,14 @@ describe('time.spec', () => {
     const inputDate = new Date()
     const date = parseDate(inputDate)
     expect(date).toBe(inputDate)
+  })
+
+  it('should convert dates', () => {
+    const dateLocal = new Date('2022-01-01T12:00:00')
+    // expect(dateLocal?.toString()).toMatchInlineSnapshot(`"Sat Jan 01 2022 12:00:00 GMT+0100 (Central European Standard Time)"`)
+    // expect(dateLocal.toISOString()).toMatchInlineSnapshot(`"2022-01-01T11:00:00.000Z"`)
+    // expect(datetimeToUTC(dateLocal)).toMatchInlineSnapshot(`2022-01-01T12:00:00.000Z`)
+    // expect(datetimeToLocal(dateLocal)).toMatchInlineSnapshot(`2022-01-01T10:00:00.000Z`)
+    expect(datetimeToLocal(datetimeToUTC(dateLocal))).toEqual(dateLocal)
   })
 })

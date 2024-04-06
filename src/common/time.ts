@@ -69,3 +69,29 @@ export function duration() {
     // })
   }
 }
+
+/** If you parsed a date without time zone, you may need to shift it to local time */
+export function datetimeToLocal(fromDate: Date): Date {
+  return new Date(
+    fromDate.getUTCFullYear(),
+    fromDate.getUTCMonth(),
+    fromDate.getUTCDate(),
+    fromDate.getUTCHours(),
+    fromDate.getUTCMinutes(),
+    fromDate.getUTCSeconds(),
+    fromDate.getUTCMilliseconds(),
+  )
+}
+
+/** If you parsed a date without time zone, you may need to shift it to UTC time */
+export function datetimeToUTC(fromDate: Date): Date {
+  return new Date(Date.UTC(
+    fromDate.getFullYear(),
+    fromDate.getMonth(),
+    fromDate.getDate(),
+    fromDate.getHours(),
+    fromDate.getMinutes(),
+    fromDate.getSeconds(),
+    fromDate.getMilliseconds(),
+  ))
+}

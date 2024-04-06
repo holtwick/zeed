@@ -27,8 +27,8 @@ export function dayToParts(day: DayValue): [number, number, number] {
   return [dayYear(day), dayMonth(day), dayDay(day)]
 }
 
-export function dayToDate(day: DayValue, gmt = false): Date {
-  return gmt
+export function dayToDate(day: DayValue, utc = false): Date {
+  return utc
     ? new Date(`${dayToString(day)}T00:00:00.000Z`)
     : new Date(
       day / 10000, // year
@@ -43,7 +43,7 @@ export function dayFromToday(): DayValue {
 
 export function dayFromAny(
   value: DayInput,
-  gmt = false,
+  utc = false,
 ): DayValue | undefined {
   if (typeof value === 'number') {
     if (value < 100)
@@ -58,19 +58,24 @@ export function dayFromAny(
     return dayFromParts(year, month, day)
   }
   else if (value instanceof Date) {
-    return dayFromDate(value, gmt)
+    return dayFromDate(value, utc)
     // } else if (value instanceof Day) {
     //   return value.days
   }
 }
 
+export function dayToDateUTC(day: DayValue): Date {
+  return dayToDate(day, true)
+}
+
+/** @deprecated use dayToDateUTC */
 export function dayToDateGMT(day: DayValue): Date {
   return dayToDate(day, true)
 }
 
-export function dayFromDate(date: Date, gmt = false): DayValue {
+export function dayFromDate(date: Date, utc = false): DayValue {
   return (
-    gmt
+    utc
       ? dayFromString(date.toISOString())
       : date.getFullYear() * 10000
       + (date.getMonth() + 1) * 100
@@ -78,16 +83,21 @@ export function dayFromDate(date: Date, gmt = false): DayValue {
   )!
 }
 
+export function dayFromDateUTC(date: Date): DayValue {
+  return dayFromDate(date, true)
+}
+
+/** @deprecated use dayFromDateUTC */
 export function dayFromDateGMT(date: Date): DayValue {
   return dayFromDate(date, true)
 }
 
-export function dayToTimestamp(day: DayValue, gmt = true): number {
-  return dayToDate(day, gmt).getTime()
+export function dayToTimestamp(day: DayValue, utc = true): number {
+  return dayToDate(day, utc).getTime()
 }
 
-export function dayFromTimestamp(ms: number, gmt = true): DayValue {
-  return dayFromDate(new Date(ms), gmt)
+export function dayFromTimestamp(ms: number, utc = true): DayValue {
+  return dayFromDate(new Date(ms), utc)
 }
 
 export function dayToString(day: DayValue, sep = '-') {

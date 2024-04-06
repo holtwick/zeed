@@ -75,7 +75,7 @@ describe('days', () => {
       // This only works locally, but not on Github Actions ;)
       // expect(day?.toDate()).toEqual(`1987-12-30T23:00:00.000Z`)
 
-      expect(day?.toDateGMT()).toEqual(new Date('1987-12-31T00:00:00.000Z'))
+      expect(day?.toDateUTC()).toEqual(new Date('1987-12-31T00:00:00.000Z'))
 
       expect(Day.fromString('2000-01-01')?.days).toEqual(20000101)
 
@@ -87,7 +87,7 @@ describe('days', () => {
       expect(Day.from([2022, 12, 31])?.days).toBe(20221231)
 
       // Following depend on timezone
-      // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
+      // let day2 = Day.fromDateUTC(new Date("1987-12-31T00:02:03"))
       // expect(day2?.days).toEqual(19871230)
       // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
     }
@@ -102,7 +102,7 @@ describe('days', () => {
       // This only works locally, but not on Github Actions ;)
       // expect(day?.toDate()).toEqual(`1987-12-30T23:00:00.000Z`)
 
-      // expect(day?.toDateGMT()).toEqual(new Date("1987-12-31T00:00:00.000Z"))
+      // expect(day?.toDateUTC()).toEqual(new Date("1987-12-31T00:00:00.000Z"))
 
       // expect(Day.fromString("2000-01-01")?.days).toEqual(20000101)
 
@@ -114,7 +114,7 @@ describe('days', () => {
       // expect(Day.from([2022, 12, 31])?.days).toBe(20221231)
 
       // Following depend on timezone
-      // let day2 = Day.fromDateGMT(new Date("1987-12-31T00:02:03"))
+      // let day2 = Day.fromDateUTC(new Date("1987-12-31T00:02:03"))
       // expect(day2?.days).toEqual(19871230)
       // expect(new Date().toISOString().startsWith(today().toString())).toBe(true)
     }

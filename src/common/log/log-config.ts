@@ -1,5 +1,4 @@
 import { isNumber, isString } from '../data/is'
-import { getGlobalLogger } from './log'
 import type { LogLevelAliasType, LoggerInterface } from './log-base'
 
 /**

@@ -29,7 +29,7 @@ export function LoggerMemoryHandler(
       return
     if (!matchesNamespace(msg.name))
       return
-    
+
     msg.timestamp ??= getTimestamp()
 
     const m = objectPlain(msg, { maxDepth, errorTrace })

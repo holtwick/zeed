@@ -49,9 +49,9 @@ export class Day {
     return Day.from(+dateString.replace(/[^0-9]/g, '').slice(0, 8))
   }
 
-  static fromDate(date: Date, gmt = false): Day {
+  static fromDate(date: Date, utc = false): Day {
     return (
-      gmt
+      utc
         ? Day.fromString(date.toISOString().substr(0, 10))
         : Day.from(
           date.getFullYear() * 10000
@@ -61,11 +61,16 @@ export class Day {
     ) as Day
   }
 
+  static fromDateUTC(date: Date): Day {
+    return Day.fromDate(date, true)
+  }
+
+  /** @deprecated use fromDateUTC */
   static fromDateGMT(date: Date): Day {
     return Day.fromDate(date, true)
   }
 
-  static from(value: DayInputLegacy, gmt = false): Day | undefined {
+  static from(value: DayInputLegacy, utc = false): Day | undefined {
     if (typeof value === 'number') {
       if (value < 100)
         return
@@ -81,7 +86,7 @@ export class Day {
       return new Day(year * 10000 + month * 100 + day)
     }
     else if (value instanceof Date) {
-      return Day.fromDate(value, gmt)
+      return Day.fromDate(value, utc)
     }
     else if (value instanceof Day) {
       return value
@@ -110,8 +115,8 @@ export class Day {
     )
   }
 
-  toDate(gmt = false): Date {
-    return gmt
+  toDate(utc = false): Date {
+    return utc
       ? new Date(`${this.toString()}T00:00:00.000Z`)
       : new Date(
         this.days / 10000, // year
@@ -120,6 +125,11 @@ export class Day {
       )
   }
 
+  toDateUTC() {
+    return this.toDate(true)
+  }
+
+  /** @deprecated use toDateUTC */
   toDateGMT() {
     return this.toDate(true)
   }
@@ -141,8 +151,8 @@ export class Day {
   dayOffset(offset: number): Day {
     // Important! Don't use local time here due to summer/winter time days can
     // be longer or shorter!
-    return Day.fromDateGMT(
-      new Date(this.toDateGMT().getTime() + offset * DAY_MS),
+    return Day.fromDateUTC(
+      new Date(this.toDateUTC().getTime() + offset * DAY_MS),
     )
   }
 
@@ -167,7 +177,7 @@ export class Day {
 
   daysUntil(otherDay: DayInputLegacy): number {
     return Math.round(
-      (new Day(otherDay)?.toDateGMT().getTime() - this.toDateGMT().getTime())
+      (new Day(otherDay)?.toDateUTC().getTime() - this.toDateUTC().getTime())
       / DAY_MS,
     )
   }

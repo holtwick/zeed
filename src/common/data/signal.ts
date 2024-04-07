@@ -1,5 +1,7 @@
 import { arrayRemoveElement } from './array'
-import { objectPlain } from './object'
+
+// I'm aware of this one, but like mine better ;)
+// https://github.com/proposal-signals/proposal-signals
 
 export type SignalWatcher<T> = (value: T, oldValue: T) => void
 

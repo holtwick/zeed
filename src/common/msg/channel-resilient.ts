@@ -11,13 +11,31 @@ export class ResillientChannel extends Channel {
 
   dispose = useDisposeWithUtils()
 
-  /** Post all buffered messages */
-  flushBuffer() {
-    while (this.buffer.length)
-      this.channel?.postMessage(this.buffer.shift())
+  private postMessageRaw(data: Uint8Array | string): boolean {
+    try {
+      if (this.channel?.isConnected) {
+        this.channel.postMessage(data)
+        return true
+      }
+    }
+    catch (err) {
+      // log.warn('send failed', err)
+    }
+    return false
   }
 
-  /** Reset buffer */
+  /** Post all buffered messages */
+  flushBuffer() {
+    while (this.buffer.length) {
+      const data = this.buffer.shift()
+      if (data && !this.postMessageRaw(data)) {
+        this.buffer.unshift(data)
+        break
+      }
+    }
+  }
+
+  /** Reset buffer without force sending */
   emptyBuffer() {
     this.buffer = []
   }
@@ -38,14 +56,14 @@ export class ResillientChannel extends Channel {
     }
   }
 
+  /** @deprecated use `setChannel(undefined)` */
   deleteChannel() {
     this.setChannel()
   }
 
   postMessage(data: Uint8Array | string): void {
-    if (this.channel?.isConnected)
-      this.channel.postMessage(data)
-    else
+    this.flushBuffer()
+    if (!this.postMessageRaw(data))
       this.buffer.push(data)
   }
 

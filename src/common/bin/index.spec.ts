@@ -1,5 +1,5 @@
-import { Uint8ArrayToHexDump, toHex } from '..'
-import { bitfield, createBinaryStreamDecoder, createBinaryStreamEncoder } from '.'
+import { Uint8ArrayToHexDump, equalBinary, toHex } from '..'
+import { bitfield, createBinaryStreamDecoder, createBinaryStreamEncoder, encodeJson } from '.'
 
 describe('encoder', () => {
   it('should write a stream', () => {
@@ -83,4 +83,28 @@ Uint8Array [
     expect(enc(256)).toMatchInlineSnapshot('"8002"')
     expect(enc(691529286)).toMatchInlineSnapshot('"c6ccdfc902"')
   })
+
+  it('should be consistent', () => {
+    const bin1 = encodeJson({
+      a: 1,
+      b: 2,
+    })
+    const bin2 = encodeJson({
+      b: 2,
+      a: 1,
+    })
+    expect(equalBinary(bin1, bin2)).toBe(true)
+  })
+
+  // it('should be consistent JSON', () => {
+  //   const bin1 = JSON.stringify({
+  //     a: 1,
+  //     b: 2,
+  //   })
+  //   const bin2 = JSON.stringify({
+  //     b: 2,
+  //     a: 1,
+  //   })
+  //   expect(bin1 !== bin2).toBe(true)
+  // })
 })

@@ -18,6 +18,8 @@ export interface RPCOptionsBasic extends Pipe {
   onError?: (error: Error, functionName: string, args: any[]) => boolean | void
   /** Custom error handler for timeouts */
   onTimeoutError?: (functionName: string, args: any[]) => boolean | void
+  /** Throw execptions. Default: true */
+  exceptions?: boolean
 }
 
 export interface RPCOptions<Remote> extends RPCOptionsBasic {
@@ -68,6 +70,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
     onError,
     onTimeoutError,
     onlyEvents = false,
+    exceptions = true,
   } = options
 
   const rpcPromiseMap = new Map<number, {
@@ -111,7 +114,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         const promise = rpcPromiseMap.get(id)
         if (promise != null) {
           clearTimeout(promise.timeoutId)
-          if (mode === RPCMode.reject)
+          if (mode === RPCMode.reject && exceptions === true)
             promise.reject(method)
           else
             promise.resolve(method)
@@ -146,7 +149,10 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
               throw new Error(`rpc timeout on calling "${method}"`)
             }
             catch (e) {
-              reject(e)
+              if (exceptions === true)
+                reject(e)
+              else
+                resolve(undefined)
             }
             rpcPromiseMap.delete(id)
           }, timeout).unref?.()
@@ -200,10 +206,12 @@ export function useRPCHub(options: RPCOptionsBasic) {
 export type UseRPCHubType = ReturnType<typeof useRPCHub>
 
 // Syntax test case
-// const hub: UseRPCHubType = {} as any
-// const x = hub({
-//   test(name: string): string {
-//     return name
-//   },
-// })
-// await x.test('dsd')
+// async function _demo() {
+//   const hub: UseRPCHubType = {} as any
+//   const x = hub({
+//     test(name: string): string {
+//       return name
+//     },
+//   })
+//   await x.test('dsd')
+// }

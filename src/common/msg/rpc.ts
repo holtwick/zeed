@@ -206,10 +206,12 @@ export function useRPCHub(options: RPCOptionsBasic) {
 export type UseRPCHubType = ReturnType<typeof useRPCHub>
 
 // Syntax test case
-// const hub: UseRPCHubType = {} as any
-// const x = hub({
-//   test(name: string): string {
-//     return name
-//   },
-// })
-// await x.test('dsd')
+// async function _demo() {
+//   const hub: UseRPCHubType = {} as any
+//   const x = hub({
+//     test(name: string): string {
+//       return name
+//     },
+//   })
+//   await x.test('dsd')
+// }

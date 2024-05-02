@@ -1,7 +1,7 @@
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, join as joinPath, normalize } from 'node:path'
 import process from 'node:process'
-import { isUint8Array } from '../common'
+import { isUint8Array, jsonStringifySorted, toUint8Array } from '../common'
 
 /** Try to use `~` for HOME folder if possible */
 export function toHumanReadableFilePath(path: string) {
@@ -57,12 +57,36 @@ export async function readText(...parts: string[]): Promise<string | undefined> 
     return await readFile(path, 'utf-8')
 }
 
+export async function readJson<T = object>(...parts: string[]): Promise<T | undefined> {
+  const content = await readText(...parts)
+  if (content != null) {
+    try {
+      return JSON.parse(content)
+    }
+    catch (err) {}
+  }
+}
+
+export async function readBin(...parts: string[]): Promise<Uint8Array | undefined> {
+  const path = joinPath(...parts)
+  if (await exists(path))
+    return toUint8Array(await readFile(path))
+}
+
+/** @deprecated use readJson or readBin */
+export async function readData(...parts: string[]): Promise<Uint8Array | undefined> {
+  const path = joinPath(...parts)
+  if (await exists(path))
+    return await readFile(path)
+}
+
 export async function writeText(path: string, content: string, createFolders = false): Promise<void> {
   if (createFolders)
     await ensureFolderForFile(path)
   await writeFile(path, content, 'utf-8')
 }
 
+/** @deprecated use writeBin or writeJson */
 export async function writeData(path: string, content: object | Uint8Array, createFolders = false): Promise<void> {
   if (createFolders)
     await ensureFolderForFile(path)
@@ -70,4 +94,19 @@ export async function writeData(path: string, content: object | Uint8Array, crea
   await writeFile(path, data)
 }
 
-// todo: writeBinary, readBinary
+export async function writeBin(path: string, content: Uint8Array, info: {
+  createFolders?: boolean
+} = {}): Promise<void> {
+  const { createFolders = false } = info
+  if (createFolders)
+    await ensureFolderForFile(path)
+  await writeFile(path, content)
+}
+
+export async function writeJson<T = object>(path: string, content: T, info: {
+  createFolders?: boolean
+  pretty?: boolean
+} = {}): Promise<void> {
+  const { createFolders = false, pretty = false } = info
+  await writeText(path, jsonStringifySorted(content, pretty ? 2 : undefined), createFolders)
+}

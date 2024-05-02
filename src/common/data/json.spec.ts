@@ -1,4 +1,4 @@
-import jsonParse, { jsonStringifySafe, jsonStringifySorted } from './json'
+import { jsonParse, jsonStringifySafe, jsonStringifySorted } from './json'
 
 describe('convert', () => {
   it('should jsonStringify', () => {

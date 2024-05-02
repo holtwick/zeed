@@ -178,7 +178,11 @@ describe('objectPlain', () => {
     fn.z = 6
 
     class Klass {
-      name = 'test'
+      name: string
+
+      constructor(name?: string) {
+        this.name = name ?? 'test'
+      }
     }
 
     const obj = {
@@ -197,33 +201,51 @@ describe('objectPlain', () => {
           ['b', 2],
           [true, 'bool'],
         ]),
+        date: new Date(Date.UTC(2024, 0, 1, 12)),
         weakMap: new WeakMap(),
         uint8: new Uint8Array([1, 2, 3]),
         uint16: new Uint16Array([1, 2, 3]),
         c: 2,
         d: [3, 4, 5],
         Klass,
-        newKlass: new Klass(),
+        newKlass: new Klass('testNewKlass'),
       },
     }
+
     const result = objectPlain(obj, {
       keepAsIs: o => o instanceof Uint8Array,
       errorTrace: false,
+      transformer(obj) {
+        if (obj instanceof Date)
+          return { __timestamp: obj.getTime() }
+      },
     })
 
     expect(result).toMatchInlineSnapshot(`
       Object {
         "a": 1,
         "b": Object {
-          "Klass": Object {},
+          "Klass": Object {
+            "__class": "Function",
+          },
           "c": 2,
           "d": Array [
             3,
             4,
             5,
           ],
-          "err": "Error: err",
+          "date": Object {
+            "__timestamp": 1704110400000,
+          },
+          "err": Object {
+            "__class": "Error",
+            "cause": undefined,
+            "message": "err",
+            "name": "Error",
+            "stack": undefined,
+          },
           "fn": Object {
+            "__class": "Function",
             "z": 6,
           },
           "inf": Infinity,
@@ -234,9 +256,13 @@ describe('objectPlain', () => {
           },
           "nan": NaN,
           "newKlass": Object {
-            "name": "test",
+            "__class": "Klass",
+            "name": "testNewKlass",
           },
-          "rx": "/.*?.test/gim",
+          "rx": Object {
+            "__class": "RegExp",
+            "source": "/.*?.test/gim",
+          },
           "set": Array [
             1,
             Object {
@@ -254,7 +280,9 @@ describe('objectPlain', () => {
             2,
             3,
           ],
-          "weakMap": Object {},
+          "weakMap": Object {
+            "__class": "WeakMap",
+          },
           "x": "Symbol(x)",
           "y": 123n,
         },

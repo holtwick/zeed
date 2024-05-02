@@ -9,6 +9,8 @@ import { encodeQuery } from './data/url'
 import { DefaultLogger } from './log'
 import type { Json } from './types'
 
+// TODO: Abort signal https://codedrivendevelopment.com/posts/everything-about-abort-signal-timeout
+
 interface fetchOptionType {
   /** Returns the cache mode associated with request, which is a string indicating how the request will interact with the browser's cache when fetching. */
   cache?: RequestCache

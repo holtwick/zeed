@@ -61,6 +61,7 @@ export function objectPlain(obj: any, opt?: {
   errorTrace?: boolean
   filter?: (value: any) => boolean
   keepAsIs?: (value: any) => boolean
+  transformer?: (value: any) => any | undefined
 }): any {
   const {
     maxDepth = 99,
@@ -69,6 +70,7 @@ export function objectPlain(obj: any, opt?: {
     errorTrace = true,
     filter = () => true,
     keepAsIs = () => false,
+    transformer = () => undefined,
   } = opt ?? {}
 
   const cycle: any = []
@@ -91,11 +93,25 @@ export function objectPlain(obj: any, opt?: {
 
     cycle.push(obj)
 
-    if (obj instanceof Date)
-      return obj.toISOString()
+    if (transformer) {
+      const result = transformer(obj)
+      if (result !== undefined)
+        return result
+    }
 
-    if (obj instanceof RegExp)
-      return obj.toString()
+    if (obj instanceof Date) {
+      return {
+        __class: 'Date',
+        value: obj.toISOString(),
+      }
+    }
+
+    if (obj instanceof RegExp) {
+      return {
+        __class: 'RegExp',
+        source: obj.toString(),
+      }
+    }
 
     if (obj instanceof Map)
       obj = Object.fromEntries(obj)
@@ -103,8 +119,21 @@ export function objectPlain(obj: any, opt?: {
     if (obj instanceof Set || isBinaryArray(obj))
       obj = Array.from(obj as any)
 
-    if (obj instanceof Error)
-      return `${obj.name || 'Error'}: ${obj.message}${errorTrace ? `\n${obj.stack}` : ''}`
+    if (obj instanceof Error) {
+      return {
+        __class: 'Error',
+        name: obj.name,
+        message: obj.message,
+        stack: errorTrace ? obj.stack : undefined,
+        cause: obj.cause ? String(obj.cause) : undefined,
+      }
+    }
+    // return `${obj.name || 'Error'}: ${obj.message}${errorTrace ? `\n${obj.stack}` : ''}`
+
+    /* if (obj instanceof Element) {
+      const attrs = obj.getAttributeNames().map(name => `${name}="${String(obj.getAttribute(name))}"`).join(' ')
+      return `<${[obj.tagName.toLocaleLowerCase(), ...attrs].join(' ')}}>`
+    }  */
 
     if (Array.isArray(obj)) {
       return obj
@@ -112,7 +141,21 @@ export function objectPlain(obj: any, opt?: {
         .map(o => handleObject(o, depth + 1))
     }
 
-    // if (isObject(obj) || isFunction(obj)) {
+    // For class objects just dump the first level of primitives
+    const objName = obj?.constructor?.name
+    if (objName && objName !== 'Object') {
+      const nobj: any = {
+        __class: objName,
+        // __code: obj.toString ? obj.toString() : undefined,
+      }
+      for (const k in obj) {
+        if (Object.hasOwn(obj, k) && isPrimitive(obj[k]))
+          nobj[k] = obj[k]
+      }
+      return nobj
+    }
+
+    // Plain objects are recursively dumped
     const nobj: any = {}
     for (const key in obj) {
       const value = obj[key]
@@ -120,7 +163,6 @@ export function objectPlain(obj: any, opt?: {
         nobj[key] = handleObject(value, depth + 1)
     }
     return nobj
-    // }
 
     // return undefined
   }

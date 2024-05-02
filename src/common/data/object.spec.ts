@@ -1,3 +1,4 @@
+import exp from 'node:constants'
 import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
 import { isNotNull } from './is'
@@ -288,5 +289,8 @@ describe('objectPlain', () => {
         },
       }
     `)
+
+    const result2 = objectPlain(obj)
+    expect(objectPlain(result2)).toEqual(result2)
   })
 })

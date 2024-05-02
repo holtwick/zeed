@@ -96,7 +96,8 @@ function jsonParseTransform(key: string, value: any): any {
   return value
 }
 
-export default function jsonParse(val: string): any {
+/** @deprecated a safe parser? */
+export function jsonParse(val: string): any {
   if (typeof val !== 'string')
     return val
 

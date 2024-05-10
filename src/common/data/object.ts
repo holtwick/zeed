@@ -82,22 +82,23 @@ export function objectPlain(obj: any, opt?: {
     if (keepAsIs(obj))
       return obj
 
-    if (isSymbol(obj))
-      return String(obj)
-
-    if (isPrimitive(obj))
-      return obj
-
-    if (cycle.includes(obj))
-      return circleValue // '*** CYCLE ***'
-
-    cycle.push(obj)
+    if (!isPrimitive(obj)) {
+      if (cycle.includes(obj))
+        return circleValue // '*** CYCLE ***'
+      cycle.push(obj)
+    }
 
     if (transformer) {
       const result = transformer(obj)
       if (result !== undefined)
         return result
     }
+
+    if (isSymbol(obj))
+      return String(obj)
+
+    if (isPrimitive(obj))
+      return obj
 
     if (obj instanceof Date) {
       return {

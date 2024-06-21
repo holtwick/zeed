@@ -11,16 +11,18 @@ export function browserSupportsColors(): boolean {
     && window.process
     // @ts-expect-error xxx
     && (window.process.type === 'renderer' || window.process.__nwjs)
-  )
+  ) {
     return true
+  }
 
   // Internet Explorer and Edge do not support colors.
   if (
     typeof navigator !== 'undefined'
     && navigator.userAgent
     && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)
-  )
+  ) {
     return false
+  }
 
   // Is webkit? http://stackoverflow.com/a/16459606/376773
   // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632

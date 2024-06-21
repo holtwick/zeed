@@ -18,8 +18,9 @@ export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
     || defaultNamespaceFilter === 'true'
     || defaultNamespaceFilter === '1'
     || (typeof defaultNamespaceFilter === 'number' && defaultNamespaceFilter !== 0)
-  )
+  ) {
     defaultNamespaceFilter = '*'
+  }
   else if (
     defaultNamespaceFilter === false
     || defaultNamespaceFilter === 'false'
@@ -28,10 +29,12 @@ export function getNamespaceFilterString(defaultNamespaceFilter: any): string {
     || defaultNamespaceFilter == null
     || defaultNamespaceFilter === 'null'
     || defaultNamespaceFilter === 'undefined'
-  )
+  ) {
     defaultNamespaceFilter = ''
-  else
+  }
+  else {
     defaultNamespaceFilter = String(defaultNamespaceFilter)
+  }
 
   return defaultNamespaceFilter
 }

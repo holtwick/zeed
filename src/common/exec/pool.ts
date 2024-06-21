@@ -166,8 +166,9 @@ export function usePool<T = any>(config: PoolConfig = {}) {
               && tt.id !== t.id
               && tt.group === t.group,
           )
-        )
+        ) {
           continue
+        }
 
         // fifo
         if (taskInfo == null || t.priority < taskInfo.priority)

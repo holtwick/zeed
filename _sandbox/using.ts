@@ -6,7 +6,7 @@
 
 // try {
 //   // @ts-expect-error just a polyfill
-//   Symbol.dispose ??= Symbol("Symbol.dispose") 
+//   Symbol.dispose ??= Symbol("Symbol.dispose")
 //   // @ts-expect-error just a polyfill
 //   Symbol.asyncDispose ??= Symbol("Symbol.asyncDispose")
 // } finally { }
@@ -17,7 +17,7 @@ function useTempFile(path: string) {
     path,
     [Symbol.dispose]() {
       console.log('4 dispose')
-    }
+    },
   }
 }
 

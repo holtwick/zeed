@@ -1,7 +1,6 @@
-import exp from 'node:constants'
 import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
-import { isNotNull } from './is'
+import { isBoolean, isNotNull } from './is'
 import { objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick, objectPlain } from './object'
 
 describe('object.spec', () => {
@@ -100,6 +99,23 @@ describe('objectPlain', () => {
     expect(result).toEqual(obj)
   })
 
+  it('should handle bool', async () => {
+    const x = objectPlain({ test: true, fdsf: { fsdafs: false } }, {
+      transformer: (obj) => {
+        if (isBoolean(obj))
+          return +obj
+      },
+    })
+    expect(x).toMatchInlineSnapshot(`
+      Object {
+        "fdsf": Object {
+          "fsdafs": 0,
+        },
+        "test": 1,
+      }
+    `)
+  })
+
   it('should handle circular references', () => {
     const obj: any = {
       a: 1,
@@ -192,6 +208,7 @@ describe('objectPlain', () => {
         x: Symbol('x'),
         y: BigInt(123),
         fn,
+        bool: true,
         nan: Number.NaN,
         inf: Number.POSITIVE_INFINITY,
         err: new Error('err'),
@@ -219,6 +236,8 @@ describe('objectPlain', () => {
       transformer(obj) {
         if (obj instanceof Date)
           return { __timestamp: obj.getTime() }
+        if (isBoolean(obj))
+          return +obj
       },
     })
 
@@ -229,6 +248,7 @@ describe('objectPlain', () => {
           "Klass": Object {
             "__class": "Function",
           },
+          "bool": 1,
           "c": 2,
           "d": Array [
             3,

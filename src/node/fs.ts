@@ -47,7 +47,6 @@ export async function removeFolder(...parts: string[]): Promise<string> {
   const path = joinPath(...parts)
   if (await exists(path))
     await rm(path, { recursive: true })
-
   return path
 }
 

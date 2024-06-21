@@ -16,3 +16,4 @@ _archive
 .npmrc*
 lib
 docs
+_sandbox

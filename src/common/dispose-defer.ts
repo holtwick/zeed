@@ -5,6 +5,16 @@ import { isPromise } from './exec/promise'
 import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log/log-base'
 
+// function polyfillUsing() {
+//   try {
+//     // @ts-expect-error just a polyfill
+//     Symbol.dispose ??= Symbol('Symbol.dispose')
+//     // @ts-expect-error just a polyfill
+//     Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose')
+//   }
+//   catch (err) { }
+// }
+
 /** Different kinds of implementations have grown, this should unify them  */
 function callDisposer(disposable: Disposer): Promise<void> | void {
   let result
@@ -116,6 +126,15 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
     isDisposed() {
       return tracked.length <= 0
     },
+
+    [Symbol.dispose]() {
+      return dispose()
+    },
+
+    async [Symbol.asyncDispose]() {
+      return await dispose()
+    },
+
   })
 }
 

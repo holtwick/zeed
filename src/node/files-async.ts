@@ -1,16 +1,43 @@
 import { readdir, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import process from 'node:process'
-import type { Stats } from 'node:fs'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
+
+interface StatsBase {
+  isFile: () => boolean
+  isDirectory: () => boolean
+  isBlockDevice: () => boolean
+  isCharacterDevice: () => boolean
+  isSymbolicLink: () => boolean
+  isFIFO: () => boolean
+  isSocket: () => boolean
+  dev: number
+  ino: number
+  mode: number
+  nlink: number
+  uid: number
+  gid: number
+  rdev: number
+  size: number
+  blksize: number
+  blocks: number
+  atimeMs: number
+  mtimeMs: number
+  ctimeMs: number
+  birthtimeMs: number
+  atime: Date
+  mtime: Date
+  ctime: Date
+  birthtime: Date
+}
 
 /**
  * Retrieves the file system stats for the specified path asynchronously.
  * @param path - The path to the file or directory.
  * @returns A Promise that resolves to the file system stats (Stats) or undefined if an error occurs.
  */
-export async function getStatAsync(path: string): Promise<Stats | undefined> {
+export async function getStatAsync(path: string): Promise<StatsBase | undefined> {
   try {
     return await stat(path)
   }

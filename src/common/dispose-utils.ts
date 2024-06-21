@@ -6,6 +6,12 @@ import type { LoggerInterface } from './log/log-base'
 
 export type TimerExecFunction = () => void | Promise<void>
 
+export const noopDisposer: () => DisposerFunction = () => {
+  const dispose = () => {}
+  dispose[Symbol.dispose] = dispose
+  return dispose
+}
+
 /**
  * Executes a function after a specified timeout and returns a disposer function
  * that can be used to cancel the timeout.
@@ -16,12 +22,14 @@ export type TimerExecFunction = () => void | Promise<void>
  */
 export function useTimeout(fn: TimerExecFunction, timeout = 0): DisposerFunction {
   let timeoutHandle: any = setTimeout(fn, timeout)
-  return () => {
+  const dispose = () => {
     if (timeoutHandle) {
       clearTimeout(timeoutHandle)
       timeoutHandle = undefined
     }
   }
+  dispose[Symbol.dispose] = dispose
+  return dispose
 }
 
 /**
@@ -34,12 +42,14 @@ export function useTimeout(fn: TimerExecFunction, timeout = 0): DisposerFunction
  */
 export function useInterval(fn: TimerExecFunction, interval: number): DisposerFunction {
   let intervalHandle: any = setInterval(fn, interval)
-  return () => {
+  const dispose = () => {
     if (intervalHandle) {
       clearInterval(intervalHandle)
       intervalHandle = undefined
     }
   }
+  dispose[Symbol.dispose] = dispose
+  return dispose
 }
 
 /** The interval starts only, when the function is finished. */
@@ -56,13 +66,15 @@ export function useIntervalPause(fn: TimerExecFunction, interval: number, immedi
 
   void loop(immediately)
 
-  return () => {
+  const dispose = () => {
     if (intervalHandle) {
       stop = true
       clearInterval(intervalHandle)
       intervalHandle = undefined
     }
   }
+  dispose[Symbol.dispose] = dispose
+  return dispose
 }
 
 export function useEventListener(
@@ -72,17 +84,19 @@ export function useEventListener(
   ...args: any[]
 ): DisposerFunction {
   if (emitter == null)
-    return () => { }
+    return noopDisposer()
   if (emitter.on)
     emitter.on(eventName, fn, ...args)
   else if (emitter.addEventListener)
     emitter.addEventListener(eventName, fn, ...args)
-  return () => {
+  const dispose = () => {
     if (emitter.off)
       emitter.off(eventName, fn, ...args)
     else if (emitter.removeEventListener)
       emitter.removeEventListener(eventName, fn, ...args)
   }
+  dispose[Symbol.dispose] = dispose
+  return dispose
 }
 
 export function useEventListenerOnce(
@@ -92,17 +106,19 @@ export function useEventListenerOnce(
   ...args: any[]
 ): DisposerFunction {
   if (emitter == null)
-    return () => { }
+    return noopDisposer()
   if (emitter.on)
     emitter.once(eventName, fn, ...args)
   else if (emitter.addEventListener)
     emitter.addEventListener(eventName, fn, ...args)
-  return () => {
+  const dispose = () => {
     if (emitter.off)
       emitter.off(eventName, fn, ...args)
     else if (emitter.removeEventListener)
       emitter.removeEventListener(eventName, fn, ...args)
   }
+  dispose[Symbol.dispose] = dispose
+  return dispose
 }
 
 /** Like useDispose but with shorthands for emitter and timers */

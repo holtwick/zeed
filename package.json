@@ -65,16 +65,16 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.16.1",
+    "@antfu/eslint-config": "^2.21.1",
     "@antfu/ni": "^0.21.12",
-    "@types/node": "^20.12.8",
-    "@vitest/coverage-v8": "^1.5.3",
-    "esbuild": "^0.20.2",
-    "eslint": "^9.1.1",
-    "tsup": "^8.0.2",
+    "@types/node": "^20.14.7",
+    "@vitest/coverage-v8": "^1.6.0",
+    "esbuild": "^0.21.5",
+    "eslint": "<9",
+    "tsup": "^8.1.0",
     "typedoc": "^0.25.13",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.10",
-    "vitest": "^1.5.3"
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vitest": "^1.6.0"
   }
 }

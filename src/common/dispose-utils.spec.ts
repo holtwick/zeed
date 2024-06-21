@@ -53,6 +53,26 @@ describe('useTimeout', () => {
     expect(emitter.off).toBeCalledWith(eventName, fn, ...args)
   })
 
+  it('should add event listener using "on" method if available using using', () => {
+    const emitter = {
+      on: jest.fn(),
+      off: jest.fn(),
+    }
+    const eventName = 'click'
+    const fn = jest.fn()
+    const args = [1, 2, 3]
+
+    function helper() {
+      using _ = useEventListener(emitter, eventName, fn, ...args) as any
+      expect(emitter.on).toBeCalledWith(eventName, fn, ...args)
+      expect(emitter.off).not.toBeCalled()
+    }
+
+    helper()
+
+    expect(emitter.off).toBeCalledWith(eventName, fn, ...args)
+  })
+
   it('should add event listener using "addEventListener" method if "on" method is not available', () => {
     const emitter = {
       addEventListener: jest.fn(),

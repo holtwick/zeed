@@ -18,4 +18,7 @@ export default defineConfig({
       '@/': `${resolve(process.cwd(), 'src')}/`,
     },
   },
+
+  // https://github.com/vitest-dev/vitest/issues/4183
+  esbuild: { target: 'es2022' },
 })

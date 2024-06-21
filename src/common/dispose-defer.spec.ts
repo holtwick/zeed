@@ -109,6 +109,19 @@ describe('dispose', () => {
     expect(stack).toEqual(['c', 'b', 'a'])
   })
 
+  it('should dispose sync using using', async () => {
+    const stack: string[] = []
+    function helper() {
+      using dispose = useDispose()
+      dispose.add(() => stack.push('a'))
+      dispose.add(() => stack.push('b'))
+      dispose.add(() => stack.push('c'))
+      expect(stack).toEqual([])
+    }
+    helper()
+    expect(stack).toEqual(['c', 'b', 'a'])
+  })
+
   it('should dispose sync 2', async () => {
     const stack: string[] = []
     const dispose = useDispose()
@@ -124,25 +137,24 @@ describe('dispose', () => {
   })
 
   // TODO future
-  // it("should use using", async () => {
-  //   class TempFile implements Disposable {
+  it('should use using', async () => {
+    class TempFile implements Disposable {
+      constructor(path: string) {
+        log('constructor')
+      }
 
-  //     constructor(path: string) {
-  //       console.log('constructor')
-  //     }
+      [Symbol.dispose]() {
+        log('dispose')
+      }
+    }
 
-  //     [Symbol.dispose]() {
-  //       console.log('dispose')
-  //     }
-  //   }
+    function fn() {
+      using f = new TempFile('abc')
+      log('fn return')
+    }
 
-  //   function fn() {
-  //     using f = new TempFile('abc')
-  //     console.log('fn return')
-  //   }
-
-  //   console.log('fn before')
-  //   fn()
-  //   console.log('fn after')
-  // })
+    log('fn before')
+    fn()
+    log('fn after')
+  })
 })

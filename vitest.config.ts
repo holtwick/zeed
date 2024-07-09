@@ -4,20 +4,20 @@ import process from 'node:process'
 import { defineConfig } from 'vite'
 import type { UserConfig } from 'vitest'
 
-const isBrowser = +(process.env.BROWSER ?? '0')
-
 const config: UserConfig = {
-  // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  // exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', '*/_archive/*'],
   snapshotFormat: {
     printBasicPrototype: true,
   },
-  // root: './src',
   globals: true,
   alias: {
     '@/': `${resolve(process.cwd(), 'src')}/`,
   },
+  // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  // exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', '*/_archive/*'],
+  // root: './src',
 }
+
+const isBrowser = +(process.env.BROWSER ?? '0')
 
 if (isBrowser) {
   Object.assign(config, {
@@ -36,8 +36,6 @@ if (isBrowser) {
 else {
   Object.assign(config, {
     setupFiles: ['vitest-setup.ts'],
-    // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    // exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', '*/_archive/*'],
     include: [
       './src/node/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       './src/common/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',

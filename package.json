@@ -68,8 +68,6 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.3",
     "@antfu/ni": "^0.21.12",
-    "@testing-library/jest-dom": "^6.4.6",
-    "@testing-library/vue": "^8.1.0",
     "@types/node": "^20.14.10",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitest/browser": "^2.0.1",

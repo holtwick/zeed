@@ -3,7 +3,7 @@ import { fetchText, parseBasicAuth } from './network'
 describe('network', () => {
   it('should fetch', async () => {
     if (globalThis.isNodeTestEnv) {
-      const html = await fetchText('https://holtwick.de')
+      const html = await fetchText('https://example.com')
       expect(html).toContain('<html')
     }
     else {

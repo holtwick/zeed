@@ -1,5 +1,3 @@
-/* eslint-disable node/prefer-global/buffer */
-
 import { estimateSizeForBase, useBase } from './basex'
 
 describe('baseX', () => {
@@ -79,8 +77,8 @@ describe('baseX', () => {
 
   it('should encode arraybuffer', () => {
     const { encode, decode } = useBase(62)
-    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
-    // let buf = new ArrayBuffer(5) // [0, 0x01, 0x09, 0x0, 0xff])
+    // const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
+    const buf = new Uint8Array([0, 0x01, 0x09, 0x0, 0xFF]).buffer
     expect(encode(buf)).toBe('1As1f')
     expect(decode('01As1f')).toEqual(new Uint8Array([1, 9, 0, 255]))
   })
@@ -97,14 +95,16 @@ describe('baseX', () => {
 
   it('should support custom', () => {
     const { encode, decode } = useBase('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567')
-    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
+    // const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
+    const buf = new Uint8Array([0, 0x01, 0x09, 0x0, 0xFF])
     expect(encode(buf)).toBe('QSAH7')
     expect(decode('QSAH7')).toEqual(new Uint8Array([1, 9, 0, 255]))
   })
 
   it('should support 32-zbase', () => {
     const { encode, decode } = useBase('32-zbase')
-    const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
+    // const buf = Buffer.from([0, 0x01, 0x09, 0x0, 0xFF])
+    const buf = new Uint8Array([0, 0x01, 0x09, 0x0, 0xFF])
     expect(encode(buf)).toBe('o1y89')
     expect(decode('o1y89')).toEqual(new Uint8Array([1, 9, 0, 255]))
   })

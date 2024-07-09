@@ -79,7 +79,7 @@ export function detect(
   info.worker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope
   // @ts-expect-error xxx
 
-  info.jest = typeof jest !== 'undefined' || typeof vitest !== 'undefined'
+  info.jest = typeof jest !== 'undefined' || typeof vitest !== 'undefined' // || globalThis.__vitest_browser_runner__ != null || globalThis.__vitest_ui_api__ != null
   info.test = info.jest
 
   info.macosNative = info.wkwebview && info.macos

@@ -1,5 +1,3 @@
-/* eslint-disable node/prefer-global/buffer */
-
 import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toBase64Url, toHex, toUint8Array } from './bin'
 import { Uint8ArrayToJson, createArray, fromBase64, jsonToUint8Array } from '.'
 
@@ -216,13 +214,13 @@ Uint8Array [
   })
 
   it('should toUint8Array', () => {
-    expect(toUint8Array(Buffer.from('abc'))).toMatchInlineSnapshot(`
-Uint8Array [
-  97,
-  98,
-  99,
-]
-`)
+    //     expect(toUint8Array(Buffer.from('abc'))).toMatchInlineSnapshot(`
+    // Uint8Array [
+    //   97,
+    //   98,
+    //   99,
+    // ]
+    // `)
     expect(toUint8Array('abc')).toMatchInlineSnapshot(`
 Uint8Array [
   97,

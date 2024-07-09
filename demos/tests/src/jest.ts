@@ -62,9 +62,7 @@ export async function describe(title: string, fn: any) {
         await r
 
       if (expectAssertions >= 0 && perfomedAssertions !== expectAssertions) {
-        log.warn(
-          `Expected ${expectAssertions} assertions, got ${perfomedAssertions}. ${title}/${it.title}`,
-        )
+        log.warn(`Expected ${expectAssertions} assertions, got ${perfomedAssertions}. ${title}/${it.title}`)
       }
     }
     catch (err) {
@@ -81,6 +79,8 @@ export async function describe(title: string, fn: any) {
   else
     log.info(`All ${context.its.length} tests of ${title} passed!`)
 }
+
+describe.skip = function () {}
 
 export function beforeAll(fn: any) {
   context.beforeAll = fn
@@ -124,7 +124,7 @@ function expect(actual: any) {
       perfomedAssertions += 1
     }
     else {
-      log.warn(`Fail: got ${actual} expected ${expected}`)
+      log.warn(`Fail: got\n${actual}\nexpected\n${expected}`)
       context.fails += 1
     }
   }

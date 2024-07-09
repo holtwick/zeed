@@ -1,25 +1,43 @@
 /// <reference types="vitest" />
+/* eslint-disable no-console */
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { defineConfig } from 'vite'
 import type { UserConfig } from 'vitest'
-
-const isBrowser = +(process.env.BROWSER ?? '0')
+import { valueToBooleanNotFalse } from './src/common/data/convert'
 
 const config: UserConfig = {
-  // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  // exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', '*/_archive/*'],
   snapshotFormat: {
     printBasicPrototype: true,
   },
-  // root: './src',
   globals: true,
   alias: {
     '@/': `${resolve(process.cwd(), 'src')}/`,
   },
+  // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  // root: './src',
 }
 
+const isBrowser = process.env.BROWSER && valueToBooleanNotFalse(process.env.BROWSER)
+
+const browserName = {
+  c: 'chromium',
+  chromium: 'chromium',
+  chrome: 'chromium',
+  g: 'chromium',
+  google: 'chromium',
+  e: 'chromium',
+  edge: 'chromium',
+  w: 'webkit',
+  webkit: 'webkit',
+  s: 'webkit',
+  safari: 'webkit',
+  f: 'firefox',
+  firefox: 'firefox',
+}[String(process.env.BROWSER).toLowerCase()] ?? 'chromium'
+
 if (isBrowser) {
+  console.info('BROWSER', browserName, JSON.stringify(process.env.BROWSER))
   Object.assign(config, {
     include: [
       './src/browser/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
@@ -27,17 +45,21 @@ if (isBrowser) {
     ],
     browser: {
       enabled: true,
-      name: 'chromium',
+      name: browserName,
       provider: 'playwright', // https://playwright.dev
-      providerOptions: {},
+      providerOptions: {
+        launch: {
+          devtools: true,
+        },
+      },
     },
   })
 }
 else {
+  console.info('NODE')
+
   Object.assign(config, {
     setupFiles: ['vitest-setup.ts'],
-    // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    // exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', '*/_archive/*'],
     include: [
       './src/node/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       './src/common/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
@@ -48,6 +70,9 @@ else {
 
 export default defineConfig({
   test: config,
+
   // https://github.com/vitest-dev/vitest/issues/4183
-  esbuild: { target: 'es2022' },
+  esbuild: {
+    target: 'es2022',
+  },
 })

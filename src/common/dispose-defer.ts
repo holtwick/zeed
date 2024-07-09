@@ -5,15 +5,18 @@ import { isPromise } from './exec/promise'
 import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log/log-base'
 
-// function polyfillUsing() {
-//   try {
-//     // @ts-expect-error just a polyfill
-//     Symbol.dispose ??= Symbol('Symbol.dispose')
-//     // @ts-expect-error just a polyfill
-//     Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose')
-//   }
-//   catch (err) { }
-// }
+export function polyfillUsing() {
+  try {     
+    // @ts-expect-error just a polyfill
+    Symbol.dispose ??= Symbol('Symbol.dispose')
+    // @ts-expect-error just a polyfill
+    Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose')
+  }
+  catch (err) { }
+}
+
+// Symbol.dispose ??= Symbol('Symbol.dispose')
+// Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose')
 
 /** Different kinds of implementations have grown, this should unify them  */
 function callDisposer(disposable: Disposer): Promise<void> | void {
@@ -49,6 +52,8 @@ export function useDispose(config?: string | UseDisposeConfig | LoggerInterface)
     else if ('debug' in opt && 'label' in opt)
       opt = { name: opt.label, log: opt }
   }
+
+  polyfillUsing()
 
   const name = opt?.name
   const log = opt?.log ?? DefaultLogger('zeed:dispose')
@@ -147,6 +152,8 @@ export function useDefer(
 ) {
   const { mode = 'fifo' } = config
   const steps: Disposer[] = []
+
+  polyfillUsing()
 
   /**
    * Excutes all steps. If all steps are not Promises, they are executed immediately,

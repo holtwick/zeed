@@ -3,6 +3,7 @@ import { Uint8ArrayToHexDump } from './bin'
 // import { jsonStringify } from './json'
 
 const TRUE_VALUES_LIST = ['1', 'true', 'yes', 'y', 'on']
+const FALSE_VALUES_LIST = ['0', 'false', 'no', 'n', 'off']
 
 export function stringToBoolean(value?: string, defaultValue = false): boolean {
   if (value == null || typeof value !== 'string')
@@ -22,6 +23,7 @@ export function stringToFloat(value?: string, defaultValue = 0.0): number {
   return Number.parseFloat(value.trim()) ?? defaultValue
 }
 
+/** `true` is a number != 0, a string stating `true`. Otherwise false. */
 export function valueToBoolean(value?: any, defaultValue = false): boolean {
   if (value == null)
     return defaultValue
@@ -30,6 +32,17 @@ export function valueToBoolean(value?: any, defaultValue = false): boolean {
   if (typeof value === 'number')
     return value !== 0
   return TRUE_VALUES_LIST.includes(String(value).trim().toLowerCase())
+}
+
+/** Explicitly has to have a `false` value to become `false`, otherwise `true` */
+export function valueToBooleanNotFalse(value?: any, defaultValue = true): boolean {
+  if (value == null)
+    return defaultValue
+  if (typeof value === 'boolean')
+    return value
+  if (typeof value === 'number')
+    return value !== 0
+  return !(FALSE_VALUES_LIST.includes(String(value).trim().toLowerCase()))
 }
 
 export function valueToInteger(value?: any, defaultValue = 0): number {

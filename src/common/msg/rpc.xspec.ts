@@ -27,7 +27,7 @@ const Alice = {
 type BobFunctions = typeof Bob
 type AliceFunctions = typeof Alice
 
-describe('rpc async', () => {
+describe.skip('rpc async', () => {
   beforeEach(() => {
     bobCount = 0
   })

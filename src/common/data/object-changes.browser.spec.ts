@@ -1,5 +1,5 @@
-import { cloneObject } from 'zeed'
 import { objectAssignDeepInPlace, objectDescribeChange } from './object-changes'
+import { cloneObject } from './utils'
 
 describe('crdt-transfer.spec', () => {
   it('should transfer', async () => {

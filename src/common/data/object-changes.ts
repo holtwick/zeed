@@ -1,4 +1,7 @@
-import { arrayMinus, cloneObject, deepEqual, isRecord } from 'zeed'
+import { arrayMinus } from './array'
+import { deepEqual } from './deep'
+import { isRecord } from './is'
+import { cloneObject } from './utils'
 
 /**
  * Selective in place update, as minimal as possible.

@@ -1,5 +1,6 @@
 import { vi as jest } from 'vitest'
 import { useDisposeWithUtils, useEventListener, useTimeout } from './dispose-utils'
+import { polyfillUsing } from './dispose-defer'
 
 describe('useTimeout', () => {
   it('should call the provided function after the specified timeout', () => {
@@ -61,6 +62,8 @@ describe('useTimeout', () => {
     const eventName = 'click'
     const fn = jest.fn()
     const args = [1, 2, 3]
+
+    polyfillUsing() // IMPORTANT!
 
     function helper() {
       using _ = useEventListener(emitter, eventName, fn, ...args) as any

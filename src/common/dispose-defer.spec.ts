@@ -1,5 +1,3 @@
-// (C)opyright 20210922 Dirk Holtwick, holtwick.it. All rights reserved.
-
 import { DefaultLogger } from './log'
 import { useDefer, useDispose } from './dispose-defer'
 import { sleep } from './exec'
@@ -138,6 +136,12 @@ describe('dispose', () => {
 
   // TODO future
   it('should use using', async () => {
+    const history: string[] = []
+
+    function log(s: string) {
+      history.push(s)
+    }
+
     class TempFile implements Disposable {
       constructor(path: string) {
         log('constructor')
@@ -156,5 +160,15 @@ describe('dispose', () => {
     log('fn before')
     fn()
     log('fn after')
+
+    expect(history).toMatchInlineSnapshot(`
+      Array [
+        "fn before",
+        "constructor",
+        "fn return",
+        "dispose",
+        "fn after",
+      ]
+    `)
   })
 })

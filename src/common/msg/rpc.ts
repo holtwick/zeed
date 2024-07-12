@@ -1,7 +1,6 @@
 // From https://github.com/antfu/birpc/blob/main/src/index.ts MIT
 
 import type { UseStringHashPool } from '../data/string-hash-pool'
-import { useStringHashPool } from '../data/string-hash-pool'
 import { createPromise } from '../exec/promise'
 import type { LoggerInterface } from '../log/log-base'
 import type { Pipe } from './pipe'

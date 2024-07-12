@@ -18,6 +18,7 @@ const config: UserConfig = {
   // root: './src',
 }
 
+const isPreview = process.env.PREVIEW && valueToBooleanNotFalse(process.env.PREVIEW)
 const isBrowser = process.env.BROWSER && valueToBooleanNotFalse(process.env.BROWSER)
 
 const browserName = {
@@ -36,7 +37,7 @@ const browserName = {
   firefox: 'firefox',
 }[String(process.env.BROWSER).toLowerCase()] ?? 'chromium'
 
-if (isBrowser) {
+if (isBrowser || isPreview) {
   console.info('BROWSER', browserName, JSON.stringify(process.env.BROWSER))
   Object.assign(config, {
     include: [
@@ -46,7 +47,7 @@ if (isBrowser) {
     browser: {
       enabled: true,
       name: browserName,
-      provider: 'playwright', // https://playwright.dev
+      provider: isPreview ? 'preview' : 'playwright', // https://playwright.dev
       providerOptions: {
         launch: {
           devtools: true,

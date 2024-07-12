@@ -61,7 +61,7 @@
     "prepublishOnly": "nr build && nr circles && nr test:publish",
     "start": "nr watch",
     "test": "vitest",
-    "test:browser": "BROWSER=1 vitest",
+    "test:browser": "PREVIEW=1 vitest",
     "test:firefox": "BROWSER=firefox vitest",
     "test:webkit": "BROWSER=webkit vitest",
     "test:chromium": "BROWSER=chromium vitest",
@@ -69,18 +69,18 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.21.3",
+    "@antfu/eslint-config": "^2.22.0",
     "@antfu/ni": "^0.21.12",
     "@types/node": "^20.14.10",
     "@vitejs/plugin-vue": "^5.0.5",
-    "@vitest/browser": "^2.0.1",
-    "@vitest/coverage-v8": "^2.0.1",
+    "@vitest/browser": "^2.0.2",
+    "@vitest/coverage-v8": "^2.0.2",
     "esbuild": "^0.23.0",
     "eslint": "<9",
     "playwright": "^1.45.1",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3",
     "vite": "^5.3.3",
-    "vitest": "^2.0.1"
+    "vitest": "^2.0.2"
   }
 }

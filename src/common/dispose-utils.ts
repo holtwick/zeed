@@ -125,11 +125,11 @@ export function useEventListenerOnce(
 export function useDisposeWithUtils(config?: string | UseDisposeConfig | LoggerInterface) {
   const dispose = useDispose(config)
   return Object.assign(dispose, {
-    timeout: (fn: TimerExecFunction, timeout = 0) => dispose.add(useTimeout(fn, timeout)),
-    interval: (fn: TimerExecFunction, interval = 0) => dispose.add(useInterval(fn, interval)),
-    intervalPause: (fn: TimerExecFunction, interval = 0) => dispose.add(useIntervalPause(fn, interval)),
-    on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListener(emitter, eventName, fn, ...args)),
-    once: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListenerOnce(emitter, eventName, fn, ...args)),
+    timeout: (fn: TimerExecFunction, timeout = 0) => dispose.add(useTimeout(fn, timeout))!,
+    interval: (fn: TimerExecFunction, interval = 0) => dispose.add(useInterval(fn, interval))!,
+    intervalPause: (fn: TimerExecFunction, interval = 0) => dispose.add(useIntervalPause(fn, interval))!,
+    on: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListener(emitter, eventName, fn, ...args))!,
+    once: (emitter: any, eventName: string, fn: (ev?: any) => void, ...args: any[]) => dispose.add(useEventListenerOnce(emitter, eventName, fn, ...args))!,
   })
 }
 

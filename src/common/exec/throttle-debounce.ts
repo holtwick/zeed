@@ -198,6 +198,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     lastArguments = [...args]
     await exec()
   }
+
   wrapper.cancel = clearExistingTimeout
   wrapper.dispose = clearExistingTimeout
   wrapper.immediate = immediate

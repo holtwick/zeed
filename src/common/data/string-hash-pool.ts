@@ -16,5 +16,14 @@ export function useStringHashPool() {
     return v
   }
 
-  return hash
+  function stringForHash(v: number) {
+    return hashToString.get(v)
+  }
+
+  return {
+    hash,
+    stringForHash,
+  }
 }
+
+export type UseStringHashPool = ReturnType<typeof useStringHashPool>

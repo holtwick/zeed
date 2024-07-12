@@ -1,7 +1,9 @@
 import { MessageChannel } from 'node:worker_threads'
 import { decodeJson, encodeJson } from '../bin'
-import { createLocalChannelPair } from '../msg/channel-local'
+import { cloneObject } from '../data'
+import { useStringHashPool } from '../data/string-hash-pool'
 import { sleep } from '../exec/promise'
+import { createLocalChannelPair } from '../msg/channel-local'
 import { useRPC, useRPCHub } from './rpc'
 
 let bobCount = 0
@@ -27,15 +29,19 @@ const Alice = {
 type BobFunctions = typeof Bob
 type AliceFunctions = typeof Alice
 
-describe.skip('rpc async', () => {
+describe('rpc async', () => {
   beforeEach(() => {
     bobCount = 0
   })
 
   it('basic', async () => {
+    const log: any[] = []
     const channel = new MessageChannel()
 
-    const serialize = (data: any) => encodeJson(data)
+    const serialize = (data: any) => {
+      log.push(cloneObject(data))
+      return encodeJson(data)
+    }
     const deserialize = (data: any) => decodeJson(data)
 
     const bob = useRPC<BobFunctions, AliceFunctions>(Bob, {
@@ -43,6 +49,7 @@ describe.skip('rpc async', () => {
       on: data => channel.port1.on('message', data),
       serialize,
       deserialize,
+      stringHashPool: useStringHashPool(),
     })
 
     const alice = useRPC<AliceFunctions, BobFunctions>(Alice, {
@@ -53,6 +60,7 @@ describe.skip('rpc async', () => {
       on: data => channel.port2.on('message', data),
       serialize,
       deserialize,
+      stringHashPool: useStringHashPool(),
     })
 
     // RPCs
@@ -68,6 +76,37 @@ describe.skip('rpc async', () => {
 
     channel.port1.close()
     channel.port2.close()
+
+    expect(log).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          1,
+          1,
+          1335831723,
+          "Bob",
+        ],
+        Array [
+          3,
+          1,
+          "Hello Bob, my name is Alice",
+        ],
+        Array [
+          1,
+          2,
+          1748694682,
+          "Alice",
+        ],
+        Array [
+          3,
+          2,
+          "Hi Alice, I am Bob",
+        ],
+        Array [
+          2,
+          1648103349,
+        ],
+      ]
+    `)
   })
 
   it('hub', async () => {
@@ -80,6 +119,7 @@ describe.skip('rpc async', () => {
       on: data => channel.port1.on('message', data),
       serialize,
       deserialize,
+      stringHashPool: useStringHashPool(),
     })
 
     const bob = bobHub<BobFunctions, AliceFunctions>(Bob)
@@ -92,6 +132,7 @@ describe.skip('rpc async', () => {
       on: data => channel.port2.on('message', data),
       serialize,
       deserialize,
+      stringHashPool: useStringHashPool(),
     })
 
     // RPCs

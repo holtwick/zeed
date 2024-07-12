@@ -1,5 +1,6 @@
 // From https://github.com/antfu/birpc/blob/main/src/index.ts MIT
 
+import type { UseStringHashPool } from '../data/string-hash-pool'
 import { createPromise } from '../exec/promise'
 import type { LoggerInterface } from '../log/log-base'
 import type { Pipe } from './pipe'
@@ -20,6 +21,8 @@ export interface RPCOptionsBasic extends Pipe {
   onTimeoutError?: (functionName: string, args: any[]) => boolean | void
   /** Throw execptions. Default: true */
   exceptions?: boolean
+  /**  */
+  stringHashPool?: UseStringHashPool
 }
 
 export interface RPCOptions<Remote> extends RPCOptionsBasic {
@@ -52,7 +55,7 @@ enum RPCMode {
 type RPCMessage = [
   RPCMode,
   number,
-  string | any,
+  string | number | any,
   ...any,
 ]
 
@@ -71,7 +74,32 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
     onTimeoutError,
     onlyEvents = false,
     exceptions = true,
+    stringHashPool,
   } = options
+
+  if (stringHashPool) {
+    Object.keys(functions).forEach(stringHashPool.hash)
+  }
+
+  function checkEventNames(eventNames: string[]) {
+    // eventNames.forEach((n) => {
+    //   if (functions[n] == null)
+    //     throw new Error(`event name ${n} has no registered function`)
+    // })
+  }
+
+  checkEventNames(eventNames)
+
+  function registerFunctions(additionalFunctions: any) {
+    Object.assign(functions, additionalFunctions ?? {})
+    if (stringHashPool)
+      Object.keys(additionalFunctions).forEach(stringHashPool.hash)
+  }
+
+  function registerEventNames(additionalEventNames: string[]) {
+    checkEventNames(additionalEventNames)
+    eventNames.push(...additionalEventNames)
+  }
 
   const rpcPromiseMap = new Map<number, {
     resolve: (...args: any) => any
@@ -85,11 +113,12 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
       const mode = msg?.[0]
       const id = mode === RPCMode.event ? 0 : msg?.[1]
       const [method, ...args] = msg.slice(mode === RPCMode.event ? 1 : 2)
+      const methodName = stringHashPool?.stringForHash(method) ?? method
       if (mode === RPCMode.request || mode === RPCMode.event) {
         let result, error: any
         if (method != null) {
           try {
-            const fn = functions[method] as Function
+            const fn = functions[methodName] as Function
             result = await fn(...args)
           }
           catch (e) {
@@ -128,10 +157,11 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
   })
 
   const proxyHandler = {
-    get(_: any, method: string) {
+    get(_: any, methodName: string) {
+      const method = stringHashPool?.hash(methodName) ?? methodName
       const sendEvent = async (...args: any[]) => await post(await serialize([RPCMode.event, method, ...args]))
 
-      if (onlyEvents || eventNames.includes(method)) {
+      if (onlyEvents || eventNames.includes(methodName)) {
         sendEvent.asEvent = sendEvent
         return sendEvent
       }
@@ -145,8 +175,8 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
           timeoutId = setTimeout(() => {
             try {
               // Custom onTimeoutError handler can throw its own error too
-              onTimeoutError?.(method, args)
-              throw new Error(`rpc timeout on calling "${method}"`)
+              onTimeoutError?.(methodName, args)
+              throw new Error(`rpc timeout on calling "${methodName}"`)
             }
             catch (e) {
               if (exceptions === true)
@@ -168,7 +198,14 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
     },
   }
 
-  return { post, serialize, rpcPromiseMap, proxyHandler }
+  return {
+    post,
+    serialize,
+    rpcPromiseMap,
+    proxyHandler,
+    registerFunctions,
+    registerEventNames,
+  }
 }
 
 export function useRPC<LocalFunctions, RemoteFunctions = LocalFunctions>(
@@ -186,7 +223,11 @@ export function useRPCHub(options: RPCOptionsBasic) {
   const eventNames: string[] = []
   const functions: Record<string, any> = {}
 
-  const { proxyHandler } = setupRPCBasic(options, functions)
+  const {
+    proxyHandler,
+    registerFunctions,
+    registerEventNames,
+  } = setupRPCBasic(options, functions, eventNames)
 
   function createRPCProxy() {
     return new Proxy({}, proxyHandler)
@@ -196,9 +237,8 @@ export function useRPCHub(options: RPCOptionsBasic) {
     additionalFunctions?: LocalFunctions,
     additionalEventNames: string[] = [],
   ): RPCReturn<RemoteFunctions> {
-    Object.assign(functions, additionalFunctions ?? {})
-    // log(`Registered functions:\n${Object.keys(functions).join('\n')}`)
-    eventNames.push(...additionalEventNames)
+    registerFunctions(additionalFunctions ?? {})
+    registerEventNames(additionalEventNames)
     return createRPCProxy()
   }
 }

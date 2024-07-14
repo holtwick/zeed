@@ -98,7 +98,10 @@ export async function tryTimeout<T>(
   })
 }
 
-/** Wait for `event` on `obj` to emit. Resolve with result or reject on `timeout` */
+/**
+ * @deprecated use emitter.waitOn
+ * Wait for `event` on `obj` to emit. Resolve with result or reject on `timeout`
+ */
 export function waitOn(
   obj: any,
   event: string,

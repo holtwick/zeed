@@ -1,3 +1,4 @@
+import type { ArgumentsType } from 'vitest'
 import type { DisposerFunction } from '../dispose-types'
 import { getGlobalContext } from '../global'
 import { DefaultLogger } from '../log'
@@ -145,6 +146,27 @@ export class Emitter<
   public removeAllListeners(): this {
     this.subscribers = {}
     return this
+  }
+
+  ///
+
+  waitOn<U extends keyof LocalListener, R = Parameters<LocalListener[U]>[0]>(
+    event: U,
+    timeoutMS = 1000,
+  ): Promise<R> {
+    return new Promise((resolve, reject) => {
+      let timer: any
+
+      const dispose = this.once(event, ((value): void => {
+        clearTimeout(timer)
+        resolve(value)
+      }) as LocalListener[U])
+
+      timer = setTimeout(() => {
+        dispose()
+        reject(new Error('Did not response in time'))
+      }, timeoutMS)
+    })
   }
 }
 

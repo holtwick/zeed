@@ -1,10 +1,7 @@
 import { vi } from 'vitest'
-import { detect } from '../platform'
 import { sleep, waitOn } from '../exec/promise'
 import { getSecureRandomIfPossible } from '../data/math'
 import { Emitter, getGlobalEmitter } from './emitter'
-
-const platform = detect()
 
 declare global {
   interface ZeedGlobalEmitter {
@@ -20,7 +17,8 @@ interface LazyEvent {
   obj: any
 }
 
-export function lazyListener(
+/** @deprecated use waitOn */
+function lazyListener(
   emitter: any,
   listenerKey?: string,
 ): (key?: string, skipUnmatched?: boolean) => Promise<any> {
@@ -182,16 +180,34 @@ describe('emitter', () => {
     const v = await waitOn(e1, 'f')
     expect(v).toBe(1)
 
-    if (platform.test) {
-      await expect(waitOn(e1, 'x', 10)).rejects.toThrow(
-        'Did not response in time',
-      )
-      // } else {
-      //   // https://jasmine.github.io/api/3.5/global
-      //   await expectAsync(on(e1, "x", 10)).toBeRejectedWithError(
-      //     "Did not response in time"
-      //   )
-    }
+    await expect(waitOn(e1, 'x', 10)).rejects.toThrow(
+      'Did not response in time',
+    )
+    // } else {
+    //   // https://jasmine.github.io/api/3.5/global
+    //   await expectAsync(on(e1, "x", 10)).toBeRejectedWithError(
+    //     "Did not response in time"
+    //   )
+  })
+
+  it('should wait on integrated', async () => {
+    expect.assertions(2)
+
+    const e1 = new Emitter<{
+      f: (v: number) => void
+      x: () => void
+    }>()
+
+    queueMicrotask(() => {
+      void e1.emit('f', 1)
+    })
+
+    const v = await e1.waitOn('f', 100)
+    expect(v).toBe(1)
+
+    await expect(e1.waitOn('x', 10)).rejects.toThrow(
+      'Did not response in time',
+    )
   })
 
   it('should work lazy', async () => {

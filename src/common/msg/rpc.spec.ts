@@ -1,4 +1,3 @@
-import { MessageChannel } from 'node:worker_threads'
 import { decodeJson, encodeJson } from '../bin'
 import { cloneObject } from '../data'
 import { useStringHashPool } from '../data/string-hash-pool'
@@ -36,7 +35,7 @@ describe('rpc async', () => {
 
   it('basic', async () => {
     const log: any[] = []
-    const channel = new MessageChannel()
+    const [c1, c2] = createLocalChannelPair()
 
     const serialize = (data: any) => {
       log.push(cloneObject(data))
@@ -45,8 +44,8 @@ describe('rpc async', () => {
     const deserialize = (data: any) => decodeJson(data)
 
     const bob = useRPC<BobFunctions, AliceFunctions>(Bob, {
-      post: data => channel.port1.postMessage(data),
-      on: data => channel.port1.on('message', data),
+      post: data => c1.postMessage(data),
+      on: data => c1.on('message', e => data(e.data)),
       serialize,
       deserialize,
       stringHashPool: useStringHashPool(),
@@ -55,9 +54,9 @@ describe('rpc async', () => {
     const alice = useRPC<AliceFunctions, BobFunctions>(Alice, {
       // mark bob's `bump` as an event without response
       eventNames: ['bump'],
-      post: data => channel.port2.postMessage(data),
+      post: data => c2.postMessage(data),
 
-      on: data => channel.port2.on('message', data),
+      on: data => c2.on('message', e => data(e.data)),
       serialize,
       deserialize,
       stringHashPool: useStringHashPool(),
@@ -74,8 +73,8 @@ describe('rpc async', () => {
     await new Promise(resolve => setTimeout(resolve, 100))
     expect(Bob.getCount()).toBe(1)
 
-    channel.port1.close()
-    channel.port2.close()
+    c1.close()
+    c2.close()
 
     expect(log).toMatchInlineSnapshot(`
       Array [
@@ -110,13 +109,14 @@ describe('rpc async', () => {
   })
 
   it('hub', async () => {
-    const channel = new MessageChannel()
+    const [c1, c2] = createLocalChannelPair()
+
     const serialize = (data: any) => encodeJson(data)
     const deserialize = (data: any) => decodeJson(data)
 
     const bobHub = useRPCHub({
-      post: data => channel.port1.postMessage(data),
-      on: data => channel.port1.on('message', data),
+      post: data => c1.postMessage(data),
+      on: data => c1.on('message', e => data(e.data)),
       serialize,
       deserialize,
       stringHashPool: useStringHashPool(),
@@ -127,9 +127,9 @@ describe('rpc async', () => {
     const alice = useRPC<AliceFunctions, BobFunctions>(Alice, {
       // mark bob's `bump` as an event without response
       eventNames: ['bump'],
-      post: data => channel.port2.postMessage(data),
+      post: data => c2.postMessage(data),
 
-      on: data => channel.port2.on('message', data),
+      on: data => c2.on('message', e => data(e.data)),
       serialize,
       deserialize,
       stringHashPool: useStringHashPool(),
@@ -146,8 +146,8 @@ describe('rpc async', () => {
     await new Promise(resolve => setTimeout(resolve, 100))
     expect(Bob.getCount()).toBe(1)
 
-    channel.port1.close()
-    channel.port2.close()
+    c1.close()
+    c2.close()
   })
 
   it('timeout async', async (done) => {

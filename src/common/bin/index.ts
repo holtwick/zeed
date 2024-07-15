@@ -2,14 +2,14 @@ import type { Encoder } from '../msg/encoder'
 import { assertCondition } from '../assert'
 import type { BinInput } from '../data/bin'
 import { toUint8Array } from '../data/bin'
-import { createEncoder, encodeToUint8Array, length, writeAny, writeFloat32, writeUint16, writeUint32, writeUint8, writeUint8Array, writeVarInt, writeVarString, writeVarUint, writeVarUint8Array } from './lib0/encoding'
+import { createBinEncoder, encodeToUint8Array, length, writeAny, writeFloat32, writeUint16, writeUint32, writeUint8, writeUint8Array, writeVarInt, writeVarString, writeVarUint, writeVarUint8Array } from './lib0/encoding'
 import { createDecoder, readAny, readFloat32, readUint16, readUint32, readUint8, readUint8Array, readVarInt, readVarString, readVarUint, readVarUint8Array } from './lib0/decoding'
 
 // Use in Zeed channels
 
 export class BinaryEncoder implements Encoder {
   async encode(data: any): Promise<Uint8Array> {
-    const dataEncoder = createEncoder()
+    const dataEncoder = createBinEncoder()
     writeAny(dataEncoder, data)
     return encodeToUint8Array(dataEncoder)
   }
@@ -23,7 +23,7 @@ export class BinaryEncoder implements Encoder {
 
 /** Encode any object, including Uint8Array data */
 export function encodeJson(data: any): Uint8Array {
-  const dataEncoder = createEncoder()
+  const dataEncoder = createBinEncoder()
   writeAny(dataEncoder, data)
   return encodeToUint8Array(dataEncoder)
 }
@@ -37,7 +37,7 @@ export function decodeJson(data: Uint8Array | ArrayBuffer): any {
 
 /** Incrementally encode binary data */
 export function createBinaryStreamEncoder(initialData?: BinInput) {
-  const dataEncoder = createEncoder()
+  const dataEncoder = createBinEncoder()
 
   if (initialData != null)
     writeUint8Array(dataEncoder, toUint8Array(initialData))

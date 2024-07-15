@@ -1,12 +1,12 @@
 import { decrypt, encrypt } from '../crypto'
 import { Uint8ArrayToJson, jsonToUint8Array } from '../data/bin'
 
-export interface Encoder {
-  encode: (data: any) => Promise<Uint8Array>
-  decode: (data: Uint8Array) => Promise<any>
+export interface Encoder<T = any> {
+  encode: (data: T) => Promise<Uint8Array>
+  decode: (data: Uint8Array) => Promise<T>
 }
 
-export class NoopEncoder implements Encoder {
+export class NoopEncoder<T> implements Encoder<T> {
   async encode(data: any): Promise<Uint8Array> {
     return data
   }
@@ -16,7 +16,7 @@ export class NoopEncoder implements Encoder {
   }
 }
 
-export class JsonEncoder implements Encoder {
+export class JsonEncoder<T> implements Encoder<T> {
   async encode(data: any): Promise<Uint8Array> {
     return jsonToUint8Array(data)
   }
@@ -26,7 +26,7 @@ export class JsonEncoder implements Encoder {
   }
 }
 
-export class CryptoEncoder implements Encoder {
+export class CryptoEncoder<T> implements Encoder<T> {
   key: CryptoKey
 
   constructor(key: CryptoKey) {

@@ -346,4 +346,28 @@ describe('emitter', () => {
 
     expect(l).toEqual([1, 2, 3, 4, 5, 6])
   })
+
+  it('should resolve when the event is emitted', async () => {
+    const emitter = new Emitter()
+    const eventName = 'testEvent'
+    const eventValue = 'Hello, World!'
+
+    const promise = emitter.waitOn(eventName)
+
+    // Emit the event after a short delay
+    setTimeout(() => {
+      emitter.emit(eventName, eventValue)
+    }, 100)
+
+    await expect(promise).resolves.toBe(eventValue)
+  })
+
+  it('should reject when the timeout is reached', async () => {
+    const emitter = new Emitter()
+    const eventName = 'testEvent'
+
+    const promise = emitter.waitOn(eventName, 100) // Set a short timeout
+
+    await expect(promise).rejects.toThrow('Did not respond in time')
+  })
 })

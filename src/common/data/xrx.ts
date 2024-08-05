@@ -1,7 +1,8 @@
 /* eslint-disable no-cond-assign */
 
-const RX_WHITESPACE = /\\\s|\s+|#[^\n]*\n?/gm
-const RX_REAL_GROUPS = /\(\?P?<(\w[\w\d_]+)>|\((?!\?(:|\!|=|<=|<\!))/gm
+const RX_WHITESPACE = /\\\s|\s+|#[^\n]*\n?/g
+const RX_REAL_GROUPS = /\(\?P?<(\w{2,})>|\((?!\?([:!=]|<=|<!))/g
+// eslint-disable-next-line regexp/no-unused-capturing-group
 const RX_LOOK_BEHIND = /^((?:\(\?[\w$]+\))?)\(\?<([=!])([\s\S]*?)\)/gm
 
 export function regExpString(rx: string | RegExp): string {
@@ -9,7 +10,7 @@ export function regExpString(rx: string | RegExp): string {
 }
 
 export function regExpEscape(str: string): string {
-  return str.replace(/[-\[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
 export class XRX {
@@ -53,8 +54,9 @@ export class XRX {
             name !== 'index'
             && name !== 'length'
             && !this.namedGroups[name]
-          )
+          ) {
             this.namedGroups[name] = index
+          }
           // else
           //   log.error(`Unallowed or duplicate group name: ${name}`)
 

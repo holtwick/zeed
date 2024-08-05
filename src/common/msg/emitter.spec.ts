@@ -31,6 +31,7 @@ function lazyListener(
     const ev = { key, obj }
     // debug(name, "  lazy push", ev)
     events.push(ev)
+    // eslint-disable-next-line ts/no-unused-expressions
     lazyResolve && lazyResolve()
   }
 
@@ -206,7 +207,7 @@ describe('emitter', () => {
     expect(v).toBe(1)
 
     await expect(e1.waitOn('x', 10)).rejects.toThrow(
-      'Did not response in time',
+      'Did not respond in time',
     )
   })
 

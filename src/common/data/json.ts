@@ -41,7 +41,9 @@ function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
   return function (this: EntryProcessor, key: string, value: any): any {
     if (stack.length > 0) {
       const thisPos = stack.indexOf(this)
+      // eslint-disable-next-line ts/no-unused-expressions
       ~thisPos ? stack.splice(thisPos + 1) : stack.push(this)
+      // eslint-disable-next-line ts/no-unused-expressions
       ~thisPos ? keys.splice(thisPos, Number.POSITIVE_INFINITY, key) : keys.push(key)
       if (~stack.indexOf(value))
         value = cycleReplacer?.call(this, key, value)
@@ -87,7 +89,7 @@ export const jsonStringify = jsonStringifySafe
 const suspectProtoRx = /"(?:_|\\u005[Ff])(?:_|\\u005[Ff])(?:p|\\u0070)(?:r|\\u0072)(?:o|\\u006[Ff])(?:t|\\u0074)(?:o|\\u006[Ff])(?:_|\\u005[Ff])(?:_|\\u005[Ff])"\s*:/
 const suspectConstructorRx = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/
 
-const JsonSigRx = /^["{[]|^-?[0-9][0-9.]{0,14}$/
+const JsonSigRx = /^["{[]|^-?\d[0-9.]{0,14}$/
 
 function jsonParseTransform(key: string, value: any): any {
   if (key === '__proto__' || key === 'constructor')

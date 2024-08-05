@@ -69,18 +69,18 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "<2.22",
-    "@antfu/ni": "<0.22.0",
-    "@types/node": "^20.14.10",
-    "@vitejs/plugin-vue": "^5.0.5",
-    "@vitest/browser": "^2.0.2",
-    "@vitest/coverage-v8": "^2.0.2",
+    "@antfu/eslint-config": "^2.24",
+    "@antfu/ni": "^0.22.0",
+    "@types/node": "^22.1.0",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "@vitest/browser": "^2.0.5",
+    "@vitest/coverage-v8": "^2.0.5",
     "esbuild": "^0.23.0",
-    "eslint": "<9",
-    "playwright": "^1.45.1",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.3",
-    "vitest": "^2.0.2"
+    "eslint": "^9",
+    "playwright": "^1.45.3",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5",
+    "vitest": "^2.0.5"
   }
 }

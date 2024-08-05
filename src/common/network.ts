@@ -62,7 +62,7 @@ export type httpMethod =
   | 'PATCH'
 
 export function parseBasicAuth(url: string) {
-  const m = /:\/\/([^@]*)@/gi.exec(url)
+  const m = /:\/\/([^@]*)@/.exec(url)
   if (m && m[1]) {
     const [username, password] = m[1].split(':', 2)
     return {

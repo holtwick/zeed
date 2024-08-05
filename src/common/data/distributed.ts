@@ -2,8 +2,8 @@
  * Distribute file, named by natural numbers, in a way that each folder only
  * contains `maxEntriesPerFolder` subfolders or files. Returns a list of
  * names, where the last one is the file name, all others are folder names.
- * 
- * Example: `distributedFilePath(1003)` results in `['2', '1', '3']` which 
+ *
+ * Example: `distributedFilePath(1003)` results in `['2', '1', '3']` which
  * could be translated to the file path `2/1/3.json`.
  */
 export function distributedFilePath(index: number, maxEntriesPerFolder: number = 1000): string[] {

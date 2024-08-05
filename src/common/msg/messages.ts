@@ -117,7 +117,6 @@ export function useMessageHub(
         }
       }
       if (queue.length > 0 && retryAfter > 0)
-
         queueRetryTimer = setTimeout(postNext, retryAfter)
     }
   }

@@ -41,10 +41,6 @@ async function halfKey(index: number, key: CryptoKey, iv: Uint8Array, k1: Uint8A
 
 /**
  * Derives a 256-bit key and 96-bit nonce from the given 256-bit key and a 192-bit nonce.
- *
- * @param {CryptoKey} key
- * @param {BufferSource} iv
- * @returns {Promise<{key: CryptoKey, iv: Uint8Array}>}
  */
 async function deriveKeyNonce(key: CryptoKey, iv: BufferSource): Promise<{ key: CryptoKey, iv: Uint8Array }> {
   if (key.algorithm.name !== 'AES-CBC') {
@@ -90,13 +86,6 @@ async function deriveKeyNonce(key: CryptoKey, iv: BufferSource): Promise<{ key: 
 /**
  * Encrypts data using XAES-256-GCM with the given key and iv.
  * Key must be a 256-bit AES-CBC CryptoKey with 'encrypt' usage.
- *
- * @param {{iv: BufferSource, additionalData?: BufferSource}} params
- *          - encryption parameters, containing the 24-byte iv (nonce)
- *            and optional additional data to authenticate.
- * @param {CryptoKey} key - 256-bit AES-CBC CryptoKey.
- * @param {BufferSource} data - Data to encrypt.
- * @returns {Promise<ArrayBuffer>} - Encrypted data.
  */
 export async function encrypt(params: {
   iv: BufferSource
@@ -118,13 +107,6 @@ export async function encrypt(params: {
 /**
  * Decrypts data using XAES-256-GCM with the given key and iv.
  * Key must be a 256-bit AES-CBC CryptoKey with 'encrypt' and 'decrypt' usages.
- *
- * @param {{iv: BufferSource, additionalData?: BufferSource}} params
- *           - decryption parameters, containing the 24-byte iv (nonce)
- *             and optional additional data to authenticate.
- * @param {CryptoKey} key - 256-bit AES-CBC CryptoKey.
- * @param {BufferSource} data - Data to decrypt.
- * @returns {Promise<ArrayBuffer>} - Decrypted data.
  */
 export async function decrypt(params: {
   iv: BufferSource
@@ -148,9 +130,6 @@ export async function decrypt(params: {
  * The actual key is an AES-CBC CryptoKey with 256-bit length.
  *
  * This function is not necessary, as you can use crypto.subtle.generateKey with AES-CBC directly.
- *
- * @param {boolean} extractable
- * @returns Promise<CryptoKey>
  */
 export async function generateKey(extractable?: boolean): Promise<CryptoKey> {
   return await crypto.subtle.generateKey(
@@ -169,11 +148,6 @@ export async function generateKey(extractable?: boolean): Promise<CryptoKey> {
  * The actual key must be an AES-CBC CryptoKey with 256-bit length.
  *
  * This function is not necessary, as you can use crypto.subtle.importKey with AES-CBC directly.
- *
- * @param {"jwk" | "raw" | "pkcs8" | "spki"} format
- * @param {BufferSource | JsonWebKey} keyData
- * @param {boolean} extractable
- * @returns {Promise<CryptoKey>}
  */
 export async function importKey(format: 'jwk' | 'raw' | 'pkcs8' | 'spki', keyData: BufferSource | JsonWebKey, extractable?: boolean): Promise<CryptoKey> {
   return await crypto.subtle.importKey( // @ts-expect-error-next-line
@@ -190,10 +164,6 @@ export async function importKey(format: 'jwk' | 'raw' | 'pkcs8' | 'spki', keyDat
  * The resulting export will have AES-CBC algorithm specified.
  *
  * This function is not necessary, as you can use crypto.subtle.exportKey directly.
- *
- * @param {"jwk" | "pkcs8" | "raw" | "spki"} format
- * @param {CryptoKey} key
- * @returns {Promise<ArrayBuffer | JsonWebKey>}
  */
 export async function exportKey(format: 'jwk' | 'pkcs8' | 'raw' | 'spki', key: CryptoKey): Promise<ArrayBuffer | JsonWebKey> {
   return await crypto.subtle.exportKey(format, key)

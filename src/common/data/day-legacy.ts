@@ -46,7 +46,7 @@ export class Day {
   }
 
   static fromString(dateString: string): Day | undefined {
-    return Day.from(+dateString.replace(/[^0-9]/g, '').slice(0, 8))
+    return Day.from(+dateString.replace(/\D/g, '').slice(0, 8))
   }
 
   static fromDate(date: Date, utc = false): Day {

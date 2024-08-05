@@ -1,4 +1,4 @@
-const rxEscape = /[\\\-\[\]\/{}()*+?.^$|]/g // Finds: \ - [ ] / { } ( ) * + ? . ^ $ |
+const rxEscape = /[\\\-[\]/{}()*+?.^$|]/g // Finds: \ - [ ] / { } ( ) * + ? . ^ $ |
 
 export function escapeRegExp(value: RegExp | string): string {
   if (!value)

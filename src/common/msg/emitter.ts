@@ -1,4 +1,3 @@
-import type { ArgumentsType } from 'vitest'
 import type { DisposerFunction } from '../dispose-types'
 import { getGlobalContext } from '../global'
 import { DefaultLogger } from '../log'

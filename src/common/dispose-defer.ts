@@ -6,7 +6,7 @@ import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log/log-base'
 
 export function polyfillUsing() {
-  try {     
+  try {
     // @ts-expect-error just a polyfill
     Symbol.dispose ??= Symbol('Symbol.dispose')
     // @ts-expect-error just a polyfill

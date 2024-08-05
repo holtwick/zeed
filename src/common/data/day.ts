@@ -121,7 +121,7 @@ export function dayFromParts(
 
 export function dayFromString(value: string): DayValue | undefined {
   const string = String(value)
-    .replace(/[^0-9]/g, '')
+    .replace(/\D/g, '')
     .slice(0, 8)
   if (string.length === 8)
     return +string

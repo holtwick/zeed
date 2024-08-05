@@ -214,7 +214,7 @@ const deburredLetters = {
 let deburrLetter: any
 
 /** Used to match Latin Unicode letters (excluding mathematical operators). */
-const reLatin = /[\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u017F]/g
+const reLatin = /[\xD8-\xF6\u0100-\u017F]/gi
 
 /**
  * Used to match [combining diacritical marks](https://en.wikipedia.org/wiki/Combining_Diacritical_Marks) and

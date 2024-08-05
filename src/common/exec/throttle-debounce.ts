@@ -39,7 +39,7 @@ export function throttle<F extends (...args: any[]) => any>(
 } {
   const { delay = 100, trailing = true, leading = true } = opt
 
-  let timeoutID: any = 0
+  let timeoutID: any
   let checkpoint = 0
   let visited = 0
   let trailingExec: () => void | undefined
@@ -99,7 +99,7 @@ export function throttle<F extends (...args: any[]) => any>(
       // Delay. We should not get here if timeout has not been reached before
       timeoutID = setTimeout(() => {
         // DEBUG && log('⏱ reached timeout', debugElapsed())
-        timeoutID = 0
+        clearExistingTimeout()
         // Only execute on trailing or when visited again, but do not twice if leading
         if (trailing && (!leading || visited > 0)) {
           // DEBUG && log('🚀 trailing', debugElapsed())
@@ -149,8 +149,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
   dispose: () => void
 } {
   const { delay = 100 } = opt
-  let timeoutID: any = 0
-
+  let timeoutID: any
   let running = false
   let lastArguments: any[] | undefined
 
@@ -158,7 +157,7 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     if (timeoutID) {
       // log('clear')
       clearTimeout(timeoutID)
-      timeoutID = 0
+      timeoutID = undefined
     }
   }
 
@@ -176,7 +175,6 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
         if (lastArguments != null) {
           clearExistingTimeout()
           // log('exec trigger next')
-
           timeoutID = setTimeout(exec, delay)
         }
       }
@@ -189,7 +187,6 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     clearExistingTimeout()
     // log('trigger')
     if (running === false)
-
       timeoutID = setTimeout(exec, delay)
   }
 

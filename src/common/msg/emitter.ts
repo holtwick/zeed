@@ -1,7 +1,7 @@
-import type { ArgumentsType } from 'vitest'
 import type { DisposerFunction } from '../dispose-types'
 import { getGlobalContext } from '../global'
 import { DefaultLogger } from '../log'
+import { safeTimeout } from '../timeout'
 
 export type EmitterHandler = (...objs: any[]) => void
 export type EmitterAllHandler<T = string> = (key: T, ...objs: any[]) => void
@@ -155,16 +155,16 @@ export class Emitter<
     timeoutMS = 1000,
   ): Promise<R> {
     return new Promise((resolve, reject) => {
-      let timer: any
+      let disposeTimer: any
 
-      const dispose = this.once(event, ((value): void => {
-        clearTimeout(timer)
+      const disposeListener = this.once(event, ((value): void => {
+        disposeTimer?.()
         resolve(value)
       }) as LocalListener[U])
 
-      timer = setTimeout(() => {
-        dispose()
-        reject(new Error('Did not response in time'))
+      disposeTimer = safeTimeout(() => {
+        disposeListener()
+        reject(new Error('Did not respond in time'))
       }, timeoutMS)
     })
   }

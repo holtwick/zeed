@@ -62,7 +62,7 @@ type RPCMessage = [
 const defaultSerialize = (i: any) => i
 const defaultDeserialize = defaultSerialize
 
-function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: string[] = []) {
+function setupRPCBasic(options: RPCOptionsBasic, functions: Record<string, (...args: any) => Promise<any>>, eventNames: string[] = []) {
   const {
     log,
     post,
@@ -118,7 +118,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         let result, error: any
         if (method != null) {
           try {
-            const fn = functions[methodName] as Function
+            const fn = functions[methodName]
             result = await fn(...args)
           }
           catch (e) {
@@ -170,7 +170,7 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
         const [promise, resolve, reject] = createPromise()
         const id = rpcCounter++
 
-        let timeoutId
+        let timeoutId: any
         if (timeout >= 0) {
           timeoutId = setTimeout(() => {
             try {
@@ -185,6 +185,10 @@ function setupRPCBasic(options: RPCOptionsBasic, functions: any, eventNames: str
                 resolve(undefined)
             }
             rpcPromiseMap.delete(id)
+
+            // Garbage Collection https://jakearchibald.com/2024/garbage-collection-and-closures/
+            clearTimeout(timeoutId)
+            timeoutId = undefined
           }, timeout).unref?.()
         }
 
@@ -214,7 +218,7 @@ export function useRPC<LocalFunctions, RemoteFunctions = LocalFunctions>(
 ): RPCReturn<RemoteFunctions> {
   const { eventNames = [] } = options
 
-  const { proxyHandler } = setupRPCBasic(options, functions, eventNames as any)
+  const { proxyHandler } = setupRPCBasic(options, functions as any, eventNames as any)
 
   return new Proxy({}, proxyHandler)
 }

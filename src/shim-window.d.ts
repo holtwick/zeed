@@ -8,7 +8,7 @@ declare global {
     isNodeTestEnv?: boolean
   }
 
-  module globalThis {
+  namespace globalThis {
     var isNodeTestEnv: boolean
   }
 }

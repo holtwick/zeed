@@ -213,7 +213,7 @@ describe('objectPlain', () => {
         inf: Number.POSITIVE_INFINITY,
         err: new Error('err'),
         set: new Set([1, { x: 1 }, 3]),
-        rx: /.*?.test/gim,
+        rx: /.+?test/gi,
         map: new Map<any, any>([
           ['a', 1],
           ['b', 2],
@@ -282,7 +282,7 @@ describe('objectPlain', () => {
           },
           "rx": Object {
             "__class": "RegExp",
-            "source": "/.*?.test/gim",
+            "source": "/.+?test/gi",
           },
           "set": Array [
             1,

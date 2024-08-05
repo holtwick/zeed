@@ -9,6 +9,7 @@ export function getStackLlocationList(stack: string): string[] {
   return (
     stack?.split('\n').map((rawLine) => {
       const m = rawLine.match(
+        // eslint-disable-next-line regexp/no-super-linear-backtracking
         /^\s+at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/,
       )
       if (m) {
@@ -42,6 +43,7 @@ function pathStripCwd(path: string) {
 }
 
 function extractFileInfo(stackLine: string): string {
+  // eslint-disable-next-line regexp/no-super-linear-backtracking
   const m = stackLine.match(/^\s*at.*(\((.*)\)|file:\/\/(.*)$)|\s*at\s(\/.*)$/)
   if (m) {
     let line = m[3] || m[2] || m[4]

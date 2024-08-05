@@ -39,7 +39,8 @@ export function csvParse(raw: string, opt: {
   separator?: string
 } = {}) {
   // https://regex101.com/r/BCpKyV/1
-  let rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t]|\n|\r\n)/g
+  // eslint-disable-next-line regexp/no-unused-capturing-group, regexp/no-super-linear-backtracking, regexp/no-dupe-disjunctions, regexp/no-useless-non-capturing-group
+  let rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t\n]|\r\n)/g
   if (opt.separator)
     rxOneValueWithSeparator = new RegExp(rxOneValueWithSeparator.source.replaceAll(',;\\t', escapeRegExp(opt.separator)), rxOneValueWithSeparator.flags)
 

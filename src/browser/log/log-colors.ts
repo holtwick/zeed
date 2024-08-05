@@ -45,6 +45,7 @@ export function browserSupportsColors(): boolean {
     || (typeof navigator !== 'undefined'
     && navigator.userAgent
     && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)
+    // eslint-disable-next-line regexp/no-legacy-features
     && Number.parseInt(RegExp.$1, 10) >= 31)
     // Double check webkit in userAgent just in case we are in a worker
     || (typeof navigator !== 'undefined'

@@ -5,9 +5,10 @@ import { resolve } from 'node:path'
 import process from 'node:process'
 
 const NEWLINE = '\n'
-const RE_INI_KEY_VAL = /^\s*([\w_.-]+)\s*=\s*(.*)?\s*$/
+// eslint-disable-next-line regexp/no-super-linear-backtracking
+const RE_INI_KEY_VAL = /^\s*([\w.-]+)\s*=\s*(.*)\s*$/
 const RE_NEWLINES = /\\n/g
-const NEWLINES_MATCH = /\n|\r|\r\n/
+const NEWLINES_MATCH = /\r\n|\n|\r/
 
 interface EnvOptions {
   /** @deprecated will probably be replaced by logLevel */

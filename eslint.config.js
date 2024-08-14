@@ -1,4 +1,14 @@
 import antfu from '@antfu/eslint-config'
-import { eslintDefaults } from './src/common/eslint-defaults.js'
+import { eslintIgnoreDefaults, eslintRulesDefaults } from './src/common/eslint-defaults.js'
 
-export default antfu(eslintDefaults())
+export default antfu(
+  {
+    typescript: true,
+    vue: true,
+    ignores: eslintIgnoreDefaults(),
+  },
+  {},
+  {
+    rules: eslintRulesDefaults(),
+  },
+)

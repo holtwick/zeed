@@ -239,7 +239,7 @@ export function writeUint8Array(encoder: BinEncoder, uint8Array: Uint8Array) {
 /**
  * Append an Uint8Array to BinEncoder.
  */
-export function writeVarUint8Array(encoder: BinEncoder, uint8Array: Uint8Array) {
+export function writeVarUint8Array(encoder: BinEncoder, uint8Array: Uint8Array): void {
   writeVarUint(encoder, uint8Array.byteLength)
   writeUint8Array(encoder, uint8Array)
 }

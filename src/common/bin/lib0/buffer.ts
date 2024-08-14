@@ -7,7 +7,7 @@
 import { createDecoder, readAny } from './decoding'
 import { createBinEncoder, encodeToUint8Array, writeAny } from './encoding'
 
-export function createUint8ArrayFromLen(len: number) {
+export function createUint8ArrayFromLen(len: number): Uint8Array {
   return new Uint8Array(len)
 }
 

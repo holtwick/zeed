@@ -1,7 +1,10 @@
-export function eslintDefaults() {
+export function eslintDefaults(opt) {
+  const { ignores = [], rules = {}, ...rest } = opt ?? {}
   return {
     vue: true,
     typescript: true,
+    ...rest,
+
     ignores: [
       'dist',
       'node_modules',
@@ -14,6 +17,7 @@ export function eslintDefaults() {
       // '*.md',
       // '*.spec.*',
       // 'vitest.config.ts',
+      ...ignores,
     ],
     rules: {
       'unused-imports/no-unused-vars': 'off',
@@ -33,6 +37,7 @@ export function eslintDefaults() {
       // ExportDeclaration: 'always'
       }],
 
+      ...rules,
     },
   }
 }

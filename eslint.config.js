@@ -1,4 +1,6 @@
 import antfu from '@antfu/eslint-config'
 import { eslintDefaults } from './src/common/eslint-defaults.js'
 
-export default antfu(eslintDefaults())
+export default antfu(eslintDefaults({
+  // type: 'lib',
+}))

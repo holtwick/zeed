@@ -20,12 +20,14 @@
     "strict": true,
     "strictNullChecks": true,
     "declaration": true,
+    "outDir": "./dist",
     "sourceMap": true,
     "esModuleInterop": true,
     "isolatedModules": true
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.js",
     "demos/**/*.ts",
     "*.ts"
   ],

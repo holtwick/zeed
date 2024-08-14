@@ -1,13 +1,5 @@
 import { sleep } from '../exec'
-import {
-  cloneObject,
-  empty,
-  ensureKey,
-  forTimes,
-  memoize,
-  memoizeAsync,
-  size,
-} from './utils'
+import { cloneObject, empty, ensureKey, forTimes, memoize, memoizeAsync, size } from './utils'
 
 describe('cloneObject', () => {
   it('should clone only non primitives', () => {

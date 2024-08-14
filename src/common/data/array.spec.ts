@@ -1,24 +1,4 @@
-import {
-  arrayAvg,
-  arrayBatches,
-  arrayFilterInPlace,
-  arrayFlatten,
-  arrayIntersection,
-  arrayIsEqual,
-  arrayMax,
-  arrayMin,
-  arrayMinus,
-  arrayRemoveElement,
-  arraySetArrayInPlace,
-  arrayShuffleForce,
-  arraySorted,
-  arraySortedNumbers,
-  arraySum,
-  arraySymmetricDifference,
-  arrayToggleInPlace,
-  arrayUnion,
-  createArray,
-} from './array'
+import { arrayAvg, arrayBatches, arrayFilterInPlace, arrayFlatten, arrayIntersection, arrayIsEqual, arrayMax, arrayMin, arrayMinus, arrayRemoveElement, arraySetArrayInPlace, arrayShuffleForce, arraySorted, arraySortedNumbers, arraySum, arraySymmetricDifference, arrayToggleInPlace, arrayUnion, createArray } from './array'
 
 describe('array', () => {
   it('should remove items', () => {

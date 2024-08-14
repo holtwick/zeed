@@ -2,23 +2,7 @@
 
 import { useBase } from './data/basex'
 import { sleep } from './exec/promise'
-import {
-  suid,
-  suidBytesDate,
-  suidDate,
-  uname,
-  uuid,
-  uuid32bit,
-  uuidB32,
-  uuidBytes,
-  uuidDecode,
-  uuidDecodeB32,
-  uuidDecodeV4,
-  uuidEncode,
-  uuidEncodeB32,
-  uuidEncodeV4,
-  uuidv4,
-} from './uuid'
+import { suid, suidBytesDate, suidDate, uname, uuid, uuid32bit, uuidB32, uuidBytes, uuidDecode, uuidDecodeB32, uuidDecodeV4, uuidEncode, uuidEncodeB32, uuidEncodeV4, uuidv4 } from './uuid'
 
 describe('uuid', () => {
   // beforeAll(() => setUuidDefaultEncoding('base32'))

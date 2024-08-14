@@ -1,10 +1,4 @@
-import {
-  createPromise,
-  isPromise,
-  promisify,
-  sleep,
-  timeout,
-} from './promise'
+import { createPromise, isPromise, promisify, sleep, timeout } from './promise'
 
 describe('promises', () => {
   async function demo() {

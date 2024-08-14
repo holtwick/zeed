@@ -1,11 +1,6 @@
 import { arrayShuffleForce, arrayShuffleInPlace } from './array'
 import type { SortableItem } from './sortable'
-import {
-  endSortWeight,
-  moveSortWeight,
-  sortedItems,
-  startSortWeight,
-} from './sortable'
+import { endSortWeight, moveSortWeight, sortedItems, startSortWeight } from './sortable'
 import { last } from './utils'
 
 interface SItem extends SortableItem {

@@ -31,6 +31,13 @@ export default antfu(
       'ts/no-misused-promises': 'off',
       // 'ts/no-floating-promises': 'error',
       // 'ts/require-await': 'error',
+
+      // All import properties in one line
+      'object-curly-newline': ['error', {
+        ImportDeclaration: 'never',
+        // ExportDeclaration: 'always'
+      }],
+
     },
   },
 )

@@ -1,10 +1,4 @@
-import {
-  arrayFlatten,
-  deepMerge,
-  isArray,
-  jsonStringifySafe,
-  toBase64,
-} from './data'
+import { arrayFlatten, deepMerge, isArray, jsonStringifySafe, toBase64 } from './data'
 import { encodeQuery } from './data/url'
 import { DefaultLogger } from './log'
 import type { Json } from './types'

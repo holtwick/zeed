@@ -2,14 +2,7 @@
 
 import process from 'node:process'
 
-import {
-  Logger,
-  digest,
-  setupEnv,
-  stringToUInt8Array,
-  toUint8Array,
-  uuid,
-} from 'zeed'
+import { Logger, digest, setupEnv, stringToUInt8Array, toUint8Array, uuid } from 'zeed'
 
 // Some basic logging
 

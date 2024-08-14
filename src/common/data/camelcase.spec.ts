@@ -1,9 +1,4 @@
-import {
-  fromCamelCase,
-  toCamelCase,
-  toCapitalize,
-  toCapitalizeWords,
-} from './camelcase'
+import { fromCamelCase, toCamelCase, toCapitalize, toCapitalizeWords } from './camelcase'
 
 describe('camelcase', () => {
   it('should convert', () => {

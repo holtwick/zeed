@@ -1,15 +1,4 @@
-import {
-  dayDiff,
-  dayFromDate,
-  dayFromString,
-  dayIterator,
-  dayMonthStart,
-  dayOffset,
-  dayRange,
-  dayToParts,
-  dayToString,
-  dayYearStart,
-} from './day'
+import { dayDiff, dayFromDate, dayFromString, dayIterator, dayMonthStart, dayOffset, dayRange, dayToParts, dayToString, dayYearStart } from './day'
 import { Day, dateStringToDays, forEachDay } from './day-legacy'
 
 describe('days', () => {

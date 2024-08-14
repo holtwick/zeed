@@ -1,16 +1,5 @@
 import { arraySum } from './array'
-import {
-  roundArrayOfNumbersToMatchSum,
-  roundArrayOfObjectsToMatchSum,
-  roundDown,
-  roundHalfAwayFromZero,
-  roundHalfDown,
-  roundHalfEven,
-  roundHalfOdd,
-  roundHalfTowardsZero,
-  roundHalfUp,
-  roundUp,
-} from './rounding'
+import { roundArrayOfNumbersToMatchSum, roundArrayOfObjectsToMatchSum, roundDown, roundHalfAwayFromZero, roundHalfDown, roundHalfEven, roundHalfOdd, roundHalfTowardsZero, roundHalfUp, roundUp } from './rounding'
 
 describe('currency', () => {
   describe('down', () => {

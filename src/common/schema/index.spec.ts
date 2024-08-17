@@ -7,21 +7,27 @@ describe('simple.spec', () => {
     type TypeProps = {
       type: string
       children?: []
-      isOptional?: boolean
     }
 
     type Type<T = unknown> = {
-      _ts: T
+      // _ts: T
       optional: () => Type<T | undefined>
+      default: (value: T | (() => T)) => Type<T>
+      _optional?: boolean
+      _default?: T | (() => T)
     } & TypeProps
 
-    function generic<T = unknown>(type: string, opt?: TypeProps): Type<T> {
-      const info = {
-        _ts: null as any,
+    function generic<T = any>(type: string, opt?: TypeProps): Type<T> {
+      const info: Type<T> = {
+        // _ts: null as any,
         ...opt,
         type,
         optional() {
-          this.isOptional = true
+          this._optional = true
+          return this as any
+        },
+        default(value) {
+          this._default = value
           return this
         },
       }
@@ -36,12 +42,13 @@ describe('simple.spec', () => {
       return generic<number>('number', opt)
     }
 
+    function boolean(opt?: TypeProps) {
+      return generic<boolean>('boolean', opt)
+    }
+
     type Infer<T> = T extends Type<infer TT> ? TT : never
 
-    // const optional = true
-
     const age = number().optional()
-    type ageType = typeof age
     type ageTypeInfer = Infer<typeof age>
     const testAge: ageTypeInfer = undefined
 
@@ -52,7 +59,7 @@ describe('simple.spec', () => {
 
     //
 
-    type ObjectInput = Record<string, Type>
+    type ObjectInput = Record<string, Type<any>>
 
     type ObjectFixOptional<T> = {
       [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
@@ -62,18 +69,20 @@ describe('simple.spec', () => {
 
     type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
 
-    type pretty = ObjectPretty<ObjectFixOptional<{
-      name?: string
-      age: number | undefined
-      must: object
-    }>>
+    // type pretty = ObjectPretty<ObjectFixOptional<{
+    //   name?: string
+    //   age: number | undefined
+    //   must: object
+    // }>>
 
     type ObjectOutput<T extends ObjectInput> = Type<ObjectPretty<ObjectFixOptional<{
       [K in keyof T]: Infer<T[K]>
     }>>>
 
     function object<T extends ObjectInput>(obj: T, opt?: TypeProps): ObjectOutput<T> {
-      return { type: 'object', children: obj as any } as any
+      const info = generic('object', opt)
+      info.children = obj as any
+      return info
     }
 
     const schema = object({
@@ -99,19 +108,42 @@ describe('simple.spec', () => {
       Object {
         "children": Object {
           "age": Object {
-            "_ts": null,
-            "isOptional": true,
+            "_optional": true,
+            "default": [Function],
             "optional": [Function],
             "type": "number",
           },
           "name": Object {
-            "_ts": null,
+            "default": [Function],
             "optional": [Function],
             "type": "string",
           },
         },
+        "default": [Function],
+        "optional": [Function],
         "type": "object",
       }
     `)
+
+    // const demo = {
+    //   a: 1,
+    // } as any
+
+    // demo.prototype = {
+    //   doSomething() {
+    //     return this.a + 1
+    //   },
+    // }
+
+    // expect(demo).toMatchInlineSnapshot(`
+    //   Object {
+    //     "a": 1,
+    //     "prototype": Object {
+    //       "doSomething": [Function],
+    //     },
+    //   }
+    // `)
+
+    // expect(demo.doSomething()).toMatchInlineSnapshot()
   })
 })

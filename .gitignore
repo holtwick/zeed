@@ -12,6 +12,7 @@ dist-ssr
 src/common/msg/channel-wkwebview.ts
 coverage
 _archive
+_sandbox
 .npmrc
 .npmrc*
 lib

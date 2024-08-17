@@ -1,41 +1,43 @@
 /* eslint-disable ts/consistent-type-definitions */
 describe('simple.spec', () => {
   it('should do something', async () => {
-    type TypeOptions = {
-      optional?: boolean
-    }
-
     type TypeProps = {
       type: string
       children?: []
+      isOptional?: boolean
     }
 
     type Type<T = unknown> = {
       _ts: T
-    } & TypeOptions & TypeProps
+      optional: () => Type<T | undefined>
+    } & TypeProps
 
-    const mixin = { _ts: null as any }
-
-    function generic<T>(opt?: TypeOptions) {
-      const data = { ...mixin, ...opt, type: 'string' }
-      if (opt?.optional === true)
-        return data as Type<T | undefined>
-      return data as Type<T>
+    function generic<T = unknown>(type: string, opt?: TypeProps): Type<T> {
+      const info = {
+        _ts: null as any,
+        ...opt,
+        type,
+        optional: () => {
+          info.isOptional = true
+          return info
+        },
+      }
+      return info
     }
 
-    function string(opt?: TypeOptions) {
-      return generic<string>(opt)
+    function string(opt?: TypeProps) {
+      return generic<string>('string', opt)
     }
 
-    function number(opt?: TypeOptions) {
-      return generic<number>(opt)
+    function number(opt?: TypeProps) {
+      return generic<number>('number', opt)
     }
 
     type Infer<T> = T extends Type<infer TT> ? TT : never
 
     // const optional = true
 
-    const age = number({ optional: true })
+    const age = number().optional()
     type ageType = typeof age
     type ageTypeInfer = Infer<typeof age>
     const testAge: ageTypeInfer = undefined

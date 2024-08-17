@@ -1,23 +1,25 @@
 // Schema implementation inspired by https://github.com/badrap/valita and those similar to zod
 
-import { prependListener } from 'node:process'
 import { isBoolean, isFunction, isNumber, isObject, isString } from '../data'
 
 interface TypeProps {
 }
 
 type Type<T = unknown> = {
-  optional: () => Type<T | undefined>
-  default: (value: T | (() => T)) => Type<T | undefined>
+  type: string
+
   _optional?: boolean
   _default?: T | (() => T)
-  type: string
   _object?: ObjectInput
+  _check?: (obj: any) => boolean
+
+  optional: () => Type<T | undefined>
+  default: (value: T | (() => T)) => Type<T | undefined>
+
   parse: (obj: any, opt?: { // todo obj: T ?
     transform?: boolean
     strict?: boolean
   }) => T
-  _check?: (obj: any) => boolean
 } & TypeProps
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never

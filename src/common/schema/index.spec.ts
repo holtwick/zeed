@@ -2,7 +2,7 @@
 describe('simple.spec', () => {
   it('should do something', async () => {
     type TypeOptions = {
-      optional?: true
+      optional?: boolean
     }
 
     type TypeProps = {
@@ -10,43 +10,38 @@ describe('simple.spec', () => {
       children?: []
     }
 
-    type Type<T = unknown, O = unknown> = {
-      _ts: O extends { optional: true } ? T | undefined : T
+    type Type<T = unknown> = {
+      _ts: T
     } & TypeOptions & TypeProps
 
     const mixin = { _ts: null as any }
 
-    
-    function string(opt?: TypeOptions): Type<string> {
-      return { ...mixin, ...opt, type: 'string' }
+    function generic<T>(opt?: TypeOptions) {
+      const data = { ...mixin, ...opt, type: 'string' }
+      if (opt?.optional === true)
+        return data as Type<T | undefined>
+      return data as Type<T>
     }
 
-    // function number(opt?: TypeOptions): Type<number> {
-    //   return { ...mixin, ...opt, type: 'number' }
-    // }
-
-    function number<O>(opt?: O): Type<number, O> {
-      return { ...mixin, ...opt, type: 'number' }
+    function string(opt?: TypeOptions) {
+      return generic<string>(opt)
     }
 
-    type Infer<T> = T extends { _ts: infer TT } ? TT : never
+    function number(opt?: TypeOptions) {
+      return generic<number>(opt)
+    }
 
-    // type Infer<T> = T extends Type<infer TT>
-    //   ? (O extends { optional: true } ? TT | undefined : TT)
-    //   : never
+    type Infer<T> = T extends Type<infer TT> ? TT : never
 
     // const optional = true
 
     const age = number({ optional: true })
     type ageType = typeof age
     type ageTypeInfer = Infer<typeof age>
-    const testAge: ageType = undefined
+    const testAge: ageTypeInfer = undefined
 
     const name = string()
     type nameType = Infer<typeof name>
-
-    type testTypeUndefined = Infer<Type<number, { optional: true }>>
-    type testTypeDefined = Infer<Type<number>>
 
     expect(testAge).toBe(undefined)
 
@@ -69,6 +64,10 @@ describe('simple.spec', () => {
     const sample: Schema = {
       name: 'Hello',
       age: 42,
+    }
+
+    const sample2: Schema = {
+      name: 'Hello',
     }
 
     expect(schema).toMatchInlineSnapshot(`

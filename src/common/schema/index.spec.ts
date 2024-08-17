@@ -5,25 +5,31 @@ describe('simple.spec', () => {
       optional?: true
     }
 
-    type Type<T = unknown> = {
-      _ts?: { _ts: T | undefined }
+    type TypeProps = {
       type: string
       children?: []
-    } & TypeOptions
+    }
 
+    type Type<T = unknown, O = unknown> = {
+      _ts: O extends { optional: true } ? T | undefined : T
+    } & TypeOptions & TypeProps
+
+    const mixin = { _ts: null as any }
+
+    
     function string(opt?: TypeOptions): Type<string> {
-      return { ...opt, type: 'string' }
+      return { ...mixin, ...opt, type: 'string' }
     }
 
-    function number(opt?: TypeOptions): Type<number> {
-      return { ...opt, type: 'number' }
-    }
-
-    // function number<O>(opt?: O): Type<number, O> {
-    //   return { ...opt, type: 'number' }
+    // function number(opt?: TypeOptions): Type<number> {
+    //   return { ...mixin, ...opt, type: 'number' }
     // }
 
-    type Infer<T> = T extends Type<infer TT> ? TT : never
+    function number<O>(opt?: O): Type<number, O> {
+      return { ...mixin, ...opt, type: 'number' }
+    }
+
+    type Infer<T> = T extends { _ts: infer TT } ? TT : never
 
     // type Infer<T> = T extends Type<infer TT>
     //   ? (O extends { optional: true } ? TT | undefined : TT)
@@ -32,13 +38,15 @@ describe('simple.spec', () => {
     // const optional = true
 
     const age = number({ optional: true })
-    type ageType = Infer<typeof age>
+    type ageType = typeof age
+    type ageTypeInfer = Infer<typeof age>
     const testAge: ageType = undefined
 
     const name = string()
     type nameType = Infer<typeof name>
 
-    type testType = Infer<Type<number, { optional: true }>>
+    type testTypeUndefined = Infer<Type<number, { optional: true }>>
+    type testTypeDefined = Infer<Type<number>>
 
     expect(testAge).toBe(undefined)
 

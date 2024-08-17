@@ -1,5 +1,6 @@
 // Schema implementation inspired by https://github.com/badrap/valita and those similar to zod
 
+import { prependListener } from 'node:process'
 import { isBoolean, isFunction, isNumber, isObject, isString } from '../data'
 
 interface TypeProps {
@@ -12,20 +13,39 @@ type Type<T = unknown> = {
   _default?: T | (() => T)
   type: string
   _object?: ObjectInput
-  parse: (obj: T, opt?: {
+  parse: (obj: any, opt?: { // todo obj: T ?
     transform?: boolean
     strict?: boolean
-  }) => boolean
+  }) => T
+  _check?: (obj: any) => boolean
 } & TypeProps
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never
 
 // Helper
 
+function preParse<T>(obj: T, info: Type<T>): T {
+  if (obj == null) {
+    if (info._default != null) {
+      if (isFunction(info._default))
+        obj = info._default()
+      else
+        obj = info._default
+    }
+  }
+  if (obj == null && info._optional === true)
+    return undefined as any
+  if (obj == null)
+    throw new Error('cannot be undefined')
+  if (!info._check || info._check(obj))
+    return obj
+  throw new Error('wrong value')
+}
+
 function generic<T = any>(type: string, opt?: Partial<Type<T>>): Type<T> {
   const info: Type<T> = {
     parse(obj) {
-      return true
+      return preParse(obj, this as any)
     },
     ...opt,
     type,
@@ -46,34 +66,21 @@ function generic<T = any>(type: string, opt?: Partial<Type<T>>): Type<T> {
 export function string(opt?: TypeProps) {
   return generic<string>('string', {
     ...opt,
-    parse(obj) {
-      // todo
-      if (obj == null && this._default) {
-        if (isFunction(this._default))
-          obj = this._default()
-        else
-          obj = this._default
-      }
-      return isString(obj)
-    },
+    _check: isString,
   })
 }
 
 export function number(opt?: TypeProps) {
   return generic<number>('number', {
     ...opt,
-    parse(obj) {
-      return isNumber(obj)
-    },
+    _check: isNumber,
   })
 }
 
 export function boolean(opt?: TypeProps) {
   return generic<boolean>('boolean', {
     ...opt,
-    parse(obj) {
-      return isBoolean(obj)
-    },
+    _check: isBoolean,
   })
 }
 
@@ -98,16 +105,19 @@ export function object<T extends ObjectInput>(tobj: T, opt?: TypeProps): ObjectO
     ...opt,
     _object: tobj,
     parse(obj) {
+      if (obj == null && this._optional === true)
+        return undefined
+      const newObj: any = {}
       if (!isObject(obj))
-        return false
+        return new Error('expected object input')
       if (!isObject(this._object))
-        return false
+        return new Error('expected object definition')
       for (const [key, info] of Object.entries(this._object)) {
-        const value = (obj as any)[key]
-        if (!info.parse(value))
-          return false
+        const value = info.parse((obj as any)[key])
+        if (value !== undefined)
+          newObj[key] = value
       }
-      return true
+      return newObj
     },
   })
   return info

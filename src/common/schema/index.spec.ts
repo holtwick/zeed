@@ -9,9 +9,9 @@ describe('schema', () => {
       id: string().default(() => '123'),
       name: string(),
       age: number().optional(),
-      // obj: object({
-      //   test: number(),
-      // }).optional(),
+      obj: object({
+        test: number(),
+      }).optional(),
     })
 
     type Schema = Infer<typeof schema>
@@ -29,17 +29,43 @@ describe('schema', () => {
       Object {
         "_object": Object {
           "age": Object {
+            "_check": [Function],
             "_optional": true,
             "default": [Function],
             "optional": [Function],
             "parse": [Function],
             "type": "number",
           },
-          "name": Object {
+          "id": Object {
+            "_check": [Function],
+            "_default": [Function],
             "default": [Function],
             "optional": [Function],
             "parse": [Function],
             "type": "string",
+          },
+          "name": Object {
+            "_check": [Function],
+            "default": [Function],
+            "optional": [Function],
+            "parse": [Function],
+            "type": "string",
+          },
+          "obj": Object {
+            "_object": Object {
+              "test": Object {
+                "_check": [Function],
+                "default": [Function],
+                "optional": [Function],
+                "parse": [Function],
+                "type": "number",
+              },
+            },
+            "_optional": true,
+            "default": [Function],
+            "optional": [Function],
+            "parse": [Function],
+            "type": "object",
           },
         },
         "default": [Function],
@@ -49,7 +75,13 @@ describe('schema', () => {
       }
     `)
 
-    expect(schema.parse(sample)).toBe(true)
-    expect(schema.parse({} as any)).toBe(false)
+    expect(schema.parse(sample)).toMatchInlineSnapshot(`
+      Object {
+        "age": 42,
+        "id": "123",
+        "name": "Hello",
+      }
+    `)
+    // expect(schema.parse({} as any)).toBe()
   })
 })

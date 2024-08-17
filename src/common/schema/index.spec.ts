@@ -55,11 +55,17 @@ describe('simple.spec', () => {
       [K in keyof T]: Infer<T[K]>
     }>>
 
-    function object<T extends ObjectInput>(obj: T, opt?: TypeOptions): ObjectOutput<T> {
+    function object<T extends ObjectInput>(obj: T, opt?: TypeProps): ObjectOutput<T> {
       return { type: 'object', children: obj as any } as any
     }
 
-    const schema = object({ name, age })
+    const schema = object({
+      name: string(),
+      age: number().optional(),
+      obj: object({
+        test: number(),
+      }).optional(),
+    })
 
     type Schema = Infer<typeof schema>
 
@@ -88,23 +94,3 @@ describe('simple.spec', () => {
     `)
   })
 })
-
-type TypeOptions = {
-  optional?: true
-}
-
-type Type<T = unknown> = {
-  _ts?: () => T
-  type: string
-  children?: []
-}
-
-function string(opt?: TypeOptions): Type<string> {
-  return { ...opt, type: 'string' }
-}
-
-type Infer<T> = T extends Type<infer TT> ? TT : never
-
-const schema = string({ optional: true })
-
-type Schema = Infer<typeof schema> // this should be string | undefined

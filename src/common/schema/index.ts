@@ -1,13 +1,13 @@
 // Schema implementation inspired by https://github.com/badrap/valita and those similar to zod
 
-import { isBoolean, isNumber, isObject, isString } from '../data'
+import { isBoolean, isFunction, isNumber, isObject, isString } from '../data'
 
 interface TypeProps {
 }
 
 type Type<T = unknown> = {
   optional: () => Type<T | undefined>
-  default: (value: T | (() => T)) => Type<T>
+  default: (value: T | (() => T)) => Type<T | undefined>
   _optional?: boolean
   _default?: T | (() => T)
   type: string
@@ -35,7 +35,7 @@ function generic<T = any>(type: string, opt?: Partial<Type<T>>): Type<T> {
     },
     default(value) {
       this._default = value
-      return this
+      return this as any
     },
   }
   return info
@@ -47,6 +47,13 @@ export function string(opt?: TypeProps) {
   return generic<string>('string', {
     ...opt,
     parse(obj) {
+      // todo
+      if (obj == null && this._default) {
+        if (isFunction(this._default))
+          obj = this._default()
+        else
+          obj = this._default
+      }
       return isString(obj)
     },
   })

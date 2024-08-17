@@ -6,6 +6,7 @@ import { number, object, string } from '.'
 describe('schema', () => {
   it('create schema', async () => {
     const schema = object({
+      id: string().default(() => '123'),
       name: string(),
       age: number().optional(),
       // obj: object({

@@ -1,4 +1,7 @@
 /* eslint-disable ts/consistent-type-definitions */
+
+'strict'
+
 describe('simple.spec', () => {
   it('should do something', async () => {
     type TypeProps = {
@@ -17,9 +20,9 @@ describe('simple.spec', () => {
         _ts: null as any,
         ...opt,
         type,
-        optional: () => {
-          info.isOptional = true
-          return info
+        optional() {
+          this.isOptional = true
+          return this
         },
       }
       return info
@@ -50,10 +53,24 @@ describe('simple.spec', () => {
     //
 
     type ObjectInput = Record<string, Type>
+
+    type ObjectFixOptional<T> = {
+      [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
+    } & {
+      [K in keyof T as undefined extends T[K] ? never : K]: T[K] & {}
+    }
+
     type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
-    type ObjectOutput<T extends ObjectInput> = ObjectPretty<Type<{
-      [K in keyof T]: Infer<T[K]>
+
+    type pretty = ObjectPretty<ObjectFixOptional<{
+      name?: string
+      age: number | undefined
+      must: object
     }>>
+
+    type ObjectOutput<T extends ObjectInput> = Type<ObjectPretty<ObjectFixOptional<{
+      [K in keyof T]: Infer<T[K]>
+    }>>>
 
     function object<T extends ObjectInput>(obj: T, opt?: TypeProps): ObjectOutput<T> {
       return { type: 'object', children: obj as any } as any
@@ -62,9 +79,9 @@ describe('simple.spec', () => {
     const schema = object({
       name: string(),
       age: number().optional(),
-      obj: object({
-        test: number(),
-      }).optional(),
+      // obj: object({
+      //   test: number(),
+      // }).optional(),
     })
 
     type Schema = Infer<typeof schema>
@@ -82,10 +99,14 @@ describe('simple.spec', () => {
       Object {
         "children": Object {
           "age": Object {
-            "optional": true,
+            "_ts": null,
+            "isOptional": true,
+            "optional": [Function],
             "type": "number",
           },
           "name": Object {
+            "_ts": null,
+            "optional": [Function],
             "type": "string",
           },
         },

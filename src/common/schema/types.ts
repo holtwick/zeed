@@ -3,13 +3,15 @@
 export interface TypeProps {
 }
 
-export type Type<T = unknown> = {
+export interface Type<T = unknown> {
   type: string
 
   _optional?: boolean
   _default?: T | (() => T)
   _object?: ObjectInput
-  _check?: (obj: any) => boolean
+  _union?: Type[]
+
+  _check: (obj: any) => boolean
 
   optional: () => Type<T | undefined>
   default: (value: T | (() => T)) => Type<T | undefined>
@@ -18,7 +20,10 @@ export type Type<T = unknown> = {
     transform?: boolean
     strict?: boolean
   }) => T
-} & TypeProps
+
+  _props?: TypeProps
+  props: (props: TypeProps) => Type<T>
+}
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never
 

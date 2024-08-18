@@ -1,5 +1,5 @@
-import { isBoolean, isFunction, isNumber, isObject, isString } from '../data'
-import type { Infer, ObjectInput, ObjectOutput, Type, TypeProps } from './types'
+import { first, isBoolean, isFunction, isNumber, isObject, isString } from '../data'
+import type { ObjectInput, ObjectOutput, Type } from './types'
 
 // Helper
 
@@ -26,6 +26,9 @@ function generic<T = any>(type: string, opt?: Partial<Type<T>>): Type<T> {
     parse(obj) {
       return preParse(obj, this as any)
     },
+    _check() {
+      return true
+    },
     ...opt,
     type,
     optional() {
@@ -36,38 +39,38 @@ function generic<T = any>(type: string, opt?: Partial<Type<T>>): Type<T> {
       this._default = value
       return this as any
     },
+    props(props) {
+      this._props = props
+      return this as any
+    },
   }
   return info
 }
 
 // Primitives
 
-export function string(opt?: TypeProps) {
+export function string() {
   return generic<string>('string', {
-    ...opt,
     _check: isString,
   })
 }
 
-export function number(opt?: TypeProps) {
+export function number() {
   return generic<number>('number', {
-    ...opt,
     _check: isNumber,
   })
 }
 
-export function boolean(opt?: TypeProps) {
+export function boolean() {
   return generic<boolean>('boolean', {
-    ...opt,
     _check: isBoolean,
   })
 }
 
 // Object
 
-export function object<T extends ObjectInput>(tobj: T, opt?: TypeProps): ObjectOutput<T> {
+export function object<T extends ObjectInput>(tobj: T): ObjectOutput<T> {
   const info = generic('object', {
-    ...opt,
     _object: tobj,
     parse(obj) {
       if (obj == null && this._optional === true)
@@ -93,18 +96,20 @@ export function object<T extends ObjectInput>(tobj: T, opt?: TypeProps): ObjectO
 type ExtractLiteral<T> = T extends Type<infer U> ? U : never
 type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? ExtractLiteral<U> : never
 
-export function union<T extends (Type<any>)[]>(options: T, opt?: TypeProps): Type<TransformToUnion<T>> {
+export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnion<T>> {
   return generic<any>('union', {
-    ...opt,
-    // _check: isBoolean,
+    type: first(options)?.type ?? 'any', // todo
+    _union: options,
+    _check(obj) {
+      return this._union?.some(t => t._check(obj)) ?? true
+    },
   })
 }
 
 type Literal = string | number | bigint | boolean
 
-export function literal<T extends Literal>(value: T, opt?: TypeProps): Type<T> {
+export function literal<T extends Literal>(value: T): Type<T> {
   return generic<T>('literal', {
-    ...opt,
     _check: v => v === value,
   })
 }

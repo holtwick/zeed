@@ -87,6 +87,17 @@ describe('schema', () => {
             "type": "literal",
           },
           "name": Object {
+            "_union": Array [
+              Object {
+                "type": "literal",
+              },
+              Object {
+                "type": "literal",
+              },
+              Object {
+                "type": "literal",
+              },
+            ],
             "type": "union",
           },
         },

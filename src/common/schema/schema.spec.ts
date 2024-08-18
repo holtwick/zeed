@@ -1,7 +1,6 @@
-'strict'
-
-import type { Infer } from '.'
-import { number, object, string } from '.'
+import { cloneJsonObject } from '../data'
+import { number, object, string } from './schema'
+import type { Infer } from './types'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -21,56 +20,29 @@ describe('schema', () => {
       age: 42,
     }
 
-    const sample2: Schema = {
-      name: 'Hello',
-    }
-
-    expect(schema).toMatchInlineSnapshot(`
+    expect(cloneJsonObject(schema)).toMatchInlineSnapshot(`
       Object {
         "_object": Object {
           "age": Object {
-            "_check": [Function],
             "_optional": true,
-            "default": [Function],
-            "optional": [Function],
-            "parse": [Function],
             "type": "number",
           },
           "id": Object {
-            "_check": [Function],
-            "_default": [Function],
-            "default": [Function],
-            "optional": [Function],
-            "parse": [Function],
             "type": "string",
           },
           "name": Object {
-            "_check": [Function],
-            "default": [Function],
-            "optional": [Function],
-            "parse": [Function],
             "type": "string",
           },
           "obj": Object {
             "_object": Object {
               "test": Object {
-                "_check": [Function],
-                "default": [Function],
-                "optional": [Function],
-                "parse": [Function],
                 "type": "number",
               },
             },
             "_optional": true,
-            "default": [Function],
-            "optional": [Function],
-            "parse": [Function],
             "type": "object",
           },
         },
-        "default": [Function],
-        "optional": [Function],
-        "parse": [Function],
         "type": "object",
       }
     `)

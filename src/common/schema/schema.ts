@@ -91,14 +91,13 @@ export function object<T extends ObjectInput>(tobj: T): ObjectOutput<T> {
   return info
 }
 
-// todo: union and literal
+// Union
 
 type ExtractLiteral<T> = T extends Type<infer U> ? U : never
 type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? ExtractLiteral<U> : never
 
 export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnion<T>> {
-  return generic<any>('union', {
-    type: first(options)?.type ?? 'any', // todo
+  return generic<any>(first(options)?.type ?? 'any', {
     _union: options,
     _check(obj) {
       return this._union?.some(t => t._check(obj)) ?? true
@@ -106,10 +105,12 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnio
   })
 }
 
+// Literal
+
 type Literal = string | number | bigint | boolean
 
 export function literal<T extends Literal>(value: T): Type<T> {
-  return generic<T>('literal', {
+  return generic<T>('string', {
     _check: v => v === value,
   })
 }

@@ -84,21 +84,21 @@ describe('schema', () => {
             "type": "string",
           },
           "literal": Object {
-            "type": "literal",
+            "type": "string",
           },
           "name": Object {
             "_union": Array [
               Object {
-                "type": "literal",
+                "type": "string",
               },
               Object {
-                "type": "literal",
+                "type": "string",
               },
               Object {
-                "type": "literal",
+                "type": "string",
               },
             ],
-            "type": "union",
+            "type": "string",
           },
         },
         "type": "object",

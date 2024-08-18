@@ -1,6 +1,6 @@
 import { cloneJsonObject } from '../data'
 import { literal, number, object, string, union } from './schema'
-import type { Infer, Type } from './types'
+import type { Infer } from './types'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -65,7 +65,9 @@ describe('schema', () => {
     ]
 
     const schema = object({
-      id: string().default(() => '123'),
+      id: string().default(() => '123').props({
+        someProp: 'someValue',
+      }),
       literal: literal('demo'),
       name: union(literals),
     })
@@ -81,6 +83,9 @@ describe('schema', () => {
       Object {
         "_object": Object {
           "id": Object {
+            "_props": Object {
+              "someProp": "someValue",
+            },
             "type": "string",
           },
           "literal": Object {

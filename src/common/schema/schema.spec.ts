@@ -1,6 +1,6 @@
 import { cloneJsonObject } from '../data'
-import { number, object, string } from './schema'
-import type { Infer } from './types'
+import { literal, number, object, string, union } from './schema'
+import type { Infer, Type } from './types'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -52,6 +52,53 @@ describe('schema', () => {
         "age": 42,
         "id": "123",
         "name": "Hello",
+      }
+    `)
+    // expect(schema.parse({} as any)).toBe()
+  })
+
+  it('union', async () => {
+    const literals = [
+      literal('one'),
+      literal('two'),
+      literal('three'),
+    ]
+
+    const schema = object({
+      id: string().default(() => '123'),
+      literal: literal('demo'),
+      name: union(literals),
+    })
+
+    type Schema = Infer<typeof schema>
+
+    const sample: Schema = {
+      literal: 'demo',
+      name: 'two',
+    }
+
+    expect(cloneJsonObject(schema)).toMatchInlineSnapshot(`
+      Object {
+        "_object": Object {
+          "id": Object {
+            "type": "string",
+          },
+          "literal": Object {
+            "type": "literal",
+          },
+          "name": Object {
+            "type": "union",
+          },
+        },
+        "type": "object",
+      }
+    `)
+
+    expect(schema.parse(sample)).toMatchInlineSnapshot(`
+      Object {
+        "id": "123",
+        "literal": "demo",
+        "name": "two",
       }
     `)
     // expect(schema.parse({} as any)).toBe()

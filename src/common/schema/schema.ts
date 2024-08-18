@@ -1,5 +1,5 @@
 import { isBoolean, isFunction, isNumber, isObject, isString } from '../data'
-import type { ObjectInput, ObjectOutput, Type, TypeProps } from './types'
+import type { Infer, ObjectInput, ObjectOutput, Type, TypeProps } from './types'
 
 // Helper
 
@@ -86,4 +86,25 @@ export function object<T extends ObjectInput>(tobj: T, opt?: TypeProps): ObjectO
     },
   })
   return info
+}
+
+// todo: union and literal
+
+type ExtractLiteral<T> = T extends Type<infer U> ? U : never
+type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? ExtractLiteral<U> : never
+
+export function union<T extends (Type<any>)[]>(options: T, opt?: TypeProps): Type<TransformToUnion<T>> {
+  return generic<any>('union', {
+    ...opt,
+    // _check: isBoolean,
+  })
+}
+
+type Literal = string | number | bigint | boolean
+
+export function literal<T extends Literal>(value: T, opt?: TypeProps): Type<T> {
+  return generic<T>('literal', {
+    ...opt,
+    _check: v => v === value,
+  })
 }

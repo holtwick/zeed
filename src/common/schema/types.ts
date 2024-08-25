@@ -27,7 +27,7 @@ export interface Type<T = unknown> {
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never
 
-export type ObjectInput = Record<string, Type<any>>
+export type ObjectInput<T = unknown> = Record<string, Type<T>>
 
 type ObjectFixOptional<T> = {
   [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
@@ -37,6 +37,6 @@ type ObjectFixOptional<T> = {
 
 type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
 
-export type ObjectOutput<T extends ObjectInput> = Type<ObjectPretty<ObjectFixOptional<{
+export type TypeObject<T extends ObjectInput> = Type<ObjectPretty<ObjectFixOptional<{
   [K in keyof T]: Infer<T[K]>
 }>>>

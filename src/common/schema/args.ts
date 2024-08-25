@@ -1,12 +1,13 @@
 import { assert } from '../assert'
 import { objectMap, valueToInteger } from '../data'
-import { toCamelCase } from '../data/camelcase'
+import { fromCamelCase, toCamelCase } from '../data/camelcase'
 import type { Type } from './types'
 import { isSchemaObjectFlat } from './utils'
 
 declare module './types' {
   interface TypeProps {
     argShort?: string
+    argDesc?: string
   }
 }
 
@@ -64,4 +65,23 @@ export function parseSchemaArgs<T>(schema: Type<T>, args: any = process?.argv ??
   }) as T
 
   return [argsResult, names]
+}
+
+export function helpSchemaArgs<T>(schema: Type<T>): string {
+  assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
+
+  const lines: string[] = []
+
+  objectMap(schema._object!, (key, schema: Type<any>) => {
+    let s = `--${fromCamelCase(key)}`
+    if (schema._props?.argShort)
+      s += `, -${fromCamelCase(schema._props.argShort)}`
+    if (schema.type !== 'boolean')
+      s += `=${schema.type}`
+    lines.push(s)
+    if (schema._props?.argDesc)
+      lines.push(`  ${schema._props?.argDesc}`)
+  })
+
+  return lines.join('\n')
 }

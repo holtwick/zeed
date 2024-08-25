@@ -1,5 +1,5 @@
 import { first, isBoolean, isFunction, isNumber, isObject, isString } from '../data'
-import type { ObjectInput, ObjectOutput, Type } from './types'
+import type { ObjectInput, Type, TypeObject } from './types'
 
 // Helper
 
@@ -69,7 +69,7 @@ export function boolean() {
 
 // Object
 
-export function object<T extends ObjectInput>(tobj: T): ObjectOutput<T> {
+export function object<T extends ObjectInput>(tobj: T): TypeObject<T> {
   const info = generic('object', {
     _object: tobj,
     parse(obj) {

@@ -66,7 +66,7 @@ describe('schema', () => {
 
     const schema = object({
       id: string().default(() => '123').props({
-        someProp: 'someValue',
+        // someProp: 'someValue',
       }),
       literal: literal('demo'),
       name: union(literals),

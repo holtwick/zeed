@@ -3,12 +3,14 @@
 export interface TypeProps {
 }
 
+export type TypeNames = 'string' | 'number' | 'boolean' | 'object' | 'any' // | 'null' | 'undefined' | 'symbol' | 'bigint'
+
 export interface Type<T = unknown> {
-  type: string
+  type: TypeNames
 
   _optional?: boolean
   _default?: T | (() => T)
-  _object?: ObjectInput
+  _object?: SchemaDefinitionObject
   _union?: Type[]
 
   _check: (obj: any) => boolean
@@ -27,7 +29,7 @@ export interface Type<T = unknown> {
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never
 
-export type ObjectInput<T = unknown> = Record<string, Type<T>>
+export type SchemaDefinitionObject<T = any> = Record<string, Type<T>>
 
 type ObjectFixOptional<T> = {
   [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
@@ -37,6 +39,6 @@ type ObjectFixOptional<T> = {
 
 type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
 
-export type TypeObject<T extends ObjectInput> = Type<ObjectPretty<ObjectFixOptional<{
+export type TypeObject<T extends SchemaDefinitionObject> = Type<ObjectPretty<ObjectFixOptional<{
   [K in keyof T]: Infer<T[K]>
 }>>>

@@ -1,5 +1,5 @@
 import { first, isBoolean, isFunction, isNumber, isObject, isString } from '../data'
-import type { ObjectInput, Type, TypeObject } from './types'
+import type { SchemaDefinitionObject, Type, TypeNames, TypeObject } from './types'
 
 // Helper
 
@@ -21,7 +21,7 @@ function preParse<T>(obj: T, info: Type<T>): T {
   throw new Error('wrong value')
 }
 
-function generic<T = any>(type: string, opt?: Partial<Type<T>>): Type<T> {
+function generic<T = any>(type: TypeNames, opt?: Partial<Type<T>>): Type<T> {
   const info: Type<T> = {
     parse(obj) {
       return preParse(obj, this as any)
@@ -69,7 +69,7 @@ export function boolean() {
 
 // Object
 
-export function object<T extends ObjectInput>(tobj: T): TypeObject<T> {
+export function object<T extends SchemaDefinitionObject>(tobj: T): TypeObject<T> {
   const info = generic('object', {
     _object: tobj,
     parse(obj) {

@@ -37,13 +37,11 @@ export class FileStorage<T = Json> implements ObjectStorage<T> {
 
     this.extensionLength = this.extension.length
 
-    this.objectToString
-      = opt.objectToString
-      ?? ((data: any): string => {
-        return this.pretty
-          ? jsonStringifySafe(data, null, 2)
-          : jsonStringifySafe(data)
-      })
+    this.objectToString = opt.objectToString ?? ((data: any): string => {
+      return this.pretty
+        ? jsonStringifySafe(data, null, 2)
+        : jsonStringifySafe(data)
+    })
 
     this.objectFromString = opt.objectFromString ?? ((data: string) => {
       try {

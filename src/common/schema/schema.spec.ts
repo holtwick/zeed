@@ -83,9 +83,7 @@ describe('schema', () => {
       Object {
         "_object": Object {
           "id": Object {
-            "_props": Object {
-              "someProp": "someValue",
-            },
+            "_props": Object {},
             "type": "string",
           },
           "literal": Object {

@@ -19,6 +19,16 @@ export function objectMap<T = any>(
   )
 }
 
+/** Like `.filter()` for object. */
+export function objectFilter<T = any>(
+  obj: any,
+  fn: (key: string, value: any) => boolean,
+): Partial<T> {
+  if (!isObject(obj))
+    return {}
+  return Object.fromEntries(Object.entries(obj).filter(([k,v]) => fn(k,v))) as any
+}
+
 /** Merge right into left object. If dispose is defined, it will be combined. Left can be a complex object i.e. a insantiated class. */
 export function objectMergeDisposable<A extends object, B extends object>(
   a: A,

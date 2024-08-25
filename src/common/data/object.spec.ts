@@ -1,7 +1,7 @@
 import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
 import { isBoolean, isNotNull } from './is'
-import { objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick, objectPlain } from './object'
+import { objectFilter, objectInclusivePick, objectMap, objectMergeDisposable, objectOmit, objectPick, objectPlain } from './object'
 
 describe('object.spec', () => {
   it('should map it', async () => {
@@ -313,4 +313,44 @@ describe('objectPlain', () => {
     const result2 = objectPlain(obj)
     expect(objectPlain(result2)).toEqual(result2)
   })
+})
+
+describe('objectFilter', () => {
+
+  it('should return an empty object for non-object inputs', () => {
+    expect(objectFilter(null, () => true)).toEqual({});
+    expect(objectFilter(undefined, () => true)).toEqual({});
+    expect(objectFilter(42, () => true)).toEqual({});
+    expect(objectFilter('string', () => true)).toEqual({});
+  });
+
+  it('should return an empty object if the object has no properties that match the filter', () => {
+    const input = { a: 1, b: 2, c: 3 };
+    const result = objectFilter(input, (key, value) => value > 5);
+    expect(result).toEqual({});
+  });
+
+  it('should return an object with properties that match the filter', () => {
+    const input = { a: 1, b: 2, c: 3, d: 4 };
+    const result = objectFilter(input, (key, value) => value % 2 === 0);
+    expect(result).toEqual({ b: 2, d: 4 });
+  });
+
+  it('should return an object with properties that match the filter based on keys', () => {
+    const input = { a: 1, b: 2, c: 3, d: 4 };
+    const result = objectFilter(input, (key) => key === 'a' || key === 'c');
+    expect(result).toEqual({ a: 1, c: 3 });
+  });
+
+  it('should handle an empty object', () => {
+    const input = {};
+    const result = objectFilter(input, () => true);
+    expect(result).toEqual({});
+  });
+
+  it('should return a partial object when some properties match the filter', () => {
+    const input = { a: 1, b: 2, c: 3, d: 4 };
+    const result = objectFilter(input, (key, value) => key !== 'b');
+    expect(result).toEqual({ a: 1, c: 3, d: 4 });
+  });
 })

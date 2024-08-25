@@ -5,7 +5,7 @@ describe('args.spec', () => {
   it('parse args', async () => {
     const schema = object({
       someStuff: number().optional(),
-      h: boolean().default(false),
+      help: boolean().default(false).props({ argShort: 'h' }),
     })
 
     const args = ['test.txt', '-h', '--some-stuff=8888']
@@ -15,7 +15,7 @@ describe('args.spec', () => {
     expect(r).toMatchInlineSnapshot(`
       Array [
         Object {
-          "h": true,
+          "help": true,
           "someStuff": 8888,
         },
         Array [

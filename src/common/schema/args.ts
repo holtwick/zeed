@@ -17,9 +17,9 @@ export function parseSchemaArgs<T>(schema: Type<T>, args: any = process?.argv ??
   const alias: Record<string, string> = {}
   const booleanArgs: string[] = []
 
-  objectMap(schema._object!, (key, schema) => {
-    if (schema.argShort)
-      alias[toCamelCase(schema.argShort)] = toCamelCase(key)
+  objectMap(schema._object!, (key, schema: Type<any>) => {
+    if (schema._props?.argShort)
+      alias[toCamelCase(schema._props.argShort)] = toCamelCase(key)
     if (schema.type === 'boolean') {
       booleanArgs.push(toCamelCase(key))
     }

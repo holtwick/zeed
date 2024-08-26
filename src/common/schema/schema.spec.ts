@@ -1,10 +1,13 @@
 import { cloneJsonObject } from '../data'
-import { boolean, float, int, literal, object, string, union } from './schema'
+import { boolean, float, int, literal, object, string, stringLiterals, union } from './schema'
 import type { Infer } from './types'
 
 describe('schema', () => {
   it('create schema', async () => {
     type Status = 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
+
+    const lit = stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted'])
+    type ScheamLiterals = Infer<typeof lit>
 
     const schema = object({
       id: string().default(() => '123'),
@@ -16,6 +19,7 @@ describe('schema', () => {
       obj: object({
         test: float(),
       }).optional(),
+      lit,
     })
 
     type Schema = Infer<typeof schema>
@@ -25,6 +29,7 @@ describe('schema', () => {
       status: 'active',
       age: 42,
       active: true,
+      lit: 'past_due',
     }
 
     // const s: Status = sample.status
@@ -40,6 +45,9 @@ describe('schema', () => {
             "type": "int",
           },
           "id": Object {
+            "type": "string",
+          },
+          "lit": Object {
             "type": "string",
           },
           "name": Object {
@@ -67,6 +75,7 @@ describe('schema', () => {
         "active": true,
         "age": 42,
         "id": "123",
+        "lit": "past_due",
         "name": "Hello",
         "status": "active",
       }
@@ -80,6 +89,7 @@ describe('schema', () => {
       Object {
         "active": "on",
         "age": 42,
+        "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
         "status": "active",
@@ -94,6 +104,7 @@ describe('schema', () => {
       Object {
         "active": "yes",
         "age": 42,
+        "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
         "status": "active",

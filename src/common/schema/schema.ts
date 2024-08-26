@@ -1,5 +1,5 @@
 import { first, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data'
-import type { SchemaDefinitionObject, Type, TypeNames, TypeObject } from './types'
+import type { Type, TypeNames, TypeObject } from './types'
 
 // Helper
 
@@ -80,9 +80,9 @@ export function boolean<T = boolean>() {
 
 // Object
 
-export function object<T extends SchemaDefinitionObject>(tobj: T): TypeObject<T> {
+export function object<T>(tobj: T): TypeObject<T> {
   const info = generic('object', {
-    _object: tobj,
+    _object: tobj as any,
     parse(obj) {
       if (obj == null && this._optional === true)
         return undefined

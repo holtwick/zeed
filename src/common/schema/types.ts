@@ -10,7 +10,7 @@ export interface Type<T = unknown> {
 
   _optional?: boolean
   _default?: T | (() => T)
-  _object?: SchemaDefinitionObject<Type<T>>
+  _object?: Record<string, Type>
   _union?: Type[]
 
   _check: (obj: any) => boolean
@@ -31,8 +31,6 @@ export interface Type<T = unknown> {
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never
 
-export type SchemaDefinitionObject<T = any> = Record<string, Type<T>>
-
 type ObjectFixOptional<T> = {
   [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
 } & {
@@ -41,6 +39,6 @@ type ObjectFixOptional<T> = {
 
 type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
 
-export type TypeObject<T extends SchemaDefinitionObject> = Type<ObjectPretty<ObjectFixOptional<{
+export type TypeObject<T = unknown> = Type<ObjectPretty<ObjectFixOptional<{
   [K in keyof T]: Infer<T[K]>
 }>>>

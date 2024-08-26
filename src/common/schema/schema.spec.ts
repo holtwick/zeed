@@ -1,5 +1,5 @@
 import { cloneJsonObject } from '../data'
-import { boolean, int, literal, number, object, string, stringLiterals, union } from './schema'
+import { boolean, float, int, literal, object, string, union } from './schema'
 import type { Infer } from './types'
 
 describe('schema', () => {
@@ -14,7 +14,7 @@ describe('schema', () => {
       // status: stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted']),
       status: string<Status>(),
       obj: object({
-        test: number(),
+        test: float(),
       }).optional(),
     })
 
@@ -36,9 +36,8 @@ describe('schema', () => {
             "type": "boolean",
           },
           "age": Object {
-            "_integer": true,
             "_optional": true,
-            "type": "number",
+            "type": "int",
           },
           "id": Object {
             "type": "string",

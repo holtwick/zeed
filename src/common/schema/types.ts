@@ -3,7 +3,7 @@
 export interface TypeProps {
 }
 
-export type TypeNames = 'string' | 'number' | 'boolean' | 'object' | 'any' | string // | 'null' | 'undefined' | 'symbol' | 'bigint'
+export type TypeNames = 'string' | 'number' | 'boolean' | 'int' | 'object' | 'any' | string // | 'null' | 'undefined' | 'symbol' | 'bigint'
 
 export interface Type<T = unknown> {
   type: TypeNames
@@ -12,7 +12,6 @@ export interface Type<T = unknown> {
   _default?: T | (() => T)
   _object?: SchemaDefinitionObject<Type<T>>
   _union?: Type[]
-  _integer?: boolean
 
   _check: (obj: any) => boolean
 

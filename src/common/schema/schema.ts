@@ -64,9 +64,10 @@ export function number<T = number>() {
   })
 }
 
+export const float = number
+
 export function int<T = number>() {
-  return generic<T>('number', {
-    _integer: true,
+  return generic<T>('int', {
     _check: isInteger,
   })
 }

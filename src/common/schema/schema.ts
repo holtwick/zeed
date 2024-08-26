@@ -1,4 +1,4 @@
-import { first, isBoolean, isFunction, isNumber, isObject, isString } from '../data'
+import { first, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data'
 import type { SchemaDefinitionObject, Type, TypeNames, TypeObject } from './types'
 
 // Helper
@@ -64,6 +64,13 @@ export function number<T = number>() {
   })
 }
 
+export function int<T = number>() {
+  return generic<T>('number', {
+    _integer: true,
+    _check: isInteger,
+  })
+}
+
 export function boolean<T = boolean>() {
   return generic<T>('boolean', {
     _check: isBoolean,
@@ -94,12 +101,6 @@ export function object<T extends SchemaDefinitionObject>(tobj: T): TypeObject<T>
       const result = fn.call(this as any, obj, this as any)
       if (result !== undefined)
         return result
-
-      // if (!isObject(obj))
-      //   return new Error('expected object input')
-      // if (!isObject(this._object))
-      //   return new Error('expected object definition')
-
       const newObj: any = {}
       if (obj) {
         for (const [key, info] of Object.entries(this._object ?? {})) {

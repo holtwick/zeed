@@ -12,6 +12,7 @@ export interface Type<T = unknown> {
   _default?: T | (() => T)
   _object?: SchemaDefinitionObject<Type<T>>
   _union?: Type[]
+  _integer?: boolean
 
   _check: (obj: any) => boolean
 

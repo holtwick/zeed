@@ -1,10 +1,20 @@
 import { cloneJsonObject } from '../data'
-import { boolean, float, int, literal, object, string, union } from './schema'
-import type { Infer } from './types'
+import type { Infer } from './schema'
+import { boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
+import type { Expect, IsEqual } from './test'
 
 describe('schema', () => {
   it('create schema', async () => {
+    // Literals
     type Status = 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
+    const lit = stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted'])
+    type ScheamLiterals = Infer<typeof lit>
+    type SchemaLiteralsTest = Expect<IsEqual<ScheamLiterals, Status>> // Should pass
+
+    // Tuple
+    const tup = tuple([number(), string(), boolean()])
+    type SchemaTuple = Infer<typeof tup> // expected [number, string, boolean]
+    type SchemaTupleTest = Expect<IsEqual<SchemaTuple, [number, string, boolean]>> // Should pass
 
     const schema = object({
       id: string().default(() => '123'),
@@ -12,19 +22,30 @@ describe('schema', () => {
       age: int().optional(),
       active: boolean(),
       // status: stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted']),
-      status: string<Status>(),
+      // status: string<Status>(),
       obj: object({
         test: float(),
       }).optional(),
+      lit,
     })
 
     type Schema = Infer<typeof schema>
+    type SchemaTest = Expect<IsEqual<Schema, {
+      id?: string | undefined
+      age?: number | undefined
+      obj?: {
+        test: number
+      } | undefined
+      name: string
+      active: boolean
+      lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
+    }>> // Should pass
 
     const sample: Schema = {
       name: 'Hello',
-      status: 'active',
       age: 42,
       active: true,
+      lit: 'past_due',
     }
 
     // const s: Status = sample.status
@@ -42,6 +63,9 @@ describe('schema', () => {
           "id": Object {
             "type": "string",
           },
+          "lit": Object {
+            "type": "string",
+          },
           "name": Object {
             "type": "string",
           },
@@ -54,9 +78,6 @@ describe('schema', () => {
             "_optional": true,
             "type": "object",
           },
-          "status": Object {
-            "type": "string",
-          },
         },
         "type": "object",
       }
@@ -67,8 +88,8 @@ describe('schema', () => {
         "active": true,
         "age": 42,
         "id": "123",
+        "lit": "past_due",
         "name": "Hello",
-        "status": "active",
       }
     `)
 
@@ -80,9 +101,9 @@ describe('schema', () => {
       Object {
         "active": "on",
         "age": 42,
+        "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
-        "status": "active",
       }
     `)
 
@@ -94,9 +115,9 @@ describe('schema', () => {
       Object {
         "active": "yes",
         "age": 42,
+        "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
-        "status": "active",
       }
     `)
 

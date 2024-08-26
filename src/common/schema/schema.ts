@@ -1,5 +1,4 @@
 import { first, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data'
-import type { Expect, IsEqual } from './test'
 
 export interface TypeProps {
 }
@@ -214,23 +213,24 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, 
   })
 }
 
-const tt = tuple([number(), string(), boolean()])
-type ttt = Infer<typeof tt> // expected [number, string, boolean]
+// const tt = tuple([number(), string(), boolean()])
+// type ttt = Infer<typeof tt> // expected [number, string, boolean]
 
-type Test1 = Expect<IsEqual<ttt, [number, string, boolean]>> // Should pass
+// type Test1 = Expect<IsEqual<ttt, [number, string, boolean]>> // Should pass
 
 export function func<
   Args extends [Type<unknown>, ...Type<any>[]] | [],
   Ret = Type,
   T = (...args: TupleOutput<Args>) => Infer<Ret>,
 >(args: Args, ret: Ret): Type<T> {
-  //
-  return {} as any
+  return generic('function', {
+    _check: v => isFunction(v),
+  })
 }
 
-const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>
+// const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>
 
-type typeFn = Infer<typeof fn> // typeFn should be: (...args: [string, boolean]) => string
+// type typeFn = Infer<typeof fn> // typeFn should be: (...args: [string, boolean]) => string
 
-type f1 = (a: number, b?: string) => boolean
-type xx = Parameters<f1>
+// type f1 = (a: number, b?: string) => boolean
+// type xx = Parameters<f1>

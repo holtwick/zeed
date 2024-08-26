@@ -1,6 +1,8 @@
 import { string } from './schema'
 import type { Infer, Type } from './types'
 
+// see https://github.com/colinhacks/zod?tab=readme-ov-file#functions
+
 describe('rpc.spec', () => {
   it('should do something', async () => {
     const rpcSchema = {

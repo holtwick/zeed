@@ -25,6 +25,8 @@ export interface Type<T = unknown> {
 
   _props?: TypeProps
   props: (props: TypeProps) => Type<T>
+
+  map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
 }
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never

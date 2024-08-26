@@ -26,6 +26,9 @@ function generic<T = any>(type: TypeNames, opt?: Partial<Type<T>>): Type<T> {
     parse(obj) {
       return preParse(obj, this as any)
     },
+    map(obj, fn) {
+      return fn.call(this, obj, this) ?? obj
+    },
     _check() {
       return true
     },
@@ -49,20 +52,20 @@ function generic<T = any>(type: TypeNames, opt?: Partial<Type<T>>): Type<T> {
 
 // Primitives
 
-export function string() {
-  return generic<string>('string', {
+export function string<T = string>() {
+  return generic<T>('string', {
     _check: isString,
   })
 }
 
-export function number() {
-  return generic<number>('number', {
+export function number<T = number>() {
+  return generic<T>('number', {
     _check: isNumber,
   })
 }
 
-export function boolean() {
-  return generic<boolean>('boolean', {
+export function boolean<T = boolean>() {
+  return generic<T>('boolean', {
     _check: isBoolean,
   })
 }
@@ -84,6 +87,26 @@ export function object<T extends SchemaDefinitionObject>(tobj: T): TypeObject<T>
         const value = info.parse((obj as any)[key])
         if (value !== undefined)
           newObj[key] = value
+      }
+      return newObj
+    },
+    map(obj, fn) {
+      const result = fn.call(this as any, obj, this as any)
+      if (result !== undefined)
+        return result
+
+      // if (!isObject(obj))
+      //   return new Error('expected object input')
+      // if (!isObject(this._object))
+      //   return new Error('expected object definition')
+
+      const newObj: any = {}
+      if (obj) {
+        for (const [key, info] of Object.entries(this._object ?? {})) {
+          const value = info.map((obj as any)[key], fn)
+          if (value !== undefined)
+            newObj[key] = value
+        }
       }
       return newObj
     },
@@ -114,3 +137,14 @@ export function literal<T extends Literal>(value: T): Type<T> {
     _check: v => v === value,
   })
 }
+
+// todo does not work yet
+export function stringLiterals<const T extends readonly string[], O = T[number]>(value: T): Type<O> {
+  return generic<O>('string', {
+    _check: v => value.includes(v),
+  })
+}
+
+// const x = stringLiterals(['a', 'b'])
+
+// type Status = typeof statusStrings[number]

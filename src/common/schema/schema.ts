@@ -1,5 +1,52 @@
 import { first, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data'
-import type { Type, TypeNames, TypeObject } from './types'
+import type { Expect, IsEqual } from './test'
+
+export interface TypeProps {
+}
+
+export type TypeNames = string
+
+export interface Type<T = unknown> {
+  type: TypeNames
+
+  _value?: T
+  _optional?: boolean
+  _default?: T | (() => T)
+  _object?: Record<string, Type>
+  _union?: Type[]
+
+  _check: (obj: any) => boolean
+
+  optional: () => Type<T | undefined>
+
+  // !!! this causes errors !!! No idea why yet!
+  // default: (value: T | (() => T)) => Type<T | undefined>
+  default: (value: any) => Type<T | undefined>
+
+  parse: (obj: any, opt?: { // todo obj: T ?
+    transform?: boolean
+    strict?: boolean
+  }) => T
+
+  _props?: TypeProps
+  props: (props: TypeProps) => Type<T>
+
+  map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
+}
+
+export type Infer<T> = T extends Type<infer TT> ? TT : never
+
+type ObjectFixOptional<T> = {
+  [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
+} & {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K] & {}
+}
+
+type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
+
+export type TypeObject<T = unknown> = Type<ObjectPretty<ObjectFixOptional<{
+  [K in keyof T]: Infer<T[K]>
+}>>>
 
 // Helper
 
@@ -21,7 +68,7 @@ function preParse<T>(obj: T, info: Type<T>): T {
   throw new Error('wrong value')
 }
 
-function generic<T = any>(type: TypeNames, opt?: Partial<Type<T>>): Type<T> {
+function generic<T>(type: TypeNames, opt?: Partial<Type<T>>): Type<T> {
   const info: Type<T> = {
     parse(obj) {
       return preParse(obj, this as any)
@@ -52,28 +99,28 @@ function generic<T = any>(type: TypeNames, opt?: Partial<Type<T>>): Type<T> {
 
 // Primitives
 
-export function string<T = string>() {
-  return generic<T>('string', {
+export function string() {
+  return generic<string>('string', {
     _check: isString,
   })
 }
 
-export function number<T = number>() {
-  return generic<T>('number', {
+export function number() {
+  return generic<number>('number', {
     _check: isNumber,
   })
 }
 
 export const float = number
 
-export function int<T = number>() {
-  return generic<T>('int', {
+export function int() {
+  return generic<number>('int', {
     _check: isInteger,
   })
 }
 
-export function boolean<T = boolean>() {
-  return generic<T>('boolean', {
+export function boolean() {
+  return generic<boolean>('boolean', {
     _check: isBoolean,
   })
 }
@@ -118,8 +165,7 @@ export function object<T>(tobj: T): TypeObject<T> {
 
 // Union
 
-type ExtractLiteral<T> = T extends Type<infer U> ? U : never
-type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? ExtractLiteral<U> : never
+type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
 
 export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnion<T>> {
   return generic<any>(first(options)?.type ?? 'any', {
@@ -140,13 +186,51 @@ export function literal<T extends Literal>(value: T): Type<T> {
   })
 }
 
-// todo does not work yet
 export function stringLiterals<const T extends readonly string[], O = T[number]>(value: T): Type<O> {
   return generic<O>('string', {
     _check: v => value.includes(v),
   })
 }
 
-// const x = stringLiterals(['a', 'b'])
+// Function
 
-// type Status = typeof statusStrings[number]
+type TupleOutput<T extends Type[]> = {
+  [K in keyof T]: T[K] extends Type<infer U> ? U : never;
+}
+
+type ArrayOutput<Head extends Type[], Rest extends Type | undefined> = [
+  ...TupleOutput<Head>,
+  ...(Rest extends Type ? Infer<Rest>[] : []),
+]
+
+type ArrayType<
+  Head extends Type[] = Type[],
+  Rest extends Type | undefined = Type | undefined,
+> = Type<ArrayOutput<Head, Rest>>
+
+export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, undefined> {
+  return generic('tuple', {
+    _check: v => items.every((item, i) => item._check(v[i])),
+  })
+}
+
+const tt = tuple([number(), string(), boolean()])
+type ttt = Infer<typeof tt> // expected [number, string, boolean]
+
+type Test1 = Expect<IsEqual<ttt, [number, string, boolean]>> // Should pass
+
+export function func<
+  Args extends [Type<unknown>, ...Type<any>[]] | [],
+  Ret = Type,
+  T = (...args: TupleOutput<Args>) => Infer<Ret>,
+>(args: Args, ret: Ret): Type<T> {
+  //
+  return {} as any
+}
+
+const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>
+
+type typeFn = Infer<typeof fn> // typeFn should be: (...args: [string, boolean]) => string
+
+type f1 = (a: number, b?: string) => boolean
+type xx = Parameters<f1>

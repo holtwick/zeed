@@ -1,4 +1,4 @@
-import type { Type } from './types'
+import type { Type } from './schema'
 
 export function isSchemaObject(schema: Type<any>): boolean {
   return schema._object != null

@@ -1,10 +1,10 @@
 import { assert } from '../assert'
 import { objectMap, valueToInteger } from '../data'
 import { fromCamelCase, toCamelCase } from '../data/camelcase'
-import type { Type } from './types'
+import type { Type } from './schema'
 import { isSchemaObjectFlat } from './utils'
 
-declare module './types' {
+declare module './schema' {
   interface TypeProps {
     argShort?: string
     argDesc?: string

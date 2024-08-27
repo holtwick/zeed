@@ -1,4 +1,4 @@
-import { parseSchemaEnv } from './env'
+import { parseSchemaEnv, stringFromSchemaEnv } from './env'
 import { boolean, number, object, string } from './schema'
 
 describe('env.spec', () => {
@@ -44,6 +44,12 @@ describe('env.spec', () => {
         "ServiceName": "generic",
         "servicePort": 9999,
       }
+    `)
+
+    expect(stringFromSchemaEnv(schema, 'APP_', true)).toMatchInlineSnapshot(`
+      "# APP_SERVICE_NAME=generic
+      # APP_SERVICE_PORT=80
+      # APP_SERVICE_FLAG=true"
     `)
   })
 })

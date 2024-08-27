@@ -1,6 +1,6 @@
 import { assert } from '../assert'
 import { objectFilter, objectMap, valueToBoolean, valueToBooleanNotFalse, valueToInteger } from '../data'
-import { toCamelCase } from '../data/camelcase'
+import { fromCamelCase, toCamelCase } from '../data/camelcase'
 import type { Type } from './schema'
 import { isSchemaObjectFlat } from './utils'
 
@@ -34,4 +34,16 @@ export function parseSchemaEnv<T>(schema: Type<T>, env: any = process?.env ?? {}
     }
     return schema.parse(value)
   }) as T
+}
+
+export function stringFromSchemaEnv<T>(schema: Type<T>, prefix = '', commentOut = false): string {
+  assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
+
+  const lines: string[] = []
+
+  objectMap(schema._object!, (key, schema) => {
+    lines.push(`${commentOut ? '# ' : ''}${prefix + fromCamelCase(key, '_').toUpperCase()}=${schema._default ?? ''}`)
+  }) as T
+
+  return lines.join('\n')
 }

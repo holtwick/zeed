@@ -5,21 +5,30 @@ export interface TypeProps {
 
 export type TypeNames = string
 
+// export interface TypeAssert {
+//   fn: (obj: any) => boolean | never
+//   message?: string
+// }
+
 export interface Type<T = unknown> {
   type: TypeNames
 
-  _value?: T
-  _optional?: boolean
-  _default?: T | (() => T)
+  // _value?: T
   _object?: Record<string, Type>
   _union?: Type[]
 
   _check: (obj: any) => boolean
 
+  // _asserts?: TypeAssert[]
+  // assert: (fn: (obj:any)=> boolean, message?:string) => Type<T>
+
+  _optional?: boolean
   optional: () => Type<T | undefined>
 
   // !!! this causes errors !!! No idea why yet!
   // default: (value: T | (() => T)) => Type<T | undefined>
+
+  _default?: T | (() => T)
   default: (value: any) => Type<T | undefined>
 
   parse: (obj: any, opt?: { // todo obj: T ?

@@ -38,3 +38,5 @@ function number(): Type<number> {
 
 const tt = tuple([number(), string(), boolean()])
 type ttt = Infer<typeof tt> // expected [number, string, boolean]
+
+//

@@ -169,6 +169,40 @@ describe('emitter', () => {
     expect(counter).toBe(100)
   })
 
+  it('should work with addEventListener', async () => {
+    interface TestMessages {
+      a: () => void
+      b: () => void
+    }
+
+    const e1 = new Emitter<TestMessages>()
+    const e2 = new Emitter<TestMessages>()
+
+    let counter = 99
+
+    e1.addEventListener('a', () => counter++)
+
+    e2.addEventListener('a', () => counter--)
+    e2.addEventListener('b', () => counter--)
+
+    void e1.emit('a')
+
+    expect(counter).toBe(100)
+
+    void e2.emit('a')
+    void e2.emit('b')
+
+    expect(counter).toBe(98)
+
+    e1.addEventListener('a', () => counter++)
+    void e1.emit('a') // twice!
+    expect(counter).toBe(100)
+
+    e1.removeAllListeners()
+    void e1.emit('a') // no listeners!
+    expect(counter).toBe(100)
+  })
+
   it('should wait on', async () => {
     expect.assertions(2)
 

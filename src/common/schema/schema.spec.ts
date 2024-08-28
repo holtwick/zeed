@@ -68,6 +68,7 @@ describe('schema', () => {
             "type": "int",
           },
           "id": Object {
+            "_default": "123",
             "type": "string",
           },
           "lit": Object {

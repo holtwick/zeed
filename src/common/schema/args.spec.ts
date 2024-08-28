@@ -1,4 +1,5 @@
 import { helpSchemaArgs, parseSchemaArgs } from './args'
+import type { Infer } from './schema'
 import { boolean, number, object } from './schema'
 
 describe('args.spec', () => {
@@ -12,6 +13,9 @@ describe('args.spec', () => {
         argDesc: 'Shows help',
       }),
     })
+
+    type t = Infer<typeof schema>
+    expectTypeOf<t>().toMatchTypeOf<any>()
 
     const args = ['test.txt', '-h', '--some-stuff=8888']
 

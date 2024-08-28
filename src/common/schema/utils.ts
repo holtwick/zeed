@@ -17,5 +17,5 @@ export function isSchemaPrimitive(schema: Type<any>): boolean {
 }
 
 export function isSchemaObjectFlat(schema: Type<any>): boolean {
-  return isSchemaObject(schema) && Object.values(schema._object!).every(isSchemaPrimitive)
+  return isSchemaObject(schema) && Object.values(schema._object!).every(isSchemaPrimitive as any) // todo
 }

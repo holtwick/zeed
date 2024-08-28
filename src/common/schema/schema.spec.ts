@@ -10,14 +10,21 @@ describe('schema', () => {
     const lit = stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted'])
     type ScheamLiterals = Infer<typeof lit>
     type SchemaLiteralsTest = Expect<IsEqual<ScheamLiterals, Status>> // Should pass
+    expectTypeOf<ScheamLiterals>().toMatchTypeOf<Status>()
 
     // Tuple
     const tup = tuple([number(), string(), boolean()])
     type SchemaTuple = Infer<typeof tup> // expected [number, string, boolean]
     type SchemaTupleTest = Expect<IsEqual<SchemaTuple, [number, string, boolean]>> // Should pass
+    expectTypeOf<SchemaTuple>().toMatchTypeOf<[number, string, boolean]>()
+
+    const s1 = string().optional() // .pattern(/\d+/)
+    type t1a = typeof s1
+    type t1 = Infer<typeof s1>
+    expectTypeOf<t1>().toMatchTypeOf<string | undefined>()
 
     const schema = object({
-      id: string().default(() => '123'),
+      id: string().default('123'), // default(() => '123'),
       name: string(),
       age: int().optional(),
       active: boolean(),
@@ -157,17 +164,6 @@ describe('schema', () => {
             "type": "string",
           },
           "name": Object {
-            "_union": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "string",
-              },
-            ],
             "type": "string",
           },
         },

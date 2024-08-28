@@ -168,6 +168,10 @@ export class Emitter<
       }, timeoutMS)
     })
   }
+
+  // For compatibility reasons
+  addEventListener = this.on.bind(this)
+  removeEventListener = this.off.bind(this)
 }
 
 declare global {

@@ -29,14 +29,14 @@ class TypeClass<T = unknown> implements Type<T> {
 
   _optional?: boolean
 
-  optional() {
+  optional(): TypeClass<T | undefined> { // todo keep the inherited class type
     this._optional = true
     return this
   }
 
   _default?: T
 
-  default(value: any) {
+  default(value: any): TypeClass<T | undefined> { // todo keep the inherited class type
     this._default = value
     return this
   }
@@ -81,11 +81,22 @@ function generic<T>(type: string, opt?: Partial<Type<T>>): Type<T> {
 
 // Primitives
 
-export function string() {
-  return generic<string>('string', {
-    _check: isString,
-  })
+class TypeStringClass<T extends string> extends TypeClass<T> {
+  pattern(rx: RegExp) {
+    // this.ass
+    return this
+  }
 }
+
+export function string() {
+  return new TypeStringClass<string>('string', isString)
+}
+
+// export function string() {
+//   return generic<string>('string', {
+//     _check: isString,
+//   })
+// }
 
 export function number() {
   return generic<number>('number', {

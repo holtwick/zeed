@@ -8,7 +8,11 @@ export interface TypeProps {
 //   message?: string
 // }
 
-interface Type<T = unknown> {
+export interface Type<T = unknown> {
+  _default?: T
+  _optional?: boolean
+  _props?: TypeProps
+  _object?: T
   readonly type: string
   readonly _check: (obj: any) => boolean
   optional: () => Type<T | undefined>
@@ -18,7 +22,7 @@ interface Type<T = unknown> {
   props: (props: TypeProps) => Type<T>
 }
 
-class TypeClass<T = unknown> implements Type<T> {
+export abstract class TypeClass<T = unknown> implements Type<T> {
   readonly type
   readonly _check
 
@@ -26,6 +30,8 @@ class TypeClass<T = unknown> implements Type<T> {
     this.type = name
     this._check = check ?? (() => true)
   }
+
+  _object?: T
 
   _optional?: boolean
 
@@ -75,8 +81,11 @@ export type Infer<T> = T extends Type<infer TT> ? TT : never
 
 // Helper
 
+class TypeGeneric<T> extends TypeClass<T> {
+}
+
 function generic<T>(type: string, opt?: Partial<Type<T>>): Type<T> {
-  return new TypeClass<T>(type, opt?._check)
+  return new TypeGeneric<T>(type, opt?._check)
 }
 
 // Primitives
@@ -128,16 +137,18 @@ type ObjectFixOptional<T> = {
 
 type ObjectPretty<V> = Extract<{ [K in keyof V]: V[K] }, unknown>
 
-export type TypeObject<T = unknown> = Type<ObjectPretty<ObjectFixOptional<{
+export type InferObject<T> = ObjectPretty<ObjectFixOptional<{
   [K in keyof T]: Infer<T[K]>
-}>>>
+}>>
 
-class TypeObjectClass<T, O = TypeObject<T>> extends TypeClass<O> {
-  _object: T
+// interface TypeObject<T = unknown> extends Type<T> {
+//   _object: T
+// }
 
+export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
   constructor(obj: T) {
     super('object', () => true)
-    this._object = obj
+    this._object = obj as any
   }
 
   parse(obj: any) {
@@ -172,15 +183,9 @@ class TypeObjectClass<T, O = TypeObject<T>> extends TypeClass<O> {
   }
 }
 
-export function object<T>(tobj: T): TypeObject<T> {
+export function object<T>(tobj: T): Type<InferObject<T>> {
   return new TypeObjectClass(tobj) as any
 }
-
-const x = object({
-  name: string(),
-})
-
-type xt = Infer<typeof x>
 
 // Union
 

@@ -44,6 +44,11 @@ if (isBrowser || isPreview) {
       './src/browser/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       './src/common/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
+    exclude: [
+      '**/_archive/**',
+      '**/demos/**',
+      '**/docs/**',
+    ],
     browser: {
       enabled: true,
       name: browserName,

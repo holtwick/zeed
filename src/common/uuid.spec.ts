@@ -214,7 +214,25 @@ describe('uuid', () => {
     expect(uuidEncode(b62)).toEqual('78MQbFaILcblSYA7WS2OGE')
 
     const uv4 = uuidEncodeV4(b62)
-    expect(uv4).toEqual('ea6de673-5bf7-c3d3-77ff9ddc41b81abe')
+    expect(uv4).toEqual('ea6de673-5bf7-c3d3-77ff-9ddc41b81abe')
     expect(uuidDecodeV4(uv4)).toEqual(b62)
+  })
+
+  it('should generate a valid UUIDv4', () => {
+    const uuid = uuidv4()
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    expect(uuid).toMatch(uuidRegex)
+  })
+
+  it('should encode Uint8Array to UUIDv4 format', () => {
+    const bytes = new Uint8Array([234, 109, 230, 115, 91, 247, 195, 211, 119, 255, 157, 220, 65, 184, 26, 190])
+    const encoded = uuidEncodeV4(bytes)
+    expect(encoded).toEqual('ea6de673-5bf7-c3d3-77ff-9ddc41b81abe')
+  })
+
+  it('should decode UUIDv4 to Uint8Array', () => {
+    const uuid = 'ea6de673-5bf7-c3d3-77ff-9ddc41b81abe'
+    const decoded = uuidDecodeV4(uuid)
+    expect(decoded).toEqual(new Uint8Array([234, 109, 230, 115, 91, 247, 195, 211, 119, 255, 157, 220, 65, 184, 26, 190]))
   })
 })

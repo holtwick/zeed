@@ -52,7 +52,7 @@ export const uuidv4 = function () {
 
 export function uuidEncodeV4(bytes: Uint8Array): string {
   const id = toHex(bytes)
-  return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(16)}` // 10000000 - 1000 - 4000 - 8000 - 100000000000
+  return `${id.slice(0, 8)}-${id.slice(8, 12)}-${id.slice(12, 16)}-${id.slice(16, 20)}-${id.slice(20)}` // 10000000 - 1000 - 4000 - 8000 - 100000000000
 }
 
 export function uuidDecodeV4(uuid: string): Uint8Array {

@@ -30,10 +30,6 @@ function callDisposer(disposable: Disposer): Promise<void> | void {
     result = disposable.dispose()
   else if (isPromise(disposable.dispose))
     result = disposable.dispose
-  // else if (typeof disposable.cleanup === 'function')
-  //   result = disposable.cleanup()
-  // else if (isPromise(disposable.cleanup))
-  //   result = disposable.cleanup
 
   if (isPromise(result))
     return result
@@ -44,8 +40,7 @@ export interface UseDisposeConfig {
   log?: LoggerInterface
 }
 
-export function useDispose(config?: string | UseDisposeConfig | LoggerInterface) {
-  let opt = config as any
+export function useDispose(opt?: string | UseDisposeConfig | LoggerInterface) {
   if (opt != null) {
     if (isString(opt))
       opt = { name: opt }

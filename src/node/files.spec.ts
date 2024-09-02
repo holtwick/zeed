@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { files, walkSync } from './files'
 
 describe('files.spec', () => {
@@ -46,6 +47,43 @@ describe('files.spec', () => {
         "files-async.spec.ts",
         "files.spec.ts",
         "filestorage.spec.ts",
+      ]
+    `)
+  })
+
+  it('should fetch some subfolders', async () => {
+    const basePath = resolve(__dirname, '..')
+    expect(basePath).toMatchInlineSnapshot(`"/Users/dirk/work/github-zeed/src"`)
+
+    const result = files({
+      basePath,
+      pattern: '*/log-*.ts',
+    })
+
+    expect(result).toMatchInlineSnapshot(`
+      Array [
+        "browser/log/log-browser-factory.ts",
+        "browser/log/log-browser.ts",
+        "browser/log/log-colors.ts",
+        "browser/log/log-context-browser.ts",
+        "common/log/log-base.ts",
+        "common/log/log-colors.ts",
+        "common/log/log-config.ts",
+        "common/log/log-console-capture.ts",
+        "common/log/log-console-original.ts",
+        "common/log/log-console.ts",
+        "common/log/log-context.ts",
+        "common/log/log-filter.spec.ts",
+        "common/log/log-filter.ts",
+        "common/log/log-memory.spec.ts",
+        "common/log/log-memory.ts",
+        "node/log/log-context-node.ts",
+        "node/log/log-file.spec.ts",
+        "node/log/log-file.ts",
+        "node/log/log-node.spec.ts",
+        "node/log/log-node.ts",
+        "node/log/log-util.spec.ts",
+        "node/log/log-util.ts",
       ]
     `)
   })

@@ -53,7 +53,7 @@ describe('files.spec', () => {
 
   it('should fetch some subfolders', async () => {
     const basePath = resolve(__dirname, '..')
-    expect(basePath).toMatchInlineSnapshot(`"/Users/dirk/work/github-zeed/src"`)
+    expect(basePath).not.toBeNull()
 
     const result = files({
       basePath,

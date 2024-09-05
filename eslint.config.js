@@ -9,6 +9,9 @@ export default antfu(
   },
   {},
   {
-    rules: eslintRulesDefaults(),
+    rules: {
+      ...eslintRulesDefaults(),
+      'unicorn/consistent-function-scoping': 'off',
+    },
   },
 )

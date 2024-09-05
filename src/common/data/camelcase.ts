@@ -7,6 +7,7 @@ kebab-case
 PascalCase // I won't be using this here, but it's only one small step further if you want to use it
 */
 
+/// Convert a string to camelCase from snake_case, kebab-case or pascalCase
 export function toCamelCase(s: string) {
   // if only capital letters, convert to lower case
   if (s.length > 0) {
@@ -25,10 +26,12 @@ export function toCamelCase(s: string) {
   return s
 }
 
+/// Capitalize the first letter of a string.
 export function toCapitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.toLowerCase().slice(1)
 }
 
+/// Capitalize the first letter of each word in a string.
 export function toCapitalizeWords(s: string) {
   return s.replace(/\w\S*/g, toCapitalize)
 }
@@ -41,6 +44,7 @@ export function toCapitalizeWords(s: string) {
 //     .replace(/\s+/g, "")
 // }
 
+/// Convert a string from camelCase to snake_case or kebab-case
 export function fromCamelCase(str: string, separator = '-') {
   separator = typeof separator === 'undefined' ? '_' : separator
   return str

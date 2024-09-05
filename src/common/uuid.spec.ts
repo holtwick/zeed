@@ -20,7 +20,7 @@ describe('uuid', () => {
   })
 
   it('should not have collisions', () => {
-    const list = Array.apply(null, Array(100)).map(uuid)
+    const list = Array.apply(null, Array.from({ length: 100 })).map(uuid)
     while (list.length) {
       const id = list.pop()
       expect(id?.length).toBe(22)
@@ -29,7 +29,7 @@ describe('uuid', () => {
   })
 
   it('should not have collisions v4', () => {
-    const list = Array.apply(null, Array(100)).map(uuidv4)
+    const list = Array.apply(null, Array.from({ length: 100 })).map(uuidv4)
     while (list.length) {
       const id = list.pop()
       expect(id?.length).toBe(36)

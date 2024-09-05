@@ -31,7 +31,7 @@ export function getGlobal(): any {
     : typeof global !== 'undefined'
       ? global
       // eslint-disable-next-line no-new-func
-      : Function('return this;')()
+      : new Function('return this;')()
 }
 
 /** @deprecated */

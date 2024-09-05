@@ -49,17 +49,13 @@ export class LocalStorage<T = Json> implements ObjectStorage<T> {
   }
 
   clear(): void {
-    Object.keys(localStorage)
-      .filter(key => key.startsWith(this.prefix))
-      .forEach((key) => {
-        localStorage.removeItem(key)
-      })
+    Object.keys(localStorage).filter(key => key.startsWith(this.prefix)).forEach((key) => {
+      localStorage.removeItem(key)
+    })
   }
 
   allKeys(): string[] {
     const prefixLength = this.prefix.length
-    return Object.keys(localStorage)
-      .filter(key => key.startsWith(this.prefix))
-      .map(key => key.substr(prefixLength))
+    return Object.keys(localStorage).filter(key => key.startsWith(this.prefix)).map(key => key.substr(prefixLength))
   }
 }

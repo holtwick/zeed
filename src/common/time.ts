@@ -4,6 +4,21 @@
 export function getTimestamp(): number {
   return Date.now()
 }
+
+/**
+ * @returns Timestamp in seconds
+ */
+export function getTimestampInSeconds(): number {
+  return Math.floor(Date.now() / 1000)
+}
+
+/**
+ * @returns Timestamp in seconds
+ */
+export function dateFromSeconds(ts: number): Date {
+  return new Date(ts * 1000)
+}
+
 // typeof performance !== "undefined" ? performance.now() : new Date().getTime()
 
 export function formatMilliseconds(ms: number): string {

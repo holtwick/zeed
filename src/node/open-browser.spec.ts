@@ -15,7 +15,7 @@ describe('openBrowser', () => {
   it('should open URL on macOS', () => {
     vi.mocked(platform).mockReturnValue('darwin')
     openBrowser('http://example.com')
-    expect(exec).toHaveBeenCalledWith('open http://example.com')
+    expect(exec).toHaveBeenCalledWith('open -u http://example.com')
   })
 
   it('should open URL on Windows', () => {

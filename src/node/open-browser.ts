@@ -5,7 +5,7 @@ import { platform } from 'node:os'
 export function openBrowser(url: string) {
   switch (platform()) {
     case 'darwin':
-      exec(`open ${url}`)
+      exec(`open -u ${url}`)
       break
     case 'win32':
       exec(`start ${url}`)

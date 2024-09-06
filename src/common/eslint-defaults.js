@@ -24,7 +24,7 @@ export function eslintIgnoreDefaults() {
   ]
 }
 
-// https://eslint.org/docs/latest/rules/
+/// Very much opiniated ESLint setting! Details to rules see https://eslint.org/docs/latest/rules/
 export function eslintRulesDefaults() {
   return {
     'unused-imports/no-unused-vars': 'off',
@@ -44,6 +44,8 @@ export function eslintRulesDefaults() {
       ImportDeclaration: 'never',
       // ExportDeclaration: 'always'
     }],
+
+    'unicorn/consistent-function-scoping': 'off',
   }
 }
 

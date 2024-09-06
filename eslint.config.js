@@ -11,7 +11,6 @@ export default antfu(
   {
     rules: {
       ...eslintRulesDefaults(),
-      'unicorn/consistent-function-scoping': 'off',
     },
   },
 )

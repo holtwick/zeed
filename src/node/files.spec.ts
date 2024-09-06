@@ -32,6 +32,8 @@ describe('files.spec', () => {
         "log/log-node.ts",
         "log/log-util.spec.ts",
         "log/log-util.ts",
+        "open-browser.spec.ts",
+        "open-browser.ts",
       ]
     `)
   })

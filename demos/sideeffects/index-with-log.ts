@@ -1,5 +1,5 @@
 import type { LoggerInterface } from 'zeed'
-import { Logger, arrayUnion } from 'zeed'
+import { arrayUnion, Logger } from 'zeed'
 
 const log: LoggerInterface = Logger('test')
 

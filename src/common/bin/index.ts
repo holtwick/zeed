@@ -1,9 +1,9 @@
+import type { BinInput } from '../data/bin'
 import type { Encoder } from '../msg/encoder'
 import { assertCondition } from '../assert'
-import type { BinInput } from '../data/bin'
 import { toUint8Array } from '../data/bin'
-import { createBinEncoder, encodeToUint8Array, length, writeAny, writeFloat32, writeUint16, writeUint32, writeUint8, writeUint8Array, writeVarInt, writeVarString, writeVarUint, writeVarUint8Array } from './lib0/encoding'
-import { createDecoder, readAny, readFloat32, readUint16, readUint32, readUint8, readUint8Array, readVarInt, readVarString, readVarUint, readVarUint8Array } from './lib0/decoding'
+import { createDecoder, readAny, readFloat32, readUint8, readUint8Array, readUint16, readUint32, readVarInt, readVarString, readVarUint, readVarUint8Array } from './lib0/decoding'
+import { createBinEncoder, encodeToUint8Array, length, writeAny, writeFloat32, writeUint8, writeUint8Array, writeUint16, writeUint32, writeVarInt, writeVarString, writeVarUint, writeVarUint8Array } from './lib0/encoding'
 
 // Use in Zeed channels
 

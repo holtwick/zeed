@@ -2,7 +2,7 @@
 
 import { rmSync, statSync, unlinkSync } from 'node:fs'
 import { sleep } from '../../common/exec/promise'
-import { DefaultLogger, LogLevelAll, getGlobalLogger } from '../../common/log'
+import { DefaultLogger, getGlobalLogger, LogLevelAll } from '../../common/log'
 import { LoggerFileHandler } from './log-file'
 
 describe('log File', () => {

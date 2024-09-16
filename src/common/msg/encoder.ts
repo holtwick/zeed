@@ -1,5 +1,5 @@
 import { decrypt, encrypt } from '../crypto'
-import { Uint8ArrayToJson, jsonToUint8Array } from '../data/bin'
+import { jsonToUint8Array, Uint8ArrayToJson } from '../data/bin'
 
 export interface Encoder<T = any> {
   encode: (data: T) => Promise<Uint8Array>

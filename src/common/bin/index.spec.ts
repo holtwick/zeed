@@ -1,5 +1,5 @@
-import { Uint8ArrayToHexDump, equalBinary, toHex } from '..'
 import { bitfield, createBinaryStreamDecoder, createBinaryStreamEncoder, encodeJson } from '.'
+import { equalBinary, toHex, Uint8ArrayToHexDump } from '..'
 
 describe('encoder', () => {
   it('should write a stream', () => {

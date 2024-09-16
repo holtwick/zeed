@@ -1,8 +1,8 @@
 import type { UseDisposeConfig } from './dispose-defer'
-import { useDispose } from './dispose-defer'
 import type { DisposerFunction } from './dispose-types'
-import { promisify } from './exec'
 import type { LoggerInterface } from './log/log-base'
+import { useDispose } from './dispose-defer'
+import { promisify } from './exec/promise'
 
 export type TimerExecFunction = () => void | Promise<void>
 

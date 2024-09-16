@@ -27,6 +27,9 @@ export function eslintIgnoreDefaults() {
 /// Very much opiniated ESLint setting! Details to rules see https://eslint.org/docs/latest/rules/
 export function eslintRulesDefaults() {
   return {
+    // for some old third party code a `eslint-disable` does wonders :)
+    'eslint-comments/no-unlimited-disable': 'off',
+
     'unused-imports/no-unused-vars': 'off',
     'ts/no-unsafe-assignment': 'off',
     'ts/no-unsafe-return': 'off',
@@ -36,6 +39,7 @@ export function eslintRulesDefaults() {
     'ts/restrict-template-expressions': 'off',
     'ts/no-misused-promises': 'off',
 
+    // await / async
     // 'ts/no-floating-promises': 'error',
     // 'ts/require-await': 'error',
 

@@ -1,5 +1,5 @@
-import { func, object, string } from './schema'
 import type { Infer } from './schema'
+import { func, object, string } from './schema'
 
 // see https://github.com/colinhacks/zod?tab=readme-ov-file#functions
 

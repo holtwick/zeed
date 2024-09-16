@@ -1,4 +1,4 @@
-import type { LogHandlerOptions, LogLevel, LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
+import type { LoggerInterface, LogHandlerOptions, LogLevel, LogLevelAliasType } from '../../common/log/log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelOff, LogLevelWarn } from '../../common/log/log-base'
 import { browserSelectColorByName } from '../../common/log/log-colors'
 import { getGlobalConsole } from '../../common/log/log-console-original'

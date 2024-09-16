@@ -1,4 +1,4 @@
-import type { LogMessage, LoggerInterface } from './log-base'
+import type { LoggerInterface, LogMessage } from './log-base'
 import { LogLevelAll } from './log-base'
 import { LoggerContext } from './log-context'
 import { LoggerMemoryHandler } from './log-memory'

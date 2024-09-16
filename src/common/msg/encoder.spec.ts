@@ -1,5 +1,5 @@
-import { deriveKeyPbkdf2, randomUint8Array } from '..'
 import { CryptoEncoder, JsonEncoder } from '.'
+import { deriveKeyPbkdf2, randomUint8Array } from '..'
 
 describe('encoder', () => {
   it('should encode json', async () => {

@@ -1,6 +1,6 @@
 import type { DisposerFunction } from '../dispose-types'
 import { getGlobalContext } from '../global'
-import { DefaultLogger } from '../log'
+import { DefaultLogger } from '../log/log'
 import { safeTimeout } from '../timeout'
 
 export type EmitterHandler = (...objs: any[]) => void

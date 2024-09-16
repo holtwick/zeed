@@ -1,6 +1,6 @@
 import { decodeJson, encodeJson } from '../bin'
-import { cloneObject } from '../data'
 import { useStringHashPool } from '../data/string-hash-pool'
+import { cloneObject } from '../data/utils'
 import { sleep } from '../exec/promise'
 import { createLocalChannelPair } from '../msg/channel-local'
 import { useRPC, useRPCHub } from './rpc'

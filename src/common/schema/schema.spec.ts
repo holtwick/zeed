@@ -1,7 +1,7 @@
-import { cloneJsonObject } from '../data'
 import type { Infer } from './schema'
-import { boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 import type { Expect, IsEqual } from './test'
+import { cloneJsonObject } from '../data'
+import { boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {

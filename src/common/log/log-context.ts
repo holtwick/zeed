@@ -1,5 +1,5 @@
+import type { LoggerContextInterface, LoggerInterface, LogHandler, LogLevel, LogLevelAliasType, LogMessage } from './log-base'
 import { isNotNull } from '../data/is'
-import type { LogHandler, LogLevel, LogLevelAliasType, LogMessage, LoggerContextInterface, LoggerInterface } from './log-base'
 import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo, LogLevelWarn } from './log-base'
 import { LoggerConsoleHandler } from './log-console'
 import { parseLogLevel, useNamespaceFilter } from './log-filter'

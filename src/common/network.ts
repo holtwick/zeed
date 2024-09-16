@@ -1,7 +1,11 @@
-import { arrayFlatten, deepMerge, isArray, jsonStringifySafe, toBase64 } from './data'
-import { encodeQuery } from './data/url'
-import { DefaultLogger } from './log'
 import type { Json } from './types'
+import { arrayFlatten } from './data/array'
+import { toBase64 } from './data/bin'
+import { deepMerge } from './data/deep'
+import { isArray } from './data/is'
+import { jsonStringifySafe } from './data/json'
+import { encodeQuery } from './data/url'
+import { DefaultLogger } from './log/log'
 
 // TODO: Abort signal https://codedrivendevelopment.com/posts/everything-about-abort-signal-timeout
 

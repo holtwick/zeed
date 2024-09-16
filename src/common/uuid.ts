@@ -1,6 +1,6 @@
 import { randomUint8Array } from './crypto'
-import { fromHex, toHex } from './data'
 import { decodeBase32, decodeBase62, encodeBase32, encodeBase62 } from './data/basex'
+import { fromHex, toHex } from './data/bin'
 import { getTimestamp } from './time'
 
 // 128 bit UUID

@@ -1,6 +1,6 @@
-import { objectPlain } from '../data'
-import { getTimestamp } from '../time'
 import type { LogHandler, LogHandlerOptions, LogMessage, LogMessageCompact } from './log-base'
+import { objectPlain } from '../data/object'
+import { getTimestamp } from '../time'
 import { useLevelFilter, useNamespaceFilter } from './log-filter'
 
 export function logMessageFromCompact(m: LogMessageCompact): LogMessage {

@@ -1,4 +1,6 @@
-import { escapeRegExp, isArray, isBoolean, isRecord, jsonStringifySafe } from './data'
+import { isArray, isBoolean, isRecord } from './data/is'
+import { jsonStringifySafe } from './data/json'
+import { escapeRegExp } from './data/regexp'
 
 const defaultSeparator = ','
 

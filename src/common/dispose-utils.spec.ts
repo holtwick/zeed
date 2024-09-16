@@ -1,6 +1,6 @@
 import { vi as jest } from 'vitest'
-import { useDisposeWithUtils, useEventListener, useTimeout } from './dispose-utils'
 import { polyfillUsing } from './dispose-defer'
+import { useDisposeWithUtils, useEventListener, useTimeout } from './dispose-utils'
 
 describe('useTimeout', () => {
   it('should call the provided function after the specified timeout', () => {

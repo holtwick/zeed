@@ -1,7 +1,7 @@
+import type { MessageDefinitions } from './messages'
 import { deriveKeyPbkdf2, randomUint8Array } from '../crypto'
 import { createLocalChannelPair } from './channel-local'
 import { CryptoEncoder } from './encoder'
-import type { MessageDefinitions } from './messages'
 import { useMessageHub } from './messages'
 
 interface TestMessages1 extends MessageDefinitions {

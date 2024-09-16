@@ -1,5 +1,5 @@
+import type { LoggerContextInterface, LoggerInterface, LogLevelAliasType } from './log-base'
 import { getGlobalContext } from '../global'
-import type { LogLevelAliasType, LoggerContextInterface, LoggerInterface } from './log-base'
 import { LoggerConsoleHandler } from './log-console'
 import { getGlobalConsole } from './log-console-original'
 import { LoggerContext } from './log-context'

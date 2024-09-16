@@ -1,9 +1,9 @@
-import { isString } from './data'
-import { arrayFilterInPlace } from './data/array'
 import type { Disposer, DisposerFunction } from './dispose-types'
-import { isPromise } from './exec/promise'
-import { DefaultLogger } from './log'
 import type { LoggerInterface } from './log/log-base'
+import { arrayFilterInPlace } from './data/array'
+import { isString } from './data/is'
+import { isPromise } from './exec/promise'
+import { DefaultLogger } from './log/log'
 
 export function polyfillUsing() {
   try {

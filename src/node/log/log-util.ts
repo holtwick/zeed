@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import process from 'node:process'
-import { isNotNull } from '../../common'
+import { isNotNull } from '../../common/data/is'
 
 export function getStackLlocationList(stack: string): string[] {
   if (typeof stack !== 'string')

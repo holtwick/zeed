@@ -2,7 +2,7 @@
 import { createApp } from 'vue'
 
 // import { Logger } from 'zeed'
-import { Logger, LoggerConsoleHandler, getGlobalLogger } from '../../../src/index.browser'
+import { getGlobalLogger, Logger, LoggerConsoleHandler } from '../../../src/index.browser'
 import App from './App.vue'
 
 if (!localStorage.zeed) {

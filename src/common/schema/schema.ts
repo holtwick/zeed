@@ -1,4 +1,7 @@
-import { first, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data'
+// With many, many inspiration from https://github.com/badrap/valita MIT License as of 2024-09-10
+
+import { isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
+import { first } from '../data/utils'
 
 export interface TypeProps {
 }

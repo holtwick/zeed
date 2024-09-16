@@ -1,11 +1,11 @@
-import { mkdirSync, readFileSync, readdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import type { Json, ObjectStorage } from '../common/types'
 import { Buffer } from 'node:buffer'
+import { mkdirSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { jsonStringifySafe } from '../common/data/json'
 import { toValidFilename } from '../common/data/path'
 import { cloneObject } from '../common/data/utils'
-import type { Json, ObjectStorage } from '../common/types'
 
 export interface FileStorageOptions {
   pretty?: boolean

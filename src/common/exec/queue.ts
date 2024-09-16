@@ -1,7 +1,7 @@
 // Can learn from here https://github.com/sindresorhus/p-queue
 
-import { DefaultLogger } from '../log'
-import type { LogLevel, LoggerInterface } from '../log/log-base'
+import type { LoggerInterface, LogLevel } from '../log/log-base'
+import { DefaultLogger } from '../log/log'
 import { LogLevelOff } from '../log/log-base'
 import { Emitter } from '../msg/emitter'
 import { uname } from '../uuid'

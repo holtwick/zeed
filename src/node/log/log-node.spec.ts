@@ -1,4 +1,4 @@
-import { DefaultLogger, LogLevelAll, getGlobalLogger } from '../../common/log'
+import { DefaultLogger, getGlobalLogger, LogLevelAll } from '../../common/log'
 import { LoggerNodeHandler, loggerStackTraceDebug } from './log-node'
 
 describe('log-node', () => {

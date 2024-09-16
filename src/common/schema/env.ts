@@ -1,7 +1,8 @@
-import { assert } from '../assert'
-import { objectFilter, objectMap, valueToBoolean, valueToBooleanNotFalse, valueToInteger } from '../data'
-import { fromCamelCase, toCamelCase } from '../data/camelcase'
 import type { Type } from './schema'
+import { assert } from '../assert'
+import { fromCamelCase, toCamelCase } from '../data/camelcase'
+import { valueToBoolean, valueToBooleanNotFalse, valueToInteger } from '../data/convert'
+import { objectFilter, objectMap } from '../data/object'
 import { isSchemaObjectFlat } from './utils'
 
 // declare module './types' {

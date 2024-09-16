@@ -1,5 +1,5 @@
-import { cloneObject } from '../data/utils'
 import type { Json, ObjectStorage } from '../types'
+import { cloneObject } from '../data/utils'
 
 // const log = Logger('zeed:memstorage', 'error')
 

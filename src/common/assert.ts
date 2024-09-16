@@ -1,4 +1,4 @@
-import { getGlobalLoggerIfExists } from './log'
+import { getGlobalLoggerIfExists } from './log/log'
 
 /** Always throws. */
 export function fatal(...messages: any[]): never {

@@ -26,7 +26,7 @@
  * ```
  */
 
-import { BIT7, BIT8, BITS31, BITS6, BITS7, BITS8 } from './binary'
+import { BIT7, BIT8, BITS6, BITS7, BITS8, BITS31 } from './binary'
 import { createUint8ArrayViewFromArrayBuffer } from './create'
 import { encodeUtf8, getUtf8TextEncoder } from './string'
 

@@ -1,10 +1,10 @@
+import type { LoggerInterface, LogLevelAliasType } from '../../common/log/log-base'
+import type { LogConfig } from '../../common/log/log-config'
 import process from 'node:process'
 import { valueToBoolean } from '../../common/data/convert'
-import type { LogConfig } from '../../common/log/log-config'
 import { getGlobalLogger } from '../../common/log/log'
-import type { LogLevelAliasType, LoggerInterface } from '../../common/log/log-base'
-import { toPath } from '../env'
 import { _LoggerFromConfig } from '../../common/log/log-config'
+import { toPath } from '../env'
 import { LoggerFileHandler } from './log-file'
 import { LoggerNodeHandler } from './log-node'
 

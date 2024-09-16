@@ -1,9 +1,9 @@
-import { DefaultLogger } from '../log'
-import { uname } from '../uuid'
 import type { Channel } from './channel'
 import type { DefaultListener, ListenerSignature } from './emitter'
-import { Emitter } from './emitter'
 import type { Encoder } from './encoder'
+import { DefaultLogger } from '../log/log'
+import { uname } from '../uuid'
+import { Emitter } from './emitter'
 import { JsonEncoder } from './encoder'
 
 interface PubSubConfig {

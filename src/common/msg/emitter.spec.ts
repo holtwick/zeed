@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
-import { sleep, waitOn } from '../exec/promise'
 import { getSecureRandomIfPossible } from '../data/math'
+import { sleep, waitOn } from '../exec/promise'
 import { Emitter, getGlobalEmitter } from './emitter'
 
 declare global {
@@ -31,7 +31,7 @@ function lazyListener(
     const ev = { key, obj }
     // debug(name, "  lazy push", ev)
     events.push(ev)
-    // eslint-disable-next-line ts/no-unused-expressions
+
     lazyResolve && lazyResolve()
   }
 

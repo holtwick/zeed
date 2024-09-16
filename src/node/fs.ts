@@ -1,7 +1,9 @@
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname, join as joinPath, normalize } from 'node:path'
 import process from 'node:process'
-import { isUint8Array, jsonStringifySorted, toUint8Array } from '../common'
+import { toUint8Array } from '../common/data/bin'
+import { isUint8Array } from '../common/data/is'
+import { jsonStringifySorted } from '../common/data/json'
 
 /** Try to use `~` for HOME folder if possible */
 export function toHumanReadableFilePath(path: string) {

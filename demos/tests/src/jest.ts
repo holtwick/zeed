@@ -2,9 +2,9 @@
 /* eslint-disable no-console */
 /* eslint-disable eqeqeq */
 
-import { format } from 'pretty-format'
 import { fn } from 'jest-mock'
-import { Logger, deepEqual, isPromise } from '../../../src/index.browser'
+import { format } from 'pretty-format'
+import { deepEqual, isPromise, Logger } from '../../../src/index.browser'
 
 const log = Logger('zeed:jest')
 

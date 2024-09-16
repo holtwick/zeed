@@ -1,8 +1,8 @@
 // Inspired by https://developer.apple.com/documentation/foundation/progress
 
+import { arrayRemoveElement } from '../data/array'
 import { useDispose } from '../dispose-defer'
-import { arrayRemoveElement } from '../data'
-import { Emitter } from '../msg'
+import { Emitter } from '../msg/emitter'
 import { uname } from '../uuid'
 
 interface ProgressOptions {

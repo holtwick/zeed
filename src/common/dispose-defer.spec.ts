@@ -1,6 +1,6 @@
-import { DefaultLogger } from './log'
 import { useDefer, useDispose } from './dispose-defer'
 import { sleep } from './exec'
+import { DefaultLogger } from './log'
 
 const log = DefaultLogger('dispose-test')
 

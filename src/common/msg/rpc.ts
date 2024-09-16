@@ -1,9 +1,9 @@
 // From https://github.com/antfu/birpc/blob/main/src/index.ts MIT
 
 import type { UseStringHashPool } from '../data/string-hash-pool'
-import { createPromise } from '../exec/promise'
 import type { LoggerInterface } from '../log/log-base'
 import type { Pipe } from './pipe'
+import { createPromise } from '../exec/promise'
 
 export type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
 export type ReturnType<T> = T extends (...args: any) => infer R ? R : never

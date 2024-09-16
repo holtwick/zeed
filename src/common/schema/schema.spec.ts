@@ -1,7 +1,7 @@
-import { cloneJsonObject } from '../data'
 import type { Infer } from './schema'
-import { boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 import type { Expect, IsEqual } from './test'
+import { cloneJsonObject } from '../data'
+import { boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -180,5 +180,22 @@ describe('schema', () => {
       }
     `)
     // expect(schema.parse({} as any)).toBe()
+  })
+
+  it('union with object', async () => {
+    const obj = union([
+      object({ subscription: literal(true), subscriptionId: string() }),
+      object({ subscription: literal(false), licenseId: string() }),
+    ])
+    type Schema = Infer<typeof obj>
+    type SchemaExpected = {
+      subscription: true
+      subscriptionId: string
+    } | {
+      subscription: false
+      licenseId: string
+    }
+    type _SchemaTest = Expect<IsEqual<Schema, SchemaExpected>> // Should pass
+    expectTypeOf<Schema>().toMatchTypeOf<SchemaExpected>()
   })
 })

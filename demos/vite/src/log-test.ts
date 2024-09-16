@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import type { LogMessage } from '../../../src/common'
-import { LogLevelAll, LoggerMemoryHandler, getGlobalLogger, logCaptureConsole } from '../../../src/common'
+import { getGlobalLogger, logCaptureConsole, LoggerMemoryHandler, LogLevelAll } from '../../../src/common'
 import { Logger } from '../../../src/index.browser'
 
 export function logTest() {

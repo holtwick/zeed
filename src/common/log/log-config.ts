@@ -1,5 +1,5 @@
+import type { LoggerInterface, LogLevelAliasType } from './log-base'
 import { isNumber, isString } from '../data/is'
-import type { LogLevelAliasType, LoggerInterface } from './log-base'
 
 /**
  * Simple log configuration for use in modular scenarios.

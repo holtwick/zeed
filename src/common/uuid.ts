@@ -1,6 +1,6 @@
 import { randomUint8Array } from './crypto'
 import { decodeBase32, decodeBase62, encodeBase32, encodeBase62 } from './data/basex'
-import { fromHex, toHex } from './data/bin'
+import { fromHex, toHex, toUint8Array, Uint8ArrayToString } from './data/bin'
 import { getTimestamp } from './time'
 
 // 128 bit UUID
@@ -139,13 +139,21 @@ const mapModes = {
     uuidDecode: uuidDecodeV4,
     uuidEncode: uuidEncodeV4,
   },
+  test: {
+    uuid: () => uname('test'),
+    uuidDecode: (id: string) => toUint8Array(id),
+    uuidEncode: (bin: Uint8Array) => Uint8ArrayToString(bin),
+  },
 }
 
 let _mode: keyof typeof mapModes = 'base62'
 let _sorted = false
 
-export function setUuidDefaultEncoding(mode: keyof typeof mapModes, sorted = false) {
-  _mode = mode
+export function setUuidDefaultEncoding(mode?: keyof typeof mapModes, sorted = false) {
+  if (mode === 'test')
+    unameReset('test')
+
+  _mode = mode ?? 'base62'
   _sorted = sorted
 }
 
@@ -181,6 +189,10 @@ export function uname(name = 'id'): string {
     _unameCounters[name] = 0
 
   return `${name}-${_unameCounters[name]++}`
+}
+
+export function unameReset(name = 'id') {
+  _unameCounters[name] = 0
 }
 
 let _qid = 0

@@ -2,17 +2,19 @@
 
 import { useBase } from './data/basex'
 import { sleep } from './exec/promise'
-import { suid, suidBytesDate, suidDate, uname, uuid, uuid32bit, uuidB32, uuidBytes, uuidDecode, uuidDecodeB32, uuidDecodeV4, uuidEncode, uuidEncodeB32, uuidEncodeV4, uuidv4 } from './uuid'
+import { setUuidDefaultEncoding, suid, suidBytesDate, suidDate, uname, uuid, uuid32bit, uuidB32, uuidBytes, uuidDecode, uuidDecodeB32, uuidDecodeV4, uuidEncode, uuidEncodeB32, uuidEncodeV4, uuidv4 } from './uuid'
 
 describe('uuid', () => {
   // beforeAll(() => setUuidDefaultEncoding('base32'))
 
   it('should not certain length', () => {
+    setUuidDefaultEncoding()
     expect(uuid().length).toBe(22)
     expect(uuidB32().length).toBe(26)
   })
 
   it('should encode/decode', () => {
+    setUuidDefaultEncoding()
     const us = uuid()
     const ub = uuidDecode(us)
     expect(ub.length).toBe(16)
@@ -20,6 +22,7 @@ describe('uuid', () => {
   })
 
   it('should not have collisions', () => {
+    setUuidDefaultEncoding()
     const list = Array.apply(null, Array.from({ length: 100 })).map(uuid)
     while (list.length) {
       const id = list.pop()
@@ -29,6 +32,7 @@ describe('uuid', () => {
   })
 
   it('should not have collisions v4', () => {
+    setUuidDefaultEncoding()
     const list = Array.apply(null, Array.from({ length: 100 })).map(uuidv4)
     while (list.length) {
       const id = list.pop()
@@ -172,6 +176,7 @@ describe('uuid', () => {
   })
 
   it('should encode / decode 62', () => {
+    setUuidDefaultEncoding()
     const bytes = uuidBytes()
     const b62 = uuidEncode(bytes)
     expect(b62).toHaveLength(22)
@@ -179,6 +184,7 @@ describe('uuid', () => {
   })
 
   it('should encode / decode 62 from string', () => {
+    setUuidDefaultEncoding()
     const id = uuid()
     expect(id).toHaveLength(22)
     const b62 = uuidDecode(id)
@@ -187,6 +193,7 @@ describe('uuid', () => {
   })
 
   it('should encode / decode 62 by example', () => {
+    setUuidDefaultEncoding()
     const id = '78MQbFaILcblSYA7WS2OGE'
     expect(id).toHaveLength(22)
     const b62 = uuidDecode(id)
@@ -234,5 +241,15 @@ describe('uuid', () => {
     const uuid = 'ea6de673-5bf7-c3d3-77ff-9ddc41b81abe'
     const decoded = uuidDecodeV4(uuid)
     expect(decoded).toEqual(new Uint8Array([234, 109, 230, 115, 91, 247, 195, 211, 119, 255, 157, 220, 65, 184, 26, 190]))
+  })
+
+  it('should use test uuid', () => {
+    setUuidDefaultEncoding('test')
+    expect(uuid()).toEqual('test-0')
+    expect(uuid()).toEqual('test-1')
+
+    setUuidDefaultEncoding('test')
+    expect(uuid()).toEqual('test-0')
+    expect(uuid()).toEqual('test-1')
   })
 })

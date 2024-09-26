@@ -1,5 +1,5 @@
 import { sleep } from './exec'
-import { dateFromSeconds, datetimeToLocal, datetimeToUTC, duration, formatMilliseconds, getPerformanceTimestamp, getTimestamp, getTimestampInSeconds, parseDate } from './time'
+import { dateFromSeconds, datetimeToLocal, datetimeToUTC, duration, formatMilliseconds, getPerformanceTimestamp, getTimestamp, getTimestampInSeconds, parseDate, timestampMillisecondsToSeconds, timestampSecondsToMilliseconds } from './time'
 
 describe('time.spec', () => {
   it('should measure', async () => {
@@ -84,5 +84,29 @@ describe('time.spec', () => {
     const date = new Date('2022-01-01T12:00:00')
     const utcDate = datetimeToUTC(date)
     expect(utcDate).toEqual(new Date('2022-01-01T12:00:00Z'))
+  })
+
+  it('should convert milliseconds to seconds', () => {
+    const ts = 1609459200000 // 2021-01-01T00:00:00.000Z
+    const result = timestampMillisecondsToSeconds(ts)
+    expect(result).toBe(1609459200)
+  })
+
+  it('should log a warning if the timestamp is already in seconds', () => {
+    const ts = 1609459200
+    const result = timestampMillisecondsToSeconds(ts)
+    expect(result).toBe(1609459200)
+  })
+
+  it('should convert seconds to milliseconds', () => {
+    const ts = 1609459200 // 2021-01-01T00:00:00Z
+    const result = timestampSecondsToMilliseconds(ts)
+    expect(result).toBe(1609459200000)
+  })
+
+  it('should log a warning if the timestamp is already in milliseconds', () => {
+    const ts = 1609459200000
+    const result = timestampMillisecondsToSeconds(ts)
+    expect(result).toBe(1609459200)
   })
 })

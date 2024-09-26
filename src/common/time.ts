@@ -110,3 +110,38 @@ export function datetimeToUTC(fromDate: Date): Date {
     fromDate.getMilliseconds(),
   ))
 }
+
+/** ms -> s with simple check */
+export function timestampMillisecondsToSeconds(ts: number) {
+  if (ts <= 0)
+    return 0
+  if (ts < 1000000000000) {
+    return ts
+    // log.warn('Timestamp might already be in seconds?', ts)
+  }
+  return Math.floor(ts / 1000)
+}
+
+/** s -> ms with simple check */
+export function timestampSecondsToMilliseconds(ts: number) {
+  if (ts <= 0)
+    return 0
+  if (ts > 1000000000000) {
+    return ts
+    // log.warn('Timestamp might already be in milliseconds?', ts)
+  }
+  return Math.floor(ts * 1000)
+}
+
+export const TIME_YEAR_MS = 31536000000 // 365 * 24 * 60 * 60 * 1000
+export const TIME_YEAR_S = 31536000 // 365 * 24 * 60 * 60
+export const TIME_MONTH_MS = 2592000000 // 30 * 24 * 60 * 60 * 1000
+export const TIME_MONTH_S = 2592000 // 30 * 24 * 60 * 60
+export const TIME_WEEK_MS = 604800000 // 7 * 24 * 60 * 60 * 1000
+export const TIME_WEEK_S = 604800 // 7 * 24 * 60 * 60
+export const TIME_DAY_MS = 86400000 // 24 * 60 * 60 * 1000
+export const TIME_DAY_S = 86400 // 24 * 60 * 60
+export const TIME_HOUR_MS = 3600000 // 60 * 60 * 1000
+export const TIME_HOUR_S = 3600 // 60 * 60
+export const TIME_MINUTE_MS = 60000 // 60 * 1000
+export const TIME_MINUTE_S = 60 // 60

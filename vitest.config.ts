@@ -1,6 +1,6 @@
-import type { UserConfig } from 'vitest'
 /// <reference types="vitest" />
-/* eslint-disable no-console */
+
+import type { UserConfig } from 'vitest'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { defineConfig } from 'vite'

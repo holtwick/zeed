@@ -56,7 +56,7 @@ export function uuidEncodeV4(bytes: Uint8Array): string {
 }
 
 export function uuidDecodeV4(uuid: string): Uint8Array {
-  return fromHex(uuid.replaceAll('-', ''))
+  return fromHex(uuid.replace(/-/g, ''))
 }
 
 // Sortable UID

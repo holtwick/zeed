@@ -71,17 +71,17 @@
   "devDependencies": {
     "@antfu/eslint-config": "^3.7",
     "@antfu/ni": "^0.23.0",
-    "@types/node": "^22.7.2",
+    "@types/node": "^22.7.5",
     "@vitejs/plugin-vue": "^5.1.4",
-    "@vitest/browser": "^2.1.1",
-    "@vitest/coverage-v8": "^2.1.1",
+    "@vitest/browser": "^2.1.2",
+    "@vitest/coverage-v8": "^2.1.2",
     "esbuild": "^0.24.0",
     "eslint": "^9",
-    "playwright": "^1.47.2",
+    "playwright": "^1.48.0",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.2",
+    "typescript": "^5.6.3",
     "vite": "^5.4.8",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.2"
   },
   "pnpm": {
     "overrides": {

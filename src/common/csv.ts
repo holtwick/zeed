@@ -44,17 +44,17 @@ export function csvParse(raw: string, opt: {
   // eslint-disable-next-line regexp/no-unused-capturing-group, regexp/no-super-linear-backtracking, regexp/no-dupe-disjunctions, regexp/no-useless-non-capturing-group
   let rxOneValueWithSeparator = /("((?:(?:[^"]*?)(?:"")?)*)"|([^,;\t\n]*))([,;\t\n]|\r\n)/g
   if (opt.separator)
-    rxOneValueWithSeparator = new RegExp(rxOneValueWithSeparator.source.replaceAll(',;\\t', escapeRegExp(opt.separator)), rxOneValueWithSeparator.flags)
+    rxOneValueWithSeparator = new RegExp(rxOneValueWithSeparator.source.replace(/',;\\t/g, escapeRegExp(opt.separator)), rxOneValueWithSeparator.flags)
 
   const lines: any[][] = []
   let row: any[] = []
   let m: any
-  const text = `${raw.replaceAll('\r\n', '\n').trim()}\n`
+  const text = `${raw.replace(/\r\n/g, '\n').trim()}\n`
 
   // eslint-disable-next-line no-cond-assign
   while (m = rxOneValueWithSeparator.exec(text)) {
     let value = m[2] ?? m[3] ?? ''
-    value = value.replaceAll('""', '"')
+    value = value.replace(/""/g, '"')
     row.push(value)
     if (m[4] === '\n') {
       lines.push(row)

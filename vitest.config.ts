@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import type { UserConfig } from 'vitest'
+import type { UserConfig } from 'vitest/node'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { defineConfig } from 'vite'

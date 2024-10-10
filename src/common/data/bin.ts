@@ -117,7 +117,7 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
     sb = btoa(s)
   }
   if (stripPadding)
-    return sb.replaceAll('=', '')
+    return sb.replace(/\=/g, '')
   return sb
 }
 
@@ -125,16 +125,16 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
 export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
-    return Buffer.from(bytes).toString('base64url').replaceAll('=', '')
+    return Buffer.from(bytes).toString('base64url').replace(/\=/g, '')
   let s = ''
   for (let i = 0; i < bytes.byteLength; i++)
     s += String.fromCharCode(bytes[i])
-  return btoa(s).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '')
 }
 
 /** Also parses toBase64Url encoded strings. */
 export function fromBase64(s: string): Uint8Array {
-  s = s.replaceAll('-', '+').replaceAll('_', '/')
+  s = s.replace(/\-/g, '+').replace(/\_/g, '/')
   if (typeof Buffer !== 'undefined') {
     const buf = Buffer.from(s, 'base64')
     return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength)

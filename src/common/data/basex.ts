@@ -225,10 +225,10 @@ export function encodeBase32(bin: BinInput, padding = -1) {
 export function decodeBase32(s: string, padding = -1) {
   return useBase(32).decode(s
     .toLocaleLowerCase()
-    .replaceAll('l', '1')
-    .replaceAll('s', '5')
-    .replaceAll('o', '0')
-    .replaceAll('i', '1'), padding)
+    .replace(/l/g, '1')
+    .replace(/s/g, '5')
+    .replace(/o/g, '0')
+    .replace(/i/g, '1'), padding)
 }
 
 export function encodeBase16(bin: BinInput, padding = -1) {

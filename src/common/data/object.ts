@@ -26,7 +26,7 @@ export function objectFilter<T = any>(
 ): Partial<T> {
   if (!isObject(obj))
     return {}
-  return Object.fromEntries(Object.entries(obj).filter(([k,v]) => fn(k,v))) as any
+  return Object.fromEntries(Object.entries(obj).filter(([k, v]) => fn(k, v))) as any
 }
 
 /** Merge right into left object. If dispose is defined, it will be combined. Left can be a complex object i.e. a insantiated class. */
@@ -136,7 +136,7 @@ export function objectPlain(obj: any, opt?: {
         name: obj.name,
         message: obj.message,
         stack: errorTrace ? obj.stack : undefined,
-        cause: obj.cause ? String(obj.cause) : undefined,
+        cause: (obj as any).cause ? String((obj as any).cause) : undefined,
       }
     }
     // return `${obj.name || 'Error'}: ${obj.message}${errorTrace ? `\n${obj.stack}` : ''}`
@@ -160,7 +160,7 @@ export function objectPlain(obj: any, opt?: {
         // __code: obj.toString ? obj.toString() : undefined,
       }
       for (const k in obj) {
-        if (Object.hasOwn(obj, k) && isPrimitive(obj[k]))
+        if (obj && obj.hasOwnProperty(k) && isPrimitive(obj[k]))
           nobj[k] = obj[k]
       }
       return nobj

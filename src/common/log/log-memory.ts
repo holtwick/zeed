@@ -35,7 +35,7 @@ export function LoggerMemoryHandler(
     const m = objectPlain(msg, {
       maxDepth,
       errorTrace,
-      keepAsIs: v => v instanceof Error,
+      keepAsIs: v => (v instanceof Error) || (typeof ErrorEvent !== 'undefined' && v instanceof ErrorEvent),
     })
 
     if (compact === true)

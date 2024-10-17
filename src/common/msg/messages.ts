@@ -153,8 +153,7 @@ export function useMessageHub(
             await postMessage({ id, result })
         }
         catch (error) {
-          const err
-            = error instanceof Error ? error : new Error(valueToString(error))
+          const err = error instanceof Error ? error : new Error(valueToString(error))
           log.warn('execution error', err.name)
           await postMessage({
             id,

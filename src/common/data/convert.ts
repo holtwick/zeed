@@ -106,6 +106,9 @@ export function formatMessages(
     if (obj && typeof obj === 'object') {
       if (pretty && (obj instanceof Uint8Array || obj instanceof ArrayBuffer))
         return `\n${Uint8ArrayToHexDump(obj)}\n`
+      if (typeof ErrorEvent !== 'undefined' && obj instanceof ErrorEvent) {
+        obj = obj.error
+      }
       if (obj instanceof Error) {
         if (!trace)
           return `${obj.name || 'Error'}: ${obj.message}`

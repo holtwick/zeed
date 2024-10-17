@@ -32,7 +32,11 @@ export function LoggerMemoryHandler(
 
     msg.timestamp ??= getTimestamp()
 
-    const m = objectPlain(msg, { maxDepth, errorTrace })
+    const m = objectPlain(msg, {
+      maxDepth,
+      errorTrace,
+      keepAsIs: v => v instanceof Error,
+    })
 
     if (compact === true)
       (messages as LogMessageCompact[]).push([m.timestamp, m.level, m.name, ...m.messages])

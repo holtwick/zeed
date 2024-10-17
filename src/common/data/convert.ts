@@ -1,4 +1,5 @@
 import { Uint8ArrayToHexDump } from './bin'
+import { objectPlain } from './object'
 
 // import { jsonStringify } from './json'
 
@@ -111,6 +112,7 @@ export function formatMessages(
         return `${obj.name || 'Error'}: ${obj.message}\n${obj.stack}`
       }
       try {
+        obj = objectPlain(obj)
         return pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj)
       }
       catch (err) {}

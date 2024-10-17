@@ -130,13 +130,37 @@ export function objectPlain(obj: any, opt?: {
     if (obj instanceof Set || isBinaryArray(obj))
       obj = Array.from(obj as any)
 
+    if (typeof ErrorEvent !== 'undefined' && obj instanceof ErrorEvent) {
+      return {
+        __class: 'ErrorEvent',
+        message: obj.message,
+        filename: obj.filename,
+        lineno: obj.lineno,
+        colno: obj.colno,
+        error: obj.error ? handleObject(obj.error, depth + 1) : undefined,
+      }
+    }
+
+    if (obj instanceof Event) {
+      return {
+        __class: 'Event',
+        type: obj.type,
+        eventPhase: obj.eventPhase,
+        bubbles: obj.bubbles,
+        cancelable: obj.cancelable,
+        defaultPrevented: obj.defaultPrevented,
+        composed: obj.composed,
+        timeStamp: obj.timeStamp,        
+      }
+    }
+
     if (obj instanceof Error) {
       return {
         __class: 'Error',
         name: obj.name,
         message: obj.message,
         stack: errorTrace ? obj.stack : undefined,
-        cause: (obj as any).cause ? String((obj as any).cause) : undefined,
+        cause: (obj as any).cause ? String((obj as any).cause) : undefined,        
       }
     }
     // return `${obj.name || 'Error'}: ${obj.message}${errorTrace ? `\n${obj.stack}` : ''}`

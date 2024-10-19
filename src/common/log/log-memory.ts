@@ -16,9 +16,10 @@ export function LoggerMemoryHandler(
     errorTrace?: boolean
     limit?: number
     maxDepth?: number
+    keepAsIs?: (v: any) => boolean
   },
 ): LogHandler {
-  const { level = undefined, filter = undefined, compact = false, messages = [], errorTrace = false, maxDepth = 20 } = opt
+  const { level = undefined, filter = undefined, compact = false, messages = [], errorTrace = false, maxDepth = 20, keepAsIs } = opt
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)
 
@@ -35,7 +36,7 @@ export function LoggerMemoryHandler(
     const m = objectPlain(msg, {
       maxDepth,
       errorTrace,
-      keepAsIs: v => (v instanceof Error) || (typeof ErrorEvent !== 'undefined' && v instanceof ErrorEvent),
+      keepAsIs, // : v => (v instanceof Error) || (typeof ErrorEvent !== 'undefined' && v instanceof ErrorEvent),
     })
 
     if (compact === true)

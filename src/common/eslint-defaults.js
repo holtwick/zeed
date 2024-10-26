@@ -61,7 +61,7 @@ export function eslintDefaults(opt) {
   return {
     vue: true,
     typescript: true,
-    // regexp: false,
+    regexp: true,
 
     ...rest,
 

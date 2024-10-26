@@ -45,17 +45,17 @@ export type RPCReturn<RemoteFunctions> = {
 
 let rpcCounter = 1
 
-enum RPCMode {
+export enum RPCMode {
   request = 1,
   event = 2,
   resolve = 3,
   reject = 4,
 }
 
-type RPCMessage = [
-  RPCMode,
-  number,
-  string | number | any,
+export type RPCMessage = [
+  mode: RPCMode,
+  id: number,
+  method: string | number | any,
   ...any,
 ]
 

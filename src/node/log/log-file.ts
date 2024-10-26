@@ -2,7 +2,7 @@ import type { LogHandlerOptions, LogMessage } from '../../common/log/log-base'
 import { createWriteStream, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import process from 'node:process'
-import { renderMessages } from '../../common/data/convert'
+import { renderMessages } from '../../common/data/message'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 

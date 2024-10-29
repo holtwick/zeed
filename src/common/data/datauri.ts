@@ -1,3 +1,4 @@
+import { blobToArrayBuffer } from '../bin'
 import { fromBase64, toBase64 } from './bin'
 
 export function dataUriToUint8Array(dataUri: string): Uint8Array | undefined {
@@ -18,7 +19,7 @@ export function dataUriToBlob(dataUri: string): Blob | undefined {
 }
 
 export async function blobToDataUri(blob: Blob): Promise<string | undefined> {
-  const bin = await blob.arrayBuffer()
+  const bin = await blobToArrayBuffer(blob)
   if (bin)
     return `data:${blob.type},${toBase64(bin)}`
 }

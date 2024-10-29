@@ -95,22 +95,25 @@ export function bitfield(bitfield = 0) {
 // Cast
 
 export async function blobToArrayBuffer(blob: Blob | File): Promise<ArrayBuffer | undefined> {
-  return await blob.arrayBuffer()
-  // try {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       const reader = new FileReader()
-  //       reader.onloadend = () => resolve(reader.result as ArrayBuffer)
-  //       reader.onerror = err => reject(err)
-  //       reader.onabort = err => reject(err)
-  //       reader.readAsArrayBuffer(blob)
-  //     }
-  //     catch (err) {
-  //       reject(err)
-  //     }
-  //   })
-  // }
-  // catch (err) {}
+  if (blob.arrayBuffer)
+    return await blob.arrayBuffer()
+
+  // Fallback for older browsers
+  try {
+    return new Promise((resolve, reject) => {
+      try {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result as ArrayBuffer)
+        reader.onerror = err => reject(err)
+        reader.onabort = err => reject(err)
+        reader.readAsArrayBuffer(blob)
+      }
+      catch (err) {
+        reject(err)
+      }
+    })
+  }
+  catch (err) {}
 }
 
 export async function blobToUint8Array(blob: Blob | File): Promise<Uint8Array | undefined> {

@@ -25,17 +25,17 @@ export function isFunction(obj: unknown): obj is Function {
 }
 
 export function isBinaryArray<T>(obj: unknown): obj is T {
-  return obj instanceof Uint8Array
-    || obj instanceof Uint8ClampedArray
-    || obj instanceof Uint16Array
-    || obj instanceof Uint32Array
-    || obj instanceof Int8Array
-    || obj instanceof Int16Array
-    || obj instanceof Int32Array
-    || obj instanceof Float32Array
-    || obj instanceof Float64Array
-    || obj instanceof BigInt64Array
-    || obj instanceof BigUint64Array
+  return (typeof Uint8Array !== 'undefined' &&  obj instanceof Uint8Array)
+    || (typeof Uint8ClampedArray !== 'undefined' &&  obj instanceof Uint8ClampedArray)
+    || (typeof Uint16Array !== 'undefined' &&  obj instanceof Uint16Array)
+    || (typeof Uint32Array !== 'undefined' &&  obj instanceof Uint32Array)
+    || (typeof Int8Array !== 'undefined' &&  obj instanceof Int8Array)
+    || (typeof Int16Array !== 'undefined' &&  obj instanceof Int16Array)
+    || (typeof Int32Array !== 'undefined' &&  obj instanceof Int32Array)
+    || (typeof Float32Array !== 'undefined' &&  obj instanceof Float32Array)
+    || (typeof Float64Array !== 'undefined' &&  obj instanceof Float64Array)
+    || (typeof BigInt64Array !== 'undefined' &&  obj instanceof BigInt64Array)
+    || (typeof BigUint64Array !== 'undefined' &&  obj instanceof BigUint64Array)
 }
 
 /** Something like number, string, boolean */

@@ -1,6 +1,6 @@
 // From https://v2.dinerojs.com/docs/api/formatting/to-unit MIT
 
-import { arraySum } from './array'
+import { sum } from './math'
 
 export type RoundingMode = (value: number) => number
 
@@ -73,7 +73,7 @@ export function roundArrayOfNumbersToMatchSum(ipt: number[], max = 100, decimalP
   const out: number[] = []
   out.fill(0, length)
 
-  const total = arraySum(iptPercents)
+  const total = sum(iptPercents)
 
   if (total !== 0) {
     const powDecimalPlaces = 10 ** decimalPlaces

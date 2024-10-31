@@ -32,8 +32,8 @@ export function dayToDate(day: DayValue, utc = false): Date {
     ? new Date(`${dayToString(day)}T00:00:00.000Z`)
     : new Date(
       day / 10000, // year
-      ((day / 100) % 100) - 1, // month
-      day % 100, // day
+      Math.max(0, ((day / 100) % 100) - 1), // month
+      Math.max(1, day % 100), // day
     )
 }
 
@@ -109,6 +109,7 @@ export function dayToString(day: DayValue, sep = '-') {
   )
 }
 
+/// Day value from parts, returns undefined if invalid
 export function dayFromParts(
   year: number,
   month = 1,
@@ -119,6 +120,7 @@ export function dayFromParts(
   return year * 10000 + month * 100 + day
 }
 
+/// Day value from string, returns undefined if invalid
 export function dayFromString(value: string): DayValue | undefined {
   const string = String(value)
     .replace(/\D/g, '')

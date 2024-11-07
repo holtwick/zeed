@@ -1,5 +1,6 @@
 export * from './array'
 export * from './basex'
+export * from './basex-secure'
 export * from './bin'
 export * from './camelcase'
 export * from './convert'

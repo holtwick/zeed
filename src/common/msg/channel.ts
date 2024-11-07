@@ -14,7 +14,7 @@ export interface ChannelMessageEvent<T = any> {
  * http://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel
  * https://deno.com/deploy/docs/runtime-broadcast-channel
  */
-export abstract class Channel<T = any> extends Emitter<{
+export abstract class Channel<T = any, ContextType = Record<string, any>> extends Emitter<{
   message: (event: ChannelMessageEvent<T>) => void
   messageerror: (event: ChannelMessageEvent<T>) => void // optional
   connect: () => void // optional
@@ -22,6 +22,10 @@ export abstract class Channel<T = any> extends Emitter<{
   close: () => void
 }> {
   id: string = uuid()
+
+  // Put you own channel context here
+  context: ContextType = {} as ContextType
+
   abstract isConnected?: boolean
   abstract postMessage(data: T): void
 

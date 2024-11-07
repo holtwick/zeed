@@ -108,4 +108,14 @@ describe('baseX', () => {
     expect(encode(buf)).toBe('o1y89')
     expect(decode('o1y89')).toEqual(new Uint8Array([1, 9, 0, 255]))
   })
+
+  // it('should do the same as atob and btoa', () => {
+  //   const { encode, decode } = useBase(64)
+  //   const str = 'Hello, World!'
+  //   const bin = new TextEncoder().encode(str)
+  //   expect(encode(bin)).toBe('SGVsbG8sIFdvcmxkIQ==')
+  //   expect(btoa(str)).toBe('SGVsbG8sIFdvcmxkIQ==')
+  //   expect(encode(bin)).toBe(btoa(str))
+  //   expect(decode(btoa(str))).toEqual(bin)
+  // })
 })

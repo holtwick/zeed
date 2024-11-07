@@ -2,7 +2,7 @@
 /* eslint-disable no-control-regex */
 /* eslint-disable prefer-spread */
 
-import { base64, base64nopad, base64urlnopad } from './basex-secure'
+import { base64, base64nopad, base64urlnopad, str } from './basex-secure'
 import { jsonStringifySafe } from './json'
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]
@@ -110,30 +110,21 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
   let sb = ''
   if (typeof Buffer !== 'undefined') {
     sb = Buffer.from(bytes).toString('base64')
-  } else if (typeof btoa !== 'undefined') {
-    let s = ''
-    for (let i = 0; i < bytes.byteLength; i++)
-      s += String.fromCharCode(bytes[i])
-    sb = btoa(s)
-  } else {
+    if (stripPadding)
+      return sb.replace(/\=/g, '')
+    return sb  
+  }   
+  if (stripPadding) {
     return base64nopad.encode(bytes)
   }
-  if (stripPadding)
-    return sb.replace(/\=/g, '')
-  return sb
+  return base64.encode(bytes)
 }
 
 /** Converts `+` -> `-` and `/` -> `_`. Always strips `=` */
 export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
-    return Buffer.from(bytes).toString('base64url').replace(/\=/g, '')
-  if (typeof btoa === 'undefined') {
-    let s = ''
-    for (let i = 0; i < bytes.byteLength; i++)
-      s += String.fromCharCode(bytes[i])
-    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '')
-  }
+    return Buffer.from(bytes).toString('base64url').replace(/\=/g, '')  
   return base64urlnopad.encode(bytes)
 }
 
@@ -144,7 +135,7 @@ export function fromBase64(s: string): Uint8Array {
     const buf = Buffer.from(s, 'base64')
     return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength)
   }
-  if (typeof atob === 'undefined') {
+  if (typeof atob !== 'undefined') {
     const a = atob(s)
     const bytes = new Uint8Array(a.length)
     for (let i = 0; i < a.length; i++)

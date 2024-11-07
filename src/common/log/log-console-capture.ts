@@ -18,7 +18,11 @@ export function logCaptureConsole(log: LoggerInterface) {
   onlyOnce = true
 
   // Save the original console methods
-  getGlobalConsole()
+  const originalConsole = getGlobalConsole()
+
+  if (!originalConsole) {
+    globalThis.console = {} as any
+  }
 
   globalThis.console.log = (...args: any[]) => log.debug(...args)
   globalThis.console.debug = (...args: any[]) => log.debug(...args)

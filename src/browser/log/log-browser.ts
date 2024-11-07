@@ -29,6 +29,9 @@ export function LoggerBrowserHandler(opt: LogHandlerOptions = {}): LogHandler {
   // logCaptureConsole will override the console methods, so we need to get the original ones
   const originalConsole = getGlobalConsole()
 
+  if (!originalConsole)
+    return () => {}
+
   return (msg: LogMessage) => {
     if (!matchesLevel(msg.level))
       return

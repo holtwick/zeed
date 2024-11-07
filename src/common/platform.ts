@@ -2,6 +2,15 @@
 /* eslint-disable node/prefer-global/process */
 
 /**
+ * Retrieves the global `localStorage` object.
+ * @returns The global `localStorage` object if available, otherwise `undefined`.
+ */
+export function getLocalStorage(): any | undefined {
+  if (typeof localStorage !== 'undefined')
+    return localStorage
+}
+
+/**
  * Retrieves the global `window` object.
  * @returns The global `window` object if available, otherwise `undefined`.
  */

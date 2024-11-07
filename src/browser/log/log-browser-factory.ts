@@ -3,6 +3,7 @@ import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo,
 import { browserSelectColorByName } from '../../common/log/log-colors'
 import { getGlobalConsole } from '../../common/log/log-console-original'
 import { parseLogLevel, useNamespaceFilter } from '../../common/log/log-filter'
+import { getLocalStorage } from '../../common/platform'
 import { browserSupportsColors } from './log-colors'
 
 /**
@@ -11,7 +12,8 @@ import { browserSupportsColors } from './log-colors'
  * loggers will not work any more.
  */
 export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
-  const filter = opt.filter ?? localStorage.zeed ?? localStorage.debug
+  const localStorage = getLocalStorage()
+  const filter = opt.filter ?? localStorage?.zeed ?? localStorage?.debug
   const styleFont = 'font-family: "JetBrains Mono", Menlo; font-size: 11px;'
   const styleDefault = `${styleFont}`
   const styleBold = `font-weight: 600; ${styleFont}`

@@ -79,6 +79,7 @@ describe('files.spec', () => {
         "common/log/log-filter.ts",
         "common/log/log-memory.spec.ts",
         "common/log/log-memory.ts",
+        "common/log/log-noop.ts",
         "node/log/log-context-node.ts",
         "node/log/log-file.spec.ts",
         "node/log/log-file.ts",

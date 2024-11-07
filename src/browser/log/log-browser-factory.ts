@@ -3,6 +3,7 @@ import { LogLevelAll, LogLevelDebug, LogLevelError, LogLevelFatal, LogLevelInfo,
 import { browserSelectColorByName } from '../../common/log/log-colors'
 import { getGlobalConsole } from '../../common/log/log-console-original'
 import { parseLogLevel, useNamespaceFilter } from '../../common/log/log-filter'
+import { LoggerHandlerNoop } from '../../common/log/log-noop'
 import { browserSupportsColors } from './log-colors'
 
 /**
@@ -20,7 +21,6 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
   const styleDefault = `${styleFont}`
   const styleBold = `font-weight: 600; ${styleFont}`
   const useColors = browserSupportsColors()
-  const noop: any = () => {}
 
   // logCaptureConsole will override the console methods, so we need to get the original ones
   const originalConsole = getGlobalConsole()
@@ -39,7 +39,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
     const matches = useNamespaceFilter(filter)
     const level = parseLogLevel(logLevel ?? LogLevelAll)
 
-    if (matches(name) && level !== LogLevelOff) {
+    if (matches(name) && level !== LogLevelOff && originalConsole) {
       const fixedArgs: string[] = []
       if (useColors) {
         const color = browserSelectColorByName(name)
@@ -91,13 +91,7 @@ export function LoggerBrowserSetupDebugFactory(opt: LogHandlerOptions = {}) {
       })
     }
     else {
-      log = (() => {}) as LoggerInterface
-      log.debug = noop
-      log.info = noop
-      log.warn = noop
-      log.error = noop
-      log.assert = noop
-      log.fatal = noop
+      log = LoggerHandlerNoop()
     }
 
     log.extend = (subName: string) => {

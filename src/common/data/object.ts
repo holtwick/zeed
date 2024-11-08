@@ -110,24 +110,24 @@ export function objectPlain(obj: any, opt?: {
     if (isPrimitive(obj))
       return obj
 
-    if (obj instanceof Date) {
+    if (typeof Date !== 'undefined' && obj instanceof Date) {
       return {
         __class: 'Date',
         value: obj.toISOString(),
       }
     }
 
-    if (obj instanceof RegExp) {
+    if (typeof RegExp !== 'undefined' && obj instanceof RegExp) {
       return {
         __class: 'RegExp',
         source: obj.toString(),
       }
     }
 
-    if (obj instanceof Map)
+    if (typeof Map !== 'undefined' && obj instanceof Map)
       obj = Object.fromEntries(obj)
 
-    if (obj instanceof Set || isBinaryArray(obj))
+    if (typeof Set !== 'undefined' && obj instanceof Set || isBinaryArray(obj))
       obj = Array.from(obj as any)
 
     if (typeof ErrorEvent !== 'undefined' && obj instanceof ErrorEvent) {
@@ -141,7 +141,7 @@ export function objectPlain(obj: any, opt?: {
       }
     }
 
-    if (obj instanceof Event) {
+    if (typeof Event !== 'undefined' && obj instanceof Event) {
       return {
         __class: 'Event',
         type: obj.type,
@@ -150,17 +150,17 @@ export function objectPlain(obj: any, opt?: {
         cancelable: obj.cancelable,
         defaultPrevented: obj.defaultPrevented,
         composed: obj.composed,
-        timeStamp: obj.timeStamp,        
+        timeStamp: obj.timeStamp,
       }
     }
 
-    if (obj instanceof Error) {
+    if (typeof Error !== 'undefined' && obj instanceof Error) {
       return {
         __class: 'Error',
         name: obj.name,
         message: obj.message,
         stack: errorTrace ? obj.stack : undefined,
-        cause: (obj as any).cause ? String((obj as any).cause) : undefined,        
+        cause: (obj as any).cause ? String((obj as any).cause) : undefined,
       }
     }
     // return `${obj.name || 'Error'}: ${obj.message}${errorTrace ? `\n${obj.stack}` : ''}`

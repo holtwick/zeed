@@ -33,23 +33,23 @@ export function browserSupportsColors(): boolean {
     // @ts-expect-error xxx
       && document.documentElement.style.WebkitAppearance)
     // Is firebug? http://stackoverflow.com/a/398120/376773
-      || (typeof window !== 'undefined'
-        && window.console
+    || (typeof window !== 'undefined'
+      && window.console
       // @ts-expect-error xxx
-        && (window.console.firebug
-        // @ts-expect-error xxx
+      && (window.console.firebug
+      // @ts-expect-error xxx
 
-          || (window.console.exception && window.console.table)))
+        || (window.console.exception && window.console.table)))
     // Is firefox >= v31?
     // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-          || (typeof navigator !== 'undefined'
-            && navigator.userAgent
-            && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)
-          // eslint-disable-next-line regexp/no-legacy-features
-            && Number.parseInt(RegExp.$1, 10) >= 31)
+      || (typeof navigator !== 'undefined'
+        && navigator.userAgent
+        && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)
+      // eslint-disable-next-line regexp/no-legacy-features
+        && Number.parseInt(RegExp.$1, 10) >= 31)
     // Double check webkit in userAgent just in case we are in a worker
-            || (typeof navigator !== 'undefined'
-              && navigator.userAgent
-              && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/))
+      || (typeof navigator !== 'undefined'
+        && navigator.userAgent
+        && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/))
   )
 }

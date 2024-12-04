@@ -1,4 +1,6 @@
 export * from './args'
 export * from './env'
+export * from './export-swift'
+export * from './export-typescript'
 export * from './schema'
 export * from './utils'

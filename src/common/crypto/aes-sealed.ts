@@ -1,18 +1,25 @@
-export async function hxEncrypt(data: Uint8Array, key: CryptoKey): Promise<Uint8Array> {
+export async function hxEncrypt(data: Uint8Array, key: CryptoKey, tag?: Uint8Array): Promise<Uint8Array> {
   const iv = crypto.getRandomValues(new Uint8Array(12)) // AES-GCM requires a 12-byte IV
+  if (!tag) {
+    tag = crypto.getRandomValues(new Uint8Array(16))
+  }
+
   const encrypted = await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
       iv,
+      tagLength: 128,
+      additionalData: tag,
     },
     key,
     data,
   )
 
   const encryptedArray = new Uint8Array(encrypted)
-  const combined = new Uint8Array(iv.length + encryptedArray.length)
+  const combined = new Uint8Array(iv.length + encryptedArray.length + tag.length)
   combined.set(iv)
   combined.set(encryptedArray, iv.length)
+  combined.set(tag, encryptedArray.length + iv.length)
   return combined
 }
 

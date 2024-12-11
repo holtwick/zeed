@@ -66,6 +66,38 @@ export async function deriveKeyPbkdf2(
   )
 }
 
+export async function deriveKeyPbkdf2CBC(
+  secret: BinInput,
+  opt: {
+    iterations?: number
+    salt?: BinInput
+  } = {},
+): Promise<CryptoKey> {
+  const secretBuffer = toUint8Array(secret)
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    secretBuffer,
+    CRYPTO_DEFAULT_DERIVE_ALG,
+    false,
+    ['deriveKey'],
+  )
+  return await crypto.subtle.deriveKey(
+    {
+      name: CRYPTO_DEFAULT_DERIVE_ALG,
+      salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
+      iterations: opt.iterations ?? CRYPTO_DEFAULT_DERIVE_ITERATIONS,
+      hash: CRYPTO_DEFAULT_HASH_ALG,
+    },
+    keyMaterial,
+    {
+      name: CRYPTO_DEFAULT_ALG,
+      length: 256,
+    },
+    true,
+    ['encrypt', 'decrypt'],
+  )
+}
+
 function getMagicId() {
   return new Uint8Array([1, 1])
 }

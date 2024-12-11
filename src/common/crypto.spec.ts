@@ -3,7 +3,7 @@
 
 import { DefaultLogger } from '.'
 import { decrypt, deriveKeyPbkdf2, digest, encrypt, randomUint8Array } from './crypto'
-import { equalBinary, toHex } from './data/bin'
+import { equalBinary, fromBase64, toBase64 } from './data/bin'
 
 const log = DefaultLogger('crypto.spec')
 
@@ -16,54 +16,15 @@ describe('crypto', () => {
     let id: Uint8Array | undefined
     while ((id = list.pop())) {
       // console.log(id)
-      expect(equalBinary(id, new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0]))).toBe(
-        false,
-      )
+      expect(equalBinary(id, new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0]))).toBe(false)
       expect(id?.length).toBe(8)
       expect(list).not.toContain(id)
     }
   })
 
   it('should digest', async () => {
-    expect(toHex(await digest('abc'))).toBe(
-      'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
-    )
-    expect(await digest(new Uint8Array([1, 2, 3]))).toMatchInlineSnapshot(`
-Uint8Array [
-  3,
-  144,
-  88,
-  198,
-  242,
-  192,
-  203,
-  73,
-  44,
-  83,
-  59,
-  10,
-  77,
-  20,
-  239,
-  119,
-  204,
-  15,
-  120,
-  171,
-  204,
-  206,
-  213,
-  40,
-  125,
-  132,
-  161,
-  162,
-  1,
-  28,
-  251,
-  129,
-]
-`)
+    expect(toBase64(await digest('abc'))).toBe('ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=')
+    expect(toBase64(await digest(new Uint8Array([1, 2, 3])))).toMatchInlineSnapshot(`"A5BYxvLAy0ksUzsKTRTvd8wPeKvMztUofYShogEc+4E="`)
   })
 
   // it("should derive key", async () => {
@@ -92,56 +53,12 @@ Uint8Array [
     })
     const sample = new Uint8Array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
     const cipher = await encrypt(sample, key)
-    // log("cipher", cipher)
+    log('cipher', toBase64(cipher))
 
     const bin = await decrypt(cipher, key)
     expect(equalBinary(sample, bin)).toBe(true)
 
-    const binFix = await decrypt(
-      new Uint8Array([
-        1,
-        1,
-        27,
-        108,
-        252,
-        31,
-        238,
-        192,
-        61,
-        168,
-        45,
-        29,
-        128,
-        212,
-        215,
-        222,
-        205,
-        105,
-        178,
-        193,
-        150,
-        36,
-        24,
-        216,
-        180,
-        75,
-        168,
-        133,
-        37,
-        25,
-        124,
-        137,
-        221,
-        103,
-        214,
-        97,
-        218,
-        232,
-        248,
-        93,
-      ]),
-      key,
-    )
+    const binFix = await decrypt(fromBase64('AQELynGCxvLXKwLM/oHjOaM4R6d7oAzxJpgpCZnKmWwhkwIDzpPMUQ=='), key)
     expect(binFix).toEqual(sample)
   })
 

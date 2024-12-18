@@ -1,5 +1,7 @@
 /* scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
 
+import { stringToUInt8Array, Uint8ArrayToString } from "./bin"
+
 // Utilities
 /**
  * @__NO_SIDE_EFFECTS__
@@ -347,6 +349,11 @@ export const base32hexnopad: BytesCoder = /* @__PURE__ */ chain(
   alphabet('0123456789ABCDEFGHIJKLMNOPQRSTUV'),
   join('')
 );
+export const base32agnoster: BytesCoder = /* @__PURE__ */ chain(
+  radix2(5),
+  alphabet('0123456789abcdefghjkmnpqrtuvwxyz'),
+  join('')
+);
 export const base32crockford: BytesCoder = /* @__PURE__ */ chain(
   radix2(5),
   alphabet('0123456789ABCDEFGHJKMNPQRSTVWXYZ'),
@@ -574,12 +581,9 @@ function genBech32(encoding: 'bech32' | 'bech32m'): Bech32 {
 export const bech32: Bech32 = /* @__PURE__ */ genBech32('bech32');
 export const bech32m: Bech32 = /* @__PURE__ */ genBech32('bech32m');
 
-declare const TextEncoder: any;
-declare const TextDecoder: any;
-
 export const utf8: BytesCoder = {
-  encode: (data) => new TextDecoder().decode(data),
-  decode: (str) => new TextEncoder().encode(str),
+  encode: (data) => Uint8ArrayToString(data),
+  decode: (str) => stringToUInt8Array(str),
 };
 
 export const hex: BytesCoder = /* @__PURE__ */ chain(

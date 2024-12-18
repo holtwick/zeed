@@ -1,4 +1,4 @@
-import { base64 } from './basex-secure'
+import { base64, base32agnoster } from './basex-secure'
 
 describe('baseX-secure', () => {
    
@@ -10,4 +10,12 @@ describe('baseX-secure', () => {
     expect(base64.encode(bin)).toBe(btoa(str))
     expect(base64.decode(btoa(str))).toEqual(bin)
   })
+
+   it('should support 32-agnoster like for Swift', () => {
+      let originalString = "Hello"
+      let data = new TextEncoder().encode(originalString)
+      let encodedString = base32agnoster.encode(data)
+      expect(encodedString).toBe("91jprv3f")
+    })
+  
 })

@@ -109,6 +109,14 @@ describe('baseX', () => {
     expect(decode('o1y89')).toEqual(new Uint8Array([1, 9, 0, 255]))
   })
 
+  it('should support 32-agnoster like for Swift', () => {
+    const { encode, decode } = useBase('32-agnoster')
+    let originalString = "Hello"
+    let data = new TextEncoder().encode(originalString)
+    let encodedString = encode(data)
+    expect(encodedString).toBe("91jprv3f")
+  })
+
   // it('should do the same as atob and btoa', () => {
   //   const { encode, decode } = useBase(64)
   //   const str = 'Hello, World!'

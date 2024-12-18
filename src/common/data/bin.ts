@@ -2,7 +2,7 @@
 /* eslint-disable no-control-regex */
 /* eslint-disable prefer-spread */
 
-import { base64, base64nopad, base64urlnopad, str } from './basex-secure'
+import { base64, base64nopad, base64urlnopad } from './basex-secure'
 import { jsonStringifySafe } from './json'
 
 export type BinInput = Uint8Array | ArrayBuffer | string | number[]

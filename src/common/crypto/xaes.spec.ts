@@ -1,5 +1,5 @@
 // import { toBase64 } from '../data/bin.js'
-import { decrypt, encrypt, exportKey, generateKey, importKey } from './xaes'
+import { decryptXAES, encryptXAES, exportKeyXAES, generateKeyXAES, importKeyXAES } from './xaes'
 // import { SHAKE128 } from "@stablelib/sha3";
 
 describe('xaes.spec', () => {
@@ -28,42 +28,42 @@ describe('xaes.spec', () => {
   // })
 
   it('xaes generateKey/encrypt/decrypt', async () => {
-    const key = await generateKey()
+    const key = await generateKeyXAES()
     const iv = new Uint8Array(24).fill(1)
     const data = new Uint8Array(122).fill(2)
     const additionalData = new Uint8Array(16).fill(3)
     const params = { iv, additionalData }
-    const encrypted = await encrypt(params, key, data)
-    const decrypted = await decrypt(params, key, encrypted)
+    const encrypted = await encryptXAES(params, key, data)
+    const decrypted = await decryptXAES(params, key, encrypted)
     expect(decrypted).toEqual(data.buffer)
   })
 
   it('xaes importKey, exportKey', async () => {
     const key = new Uint8Array(32).fill(0x04)
-    const imported = await importKey('raw', key, true)
-    const exported = await exportKey('raw', imported)
+    const imported = await importKeyXAES('raw', key, true)
+    const exported = await exportKeyXAES('raw', imported)
     expect(exported).toEqual(key.buffer)
   })
 
   it('xaes test vector', async () => {
     const nonce = new TextEncoder().encode('ABCDEFGHIJKLMNOPQRSTUVWX')
     const plaintext = new TextEncoder().encode('XAES-256-GCM')
-    const key = await importKey(
+    const key = await importKeyXAES(
       'raw',
       new Uint8Array(32).fill(0x01),
       false,
     )
-    const ciphertext = await encrypt({ iv: nonce }, key, plaintext)
+    const ciphertext = await encryptXAES({ iv: nonce }, key, plaintext)
     const got = Array.from(new Uint8Array(ciphertext), byte => byte.toString(16).padStart(2, '0')).join('')
     const expected = 'ce546ef63c9cc60765923609b33a9a1974e96e52daf2fcf7075e2271'
     expect(got).toEqual(expected)
 
-    const decrypted = await decrypt({ iv: nonce }, key, ciphertext)
+    const decrypted = await decryptXAES({ iv: nonce }, key, ciphertext)
     expect(new Uint8Array(decrypted)).toEqual(plaintext)
   })
 
   it('xaes test vector with additional data', async () => {
-    const key = await importKey(
+    const key = await importKeyXAES(
       'raw',
       new Uint8Array(32).fill(0x03),
       false,
@@ -71,12 +71,12 @@ describe('xaes.spec', () => {
     const aad = new TextEncoder().encode('c2sp.org/XAES-256-GCM')
     const nonce = new TextEncoder().encode('ABCDEFGHIJKLMNOPQRSTUVWX')
     const plaintext = new TextEncoder().encode('XAES-256-GCM')
-    const ciphertext = await encrypt({ iv: nonce, additionalData: aad }, key, plaintext)
+    const ciphertext = await encryptXAES({ iv: nonce, additionalData: aad }, key, plaintext)
     const got = Array.from(new Uint8Array(ciphertext), byte => byte.toString(16).padStart(2, '0')).join('')
     const expected = '986ec1832593df5443a179437fd083bf3fdb41abd740a21f71eb769d'
     expect(got).toEqual(expected)
 
-    const decrypted = await decrypt({ iv: nonce, additionalData: aad }, key, ciphertext)
+    const decrypted = await decryptXAES({ iv: nonce, additionalData: aad }, key, ciphertext)
     expect(new Uint8Array(decrypted)).toEqual(plaintext)
   })
 

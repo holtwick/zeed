@@ -1,9 +1,9 @@
 /* eslint-disable prefer-spread */
 /* eslint-disable no-cond-assign */
 
-import { DefaultLogger } from '.'
+import { equalBinary, fromBase64, toBase64 } from '../data/bin'
+import { DefaultLogger } from '../log/log'
 import { decrypt, deriveKeyPbkdf2, digest, encrypt, randomUint8Array } from './crypto'
-import { equalBinary, fromBase64, toBase64 } from './data/bin'
 
 const log = DefaultLogger('crypto.spec')
 

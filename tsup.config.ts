@@ -8,12 +8,15 @@ export const tsup: Options = {
   clean: true,
   dts: true,
   format: ['esm', 'cjs'],
-  minify: false,
+  minify: true,
   splitting: true,
   bundle: true,
   skipNodeModulesBundle: true,
   entryPoints: ['src/index.all.ts'],
   target: 'es2020',
   outDir: 'dist',
-  entry: ['src/**/*.ts'],
+  entry: [
+    'src/**/*.ts',
+    '!src/**/*.spec.ts',
+  ],
 }

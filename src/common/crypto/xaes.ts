@@ -87,7 +87,7 @@ async function deriveKeyNonce(key: CryptoKey, iv: BufferSource): Promise<{ key: 
  * Encrypts data using XAES-256-GCM with the given key and iv.
  * Key must be a 256-bit AES-CBC CryptoKey with 'encrypt' usage.
  */
-export async function encrypt(params: {
+export async function encryptXAES(params: {
   iv: BufferSource
   additionalData?: BufferSource
 }, key: CryptoKey, data: BufferSource): Promise<ArrayBuffer> {
@@ -108,7 +108,7 @@ export async function encrypt(params: {
  * Decrypts data using XAES-256-GCM with the given key and iv.
  * Key must be a 256-bit AES-CBC CryptoKey with 'encrypt' and 'decrypt' usages.
  */
-export async function decrypt(params: {
+export async function decryptXAES(params: {
   iv: BufferSource
   additionalData?: BufferSource
 }, key: CryptoKey, data: BufferSource): Promise<ArrayBuffer> {
@@ -131,7 +131,7 @@ export async function decrypt(params: {
  *
  * This function is not necessary, as you can use crypto.subtle.generateKey with AES-CBC directly.
  */
-export async function generateKey(extractable?: boolean): Promise<CryptoKey> {
+export async function generateKeyXAES(extractable?: boolean): Promise<CryptoKey> {
   return await crypto.subtle.generateKey(
     {
       name: 'AES-CBC',
@@ -149,7 +149,7 @@ export async function generateKey(extractable?: boolean): Promise<CryptoKey> {
  *
  * This function is not necessary, as you can use crypto.subtle.importKey with AES-CBC directly.
  */
-export async function importKey(format: 'jwk' | 'raw' | 'pkcs8' | 'spki', keyData: BufferSource | JsonWebKey, extractable?: boolean): Promise<CryptoKey> {
+export async function importKeyXAES(format: 'jwk' | 'raw' | 'pkcs8' | 'spki', keyData: BufferSource | JsonWebKey, extractable?: boolean): Promise<CryptoKey> {
   return await crypto.subtle.importKey( // @ts-expect-error-next-line
     format,
     keyData,
@@ -165,6 +165,6 @@ export async function importKey(format: 'jwk' | 'raw' | 'pkcs8' | 'spki', keyDat
  *
  * This function is not necessary, as you can use crypto.subtle.exportKey directly.
  */
-export async function exportKey(format: 'jwk' | 'pkcs8' | 'raw' | 'spki', key: CryptoKey): Promise<ArrayBuffer | JsonWebKey> {
+export async function exportKeyXAES(format: 'jwk' | 'pkcs8' | 'raw' | 'spki', key: CryptoKey): Promise<ArrayBuffer | JsonWebKey> {
   return await crypto.subtle.exportKey(format, key)
 }

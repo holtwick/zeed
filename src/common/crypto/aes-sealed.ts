@@ -27,15 +27,15 @@ export async function hxDecrypt(data: Uint8Array, key: CryptoKey): Promise<Uint8
   //  The data layout of the combined representation is nonce, ciphertext, then tag.
   //  The nonce is 12 bytes, the tag is 16 bytes, and the ciphertext is the rest of the data.
   const iv = data.slice(0, 12) // nonce is the first 12 bytes
-  const encrypted = data.slice(12, -16) // The ciphertext is everything between the nonce and the tag.
-  const tag = data.slice(-16) // The authentication tag has a length of 16 bytes.
-  // console.log({ iv, encrypted, tag })
+  const encrypted = data.slice(12) // The ciphertext is everything between the nonce and the tag.
+  // const tag = data.slice(-16) // The authentication tag has a length of 16 bytes.
+  console.log({ iv, encrypted, data })
 
   const decrypted = await crypto.subtle.decrypt({
     name: 'AES-GCM',
     iv,
-    tagLength: 128,
-    additionalData: tag,
+    // tagLength: 32, // tag.length * 8,
+    additionalData: new Uint8Array(),
   }, key, encrypted)
   return new Uint8Array(decrypted)
 }

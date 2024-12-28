@@ -1,41 +1,34 @@
-export async function hxEncrypt(data: Uint8Array, key: CryptoKey, tag?: Uint8Array): Promise<Uint8Array> {
-  const iv = crypto.getRandomValues(new Uint8Array(12)) // AES-GCM requires a 12-byte IV
-  if (!tag) {
-    tag = crypto.getRandomValues(new Uint8Array(16))
-  }
+const tagLength = 128
+const authenticating_default = new Uint8Array()
 
+export async function hxEncrypt(data: Uint8Array, key: CryptoKey, authenticating: Uint8Array = authenticating_default): Promise<Uint8Array> {
+  const iv = crypto.getRandomValues(new Uint8Array(12)) // AES-GCM requires a 12-byte IV
   const encrypted = await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
       iv,
-      tagLength: 128,
-      additionalData: tag,
+      tagLength,
+      additionalData: authenticating,
     },
     key,
     data,
   )
 
   const encryptedArray = new Uint8Array(encrypted)
-  const combined = new Uint8Array(iv.length + encryptedArray.length + tag.length)
+  const combined = new Uint8Array(iv.length + encryptedArray.length)
   combined.set(iv)
   combined.set(encryptedArray, iv.length)
-  combined.set(tag, encryptedArray.length + iv.length)
   return combined
 }
 
-export async function hxDecrypt(data: Uint8Array, key: CryptoKey): Promise<Uint8Array> {
-  //  The data layout of the combined representation is nonce, ciphertext, then tag.
-  //  The nonce is 12 bytes, the tag is 16 bytes, and the ciphertext is the rest of the data.
+export async function hxDecrypt(data: Uint8Array, key: CryptoKey, authenticating: Uint8Array = authenticating_default): Promise<Uint8Array> {
   const iv = data.slice(0, 12) // nonce is the first 12 bytes
-  const encrypted = data.slice(12) // The ciphertext is everything between the nonce and the tag.
-  // const tag = data.slice(-16) // The authentication tag has a length of 16 bytes.
-  console.log({ iv, encrypted, data })
-
+  const encrypted = data.slice(12) // ciphertext and tag of 128 bits
   const decrypted = await crypto.subtle.decrypt({
     name: 'AES-GCM',
     iv,
-    // tagLength: 32, // tag.length * 8,
-    additionalData: new Uint8Array(),
+    tagLength,
+    additionalData: authenticating,
   }, key, encrypted)
   return new Uint8Array(decrypted)
 }

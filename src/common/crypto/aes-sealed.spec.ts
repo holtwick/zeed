@@ -53,12 +53,12 @@ describe('aes Encryption and Decryption', () => {
     const dataFromKey = await crypto.subtle.exportKey('raw', key)
     expect(toBase64(dataFromKey)).toMatchInlineSnapshot(`"UDl7buu/Zn/UxCIEp55MOTOKcDHvb959P+eyozok7BA="`)
 
-    const sample = new Uint8Array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
-    // const encryptedData = await hxEncrypt(sample, key)
-    // expect(toBase64(encryptedData)).toMatchInlineSnapshot(
-    //   `"WbwhO/CaS3W4VxiIIG3Zs4WdEa08CzEFgaQLs0TrRDejZ/8G0yu0S1JIV+3bn79O7SeyCfI0"`,
-    // )
+    // Two ways
+    // const sample = new Uint8Array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
+    // const encryptedData2 = await hxEncrypt(sample, key)
+    // expect(toBase64(encryptedData2)).toMatchInlineSnapshot(`"Eo7AexzlYXmV8gEZUE1ai68ZetTwfh8KSQ6kKffhvHAOemZ4C1c="`)
 
+    // From Swift sample
     const encryptedData = fromBase64('AQIDBAUGBwgJCgsMqZ0hGHIvSPG5x0d12q42zezDEJVu8Ic3yB4=')
     const decryptedData = await hxDecrypt(encryptedData, key)
     expect(decryptedData).toMatchInlineSnapshot(`

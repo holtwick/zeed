@@ -111,22 +111,26 @@ export function datetimeToUTC(fromDate: Date): Date {
   ))
 }
 
-/** ms -> s with simple check */
-export function timestampMillisecondsToSeconds(ts: number) {
+// const tsMs2000 = 946684800000   // same as Jan 11 1970 in ms
+// const tsMs2500 = 16725225600000 // same as Jul 13 1970 in ms
+//               1000000000000
+
+/** ms -> s with simple check. Assume low values are already ms */
+export function timestampMillisecondsToSeconds(ts: number, smart = true) {
   if (ts <= 0)
     return 0
-  if (ts < 1000000000000) {
+  if (smart && ts < 1000000000000) { // TODO find a better threshold and add tests
     return ts
     // log.warn('Timestamp might already be in seconds?', ts)
   }
   return Math.floor(ts / 1000)
 }
 
-/** s -> ms with simple check */
-export function timestampSecondsToMilliseconds(ts: number) {
+/** s -> ms with simple check. Assume high values are already ms */
+export function timestampSecondsToMilliseconds(ts: number, smart = true) {
   if (ts <= 0)
     return 0
-  if (ts > 1000000000000) {
+  if (smart && ts > 1000000000000) { // TODO find a better threshold and add tests
     return ts
     // log.warn('Timestamp might already be in milliseconds?', ts)
   }

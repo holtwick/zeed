@@ -1,4 +1,4 @@
-import { dayDiff, dayFromDate, dayFromString, dayIterator, dayMonthStart, dayOffset, dayRange, dayToParts, dayToString, dayYearStart } from './day'
+import { dayDiff, dayFromAny, dayFromDate, dayFromString, dayFromTimestamp, dayFromTimestampSeconds, dayFromToday, dayIterator, dayMonthStart, dayOffset, dayRange, dayToDate, dayToParts, dayToString, dayToTimestamp, dayToTimestampSeconds, dayYearStart } from './day'
 import { Day, dateStringToDays, forEachDay } from './day-legacy'
 
 describe('days', () => {
@@ -200,5 +200,54 @@ describe('days', () => {
     `)
 
     expect(dayIterator(-6, 20130104).next().value).toEqual(20121230)
+  })
+  
+  it('dayFromAny with string input', () => {
+    const _res = dayFromAny('2022-10-05')
+    expect(_res).toBe(20221005)
+  })
+
+  it('dayFromAny with array input', () => {
+    const _res = dayFromAny([2023])
+    expect(_res).toBe(20230101)
+  })
+
+  it('dayFromAny with date input', () => {
+    const date = new Date('1995-12-17T03:24:00')
+    const _res = dayFromAny(date)
+    expect(_res).toBe(19951217)
+  })
+
+  it('dayFromAny ignores short numbers', () => {
+    const _res = dayFromAny(42)
+    expect(_res).toBeUndefined()
+  })
+
+  it('dayFromTimestamp', () => {
+    const _day = 20220815
+    const _stamp = dayToTimestamp(_day)
+    const _res = dayFromTimestamp(_stamp)
+    expect(_res).toBe(_day)
+  })
+
+  it('dayToTimestampSeconds', () => {
+    const _day = 20220815
+    const _secs = dayToTimestampSeconds(_day)
+    expect(_secs).toBeCloseTo(Math.floor(dayToDate(_day, true).getTime() / 1000))
+  })
+
+  it('dayFromTimestampSeconds', () => {
+    const _day = 20220815
+    const _secs = dayToTimestampSeconds(_day)
+    expect(_secs).toBeCloseTo(Math.floor(dayToDate(_day, true).getTime() / 1000))
+    const _res = dayFromTimestampSeconds(_secs)
+    // Multiplying by 1000 to match the ms input for dayFromTimestampSeconds
+    expect(_res).toBe(_day) 
+  })
+
+  it('dayFromToday', () => {
+    const _today = dayFromToday()
+    // Should be current day in YYYYMMDD format
+    expect(typeof _today).toBe('number')
   })
 })

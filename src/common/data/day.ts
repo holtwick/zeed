@@ -1,5 +1,7 @@
 // Functional Variant
 
+import { timestampMillisecondsToSeconds, timestampSecondsToMilliseconds } from "../time"
+
 export const DAY_MS = 86400000 // 1000 * 60 * 60 * 24
 
 export type DayValue = number
@@ -53,9 +55,8 @@ export function dayFromAny(
   else if (typeof value === 'string') {
     return dayFromString(value)
   }
-  else if (Array.isArray(value) && value.length === 3) {
-    const [year, month, day] = value
-    return dayFromParts(year, month, day)
+  else if (Array.isArray(value) && value.length >= 1) {
+    return dayFromParts(...value)
   }
   else if (value instanceof Date) {
     return dayFromDate(value, utc)
@@ -92,12 +93,23 @@ export function dayFromDateGMT(date: Date): DayValue {
   return dayFromDate(date, true)
 }
 
+
+export function dayToTimestampSeconds(day: DayValue, utc = true): number {
+  return Math.floor(dayToDate(day, utc).getTime() / 1000)
+}
+
+/// Timestamp in miliseconds
 export function dayToTimestamp(day: DayValue, utc = true): number {
   return dayToDate(day, utc).getTime()
 }
 
+/// Timestamp in miliseconds
 export function dayFromTimestamp(ms: number, utc = true): DayValue {
   return dayFromDate(new Date(ms), utc)
+}
+
+export function dayFromTimestampSeconds(ms: number, utc = true): DayValue {
+  return dayFromDate(new Date(Math.floor(ms * 1000)), utc) 
 }
 
 export function dayToString(day: DayValue, sep = '-') {

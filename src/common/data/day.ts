@@ -1,7 +1,5 @@
 // Functional Variant
 
-import { timestampMillisecondsToSeconds, timestampSecondsToMilliseconds } from "../time"
-
 export const DAY_MS = 86400000 // 1000 * 60 * 60 * 24
 
 export type DayValue = number

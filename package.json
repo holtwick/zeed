@@ -69,9 +69,9 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.12.1",
+    "@antfu/eslint-config": "^3.12.2",
     "@antfu/ni": "^0.23.2",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.10.5",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/browser": "^2.1.8",
     "@vitest/coverage-v8": "^2.1.8",
@@ -80,7 +80,7 @@
     "playwright": "^1.49.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
-    "vite": "^6.0.6",
+    "vite": "^6.0.7",
     "vitest": "^2.1.8"
   },
   "pnpm": {

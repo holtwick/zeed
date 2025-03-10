@@ -1,4 +1,4 @@
-import { objectAssignDeepInPlace, objectDescribeChange } from './object-changes'
+import { objectAssignDeepInPlace, objectAssignDescriptionInPlace, objectDescribeChange } from './object-changes'
 import { cloneObject } from './utils'
 
 describe('crdt-transfer.spec', () => {
@@ -182,5 +182,19 @@ describe('crdt-transfer.spec', () => {
 
     objectAssignDeepInPlace(right, left)
     expect(right).toEqual(left)
+  })
+
+  it('should only remove those with null', async () => {
+    const left = {
+      a: 1,
+      b: 2,
+      c: 3,
+    }
+    const changes = {      
+      b: null,      
+    }
+
+    objectAssignDescriptionInPlace(left, changes)
+    expect(left).toEqual({ a: 1, c: 3 })
   })
 })

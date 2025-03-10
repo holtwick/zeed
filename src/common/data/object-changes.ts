@@ -59,3 +59,32 @@ export function objectDescribeChange(fromObject: any, toObject: any): any {
 
   return Object.keys(change).length > 0 ? change : undefined
 }
+
+/**
+ * Apply the description of changes created by `objectDescribeChange` to the object.
+ */
+export function objectAssignDescriptionInPlace(toObject: any, fromObject: any) {
+  if (isRecord(toObject) && isRecord(fromObject)) {
+    const fromKeys = Object.keys(fromObject) 
+    for (const key of fromKeys) {
+      const from = fromObject[key]
+      const to = toObject[key]
+      if (from === null) {
+        if (to != null) {
+          delete toObject[key]
+        }
+      }
+      else if (isRecord(from)) {
+        if (isRecord(to))
+          objectAssignDescriptionInPlace(to, from)
+        else
+          toObject[key] = cloneObject(from)
+      }
+      else if (from !== to) {
+        toObject[key] = from
+      }
+    }
+  }
+  return toObject
+}
+

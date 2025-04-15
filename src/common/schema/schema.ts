@@ -19,7 +19,7 @@ export interface Type<T = unknown> {
   readonly type: string
   readonly _check: (obj: any) => boolean
   optional: () => Type<T | undefined>
-  default: (value: any) => Type<T | undefined>
+  default: (value: any) => Type<T>
   parse: (obj: any) => T
   map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
   props: (props: TypeProps) => Type<T>
@@ -45,7 +45,7 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
 
   _default?: T
 
-  default(value: any): TypeClass<T | undefined> { // todo keep the inherited class type
+  default(value: any): TypeClass<T> { // todo keep the inherited class type
     this._default = value
     return this
   }

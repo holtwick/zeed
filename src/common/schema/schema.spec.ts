@@ -38,7 +38,7 @@ describe('schema', () => {
 
     type Schema = Infer<typeof schema>
     type SchemaTest = Expect<IsEqual<Schema, {
-      id?: string | undefined
+      id: string
       age?: number | undefined
       obj?: {
         test: number
@@ -48,7 +48,7 @@ describe('schema', () => {
       lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
     }>> // Should pass
 
-    const sample: Schema = {
+    const sample: Partial<Schema> = {
       name: 'Hello',
       age: 42,
       active: true,
@@ -149,7 +149,7 @@ describe('schema', () => {
 
     type Schema = Infer<typeof schema>
 
-    const sample: Schema = {
+    const sample: Partial<Schema> = {
       literal: 'demo',
       name: 'two',
     }

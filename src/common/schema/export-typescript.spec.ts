@@ -12,7 +12,12 @@ describe('typescript.spec', () => {
     })
 
     type t = Infer<typeof schema>
-    expectTypeOf<t>().toMatchTypeOf<any>()
+    expectTypeOf<t>().toMatchObjectType<{
+      anInt?: number | undefined
+      aBool: boolean
+      aNumber: number
+      aString: string
+    }>()
 
     const r = schemaExportTypescriptInterface(schema, 'Test')
 

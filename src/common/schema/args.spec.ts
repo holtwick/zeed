@@ -55,5 +55,31 @@ describe('args.spec', () => {
         Array [],
       ]
     `)
+
+    expect(schema).toMatchInlineSnapshot(`
+      TypeObjectClass {
+        "_check": [Function],
+        "_object": Object {
+          "help": TypeGeneric {
+            "_check": [Function],
+            "_default": false,
+            "_props": Object {
+              "argDesc": "Shows help",
+              "argShort": "h",
+            },
+            "type": "boolean",
+          },
+          "someStuff": TypeGeneric {
+            "_check": [Function],
+            "_optional": true,
+            "_props": Object {
+              "argDesc": "Does some stuff",
+            },
+            "type": "number",
+          },
+        },
+        "type": "object",
+      }
+    `)
   })
 })

@@ -246,14 +246,27 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, 
 
 // type Test1 = Expect<IsEqual<ttt, [number, string, boolean]>> // Should pass
 
+class TypeFuncClass<T, Args, Ret> extends TypeClass<T> {
+  constructor(
+    name: string,
+    args: Args,
+    ret: Ret,
+  ) {
+    super(name, v => isFunction(v))
+    this._args = args
+    this._ret = ret
+  }
+
+  _args?: Args
+  _ret?: Ret
+}
+
 export function func<
   Args extends [Type<unknown>, ...Type<any>[]] | [],
   Ret = Type,
   T = (...args: TupleOutput<Args>) => Infer<Ret>,
 >(args: Args, ret: Ret): Type<T> {
-  return generic('function', {
-    _check: v => isFunction(v),
-  })
+  return new TypeFuncClass<T, Args, Ret>('function', args, ret)
 }
 
 // const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>

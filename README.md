@@ -1,6 +1,7 @@
 # 🌱 Zeed Library
 
-> Plant the "zeed" for your next Typescript project and let it grow with this useful lib, providing basic functionalities handy in most projects.
+> [!CAUTION]
+> The main repository is now at <https://codeberg.org/holtwick/zeed> to strengthen European sovereignty. Learn more at [UnplugTrump](https://holtwick.de/blog/unplug-trump).
 
 - Strict **TypeScript**
 - **Zero dependencies** and lightweight, **tree-shakable**

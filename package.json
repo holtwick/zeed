@@ -1,8 +1,8 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.28.1",
-  "packageManager": "pnpm@10.7.0",
+  "version": "0.28.2",
+  "packageManager": "pnpm@10.8.1",
   "description": "🌱 Simple foundation library",
   "author": {
     "name": "Dirk Holtwick",
@@ -70,23 +70,24 @@
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.11.0",
+    "@antfu/eslint-config": "^4.12.0",
     "@antfu/ni": "^24.3.0",
-    "@types/node": "^22.13.14",
+    "@types/node": "^22.14.1",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vitest/browser": "^3.1.1",
     "@vitest/coverage-v8": "^3.1.1",
     "esbuild": "^0.25.2",
-    "eslint": "^9.23.0",
+    "eslint": "^9.24.0",
     "playwright": "^1.51.1",
     "pnpm": "^10.7.0",
     "tsup": "^8.4.0",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.6",
     "vitest": "^3.1.1"
   },
   "pnpm": {
     "overrides": {
+      "@babel/runtime@<7.26.10": ">=7.26.10",
       "braces@<3.0.3": ">=3.0.3"
     }
   }

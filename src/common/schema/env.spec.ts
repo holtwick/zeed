@@ -1,3 +1,4 @@
+import type { Infer } from './schema'
 import { parseSchemaEnv, stringFromSchemaEnv } from './env'
 import { boolean, number, object, string } from './schema'
 
@@ -8,6 +9,13 @@ describe('env.spec', () => {
       servicePort: number().default(80),
       ServiceFlag: boolean().default(true),
     })
+
+    type t = Infer<typeof schema>
+    expectTypeOf<t>().toMatchObjectType<{
+      ServiceName: string
+      servicePort: number
+      ServiceFlag: boolean
+    }>()
 
     const r = parseSchemaEnv(schema, {
       SERVICE_NAME: 'SomeThing',

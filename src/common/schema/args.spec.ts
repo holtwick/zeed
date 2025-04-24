@@ -15,7 +15,10 @@ describe('args.spec', () => {
     })
 
     type t = Infer<typeof schema>
-    expectTypeOf<t>().toMatchTypeOf<any>()
+    expectTypeOf<t>().toMatchObjectType<{
+      someStuff?: number | undefined
+      help: boolean
+    }>()
 
     const args = ['test.txt', '-h', '--some-stuff=8888']
 
@@ -38,6 +41,45 @@ describe('args.spec', () => {
         Does some stuff
       --help, -h
         Shows help"
+    `)
+
+    //
+
+    const rr = parseSchemaArgs(schema, [])
+    expect(rr).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "help": false,
+          "someStuff": undefined,
+        },
+        Array [],
+      ]
+    `)
+
+    expect(schema).toMatchInlineSnapshot(`
+      TypeObjectClass {
+        "_check": [Function],
+        "_object": Object {
+          "help": TypeGeneric {
+            "_check": [Function],
+            "_default": false,
+            "_props": Object {
+              "argDesc": "Shows help",
+              "argShort": "h",
+            },
+            "type": "boolean",
+          },
+          "someStuff": TypeGeneric {
+            "_check": [Function],
+            "_optional": true,
+            "_props": Object {
+              "argDesc": "Does some stuff",
+            },
+            "type": "number",
+          },
+        },
+        "type": "object",
+      }
     `)
   })
 })

@@ -19,7 +19,7 @@ export interface Type<T = unknown> {
   readonly type: string
   readonly _check: (obj: any) => boolean
   optional: () => Type<T | undefined>
-  default: (value: any) => Type<T | undefined>
+  default: (value: any) => Type<T>
   parse: (obj: any) => T
   map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
   props: (props: TypeProps) => Type<T>
@@ -45,7 +45,7 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
 
   _default?: T
 
-  default(value: any): TypeClass<T | undefined> { // todo keep the inherited class type
+  default(value: any): TypeClass<T> { // todo keep the inherited class type
     this._default = value
     return this
   }
@@ -62,7 +62,7 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
     if (obj == null && this._optional === true)
       return undefined as any
     if (obj == null)
-      throw new Error('cannot be undefined')
+      throw new Error(`cannot be undefined, is ${obj}`)
     if (!this._check || this._check(obj))
       return obj
     throw new Error('wrong value')
@@ -87,7 +87,7 @@ export type Infer<T> = T extends Type<infer TT> ? TT : never
 class TypeGeneric<T> extends TypeClass<T> {
 }
 
-function generic<T>(type: string, opt?: Partial<Type<T>>): Type<T> {
+function generic<T = unknown>(type: string, opt?: Partial<Type<T>>): Type<T> {
   return new TypeGeneric<T>(type, opt?._check)
 }
 
@@ -104,12 +104,6 @@ export function string() {
   return new TypeStringClass<string>('string', isString)
 }
 
-// export function string() {
-//   return generic<string>('string', {
-//     _check: isString,
-//   })
-// }
-
 export function number() {
   return generic<number>('number', {
     _check: isNumber,
@@ -117,6 +111,8 @@ export function number() {
 }
 
 export const float = number
+export const double = number
+export const real = number
 
 export function int() {
   return generic<number>('int', {
@@ -127,6 +123,22 @@ export function int() {
 export function boolean() {
   return generic<boolean>('boolean', {
     _check: isBoolean,
+  })
+}
+
+// Like undefined | null in TS and nil in Swift
+export function none() {
+  return generic<undefined>('none', {
+    _check: v => v == null,
+    _optional: true,
+  })
+}
+
+// todo: appears to result in optional inside object
+export function any() {
+  return generic<any>('any', {
+    _check: v => v != null,
+    _optional: true,
   })
 }
 
@@ -187,7 +199,7 @@ export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
 }
 
 export function object<T>(tobj: T): Type<InferObject<T>> {
-  return new TypeObjectClass(tobj) as any
+  return new TypeObjectClass(tobj)
 }
 
 // Union
@@ -241,19 +253,61 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, 
   })
 }
 
+export function array<T>(itemType: Type<T>): Type<T[]> {
+  return generic<T[]>('array', {
+    _check: v => Array.isArray(v) && v.every(item => itemType._check(item)),
+  })
+}
+
 // const tt = tuple([number(), string(), boolean()])
 // type ttt = Infer<typeof tt> // expected [number, string, boolean]
 
 // type Test1 = Expect<IsEqual<ttt, [number, string, boolean]>> // Should pass
+
+class TypeFuncClass<T, Args, Ret> extends TypeClass<T> {
+  constructor(
+    name: string,
+    args: Args,
+    ret?: Ret,
+  ) {
+    super(name, v => isFunction(v))
+    this._args = args
+    this._ret = ret
+  }
+
+  _args?: Args
+  _ret?: Ret
+}
 
 export function func<
   Args extends [Type<unknown>, ...Type<any>[]] | [],
   Ret = Type,
   T = (...args: TupleOutput<Args>) => Infer<Ret>,
 >(args: Args, ret: Ret): Type<T> {
-  return generic('function', {
-    _check: v => isFunction(v),
-  })
+  return new TypeFuncClass<T, Args, Ret>('function', args, ret)
+}
+
+class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
+  constructor(
+    name: string,
+    info?: Info,
+    ret?: Ret,
+  ) {
+    super(name, v => isFunction(v))
+    this._info = info
+    this._ret = ret
+  }
+
+  _info?: Info
+  _ret?: Ret
+}
+
+export function rpc<
+  Info extends Type<unknown> | undefined = undefined,
+  Ret extends Type<unknown> = ReturnType<typeof none>,
+  T = Info extends undefined ? () => Infer<Ret> : (info: Infer<Info>) => Infer<Ret>,
+>(info?: Info, ret?: Ret): Type<T> {
+  return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 
 // const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>

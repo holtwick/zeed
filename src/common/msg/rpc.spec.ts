@@ -73,8 +73,8 @@ describe('rpc async', () => {
     await new Promise(resolve => setTimeout(resolve, 100))
     expect(Bob.getCount()).toBe(1)
 
-    c1.close()
-    c2.close()
+    c1.dispose()
+    c2.dispose()
 
     expect(log).toMatchInlineSnapshot(`
       Array [
@@ -146,8 +146,8 @@ describe('rpc async', () => {
     await new Promise(resolve => setTimeout(resolve, 100))
     expect(Bob.getCount()).toBe(1)
 
-    c1.close()
-    c2.close()
+    c1.dispose()
+    c2.dispose()
   })
 
   it('timeout async', async (done) => {

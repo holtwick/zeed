@@ -59,7 +59,7 @@ export function parseSchemaArgs<T>(schema: Type<T>, args: any = process?.argv ??
 
   const argsResult = objectMap(schema._object!, (key, schema) => {
     let value = argsObj[toCamelCase(key)]
-    if (schema.type === 'number') {
+    if (schema.type === 'number' && value != null) {
       value = valueToInteger(value)
     }
     return schema.parse(value)

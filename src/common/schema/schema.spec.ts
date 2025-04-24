@@ -1,7 +1,7 @@
 import type { Infer } from './schema'
 import type { Expect, IsEqual } from './test'
 import { cloneJsonObject } from '../data'
-import { boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
+import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -28,6 +28,8 @@ describe('schema', () => {
       name: string(),
       age: int().optional(),
       active: boolean(),
+      tags: array(string()).optional(),
+      info: any(),
       // status: stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted']),
       // status: string<Status>(),
       obj: object({
@@ -38,21 +40,24 @@ describe('schema', () => {
 
     type Schema = Infer<typeof schema>
     type SchemaTest = Expect<IsEqual<Schema, {
-      id?: string | undefined
+      id: string
       age?: number | undefined
       obj?: {
         test: number
       } | undefined
       name: string
+      info?: any
       active: boolean
+      tags?: string[]
       lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
     }>> // Should pass
 
-    const sample: Schema = {
+    const sample: Partial<Schema> = {
       name: 'Hello',
       age: 42,
       active: true,
       lit: 'past_due',
+      info: 123,
     }
 
     // const s: Status = sample.status
@@ -71,6 +76,9 @@ describe('schema', () => {
             "_default": "123",
             "type": "string",
           },
+          "info": Object {
+            "type": "any",
+          },
           "lit": Object {
             "type": "string",
           },
@@ -86,6 +94,10 @@ describe('schema', () => {
             "_optional": true,
             "type": "object",
           },
+          "tags": Object {
+            "_optional": true,
+            "type": "array",
+          },
         },
         "type": "object",
       }
@@ -96,6 +108,7 @@ describe('schema', () => {
         "active": true,
         "age": 42,
         "id": "123",
+        "info": 123,
         "lit": "past_due",
         "name": "Hello",
       }
@@ -109,6 +122,7 @@ describe('schema', () => {
       Object {
         "active": "on",
         "age": 42,
+        "info": 123,
         "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
@@ -123,6 +137,7 @@ describe('schema', () => {
       Object {
         "active": "yes",
         "age": 42,
+        "info": 123,
         "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
@@ -149,7 +164,7 @@ describe('schema', () => {
 
     type Schema = Infer<typeof schema>
 
-    const sample: Schema = {
+    const sample: Partial<Schema> = {
       literal: 'demo',
       name: 'two',
     }

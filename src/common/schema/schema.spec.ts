@@ -1,7 +1,7 @@
 import type { Infer } from './schema'
 import type { Expect, IsEqual } from './test'
 import { cloneJsonObject } from '../data'
-import { array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
+import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -29,6 +29,7 @@ describe('schema', () => {
       age: int().optional(),
       active: boolean(),
       tags: array(string()).optional(),
+      info: any(),
       // status: stringLiterals(['active', 'trialing', 'past_due', 'paused', 'deleted']),
       // status: string<Status>(),
       obj: object({
@@ -45,6 +46,7 @@ describe('schema', () => {
         test: number
       } | undefined
       name: string
+      info?: any
       active: boolean
       tags?: string[]
       lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
@@ -72,6 +74,9 @@ describe('schema', () => {
           "id": Object {
             "_default": "123",
             "type": "string",
+          },
+          "info": Object {
+            "type": "any",
           },
           "lit": Object {
             "type": "string",

@@ -104,12 +104,6 @@ export function string() {
   return new TypeStringClass<string>('string', isString)
 }
 
-// export function string() {
-//   return generic<string>('string', {
-//     _check: isString,
-//   })
-// }
-
 export function number() {
   return generic<number>('number', {
     _check: isNumber,
@@ -117,6 +111,8 @@ export function number() {
 }
 
 export const float = number
+export const double = number
+export const real = number
 
 export function int() {
   return generic<number>('int', {
@@ -134,6 +130,12 @@ export function boolean() {
 export function none() {
   return generic<undefined>('none', {
     _check: v => v == null,
+  })
+}
+
+export function any() {
+  return generic<any>('any', {
+    _check: v => v != null,
   })
 }
 

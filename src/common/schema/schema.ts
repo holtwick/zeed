@@ -241,6 +241,12 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, 
   })
 }
 
+export function array<T>(itemType: Type<T>): Type<T[]> {
+  return generic<T[]>('array', {
+    _check: v => Array.isArray(v) && v.every(item => itemType._check(item)),
+  })
+}
+
 // const tt = tuple([number(), string(), boolean()])
 // type ttt = Infer<typeof tt> // expected [number, string, boolean]
 

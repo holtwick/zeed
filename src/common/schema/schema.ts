@@ -130,6 +130,13 @@ export function boolean() {
   })
 }
 
+// Like undefined | null in TS and nil in Swift
+export function none() {
+  return generic<undefined>('none', {
+    _check: v => v == null,
+  })
+}
+
 // Object
 
 type ObjectFixOptional<T> = {
@@ -256,7 +263,7 @@ class TypeFuncClass<T, Args, Ret> extends TypeClass<T> {
   constructor(
     name: string,
     args: Args,
-    ret: Ret,
+    ret?: Ret,
   ) {
     super(name, v => isFunction(v))
     this._args = args
@@ -273,6 +280,29 @@ export function func<
   T = (...args: TupleOutput<Args>) => Infer<Ret>,
 >(args: Args, ret: Ret): Type<T> {
   return new TypeFuncClass<T, Args, Ret>('function', args, ret)
+}
+
+class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
+  constructor(
+    name: string,
+    info?: Info,
+    ret?: Ret,
+  ) {
+    super(name, v => isFunction(v))
+    this._info = info
+    this._ret = ret
+  }
+
+  _info?: Info
+  _ret?: Ret
+}
+
+export function rpc<
+  Info extends Type<unknown> | undefined = undefined,
+  Ret extends Type<unknown> = ReturnType<typeof none>,
+  T = Info extends undefined ? () => Infer<Ret> : (info: Infer<Info>) => Infer<Ret>,
+>(info?: Info, ret?: Ret): Type<T> {
+  return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 
 // const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>

@@ -62,7 +62,7 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
     if (obj == null && this._optional === true)
       return undefined as any
     if (obj == null)
-      throw new Error('cannot be undefined')
+      throw new Error(`cannot be undefined, is ${obj}`)
     if (!this._check || this._check(obj))
       return obj
     throw new Error('wrong value')
@@ -87,7 +87,7 @@ export type Infer<T> = T extends Type<infer TT> ? TT : never
 class TypeGeneric<T> extends TypeClass<T> {
 }
 
-function generic<T>(type: string, opt?: Partial<Type<T>>): Type<T> {
+function generic<T = unknown>(type: string, opt?: Partial<Type<T>>): Type<T> {
   return new TypeGeneric<T>(type, opt?._check)
 }
 
@@ -130,12 +130,15 @@ export function boolean() {
 export function none() {
   return generic<undefined>('none', {
     _check: v => v == null,
+    _optional: true,
   })
 }
 
+// todo: appears to result in optional inside object
 export function any() {
   return generic<any>('any', {
     _check: v => v != null,
+    _optional: true,
   })
 }
 
@@ -196,7 +199,7 @@ export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
 }
 
 export function object<T>(tobj: T): Type<InferObject<T>> {
-  return new TypeObjectClass(tobj) as any
+  return new TypeObjectClass(tobj)
 }
 
 // Union

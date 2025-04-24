@@ -57,6 +57,7 @@ describe('schema', () => {
       age: 42,
       active: true,
       lit: 'past_due',
+      info: 123,
     }
 
     // const s: Status = sample.status
@@ -107,6 +108,7 @@ describe('schema', () => {
         "active": true,
         "age": 42,
         "id": "123",
+        "info": 123,
         "lit": "past_due",
         "name": "Hello",
       }
@@ -120,6 +122,7 @@ describe('schema', () => {
       Object {
         "active": "on",
         "age": 42,
+        "info": 123,
         "lit": "past_due",
         "name": "Hello",
         "obj": Object {},
@@ -134,6 +137,7 @@ describe('schema', () => {
       Object {
         "active": "yes",
         "age": 42,
+        "info": 123,
         "lit": "past_due",
         "name": "Hello",
         "obj": Object {},

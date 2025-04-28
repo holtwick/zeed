@@ -9,6 +9,9 @@ describe('swift.spec', () => {
       aBool: boolean(),
       aNumber: number(),
       aString: string(),
+    }).props({
+      swiftName: 'Test123',
+      swiftProtocol: 'Codable',
     })
 
     type t = Infer<typeof schema>
@@ -19,10 +22,10 @@ describe('swift.spec', () => {
       aString: string
     }>()
 
-    const r = schemaExportSwiftStruct(schema, 'Test')
+    const r = schemaExportSwiftStruct(schema)
 
     expect(r).toMatchInlineSnapshot(`
-      "struct Test {
+      "struct Test123: Codable {
         var anInt: Int? = 0
         var aBool: Bool
         var aNumber: Double

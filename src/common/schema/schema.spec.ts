@@ -1,5 +1,5 @@
 import type { Infer } from './schema'
-import type { Expect, IsEqual } from './test'
+import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
 import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
 

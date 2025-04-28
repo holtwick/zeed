@@ -1,5 +1,5 @@
 import type { Infer } from './schema'
-import { helpSchemaArgs, parseSchemaArgs } from './args'
+import { helpSchemaArgs, parseSchemaArgs } from './parse-args'
 import { boolean, number, object } from './schema'
 
 describe('args.spec', () => {

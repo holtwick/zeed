@@ -1,5 +1,5 @@
 import type { Infer } from './schema'
-import { parseSchemaEnv, stringFromSchemaEnv } from './env'
+import { parseSchemaEnv, stringFromSchemaEnv } from './parse-env'
 import { boolean, number, object, string } from './schema'
 
 describe('env.spec', () => {

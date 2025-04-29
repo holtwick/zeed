@@ -15,7 +15,7 @@ describe('rpc.spec', () => {
     const rpcFn = object({ rpc: rpc() })
     type RpcFn = Infer<typeof rpcFn>
     expectTypeOf<RpcFn>().toMatchObjectType<{
-      rpc: () => undefined
+      rpc: () => void
     }>()
 
     const rpcFn2 = object({ rpc: rpc(object({
@@ -23,7 +23,7 @@ describe('rpc.spec', () => {
     }), string()) })
     type RpcFn2 = Infer<typeof rpcFn2>
     expectTypeOf<RpcFn2>().toMatchObjectType<{
-      rpc: (info: { a: number }) => string
+      rpc: (info: { a: number }) => string | Promise<string>
     }>()
 
     const payloadSchema = object({
@@ -68,7 +68,7 @@ describe('rpc.spec', () => {
           a: string
           b: boolean
         }
-      }) => undefined
+      }) => void | Promise<void>
       noFunc: string
     }>()
 
@@ -79,6 +79,7 @@ describe('rpc.spec', () => {
       noFunc: 'noFunc',
       rpc(info) {
         const _ = info.id
+        // return undefined
       },
     }
 

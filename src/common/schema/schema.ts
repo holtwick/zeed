@@ -1,6 +1,6 @@
 // With many, many inspiration from https://github.com/badrap/valita MIT License as of 2024-09-10
 
-import { isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
+import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
 import { first } from '../data/utils'
 
 export interface TypeProps {
@@ -253,10 +253,20 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, 
   })
 }
 
+export class TypeArrayClass<T, TT> extends TypeClass<T> {
+  constructor(
+    name: string,
+    type: TT,
+  ) {
+    super(name, isArray)
+    this._type = type
+  }
+
+  _type?: TT
+}
+
 export function array<T>(itemType: Type<T>): Type<T[]> {
-  return generic<T[]>('array', {
-    _check: v => Array.isArray(v) && v.every(item => itemType._check(item)),
-  })
+  return new TypeArrayClass<T[], Type<T>>('array', itemType)
 }
 
 // const tt = tuple([number(), string(), boolean()])
@@ -287,7 +297,7 @@ export function func<
   return new TypeFuncClass<T, Args, Ret>('function', args, ret)
 }
 
-class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
+export class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
   constructor(
     name: string,
     info?: Info,
@@ -304,9 +314,9 @@ class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
 
 export function rpc<
   Info extends Type<unknown> | undefined = undefined,
-  Ret extends Type<unknown> = ReturnType<typeof none>,
-  T = Info extends undefined ? () => Infer<Ret> : (info: Infer<Info>) => Infer<Ret>,
->(info?: Info, ret?: Ret): Type<T> {
+  Ret extends Type<unknown> = Type<void>, // ReturnType<typeof none>,
+  T = Info extends undefined ? () => Infer<Ret> : (info: Infer<Info>) => Infer<Ret> | Promise<Infer<Ret>>,
+>(info?: Info, ret?: Ret) {
   return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 

@@ -96,6 +96,9 @@ describe('schema', () => {
           },
           "tags": Object {
             "_optional": true,
+            "_type": Object {
+              "type": "string",
+            },
             "type": "array",
           },
         },

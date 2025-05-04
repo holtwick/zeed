@@ -157,9 +157,9 @@ function gravatar(
     for (n = 0; n < 64; n += 4) {
       t[n >> 2]
         = e.charCodeAt(n)
-        + (e.charCodeAt(n + 1) << 8)
-        + (e.charCodeAt(n + 2) << 16)
-        + (e.charCodeAt(n + 3) << 24)
+          + (e.charCodeAt(n + 1) << 8)
+          + (e.charCodeAt(n + 2) << 16)
+          + (e.charCodeAt(n + 3) << 24)
     }
     return t
   }

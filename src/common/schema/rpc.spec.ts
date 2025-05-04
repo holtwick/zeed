@@ -91,10 +91,12 @@ describe('rpc.spec', () => {
             "_args": Array [
               TypeStringClass {
                 "_check": [Function],
+                "extend": [Function],
                 "type": "string",
               },
               TypeGeneric {
                 "_check": [Function],
+                "extend": [Function],
                 "type": "boolean",
               },
             ],
@@ -105,12 +107,15 @@ describe('rpc.spec', () => {
             "_ret": TypeStringClass {
               "_check": [Function],
               "_optional": true,
+              "extend": [Function],
               "type": "string",
             },
+            "extend": [Function],
             "type": "function",
           },
           "noFunc": TypeStringClass {
             "_check": [Function],
+            "extend": [Function],
             "type": "string",
           },
           "rpc": TypeRpcClass {
@@ -120,10 +125,12 @@ describe('rpc.spec', () => {
               "_object": Object {
                 "id": TypeStringClass {
                   "_check": [Function],
+                  "extend": [Function],
                   "type": "string",
                 },
                 "method": TypeStringClass {
                   "_check": [Function],
+                  "extend": [Function],
                   "type": "string",
                 },
                 "params": TypeObjectClass {
@@ -131,25 +138,32 @@ describe('rpc.spec', () => {
                   "_object": Object {
                     "a": TypeStringClass {
                       "_check": [Function],
+                      "extend": [Function],
                       "type": "string",
                     },
                     "b": TypeGeneric {
                       "_check": [Function],
+                      "extend": [Function],
                       "type": "boolean",
                     },
                   },
+                  "extend": [Function],
                   "type": "object",
                 },
               },
+              "extend": [Function],
               "type": "object",
             },
             "_ret": TypeGeneric {
               "_check": [Function],
+              "extend": [Function],
               "type": "none",
             },
+            "extend": [Function],
             "type": "rpc",
           },
         },
+        "extend": [Function],
         "type": "object",
       }
     `)

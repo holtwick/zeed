@@ -67,6 +67,7 @@ describe('args.spec', () => {
               "argDesc": "Shows help",
               "argShort": "h",
             },
+            "extend": [Function],
             "type": "boolean",
           },
           "someStuff": TypeGeneric {
@@ -75,9 +76,11 @@ describe('args.spec', () => {
             "_props": Object {
               "argDesc": "Does some stuff",
             },
+            "extend": [Function],
             "type": "number",
           },
         },
+        "extend": [Function],
         "type": "object",
       }
     `)

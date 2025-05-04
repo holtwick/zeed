@@ -23,6 +23,7 @@ export interface Type<T = unknown> {
   parse: (obj: any) => T
   map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
   props: (props: TypeProps) => Type<T>
+  extend: <O>(obj: O) => Type<T & InferObject<O>>
 }
 
 export abstract class TypeClass<T = unknown> implements Type<T> {
@@ -77,6 +78,11 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
   props(props: TypeProps) {
     this._props = props
     return this
+  }
+
+  extend: <O>(obj: O) => Type<T & InferObject<O>> = (obj: any) => {
+    const newObj = { ...this._object, ...obj }
+    return object(newObj) as any
   }
 }
 

@@ -1,7 +1,8 @@
 import type { Infer } from './schema'
 import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
-import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
+import { uuid } from '../uuid'
+import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -215,5 +216,29 @@ describe('schema', () => {
     }
     type _SchemaTest = Expect<IsEqual<Schema, SchemaExpected>> // Should pass
     expectTypeOf<Schema>().toMatchTypeOf<SchemaExpected>()
+  })
+
+  it('mimic extend schema', async () => {
+    const baseSchema = z.object({
+      id: string().default(uuid),
+    })
+    const extendedSchema = baseSchema.extend({
+      name: string(),
+      age: int().optional(),
+      active: boolean(),
+      tags: array(string()).optional(),
+      info: any(),
+    })
+    type BaseSchema = Infer<typeof baseSchema>
+    type ExtendedSchema = Infer<typeof extendedSchema>
+    expectTypeOf<BaseSchema>().toMatchObjectType<{ id: string }>()
+    expectTypeOf<ExtendedSchema>().toMatchObjectType<{
+      id: string
+      age?: number | undefined
+      tags?: string[] | undefined
+      info?: any
+      name: string
+      active: boolean
+    }>()
   })
 })

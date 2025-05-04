@@ -2,7 +2,7 @@ import { getGlobalContext } from '../global'
 
 // Global logger to guarantee all submodules use the same logger instance
 
-export type OriginalConsole = Pick<Console, 'log' | 'info' | 'warn' | 'error' | 'debug' > & { console: Console }
+export type OriginalConsole = Pick<Console, 'log' | 'info' | 'warn' | 'error' | 'debug'> & { console: Console }
 
 declare global {
   interface ZeedGlobalContext {

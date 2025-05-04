@@ -23,6 +23,7 @@ export interface Type<T = unknown> {
   parse: (obj: any) => T
   map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
   props: (props: TypeProps) => Type<T>
+  extend: <O>(obj: O) => Type<T & InferObject<O>>
 }
 
 export abstract class TypeClass<T = unknown> implements Type<T> {
@@ -78,6 +79,11 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
     this._props = props
     return this
   }
+
+  extend: <O>(obj: O) => Type<T & InferObject<O>> = (obj: any) => {
+    const newObj = { ...this._object, ...obj }
+    return object(newObj) as any
+  }
 }
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never
@@ -100,10 +106,12 @@ class TypeStringClass<T extends string> extends TypeClass<T> {
   }
 }
 
+/// Just a simple string type
 export function string() {
   return new TypeStringClass<string>('string', isString)
 }
 
+/// Number as in Javascript, could be float or int
 export function number() {
   return generic<number>('number', {
     _check: isNumber,
@@ -114,12 +122,14 @@ export const float = number
 export const double = number
 export const real = number
 
+/// Integer
 export function int() {
   return generic<number>('int', {
     _check: isInteger,
   })
 }
 
+/// Boolean
 export function boolean() {
   return generic<boolean>('boolean', {
     _check: isBoolean,
@@ -134,7 +144,7 @@ export function none() {
   })
 }
 
-// todo: appears to result in optional inside object
+/// todo: appears to result in optional inside object
 export function any() {
   return generic<any>('any', {
     _check: v => v != null,
@@ -198,6 +208,7 @@ export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
   }
 }
 
+/// Object that can have any properties
 export function object<T>(tobj: T): Type<InferObject<T>> {
   return new TypeObjectClass(tobj)
 }
@@ -215,23 +226,25 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnio
   })
 }
 
-// Literal
+// Literals
 
 type Literal = string | number | bigint | boolean
 
+/// todo: string?
 export function literal<T extends Literal>(value: T): Type<T> {
   return generic<T>('string', {
     _check: v => v === value,
   })
 }
 
+/// Sting that can only be one of the values, like: `"a" | "b" | "c"``
 export function stringLiterals<const T extends readonly string[], O = T[number]>(value: T): Type<O> {
   return generic<O>('string', {
     _check: v => value.includes(v),
   })
 }
 
-// Function
+// Functions
 
 type TupleOutput<T extends Type[]> = {
   [K in keyof T]: T[K] extends Type<infer U> ? U : never
@@ -247,6 +260,7 @@ type ArrayType<
   Rest extends Type | undefined = Type | undefined,
 > = Type<ArrayOutput<Head, Rest>>
 
+// Like an array but with fixed length and types
 export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, undefined> {
   return generic('tuple', {
     _check: v => items.every((item, i) => item._check(v[i])),
@@ -289,6 +303,7 @@ class TypeFuncClass<T, Args, Ret> extends TypeClass<T> {
   _ret?: Ret
 }
 
+/// Regular function
 export function func<
   Args extends [Type<unknown>, ...Type<any>[]] | [],
   Ret = Type,
@@ -312,6 +327,7 @@ export class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
   _ret?: Ret
 }
 
+/// RPC function that only takes one argument and returns a promise
 export function rpc<
   Info extends Type<unknown> | undefined = undefined,
   Ret extends Type<unknown> = Type<void>, // ReturnType<typeof none>,
@@ -320,9 +336,23 @@ export function rpc<
   return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 
-// const fn = func([string(), boolean(), int()], string()) // typeof fn should be: Type<(...args: [string, boolean]) => string>
-
-// type typeFn = Infer<typeof fn> // typeFn should be: (...args: [string, boolean]) => string
-
-// type f1 = (a: number, b?: string) => boolean
-// type xx = Parameters<f1>
+/// Reduce conflicts with real type names, use like z.string()
+export const z = {
+  string,
+  number,
+  int,
+  boolean,
+  none,
+  any,
+  object,
+  array,
+  tuple,
+  union,
+  func,
+  rpc,
+  literal,
+  stringLiterals,
+  float,
+  double,
+  real,
+}

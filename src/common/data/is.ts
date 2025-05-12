@@ -120,7 +120,7 @@ export function isValue<T>(value: T | null | undefined | boolean): value is T {
 }
 
 /**
- * Not `null` or `undefined` or `false`, use like `.filter(isValue)`.
+ * Not `null` or `undefined` or `false` or empty string, use like `.filter(isValue)`.
  * Usefull e.g. on conditional list: `[x && 'value', ...]`
  */
 export function isTruthy<T>(value: T | null | undefined | boolean): value is T {

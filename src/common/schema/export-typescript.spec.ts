@@ -1,14 +1,14 @@
 import type { Infer } from './schema'
 import { schemaExportTypescriptInterface } from './export-typescript'
-import { boolean, int, number, object, string } from './schema'
+import { z } from './schema'
 
 describe('typescript.spec', () => {
   it('parse args', async () => {
-    const schema = object({
-      anInt: int().optional().default(0),
-      aBool: boolean(),
-      aNumber: number(),
-      aString: string(),
+    const schema = z.object({
+      anInt: z.int().optional().default(0),
+      aBool: z.boolean(),
+      aNumber: z.number(),
+      aString: z.string(),
     })
 
     type t = Infer<typeof schema>

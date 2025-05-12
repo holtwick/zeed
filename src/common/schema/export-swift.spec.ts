@@ -1,14 +1,14 @@
 import type { Infer } from './schema'
 import { schemaExportSwiftStruct } from './export-swift'
-import { boolean, int, number, object, string } from './schema'
+import { z } from './schema'
 
 describe('swift.spec', () => {
   it('parse args', async () => {
-    const schema = object({
-      anInt: int().optional().default(0),
-      aBool: boolean(),
-      aNumber: number(),
-      aString: string(),
+    const schema = z.object({
+      anInt: z.int().optional().default(0),
+      aBool: z.boolean(),
+      aNumber: z.number(),
+      aString: z.string(),
     }).props({
       swiftName: 'Test123',
       swiftProtocol: 'Codable',

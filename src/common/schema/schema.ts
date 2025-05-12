@@ -213,6 +213,14 @@ export function object<T>(tobj: T): Type<InferObject<T>> {
   return new TypeObjectClass(tobj)
 }
 
+export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> {
+  return new TypeObjectClass(tobj)
+}
+
+// const schemaRecord = record(int())
+// const schemaRecord = record(object({ a: int() }))
+// type SchemaRecord = Infer<typeof schemaRecord> // expected Record<string, number>
+
 // Union
 
 type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
@@ -355,4 +363,5 @@ export const z = {
   float,
   double,
   real,
+  record,
 }

@@ -78,6 +78,7 @@ describe('schema', () => {
             "type": "string",
           },
           "info": Object {
+            "_optional": true,
             "type": "any",
           },
           "lit": Object {
@@ -181,10 +182,11 @@ describe('schema', () => {
             "type": "string",
           },
           "literal": Object {
-            "type": "string",
+            "_default": "demo",
+            "type": "literal",
           },
           "name": Object {
-            "type": "string",
+            "type": "literal",
           },
         },
         "type": "object",

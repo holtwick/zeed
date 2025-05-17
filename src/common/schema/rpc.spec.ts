@@ -156,6 +156,7 @@ describe('rpc.spec', () => {
             },
             "_ret": TypeGeneric {
               "_check": [Function],
+              "_optional": true,
               "extend": [Function],
               "type": "none",
             },

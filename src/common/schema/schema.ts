@@ -94,7 +94,16 @@ class TypeGeneric<T> extends TypeClass<T> {
 }
 
 function generic<T = unknown>(type: string, opt?: Partial<Type<T>>): Type<T> {
-  return new TypeGeneric<T>(type, opt?._check)
+  const t = new TypeGeneric<T>(type, opt?._check)
+  if (opt?._default !== undefined)
+    t._default = opt?._default
+  if (opt?._optional !== undefined)
+    t._optional = opt?._optional
+  if (opt?._props !== undefined)
+    t._props = opt?._props
+  if (opt?._object !== undefined)
+    t._object = opt?._object
+  return t
 }
 
 // Primitives
@@ -240,8 +249,9 @@ type Literal = string | number | bigint | boolean
 
 /// todo: string?
 export function literal<T extends Literal>(value: T): Type<T> {
-  return generic<T>('string', {
+  return generic<T>('literal', {
     _check: v => v === value,
+    _default: value,
   })
 }
 

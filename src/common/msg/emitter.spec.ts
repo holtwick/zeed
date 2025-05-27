@@ -405,4 +405,27 @@ describe('emitter', () => {
 
     await expect(promise).rejects.toThrow('Did not respond in time')
   })
+
+  it('should get and getAll with emitter', async () => {
+    const e = new Emitter<{
+      a: (n: number) => void
+      b: (n: number) => void
+    }>()
+
+    e.on('a', () => 'a1')
+    e.on('a', () => 'a2')
+    e.on('b', () => 'b')
+
+    await e.get('a', 1)
+    await e.get('b', 2)
+
+    const allA = await e.getAll('a', 3)
+    const allB = await e.getAll('b', 4)
+
+    expect(allA).toEqual(['a1', 'a2'])
+    expect(allB).toEqual(['b'])
+
+    const oneA = await e.get('a', 3)
+    expect(oneA).toBe('a1')
+  })
 })

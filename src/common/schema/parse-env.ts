@@ -8,6 +8,7 @@ import { isSchemaObjectFlat } from './utils'
 declare module './schema' {
   interface TypeProps {
     envDesc?: string
+    envPrivate?: boolean // will not be documented
   }
 }
 
@@ -37,10 +38,12 @@ export function parseSchemaEnv<T>(schema: Type<T>, env: any = process?.env ?? {}
   }) as T
 }
 
-export function stringFromSchemaEnv<T>(schema: Type<T>, prefix = '', commentOut = false): string {
+export function stringFromSchemaEnv<T>(schema: Type<T>, prefix = '', commentOut = false, showPrivate = false): string {
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
   const lines: string[] = []
   objectMap(schema._object!, (key, schema) => {
+    if (schema._props?.envPrivate && !showPrivate)
+      return
     const desc = schema._props?.envDesc ?? schema._props?.desc
     if (desc) {
       desc.trim().split('\n').forEach((line: string) => {

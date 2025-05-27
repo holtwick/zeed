@@ -5,11 +5,11 @@ import { valueToBoolean, valueToBooleanNotFalse, valueToInteger } from '../data/
 import { objectFilter, objectMap } from '../data/object'
 import { isSchemaObjectFlat } from './utils'
 
-// declare module './types' {
-//   interface TypeProps {
-//     argShort?: string
-//   }
-// }
+declare module './schema' {
+  interface TypeProps {
+    envDesc?: string
+  }
+}
 
 // eslint-disable-next-line node/prefer-global/process
 export function parseSchemaEnv<T>(schema: Type<T>, env: any = process?.env ?? {}, prefix = ''): T {
@@ -41,7 +41,14 @@ export function stringFromSchemaEnv<T>(schema: Type<T>, prefix = '', commentOut 
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
   const lines: string[] = []
   objectMap(schema._object!, (key, schema) => {
+    const desc = schema._props?.envDesc ?? schema._props?.desc
+    if (desc) {
+      desc.trim().split('\n').forEach((line: string) => {
+        lines.push(`# ${line.trim()}`)
+      })
+    }
     lines.push(`${commentOut ? '# ' : ''}${prefix + fromCamelCase(key, '_').toUpperCase()}=${schema._default ?? ''}`)
+    lines.push('')
   }) as T
   return lines.join('\n')
 }

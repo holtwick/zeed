@@ -4,6 +4,7 @@ import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString
 import { first } from '../data/utils'
 
 export interface TypeProps {
+  desc?: string
 }
 
 // export interface TypeAssert {

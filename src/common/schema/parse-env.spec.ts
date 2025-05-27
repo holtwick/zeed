@@ -34,8 +34,8 @@ describe('env.spec', () => {
 
   it('parse prefix', async () => {
     const schema = object({
-      ServiceName: string().default('generic'),
-      servicePort: number().default(80),
+      ServiceName: string().default('generic').props({ desc: 'The name of the service' }),
+      servicePort: number().default(80).props({ desc: 'The port of the service' }),
       ServiceFlag: boolean().default(true),
     })
 
@@ -55,9 +55,14 @@ describe('env.spec', () => {
     `)
 
     expect(stringFromSchemaEnv(schema, 'APP_', true)).toMatchInlineSnapshot(`
-      "# APP_SERVICE_NAME=generic
+      "# The name of the service
+      # APP_SERVICE_NAME=generic
+
+      # The port of the service
       # APP_SERVICE_PORT=80
-      # APP_SERVICE_FLAG=true"
+
+      # APP_SERVICE_FLAG=true
+      "
     `)
   })
 })

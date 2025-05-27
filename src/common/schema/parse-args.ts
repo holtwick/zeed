@@ -80,8 +80,9 @@ export function helpSchemaArgs<T>(schema: Type<T>): string {
     if (schema.type !== 'boolean')
       s += `=${schema.type}`
     lines.push(s)
-    if (schema._props?.argDesc)
-      lines.push(`  ${schema._props?.argDesc}`)
+    const desc = schema._props?.argDesc ?? schema._props?.desc
+    if (desc)
+      lines.push(`  ${desc}`)
   })
 
   return lines.join('\n')

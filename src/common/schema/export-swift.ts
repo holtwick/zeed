@@ -7,6 +7,7 @@ declare module './schema' {
   interface TypeProps {
     swiftName?: string
     swiftProtocol?: string
+    swiftDesc?: string
   }
 }
 

@@ -62,6 +62,7 @@
     "prepublishOnly": "nr build && nr circles && nr test:publish",
     "start": "nr watch",
     "test": "vitest",
+    "test:release": "vitest --run",
     "test:browser": "PREVIEW=1 vitest",
     "test:firefox": "BROWSER=firefox vitest",
     "test:webkit": "BROWSER=webkit vitest",

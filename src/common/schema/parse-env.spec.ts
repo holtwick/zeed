@@ -65,9 +65,6 @@ describe('env.spec', () => {
       APP_SERVICE_PORT=80
 
       APP_SERVICE_FLAG=true
-
-      # Dummy value
-      APP_SERVICE_DUMMY=dummy
       "
     `)
   })

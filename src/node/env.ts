@@ -21,8 +21,51 @@ interface EnvOptions {
   mode?: string
 }
 
+// BSD-2-Clause License from here https://github.com/motdotla/dotenv/blob/master/lib/main.js#L12
+// eslint-disable-next-line regexp/no-super-linear-backtracking
+const LINE = /^\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?$/gm
+
+// https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/#env-file-syntax
+export function parseEnvStringAlt(src: string): Record<string, string> {
+  const obj: Record<string, string> = {}
+
+  // Convert buffer to string
+  let lines = src.toString()
+
+  // Convert line breaks to same format
+  lines = lines.replace(/\r\n?/g, '\n')
+
+  let match
+  // eslint-disable-next-line no-cond-assign
+  while ((match = LINE.exec(lines)) != null) {
+    const key = match[1]
+
+    // Default undefined or null to empty string
+    let value = (match[2] || '')
+
+    // Remove whitespace
+    value = value.trim()
+
+    // Check if double quoted
+    const maybeQuote = value[0]
+
+    // Remove surrounding quotes
+    value = value.replace(/^(['"`])([\s\S]*)\1$/gm, '$2')
+
+    // Expand newlines if double quoted
+    if (maybeQuote === '"') {
+      value = value.replace(/\\n/g, '\n')
+      value = value.replace(/\\r/g, '\r')
+    }
+
+    // Add to object
+    obj[key] = value
+  }
+
+  return obj
+}
 // Parses src into an Object
-function parse(src: string, _options: EnvOptions = {}) {
+export function parseEnvString(src: string) {
   const obj: Record<string, string> = {}
 
   // convert Buffers before splitting into lines and processing
@@ -109,7 +152,7 @@ export function setupEnv(options: EnvOptions = {}) {
 
     function envOf(name: string) {
       return fs.existsSync(name)
-        ? parse(fs.readFileSync(name, { encoding }), { debug })
+        ? parseEnvStringAlt(fs.readFileSync(name, { encoding }))
         : {}
     }
 

@@ -52,11 +52,9 @@ export class Emitter<
    *
    * @param event - The event to emit.
    * @param args - The arguments to pass to the event handlers.
-   * @returns A promise that resolves to a boolean indicating whether the event was successfully emitted.
+   * @returns A promise that resolves to an array of results from all subscribers, or undefined if no subscribers are present.
    */
-  public async emit<U extends keyof RemoteListener>(event: U, ...args: Parameters<RemoteListener[U]>): Promise<boolean> {
-    let ok = false
-
+  public async getAll<U extends keyof RemoteListener>(event: U, ...args: Parameters<RemoteListener[U]>): Promise<ReturnType<RemoteListener[U]>[] | undefined> {
     try {
       const subscribers = (this.subscribers[event] || []) as EmitterSubscriber[]
       this._logEmitter.debug('emit', this?.constructor?.name, event, ...args, subscribers)
@@ -73,14 +71,40 @@ export class Emitter<
           }
           return null
         }).filter(fn => fn != null)
-        ok = true
-        await Promise.all(all)
+        return (await Promise.all(all)) as any[]
       }
     }
     catch (err) {
       this._logEmitter.error('emit exception', err)
     }
-    return ok
+    return undefined
+  }
+
+  /**
+   * Emits an event to all subscribers and executes their corresponding event handlers.
+   *
+   * @param event - The event to emit.
+   * @param args - The arguments to pass to the event handlers.
+   * @returns A promise that resolves to the result of the first subscriber's handler, or undefined if no subscribers are present.
+   */
+  public async get<U extends keyof RemoteListener>(event: U, ...args: Parameters<RemoteListener[U]>): Promise<ReturnType<RemoteListener[U]> | undefined> {
+    const results = await this.getAll(event, ...args)
+    if (results && results.length > 0) {
+      return results[0] // Return first result
+    }
+    return undefined
+  }
+
+  /**
+   * Emits an event to all subscribers and executes their corresponding event handlers.
+   *
+   * @param event - The event to emit.
+   * @param args - The arguments to pass to the event handlers.
+   * @returns A promise that resolves to a boolean indicating whether the event was successfully emitted.
+   */
+  public async emit<U extends keyof RemoteListener>(event: U, ...args: Parameters<RemoteListener[U]>): Promise<boolean> {
+    const result = await this.getAll(event, ...args)
+    return result != null
   }
 
   public onAny(fn: EmitterHandler) {

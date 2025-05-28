@@ -18,9 +18,11 @@ describe('env.spec', () => {
     }>()
 
     const r = parseSchemaEnv(schema, {
-      SERVICE_NAME: 'SomeThing',
-      SERVICE_PORT: ' 8888 ',
-      SERVICE_FLAG: 'illegalValueTriggerDefault',
+      env: {
+        SERVICE_NAME: 'SomeThing',
+        SERVICE_PORT: ' 8888 ',
+        SERVICE_FLAG: 'illegalValueTriggerDefault',
+      },
     })
 
     expect(r).toMatchInlineSnapshot(`
@@ -40,19 +42,40 @@ describe('env.spec', () => {
       serviceDummy: string().default('dummy').props({ desc: 'Dummy value', envPrivate: true }),
     })
 
-    const r = parseSchemaEnv(schema, {
-      SERVICE_NAME: 'SomeThing',
+    const env = {
+      SERVICE_NAME: 'FormENV',
       SERVICE_PORT: ' 8888 ',
-      APP_SERVICE_PORT: ' 9999',
-      SERVICE_FLAG: 'illegalValueTriggerDefault',
-    }, 'APP_')
+      APP_SERVICE_PORT: ' 9999', // APP_ and without
+      SERVICE_FLAG: 'illegalValueTriggerDefault', // invalid value, should trigger default
+      APP_SERVICE_DUMMY: 'FromEnvDummyDummyDummy', // only APP_
+    }
 
-    expect(r).toMatchInlineSnapshot(`
+    // Only those with APP_ prefix should be parsed
+    expect(parseSchemaEnv(schema, { env, prefix: 'APP_' })).toMatchInlineSnapshot(`
       Object {
         "ServiceFlag": true,
         "ServiceName": "generic",
-        "serviceDummy": "dummy",
+        "serviceDummy": "FromEnvDummyDummyDummy",
         "servicePort": 9999,
+      }
+    `)
+
+    // Also those without APP_ prefix should be parsed, but APP_ prefix wins
+    expect(parseSchemaEnv(schema, { env, prefix: 'APP_', prefixOptional: true })).toMatchInlineSnapshot(`
+      Object {
+        "ServiceFlag": true,
+        "ServiceName": "FormENV",
+        "serviceDummy": "FromEnvDummyDummyDummy",
+        "servicePort": 9999,
+      }
+    `)
+
+    expect(parseSchemaEnv(schema, { env })).toMatchInlineSnapshot(`
+      Object {
+        "ServiceFlag": true,
+        "ServiceName": "FormENV",
+        "serviceDummy": "dummy",
+        "servicePort": 8888,
       }
     `)
 

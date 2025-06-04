@@ -155,10 +155,10 @@ export function none() {
 }
 
 /// todo: appears to result in optional inside object
-export function any() {
-  return generic<any>('any', {
+export function any<T = any>() {
+  return generic<T>('any', {
     _check: v => v != null,
-    _optional: true,
+    // _optional: false,
   })
 }
 

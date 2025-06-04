@@ -24,6 +24,8 @@ describe('schema', () => {
     type t1 = Infer<typeof s1>
     expectTypeOf<t1>().toMatchTypeOf<string | undefined>()
 
+    type CustomType = string | number | boolean
+
     const schema = object({
       id: string().default('123'), // default(() => '123'),
       name: string(),
@@ -37,28 +39,31 @@ describe('schema', () => {
         test: float(),
       }).optional(),
       lit,
+      log: any<CustomType>(),
     })
 
     type Schema = Infer<typeof schema>
     type SchemaTest = Expect<IsEqual<Schema, {
-      id: string
       age?: number | undefined
+      tags?: string[] | undefined
+      info?: any
       obj?: {
         test: number
       } | undefined
+      log: CustomType
+      id: string
       name: string
-      info?: any
       active: boolean
-      tags?: string[]
       lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
     }>> // Should pass
 
-    const sample: Partial<Schema> = {
+    const sample: Omit<Schema, 'id'> = {
       name: 'Hello',
       age: 42,
       active: true,
       lit: 'past_due',
       info: 123,
+      log: true,
     }
 
     // const s: Status = sample.status
@@ -78,11 +83,13 @@ describe('schema', () => {
             "type": "string",
           },
           "info": Object {
-            "_optional": true,
             "type": "any",
           },
           "lit": Object {
             "type": "string",
+          },
+          "log": Object {
+            "type": "any",
           },
           "name": Object {
             "type": "string",
@@ -115,6 +122,7 @@ describe('schema', () => {
         "id": "123",
         "info": 123,
         "lit": "past_due",
+        "log": true,
         "name": "Hello",
       }
     `)
@@ -129,6 +137,7 @@ describe('schema', () => {
         "age": 42,
         "info": 123,
         "lit": "past_due",
+        "log": true,
         "name": "Hello",
         "obj": Object {},
       }
@@ -144,6 +153,7 @@ describe('schema', () => {
         "age": 42,
         "info": 123,
         "lit": "past_due",
+        "log": true,
         "name": "Hello",
         "obj": Object {},
       }

@@ -2,7 +2,7 @@ import type { Infer } from './schema'
 import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
 import { uuid } from '../uuid'
-import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
+import { any, array, boolean, custom, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -24,6 +24,8 @@ describe('schema', () => {
     type t1 = Infer<typeof s1>
     expectTypeOf<t1>().toMatchTypeOf<string | undefined>()
 
+    type CustomType = string | number | boolean
+
     const schema = object({
       id: string().default('123'), // default(() => '123'),
       name: string(),
@@ -37,19 +39,21 @@ describe('schema', () => {
         test: float(),
       }).optional(),
       lit,
+      log: custom<CustomType>(),
     })
 
     type Schema = Infer<typeof schema>
     type SchemaTest = Expect<IsEqual<Schema, {
-      id: string
       age?: number | undefined
+      tags?: string[] | undefined
+      info?: any
       obj?: {
         test: number
       } | undefined
+      log: CustomType
+      id: string
       name: string
-      info?: any
       active: boolean
-      tags?: string[]
       lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
     }>> // Should pass
 

@@ -355,6 +355,11 @@ export function rpc<
   return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 
+/// Custom type for TypeScript only, no runtime check
+export function custom<T>() {
+  return generic<T>('custom')
+}
+
 /// Reduce conflicts with real type names, use like z.string()
 export const z = {
   string,
@@ -363,6 +368,7 @@ export const z = {
   boolean,
   none,
   any,
+  custom,
   object,
   array,
   tuple,

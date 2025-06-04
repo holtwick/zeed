@@ -15,13 +15,14 @@ declare module './schema' {
 
 export type SchemaEnvType = Record<string, any>
 
-export interface SchemaEnvOptions {
+export interface SchemaEnvOptions<T> {
+  existing?: Partial<T> // if true, will only parse existing env variables
   env?: SchemaEnvType
   prefix?: string
   prefixOptional?: boolean // if true, prefix is optional
 }
 
-export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions): T {
+export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions<T>): T {
   assert(schema?._object, 'schema should be of type object')
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
 
@@ -32,10 +33,12 @@ export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions): T {
     prefixOptional = false,
   } = opt ?? {}
   const pl = prefix.length
+  const existing: any = opt?.existing ?? {}
 
   return objectMap(schema._object, (key, schema) => {
+    const defaultValue = existing[key] ?? schema._default
     if (schema._props?.envSkip)
-      return schema._default
+      return defaultValue
 
     const envKey = fromCamelCase(key, '_').toUpperCase()
     const envKeyWithPrefix = prefix + fromCamelCase(key, '_').toUpperCase()
@@ -49,6 +52,10 @@ export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions): T {
       else {
         value = env[envKeyWithPrefix]
       }
+    }
+
+    if (value === undefined) {
+      return defaultValue
     }
 
     if (schema.type === 'number') {

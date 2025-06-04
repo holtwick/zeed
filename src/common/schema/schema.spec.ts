@@ -2,7 +2,7 @@ import type { Infer } from './schema'
 import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
 import { uuid } from '../uuid'
-import { any, array, boolean, custom, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
+import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -39,7 +39,7 @@ describe('schema', () => {
         test: float(),
       }).optional(),
       lit,
-      log: custom<CustomType>(),
+      log: any<CustomType>(),
     })
 
     type Schema = Infer<typeof schema>
@@ -57,12 +57,13 @@ describe('schema', () => {
       lit: 'active' | 'trialing' | 'past_due' | 'paused' | 'deleted'
     }>> // Should pass
 
-    const sample: Partial<Schema> = {
+    const sample: Omit<Schema, 'id'> = {
       name: 'Hello',
       age: 42,
       active: true,
       lit: 'past_due',
       info: 123,
+      log: true,
     }
 
     // const s: Status = sample.status
@@ -82,11 +83,13 @@ describe('schema', () => {
             "type": "string",
           },
           "info": Object {
-            "_optional": true,
             "type": "any",
           },
           "lit": Object {
             "type": "string",
+          },
+          "log": Object {
+            "type": "any",
           },
           "name": Object {
             "type": "string",
@@ -119,6 +122,7 @@ describe('schema', () => {
         "id": "123",
         "info": 123,
         "lit": "past_due",
+        "log": true,
         "name": "Hello",
       }
     `)
@@ -133,6 +137,7 @@ describe('schema', () => {
         "age": 42,
         "info": 123,
         "lit": "past_due",
+        "log": true,
         "name": "Hello",
         "obj": Object {},
       }
@@ -148,6 +153,7 @@ describe('schema', () => {
         "age": 42,
         "info": 123,
         "lit": "past_due",
+        "log": true,
         "name": "Hello",
         "obj": Object {},
       }

@@ -155,10 +155,10 @@ export function none() {
 }
 
 /// todo: appears to result in optional inside object
-export function any() {
-  return generic<any>('any', {
+export function any<T = any>() {
+  return generic<T>('any', {
     _check: v => v != null,
-    _optional: true,
+    // _optional: false,
   })
 }
 
@@ -355,11 +355,6 @@ export function rpc<
   return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 
-/// Custom type for TypeScript only, no runtime check
-export function custom<T>() {
-  return generic<T>('custom')
-}
-
 /// Reduce conflicts with real type names, use like z.string()
 export const z = {
   string,
@@ -368,7 +363,6 @@ export const z = {
   boolean,
   none,
   any,
-  custom,
   object,
   array,
   tuple,

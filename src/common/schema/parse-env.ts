@@ -9,6 +9,7 @@ declare module './schema' {
   interface TypeProps {
     envDesc?: string
     envPrivate?: boolean // will not be documented
+    envSkip?: boolean // will not be included in env parsing
   }
 }
 
@@ -33,6 +34,9 @@ export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions): T {
   const pl = prefix.length
 
   return objectMap(schema._object, (key, schema) => {
+    if (schema._props?.envSkip)
+      return schema._default
+
     const envKey = fromCamelCase(key, '_').toUpperCase()
     const envKeyWithPrefix = prefix + fromCamelCase(key, '_').toUpperCase()
 
@@ -64,7 +68,7 @@ export function stringFromSchemaEnv<T>(schema: Type<T>, prefix = '', commentOut 
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
   const lines: string[] = []
   objectMap(schema._object!, (key, schema) => {
-    if (schema._props?.envPrivate && !showPrivate)
+    if ((schema._props?.envPrivate || schema._props?.envSkip) && !showPrivate)
       return
     const desc = schema._props?.envDesc ?? schema._props?.desc
     if (desc) {

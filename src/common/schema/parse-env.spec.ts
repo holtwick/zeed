@@ -79,6 +79,15 @@ describe('env.spec', () => {
       }
     `)
 
+    expect(parseSchemaEnv(schema, { env: {}, existing: { ServiceName: 'exists' } })).toMatchInlineSnapshot(`
+      Object {
+        "ServiceFlag": true,
+        "ServiceName": "exists",
+        "serviceDummy": "dummy",
+        "servicePort": 80,
+      }
+    `)
+
     expect(stringFromSchemaEnv(schema, 'APP_', false)).toMatchInlineSnapshot(`
       "# The name of the service
       # Multi Line

@@ -86,6 +86,13 @@ describe('schema', () => {
             "type": "any",
           },
           "lit": Object {
+            "_enumValues": Array [
+              "active",
+              "trialing",
+              "past_due",
+              "paused",
+              "deleted",
+            ],
             "type": "string",
           },
           "log": Object {

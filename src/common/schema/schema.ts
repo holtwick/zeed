@@ -264,7 +264,6 @@ export class TypeStringLiterals<T> extends TypeClass<T> {
   }
 
   _enumValues: string[]
-  _type = 'string'
 }
 
 /// todo: string?

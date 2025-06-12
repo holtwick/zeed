@@ -243,6 +243,7 @@ export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> 
 
 type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
 
+/// Union of types, like `string | number | boolean`
 export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnion<T>> {
   return generic<any>(first(options)?.type ?? 'any', {
     // _union: options,
@@ -256,6 +257,16 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnio
 
 type Literal = string | number | bigint | boolean
 
+export class TypeStringLiterals<T> extends TypeClass<T> {
+  constructor(values: string[]) {
+    super('string', v => values.includes(v))
+    this._enumValues = values
+  }
+
+  _enumValues: string[]
+  _type = 'string'
+}
+
 /// todo: string?
 export function literal<T extends Literal>(value: T): Type<T> {
   return generic<T>('literal', {
@@ -265,11 +276,18 @@ export function literal<T extends Literal>(value: T): Type<T> {
 }
 
 /// Sting that can only be one of the values, like: `"a" | "b" | "c"``
-export function stringLiterals<const T extends readonly string[], O = T[number]>(value: T): Type<O> {
-  return generic<O>('string', {
-    _check: v => value.includes(v),
-  })
+export function stringLiterals<const T extends readonly string[], O = T[number]>(values: T): Type<O> {
+  return new TypeStringLiterals<O>(values as any)
 }
+
+/// Sting that can only be one of the values, like: `"a" | "b" | "c"``
+// function zEnum<const T extends readonly (string | number | boolean | bigint)[], O = T[number]>(value: T): Type<O> {
+//   return generic<O>('enum', {
+//     _check: v => value.includes(v),
+//   })
+// }
+
+// export { zEnum as enum } // Export as enum to avoid conflicts with real enum types
 
 // Functions
 
@@ -371,6 +389,7 @@ export const z = {
   boolean,
   none,
   any,
+  enum: stringLiterals,
   object,
   array,
   tuple,

@@ -7,6 +7,7 @@ const _mapJsonSchemaType: Record<string, string> = {
   string: 'string',
   number: 'number',
   boolean: 'boolean',
+  int: 'integer',
   // Add more type mappings as needed
 }
 
@@ -19,6 +20,10 @@ export function schemaExportJsonSchema<T>(schema: Type<T>, name: string = 'Examp
   objectMap(schema._object!, (key, schema: Type<any>) => {
     properties[key] = {
       type: _mapJsonSchemaType[schema.type] ?? schema.type,
+    }
+    const enumValues = (schema as any)._enumValues
+    if (enumValues) {
+      properties[key].enum = enumValues
     }
     if (schema._default !== undefined) {
       properties[key].default = schema._default

@@ -5,6 +5,7 @@ import { z } from './schema'
 describe('json-schema.spec', () => {
   it('parse args', async () => {
     const schema = z.object({
+      fixed: z.enum(['a', 'b', 'c']).describe('This is a fixed value'),
       anInt: z.int().optional().default(0),
       aBool: z.boolean().describe('This is a boolean'),
       aNumber: z.number().props({
@@ -15,6 +16,7 @@ describe('json-schema.spec', () => {
 
     type t = Infer<typeof schema>
     expectTypeOf<t>().toMatchObjectType<{
+      fixed: 'a' | 'b' | 'c'
       anInt?: number | undefined
       aBool: boolean
       aNumber: number
@@ -29,8 +31,17 @@ describe('json-schema.spec', () => {
         "title": "Test",
         "type": "object",
         "properties": {
+          "fixed": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b",
+              "c"
+            ],
+            "description": "This is a fixed value"
+          },
           "anInt": {
-            "type": "int",
+            "type": "integer",
             "default": 0
           },
           "aBool": {
@@ -46,6 +57,7 @@ describe('json-schema.spec', () => {
           }
         },
         "required": [
+          "fixed",
           "aBool",
           "aNumber",
           "aString"

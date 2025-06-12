@@ -24,6 +24,7 @@ export interface Type<T = unknown> {
   parse: (obj: any) => T
   map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
   props: (props: TypeProps) => Type<T>
+  describe: (msg: string) => Type<T>
   extend: <O>(obj: O) => Type<T & InferObject<O>>
 }
 
@@ -78,6 +79,13 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
 
   props(props: TypeProps) {
     this._props = props
+    return this
+  }
+
+  describe(msg: string) {
+    if (!this._props)
+      this._props = {}
+    this._props.desc = msg
     return this
   }
 

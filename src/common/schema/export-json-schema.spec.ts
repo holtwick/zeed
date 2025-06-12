@@ -6,7 +6,7 @@ describe('json-schema.spec', () => {
   it('parse args', async () => {
     const schema = z.object({
       anInt: z.int().optional().default(0),
-      aBool: z.boolean(),
+      aBool: z.boolean().describe('This is a boolean'),
       aNumber: z.number().props({
         desc: 'This is a number',
       }),
@@ -34,7 +34,8 @@ describe('json-schema.spec', () => {
             "default": 0
           },
           "aBool": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "This is a boolean"
           },
           "aNumber": {
             "type": "number",

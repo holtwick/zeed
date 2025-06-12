@@ -26,43 +26,43 @@ describe('json-schema.spec', () => {
     const r = schemaExportJsonSchema(schema, 'Test')
 
     expect(r).toMatchInlineSnapshot(`
-      "{
+      Object {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "Test",
-        "type": "object",
-        "properties": {
-          "fixed": {
+        "properties": Object {
+          "aBool": Object {
+            "description": "This is a boolean",
+            "type": "boolean",
+          },
+          "aNumber": Object {
+            "description": "This is a number",
+            "type": "number",
+          },
+          "aString": Object {
             "type": "string",
-            "enum": [
+          },
+          "anInt": Object {
+            "default": 0,
+            "type": "integer",
+          },
+          "fixed": Object {
+            "description": "This is a fixed value",
+            "enum": Array [
               "a",
               "b",
-              "c"
+              "c",
             ],
-            "description": "This is a fixed value"
+            "type": "string",
           },
-          "anInt": {
-            "type": "integer",
-            "default": 0
-          },
-          "aBool": {
-            "type": "boolean",
-            "description": "This is a boolean"
-          },
-          "aNumber": {
-            "type": "number",
-            "description": "This is a number"
-          },
-          "aString": {
-            "type": "string"
-          }
         },
-        "required": [
+        "required": Array [
           "fixed",
           "aBool",
           "aNumber",
-          "aString"
-        ]
-      }"
+          "aString",
+        ],
+        "title": "Test",
+        "type": "object",
+      }
     `)
   })
 })

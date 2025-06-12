@@ -27,7 +27,7 @@ export function uuidDecodeB62(uuid: string): Uint8Array {
 
 // Base32
 
-export function uuidB32(bytes = uuidBytes()): string {
+export function uuidB32(bytes: Uint8Array = uuidBytes()): string {
   return encodeBase32(bytes, 26)
 }
 

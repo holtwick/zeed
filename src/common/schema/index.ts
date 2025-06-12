@@ -1,3 +1,4 @@
+export * from './export-json-schema'
 export * from './export-swift'
 export * from './export-typescript'
 export * from './parse-args'

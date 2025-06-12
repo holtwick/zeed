@@ -44,3 +44,8 @@ export function schemaExportJsonSchema<T>(schema: Type<T>, name: string = 'Examp
     ...(required.length > 0 ? { required } : {}),
   }
 }
+
+export function schemaExportJsonSchemaString<T>(schema: Type<T>, name: string = 'Example'): string {
+  const jsonSchema = schemaExportJsonSchema(schema, name)
+  return JSON.stringify(jsonSchema, null, 2)
+}

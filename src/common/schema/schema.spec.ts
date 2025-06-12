@@ -203,7 +203,21 @@ describe('schema', () => {
             "type": "literal",
           },
           "name": Object {
-            "type": "literal",
+            "_union": Array [
+              Object {
+                "_default": "one",
+                "type": "literal",
+              },
+              Object {
+                "_default": "two",
+                "type": "literal",
+              },
+              Object {
+                "_default": "three",
+                "type": "literal",
+              },
+            ],
+            "type": "union",
           },
         },
         "type": "object",

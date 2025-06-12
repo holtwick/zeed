@@ -243,14 +243,17 @@ export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> 
 
 type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
 
+export class TypeUnion<T> extends TypeClass<T> {
+  _union: Type<any>[]
+  constructor(unionTypes: Type<any>[]) {
+    super('union', v => true) // todo
+    this._union = unionTypes
+  }
+}
+
 /// Union of types, like `string | number | boolean`
 export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnion<T>> {
-  return generic<any>(first(options)?.type ?? 'any', {
-    // _union: options,
-    // _check(obj) {
-    //   return this._union?.some(t => t._check(obj)) ?? true
-    // },
-  })
+  return new TypeUnion<TransformToUnion<T>>(options)
 }
 
 // Literals
@@ -258,12 +261,11 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnio
 type Literal = string | number | bigint | boolean
 
 export class TypeStringLiterals<T> extends TypeClass<T> {
+  _enumValues: string[]
   constructor(values: string[]) {
     super('string', v => values.includes(v))
     this._enumValues = values
   }
-
-  _enumValues: string[]
 }
 
 /// todo: string?

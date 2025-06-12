@@ -11,7 +11,7 @@ const _mapJsonSchemaType: Record<string, string> = {
   // Add more type mappings as needed
 }
 
-export function schemaExportJsonSchema<T>(schema: Type<T>, name: string = 'Example'): string {
+export function schemaExportJsonSchema<T>(schema: Type<T>, name: string = 'Example'): Record<string, any> {
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
 
   const properties: Record<string, any> = {}
@@ -36,13 +36,11 @@ export function schemaExportJsonSchema<T>(schema: Type<T>, name: string = 'Examp
     }
   })
 
-  const jsonSchema = {
+  return {
     $schema: 'http://json-schema.org/draft-07/schema#',
     title: name,
     type: 'object',
     properties,
     ...(required.length > 0 ? { required } : {}),
   }
-
-  return JSON.stringify(jsonSchema, null, 2)
 }

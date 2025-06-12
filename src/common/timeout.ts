@@ -6,7 +6,7 @@
  * https://jakearchibald.com/2024/garbage-collection-and-closures/
  * https://news.ycombinator.com/item?id=41111062
  */
-export function safeTimeout(fn: () => void, delay = 0, unref = false) {
+export function safeTimeout(fn: () => void, delay = 0, unref = false): () => void {
   let timerId: any
 
   const disposeTimer = () => {

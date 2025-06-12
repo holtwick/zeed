@@ -14,7 +14,7 @@ export function regExpEscape(str: string): string {
 }
 
 export class XRX {
-  lookBehind
+  lookBehind:any
   namedGroups: Record<string, number> = {}
   names: string[] = []
   rx: RegExp

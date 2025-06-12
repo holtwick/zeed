@@ -68,7 +68,7 @@ export function deepEqual(a: any, b: any, hash = new WeakSet()) {
 }
 
 /** Strip properties with value `undefined` in place */
-export function deepStripUndefinedInPlace(a: any, hash = new WeakSet()) {
+export function deepStripUndefinedInPlace(a: any, hash:WeakSet<object> = new WeakSet()) {
   // Cyclic
   if (hash.has(a))
     return '[Circular ~]'

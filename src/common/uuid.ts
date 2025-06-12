@@ -13,7 +13,7 @@ export function uuidBytes(): Uint8Array {
 
 // Base62
 
-export function uuidB62(bytes = uuidBytes()): string {
+export function uuidB62(bytes: Uint8Array = uuidBytes()): string {
   return encodeBase62(bytes, 22)
 }
 
@@ -44,7 +44,7 @@ export function uuidDecodeB32(uuid: string): Uint8Array {
 // https://stackoverflow.com/a/2117523/140927
 const pattern = '10000000-1000-4000-8000-100000000000' // String([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
 
-export function uuidv4() {
+export function uuidv4(): string {
   return (typeof crypto !== 'undefined' && crypto.randomUUID != null)
     ? crypto.randomUUID() // native!
     : pattern.replace(/[018]/g, (c: any) => (c ^ (randomUint8Array(1)[0] & (15 >> (c / 4)))).toString(16))
@@ -140,9 +140,9 @@ const mapModes = {
     uuidEncode: uuidEncodeV4,
   },
   test: {
-    uuid: () => uname('test'),
-    uuidDecode: (id: string) => toUint8Array(id),
-    uuidEncode: (bin: Uint8Array) => Uint8ArrayToString(bin),
+    uuid: (): string => uname('test'),
+    uuidDecode: (id: string): Uint8Array => toUint8Array(id),
+    uuidEncode: (bin: Uint8Array): string => Uint8ArrayToString(bin),
   },
 }
 

@@ -4,10 +4,10 @@ import { sum } from './math'
 
 export type RoundingMode = (value: number) => number
 
-export function isHalf(value: number) {
+export function isHalf(value: number): boolean {
   return Math.abs(value) % 1 === 0.5
 }
-export function isEven(value: number) {
+export function isEven(value: number): boolean {
   return value % 2 === 0
 }
 

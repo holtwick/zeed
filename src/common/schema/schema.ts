@@ -1,7 +1,6 @@
 // With many, many inspiration from https://github.com/badrap/valita MIT License as of 2024-09-10
 
-import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
-import { first } from '../data/utils'
+import { isArray, isBoolean, isFunction, isInteger, isNumber, isString } from '../data/is'
 
 export interface TypeProps {
   desc?: string
@@ -21,8 +20,8 @@ export interface Type<T = unknown> {
   readonly _check: (obj: any) => boolean
   optional: () => Type<T | undefined>
   default: (value: any) => Type<T>
-  parse: (obj: any) => T
-  map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
+  // parse: (obj: any) => T
+  // map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
   props: (props: TypeProps) => Type<T>
   describe: (msg: string) => Type<T>
   extend: <O>(obj: O) => Type<T & InferObject<O>>
@@ -53,27 +52,27 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
     return this
   }
 
-  parse(obj: any): T {
-    if (obj == null) {
-      if (this._default != null) {
-        if (isFunction(this._default))
-          obj = this._default()
-        else
-          obj = this._default
-      }
-    }
-    if (obj == null && this._optional === true)
-      return undefined as any
-    if (obj == null)
-      throw new Error(`cannot be undefined, is ${obj}`)
-    if (!this._check || this._check(obj))
-      return obj
-    throw new Error('wrong value')
-  }
+  // parse(obj: any): T {
+  //   if (obj == null) {
+  //     if (this._default != null) {
+  //       if (isFunction(this._default))
+  //         obj = this._default()
+  //       else
+  //         obj = this._default
+  //     }
+  //   }
+  //   if (obj == null && this._optional === true)
+  //     return undefined as any
+  //   if (obj == null)
+  //     throw new Error(`cannot be undefined, is ${obj}`)
+  //   if (!this._check || this._check(obj))
+  //     return obj
+  //   throw new Error('wrong value')
+  // }
 
-  map(obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any): any {
-    return fn.call(this, obj, this) ?? obj
-  }
+  // map(obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any): any {
+  //   return fn.call(this, obj, this) ?? obj
+  // }
 
   _props?: TypeProps
 
@@ -194,36 +193,36 @@ export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
     this._object = obj as any
   }
 
-  parse(obj: any) {
-    if (obj == null && this._optional === true)
-      return undefined
-    const newObj: any = {}
-    if (!isObject(obj))
-      return new Error('expected object input')
-    if (!isObject(this._object))
-      return new Error('expected object definition')
-    for (const [key, info] of Object.entries(this._object)) {
-      const value = info.parse((obj as any)[key])
-      if (value !== undefined)
-        newObj[key] = value
-    }
-    return newObj
-  }
+  // parse(obj: any) {
+  //   if (obj == null && this._optional === true)
+  //     return undefined
+  //   const newObj: any = {}
+  //   if (!isObject(obj))
+  //     return new Error('expected object input')
+  //   if (!isObject(this._object))
+  //     return new Error('expected object definition')
+  //   for (const [key, info] of Object.entries(this._object)) {
+  //     const value = info.parse((obj as any)[key])
+  //     if (value !== undefined)
+  //       newObj[key] = value
+  //   }
+  //   return newObj
+  // }
 
-  map(obj: any, fn: (this: Type<O>, obj: any, schema: Type<O>) => any): any {
-    const result = fn.call(this as any, obj, this as any)
-    if (result !== undefined)
-      return result
-    const newObj: any = {}
-    if (obj) {
-      for (const [key, info] of Object.entries(this._object ?? {})) {
-        const value = (info as Type).map((obj as any)[key], fn as any)
-        if (value !== undefined)
-          newObj[key] = value
-      }
-    }
-    return newObj
-  }
+  // map(obj: any, fn: (this: Type<O>, obj: any, schema: Type<O>) => any): any {
+  //   const result = fn.call(this as any, obj, this as any)
+  //   if (result !== undefined)
+  //     return result
+  //   const newObj: any = {}
+  //   if (obj) {
+  //     for (const [key, info] of Object.entries(this._object ?? {})) {
+  //       const value = (info as Type).map((obj as any)[key], fn as any)
+  //       if (value !== undefined)
+  //         newObj[key] = value
+  //     }
+  //   }
+  //   return newObj
+  // }
 }
 
 /// Object that can have any properties

@@ -64,10 +64,10 @@ export function getPerformanceTimestamp(): number {
   return typeof performance !== 'undefined' ? performance.now() : Date.now()
 }
 
-export function duration() {
+export function duration(): () => string {
   const t0 = getPerformanceTimestamp()
 
-  return function () {
+  return function (): string {
     const duration = getPerformanceTimestamp() - t0
     return formatMilliseconds(duration)
 
@@ -116,7 +116,7 @@ export function datetimeToUTC(fromDate: Date): Date {
 //               1000000000000
 
 /** ms -> s with simple check. Assume low values are already ms */
-export function timestampMillisecondsToSeconds(ts: number, smart = true) {
+export function timestampMillisecondsToSeconds(ts: number, smart = true): number {
   if (ts <= 0)
     return 0
   if (smart && ts < 1000000000000) { // TODO find a better threshold and add tests
@@ -127,7 +127,7 @@ export function timestampMillisecondsToSeconds(ts: number, smart = true) {
 }
 
 /** s -> ms with simple check. Assume high values are already ms */
-export function timestampSecondsToMilliseconds(ts: number, smart = true) {
+export function timestampSecondsToMilliseconds(ts: number, smart = true): number {
   if (ts <= 0)
     return 0
   if (smart && ts > 1000000000000) { // TODO find a better threshold and add tests

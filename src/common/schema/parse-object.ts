@@ -1,5 +1,7 @@
 import type { Type } from './schema'
-import { isFunction } from '../data'
+import { log } from 'node:console'
+import path from 'node:path'
+import { arrayMinus, isFunction } from '../data'
 
 export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   if (schema._default !== undefined) {
@@ -21,39 +23,57 @@ export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   return undefined
 }
 
-export function schemaValidate<T>(schema: Type<T>, obj: T): boolean {
-  // return objectMap(schema._object, (key, schema) => {
-  //   const defaultValue = existing[key] ?? schema._default
-  //   if (schema._props?.envSkip)
-  //     return defaultValue
+interface SchemaValidateMessage {
+  path: string
+  message: string
+  type: string
+  valid: boolean
+}
 
-  //   const envKey = fromCamelCase(key, '_').toUpperCase()
-  //   const envKeyWithPrefix = prefix + fromCamelCase(key, '_').toUpperCase()
+export function schemaValidateObject<T>(schema: Type<T>, obj?: any, opt?: {
+  path?: string
+  messages?: SchemaValidateMessage[]
+}): boolean {
+  const messages = opt?.messages || []
 
-  //   let value: any = env[envKey]
+  function addMessage(message: string, valid: boolean = false) {
+    messages.push({ path: `.${opt?.path ?? ''}`, message, valid, type: schema.type })
+    return valid
+  }
 
-  //   if (pl > 0) {
-  //     if (prefixOptional === true) {
-  //       value = env[envKeyWithPrefix] ?? value
-  //     }
-  //     else {
-  //       value = env[envKeyWithPrefix]
-  //     }
-  //   }
+  if (obj == null && schema._optional) {
+    return addMessage('Optional', true)
+  }
 
-  //   if (value === undefined) {
-  //     return defaultValue
-  //   }
+  if (schema._object) {
+    const schemaKeys = Object.keys(schema._object)
+    const objKeys = Object.keys(obj || {})
+    const missingKeys = arrayMinus(schemaKeys, objKeys)
 
-  //   if (schema.type === 'number') {
-  //     value = valueToInteger(value, schema._default)
-  //   }
-  //   else if (schema.type === 'boolean') {
-  //     if (schema._default === true)
-  //       value = valueToBooleanNotFalse(value)
-  //     else
-  //       value = valueToBoolean(value, false)
-  //   }
-  //   return schema.parse(value)
-  // }) as T
+    if (missingKeys.length > 0) {
+      return addMessage(`Missing properties: ${missingKeys.join(', ')}`, false)
+    }
+
+    for (const key in schema._object) {
+      const propSchema = schema._object[key] as any
+      if (!schemaValidateObject(
+        propSchema,
+        obj[key] as any,
+        {
+          path: opt?.path ? `${opt.path}.${key}` : key,
+          messages,
+        },
+      )) {
+        return addMessage(`Invalid property '${key}'`, false)
+      }
+    }
+    return addMessage('Object valid', true)
+  }
+
+  if (isFunction(schema._check)) {
+    const checkResult = schema._check(obj)
+    return addMessage('Check', checkResult)
+  }
+
+  return addMessage('Primitive valid', false)
 }

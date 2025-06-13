@@ -1,5 +1,5 @@
 import { setUuidDefaultEncoding, uuid } from '../uuid'
-import { schemaCreateObject } from './parse-object'
+import { schemaCreateObject, schemaValidateObject } from './parse-object'
 import { z } from './schema'
 
 describe('schema parse obj', () => {
@@ -36,6 +36,32 @@ describe('schema parse obj', () => {
         street: 'Main St',
       },
     })
+
+    const messages: any[] = []
+    const ok = schemaValidateObject(schema, obj, { messages })
+    expect(ok).toBe(false)
+    expect(messages).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "message": "Check",
+          "path": ".id",
+          "type": "string",
+          "valid": true,
+        },
+        Object {
+          "message": "Check",
+          "path": ".title",
+          "type": "string",
+          "valid": false,
+        },
+        Object {
+          "message": "Invalid property 'title'",
+          "path": ".",
+          "type": "object",
+          "valid": false,
+        },
+      ]
+    `)
   })
 
   it('should create primitive', async () => {

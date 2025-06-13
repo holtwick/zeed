@@ -1,5 +1,5 @@
 import type { Type } from './schema'
-import { arrayMinus, isFunction } from '../data'
+import { arrayMinus, isFunction, valueToBoolean, valueToFloat, valueToInteger, valueToString } from '../data'
 
 export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   if (schema._default !== undefined) {
@@ -88,6 +88,7 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
 
   function addMessage(message: string, valid: boolean = false) {
     messages.push({ path: `.${opt?.path ?? ''}`, message, valid, type: schema.type })
+    // console.debug({ path: `.${opt?.path ?? ''}`, message, valid, type: schema.type }, obj)
     return valid
   }
 
@@ -116,6 +117,29 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
       }
     }
     return newObj
+  }
+
+  if (obj != null) {
+    if (schema.type === 'string') {
+      obj = valueToString(obj)
+    }
+    else if (schema.type === 'boolean') {
+      obj = valueToBoolean(obj)
+    }
+    else if (schema.type === 'number') {
+      obj = valueToFloat(obj)
+      if (Number.isNaN(obj)) {
+        addMessage(`Invalid number: ${obj}`, false)
+        return undefined
+      }
+    }
+    else if (schema.type === 'int') {
+      obj = valueToInteger(obj)
+      if (Number.isNaN(obj)) {
+        addMessage(`Invalid number: ${obj}`, false)
+        return undefined
+      }
+    }
   }
 
   if (isFunction(schema._check)) {

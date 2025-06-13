@@ -2,8 +2,8 @@ import type { Infer } from './schema'
 import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
 import { uuid } from '../uuid'
-import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
 import { schemaParseObject } from './parse-object'
+import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
 
 describe('schema', () => {
   it('create schema', async () => {

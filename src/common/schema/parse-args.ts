@@ -3,8 +3,8 @@ import { assert } from '../assert'
 import { fromCamelCase, toCamelCase } from '../data/camelcase'
 import { valueToInteger } from '../data/convert'
 import { objectMap } from '../data/object'
-import { isSchemaObjectFlat } from './utils'
 import { schemaParseObject } from './parse-object'
+import { isSchemaObjectFlat } from './utils'
 
 declare module './schema' {
   interface TypeProps {

@@ -1,6 +1,4 @@
 import type { Type } from './schema'
-import { log } from 'node:console'
-import path from 'node:path'
 import { arrayMinus, isFunction } from '../data'
 
 export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
@@ -31,6 +29,54 @@ interface SchemaValidateMessage {
 }
 
 export function schemaValidateObject<T>(schema: Type<T>, obj?: any, opt?: {
+  path?: string
+  messages?: SchemaValidateMessage[]
+}): boolean {
+  const messages = opt?.messages || []
+
+  function addMessage(message: string, valid: boolean = false) {
+    messages.push({ path: `.${opt?.path ?? ''}`, message, valid, type: schema.type })
+    return valid
+  }
+
+  if (obj == null && schema._optional) {
+    return addMessage('Optional', true)
+  }
+
+  if (schema._object) {
+    const schemaKeys = Object.keys(schema._object)
+    const objKeys = Object.keys(obj || {})
+    const missingKeys = arrayMinus(schemaKeys, objKeys)
+
+    if (missingKeys.length > 0) {
+      return addMessage(`Missing properties: ${missingKeys.join(', ')}`, false)
+    }
+
+    for (const key in schema._object) {
+      const propSchema = schema._object[key] as any
+      if (!schemaValidateObject(
+        propSchema,
+        obj[key] as any,
+        {
+          path: opt?.path ? `${opt.path}.${key}` : key,
+          messages,
+        },
+      )) {
+        return addMessage(`Invalid property '${key}'`, false)
+      }
+    }
+    return addMessage('Object valid', true)
+  }
+
+  if (isFunction(schema._check)) {
+    const checkResult = schema._check(obj)
+    return addMessage('Check', checkResult)
+  }
+
+  return addMessage('Primitive valid', false)
+}
+
+export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
   path?: string
   messages?: SchemaValidateMessage[]
 }): boolean {

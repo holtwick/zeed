@@ -2,22 +2,22 @@ import type { Type } from './schema'
 import { isFunction } from '../data'
 
 export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
+  if (schema._default !== undefined) {
+    return isFunction(schema._default) ? schema._default() : schema._default
+  }
+
   if (schema._optional) {
     return undefined as any
   }
+
   if (schema._object) {
     const obj: any = {}
     for (const key in schema._object) {
-      const propSchema = schema._object[key] as Type<any>
-      if (propSchema._default !== undefined) {
-        obj[key] = isFunction(propSchema._default) ? propSchema._default() : propSchema._default
-      }
-      else {
-        obj[key] = schemaCreateObject(propSchema)
-      }
+      obj[key] = schemaCreateObject(schema._object[key] as Type<any>)
     }
     return obj
   }
+
   return undefined
 }
 

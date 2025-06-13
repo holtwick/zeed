@@ -1,9 +1,11 @@
-import { uuid } from '../uuid'
+import { setUuidDefaultEncoding, uuid } from '../uuid'
 import { schemaCreateObject } from './parse-object'
 import { z } from './schema'
 
 describe('schema parse obj', () => {
   it('create schema', async () => {
+    setUuidDefaultEncoding('test')
+
     const schema = z.object({
       id: z.string().default(uuid),
       title: z.string(),
@@ -21,7 +23,7 @@ describe('schema parse obj', () => {
           "street": "Main St",
         },
         "age": undefined,
-        "id": "7i7oUTFTn8wMvHXcbwVUXX",
+        "id": "test-0",
         "title": undefined,
       }
     `)
@@ -34,5 +36,10 @@ describe('schema parse obj', () => {
         street: 'Main St',
       },
     })
+  })
+
+  it('should create primitive', async () => {
+    const v = z.string().default('test')
+    expect(schemaCreateObject(v)).toEqual('test')
   })
 })

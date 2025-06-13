@@ -3,6 +3,7 @@ import { assert } from '../assert'
 import { fromCamelCase } from '../data/camelcase'
 import { valueToBoolean, valueToBooleanNotFalse, valueToInteger } from '../data/convert'
 import { objectMap } from '../data/object'
+import { schemaParseObject } from './parse-object'
 import { isSchemaObjectFlat } from './utils'
 
 declare module './schema' {
@@ -67,7 +68,7 @@ export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions<T>): T
       else
         value = valueToBoolean(value, false)
     }
-    return schema.parse(value)
+    return schemaParseObject(schema, value)
   }) as T
 }
 

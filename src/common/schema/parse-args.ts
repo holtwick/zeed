@@ -4,6 +4,7 @@ import { fromCamelCase, toCamelCase } from '../data/camelcase'
 import { valueToInteger } from '../data/convert'
 import { objectMap } from '../data/object'
 import { isSchemaObjectFlat } from './utils'
+import { schemaParseObject } from './parse-object'
 
 declare module './schema' {
   interface TypeProps {
@@ -62,7 +63,7 @@ export function parseSchemaArgs<T>(schema: Type<T>, args: any = process?.argv ??
     if (schema.type === 'number' && value != null) {
       value = valueToInteger(value)
     }
-    return schema.parse(value)
+    return schemaParseObject(schema, value)
   }) as T
 
   return [argsResult, names]

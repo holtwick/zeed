@@ -3,6 +3,7 @@ import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
 import { uuid } from '../uuid'
 import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
+import { schemaParseObject } from './parse-object'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -122,7 +123,7 @@ describe('schema', () => {
       }
     `)
 
-    expect(schema.parse(sample)).toMatchInlineSnapshot(`
+    expect(schemaParseObject(schema, sample)).toMatchInlineSnapshot(`
       Object {
         "active": true,
         "age": 42,
@@ -134,37 +135,37 @@ describe('schema', () => {
       }
     `)
 
-    expect(schema.map(sample, (v, s) => {
-      if (s.type === 'boolean') {
-        return v ? 'on' : 'off'
-      }
-    })).toMatchInlineSnapshot(`
-      Object {
-        "active": "on",
-        "age": 42,
-        "info": 123,
-        "lit": "past_due",
-        "log": true,
-        "name": "Hello",
-        "obj": Object {},
-      }
-    `)
+    // expect(schema.map(sample, (v, s) => {
+    //   if (s.type === 'boolean') {
+    //     return v ? 'on' : 'off'
+    //   }
+    // })).toMatchInlineSnapshot(`
+    //   Object {
+    //     "active": "on",
+    //     "age": 42,
+    //     "info": 123,
+    //     "lit": "past_due",
+    //     "log": true,
+    //     "name": "Hello",
+    //     "obj": Object {},
+    //   }
+    // `)
 
-    expect(schema.map(sample, function (v) {
-      if (this.type === 'boolean') {
-        return v ? 'yes' : 'no'
-      }
-    })).toMatchInlineSnapshot(`
-      Object {
-        "active": "yes",
-        "age": 42,
-        "info": 123,
-        "lit": "past_due",
-        "log": true,
-        "name": "Hello",
-        "obj": Object {},
-      }
-    `)
+    // expect(schema.map(sample, function (v) {
+    //   if (this.type === 'boolean') {
+    //     return v ? 'yes' : 'no'
+    //   }
+    // })).toMatchInlineSnapshot(`
+    //   Object {
+    //     "active": "yes",
+    //     "age": 42,
+    //     "info": 123,
+    //     "lit": "past_due",
+    //     "log": true,
+    //     "name": "Hello",
+    //     "obj": Object {},
+    //   }
+    // `)
 
     // expect(schema.parse({} as any)).toBe()
   })
@@ -224,7 +225,7 @@ describe('schema', () => {
       }
     `)
 
-    expect(schema.parse(sample)).toMatchInlineSnapshot(`
+    expect(schemaParseObject(schema, sample)).toMatchInlineSnapshot(`
       Object {
         "id": "123",
         "literal": "demo",

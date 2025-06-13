@@ -1,5 +1,5 @@
 import { uuid } from '../uuid'
-import { createWithSchema } from './parse-object'
+import { schemaCreateObject } from './parse-object'
 import { z } from './schema'
 
 describe('schema parse obj', () => {
@@ -8,14 +8,20 @@ describe('schema parse obj', () => {
       id: z.string().default(uuid),
       title: z.string(),
       age: z.int().optional(),
+      address: z.object({
+        street: z.string().default('Main St'),
+      }),
     })
 
-    const obj = createWithSchema(schema)
+    const obj = schemaCreateObject(schema)
 
     expect(obj).toMatchInlineSnapshot(`
       Object {
+        "address": Object {
+          "street": "Main St",
+        },
         "age": undefined,
-        "id": "1nYSOvISC0IkHySwN6G1k1",
+        "id": "7i7oUTFTn8wMvHXcbwVUXX",
         "title": undefined,
       }
     `)
@@ -24,6 +30,9 @@ describe('schema parse obj', () => {
       id: expect.any(String),
       title: undefined,
       age: undefined,
+      address: {
+        street: 'Main St',
+      },
     })
   })
 })

@@ -1,7 +1,7 @@
 import type { Type } from './schema'
 import { isFunction } from '../data'
 
-export function createWithSchema<T>(schema: Type<T>): Partial<T> | undefined {
+export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   if (schema._optional) {
     return undefined as any
   }
@@ -13,7 +13,7 @@ export function createWithSchema<T>(schema: Type<T>): Partial<T> | undefined {
         obj[key] = isFunction(propSchema._default) ? propSchema._default() : propSchema._default
       }
       else {
-        obj[key] = undefined
+        obj[key] = schemaCreateObject(propSchema)
       }
     }
     return obj
@@ -21,7 +21,7 @@ export function createWithSchema<T>(schema: Type<T>): Partial<T> | undefined {
   return undefined
 }
 
-export function parseSchema<T>(schema: Type<T>, obj: T): T {
+export function schemaValidate<T>(schema: Type<T>, obj: T): boolean {
   // return objectMap(schema._object, (key, schema) => {
   //   const defaultValue = existing[key] ?? schema._default
   //   if (schema._props?.envSkip)

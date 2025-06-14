@@ -1,9 +1,10 @@
 import type { Infer } from './schema'
 import type { Expect, IsEqual } from './type-test'
-import { cloneJsonObject, str } from '../data'
+import { cloneJsonObject } from '../data'
 import { uuid } from '../uuid'
 import { schemaParseObject } from './parse-object'
-import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
+import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
+import { z } from './z'
 
 describe('schema', () => {
   it('create schema', async () => {
@@ -229,7 +230,6 @@ describe('schema', () => {
       Object {
         "id": "123",
         "literal": "demo",
-        "name": "two",
       }
     `)
     // expect(schema.parse({} as any)).toBe()
@@ -240,7 +240,8 @@ describe('schema', () => {
       object({ subscription: literal(true), subscriptionId: string() }),
       object({ subscription: literal(false), licenseId: string() }),
     ])
-    type Schema = Infer<typeof obj>
+    // type Schema = Infer<typeof obj>
+    type Schema = z.infer<typeof obj>
     type SchemaExpected = {
       subscription: true
       subscriptionId: string

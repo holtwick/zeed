@@ -84,17 +84,17 @@ describe('rpc.spec', () => {
     }
 
     expect(rpcSchema).toMatchInlineSnapshot(`
-      TypeObjectClass {
+      Type {
         "_check": [Function],
         "_object": Object {
-          "echo": TypeFuncClass {
+          "echo": Type {
             "_args": Array [
-              TypeStringClass {
+              Type {
                 "_check": [Function],
                 "extend": [Function],
                 "type": "string",
               },
-              TypeGeneric {
+              Type {
                 "_check": [Function],
                 "extend": [Function],
                 "type": "boolean",
@@ -104,7 +104,7 @@ describe('rpc.spec', () => {
             "_props": Object {
               "rpcDesc": "Just echo the string",
             },
-            "_ret": TypeStringClass {
+            "_ret": Type {
               "_check": [Function],
               "_optional": true,
               "extend": [Function],
@@ -113,35 +113,35 @@ describe('rpc.spec', () => {
             "extend": [Function],
             "type": "function",
           },
-          "noFunc": TypeStringClass {
+          "noFunc": Type {
             "_check": [Function],
             "extend": [Function],
             "type": "string",
           },
-          "rpc": TypeRpcClass {
+          "rpc": Type {
             "_check": [Function],
-            "_info": TypeObjectClass {
+            "_info": Type {
               "_check": [Function],
               "_object": Object {
-                "id": TypeStringClass {
+                "id": Type {
                   "_check": [Function],
                   "extend": [Function],
                   "type": "string",
                 },
-                "method": TypeStringClass {
+                "method": Type {
                   "_check": [Function],
                   "extend": [Function],
                   "type": "string",
                 },
-                "params": TypeObjectClass {
+                "params": Type {
                   "_check": [Function],
                   "_object": Object {
-                    "a": TypeStringClass {
+                    "a": Type {
                       "_check": [Function],
                       "extend": [Function],
                       "type": "string",
                     },
-                    "b": TypeGeneric {
+                    "b": Type {
                       "_check": [Function],
                       "extend": [Function],
                       "type": "boolean",
@@ -154,7 +154,7 @@ describe('rpc.spec', () => {
               "extend": [Function],
               "type": "object",
             },
-            "_ret": TypeGeneric {
+            "_ret": Type {
               "_check": [Function],
               "_optional": true,
               "extend": [Function],

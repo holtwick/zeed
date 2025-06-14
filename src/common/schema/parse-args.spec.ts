@@ -57,10 +57,10 @@ describe('args.spec', () => {
     `)
 
     expect(schema).toMatchInlineSnapshot(`
-      TypeObjectClass {
+      Type {
         "_check": [Function],
         "_object": Object {
-          "help": TypeGeneric {
+          "help": Type {
             "_check": [Function],
             "_default": false,
             "_props": Object {
@@ -70,7 +70,7 @@ describe('args.spec', () => {
             "extend": [Function],
             "type": "boolean",
           },
-          "someStuff": TypeGeneric {
+          "someStuff": Type {
             "_check": [Function],
             "_optional": true,
             "_props": Object {

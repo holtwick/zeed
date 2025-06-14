@@ -90,7 +90,7 @@ function generic<T = unknown>(type: string, opt?: Partial<Type<T>>): Type<T> {
 
 /// Just a simple string type
 export function string() {
-  return generic<number>('string', {
+  return generic<string>('string', {
     _check: isString,
   })
 }

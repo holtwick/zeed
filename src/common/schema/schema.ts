@@ -84,30 +84,15 @@ export type Infer<T> = T extends Type<infer TT> ? TT : never
 
 function generic<T = unknown>(type: string, opt?: Partial<Type<T>>): Type<T> {
   return new TypeClass<T>(type, opt as any)
-  // const t = new TypeClass<T>(type, opt as any)
-  // if (opt?._default !== undefined)
-  //   t._default = opt?._default
-  // if (opt?._optional !== undefined)
-  //   t._optional = opt?._optional
-  // if (opt?._props !== undefined)
-  //   t._props = opt?._props
-  // if (opt?._object !== undefined)
-  //   t._object = opt?._object
-  // return t
 }
 
 // Primitives
 
-class TypeStringClass<T extends string> extends TypeClass<T> {
-  pattern(rx: RegExp) {
-    // this.ass
-    return this
-  }
-}
-
 /// Just a simple string type
 export function string() {
-  return new TypeStringClass<string>('string', isString)
+  return generic<number>('string', {
+    _check: isString,
+  })
 }
 
 /// Number as in Javascript, could be float or int
@@ -147,7 +132,6 @@ export function none() {
 export function any<T = any>() {
   return generic<T>('any', {
     _check: v => v != null,
-    // _optional: false,
   })
 }
 
@@ -165,46 +149,11 @@ export type InferObject<T> = ObjectPretty<ObjectFixOptional<{
   [K in keyof T]: Infer<T[K]>
 }>>
 
-// interface TypeObject<T = unknown> extends Type<T> {
-//   _object: T
-// }
-
 export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
   constructor(obj: T) {
     super('object', () => true)
     this._object = obj as any
   }
-
-  // parse(obj: any) {
-  //   if (obj == null && this._optional === true)
-  //     return undefined
-  //   const newObj: any = {}
-  //   if (!isObject(obj))
-  //     return new Error('expected object input')
-  //   if (!isObject(this._object))
-  //     return new Error('expected object definition')
-  //   for (const [key, info] of Object.entries(this._object)) {
-  //     const value = info.parse((obj as any)[key])
-  //     if (value !== undefined)
-  //       newObj[key] = value
-  //   }
-  //   return newObj
-  // }
-
-  // map(obj: any, fn: (this: Type<O>, obj: any, schema: Type<O>) => any): any {
-  //   const result = fn.call(this as any, obj, this as any)
-  //   if (result !== undefined)
-  //     return result
-  //   const newObj: any = {}
-  //   if (obj) {
-  //     for (const [key, info] of Object.entries(this._object ?? {})) {
-  //       const value = (info as Type).map((obj as any)[key], fn as any)
-  //       if (value !== undefined)
-  //         newObj[key] = value
-  //     }
-  //   }
-  //   return newObj
-  // }
 }
 
 /// Object that can have any properties
@@ -216,21 +165,9 @@ export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> 
   return new TypeObjectClass(tobj)
 }
 
-// const schemaRecord = record(int())
-// const schemaRecord = record(object({ a: int() }))
-// type SchemaRecord = Infer<typeof schemaRecord> // expected Record<string, number>
-
 // Union
 
 type TransformToUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
-
-// export class TypeUnion<T> extends TypeClass<T> {
-//   _union: Type<any>[]
-//   constructor(unionTypes: Type<any>[]) {
-//     super('union', v => true) // todo
-//     this._union = unionTypes
-//   }
-// }
 
 /// Union of types, like `string | number | boolean`
 export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnion<T>> {
@@ -238,7 +175,6 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TransformToUnio
     _check: v => options.includes(v),
     _union: options,
   })
-  // return new TypeUnion<TransformToUnion<T>>(options)
 }
 
 // Literals
@@ -253,31 +189,13 @@ export function literal<T extends Literal>(value: T): Type<T> {
   })
 }
 
-// export class TypeStringLiterals<T> extends TypeClass<T> {
-//   _enumValues: string[]
-//   constructor(values: string[]) {
-//     super('string', v => values.includes(v))
-//     this._enumValues = values
-//   }
-// }
-
 /// String that can only be one of the values, like: `"a" | "b" | "c"``
 export function stringLiterals<const T extends readonly string[], O = T[number]>(values: T): Type<O> {
   return generic<O>('string', {
     _check: v => values.includes(v),
     _enumValues: values,
   })
-  // return new TypeStringLiterals<O>(values as any)
 }
-
-/// Sting that can only be one of the values, like: `"a" | "b" | "c"``
-// function zEnum<const T extends readonly (string | number | boolean | bigint)[], O = T[number]>(value: T): Type<O> {
-//   return generic<O>('enum', {
-//     _check: v => value.includes(v),
-//   })
-// }
-
-// export { zEnum as enum } // Export as enum to avoid conflicts with real enum types
 
 // Functions
 
@@ -302,45 +220,12 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): ArrayType<T, 
   })
 }
 
-// export class TypeArrayClass<T, TT> extends TypeClass<T> {
-//   constructor(
-//     name: string,
-//     type: TT,
-//   ) {
-//     super(name, isArray)
-//     this._type = type
-//   }
-
-//   _type?: TT
-// }
-
 export function array<T>(itemType: Type<T>): Type<T[]> {
   return generic<T[]>('array', {
     _check: isArray,
     _type: itemType,
   })
-  // return new TypeArrayClass<T[], Type<T>>('array', itemType)
 }
-
-// const tt = tuple([number(), string(), boolean()])
-// type ttt = Infer<typeof tt> // expected [number, string, boolean]
-
-// type Test1 = Expect<IsEqual<ttt, [number, string, boolean]>> // Should pass
-
-// class TypeFuncClass<T, Args, Ret> extends TypeClass<T> {
-//   constructor(
-//     name: string,
-//     args: Args,
-//     ret?: Ret,
-//   ) {
-//     super(name, v => isFunction(v))
-//     this._args = args
-//     this._ret = ret
-//   }
-
-//   _args?: Args
-//   _ret?: Ret
-// }
 
 /// Regular function
 export function func<
@@ -353,23 +238,7 @@ export function func<
     _args: args,
     _ret: ret,
   })
-  // return new TypeFuncClass<T, Args, Ret>('function', args, ret)
 }
-
-// export class TypeRpcClass<T, Info, Ret> extends TypeClass<T> {
-//   constructor(
-//     name: string,
-//     info?: Info,
-//     ret?: Ret,
-//   ) {
-//     super(name, v => isFunction(v))
-//     this._info = info
-//     this._ret = ret
-//   }
-
-//   _info?: Info
-//   _ret?: Ret
-// }
 
 /// RPC function that only takes one argument and returns a promise
 export function rpc<
@@ -382,7 +251,6 @@ export function rpc<
     _info: info,
     _ret: ret ?? none(),
   })
-  // return new TypeRpcClass<T, Info, Ret>('rpc', info, ret ?? none() as Ret)
 }
 
 /// Reduce conflicts with real type names, use like z.string()

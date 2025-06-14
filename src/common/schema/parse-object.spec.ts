@@ -43,13 +43,19 @@ describe('schema parse obj', () => {
     expect(messages).toMatchInlineSnapshot(`
       Array [
         Object {
-          "message": "Primitive valid",
+          "message": "Check",
           "path": ".id",
+          "type": "string",
+          "valid": true,
+        },
+        Object {
+          "message": "Check",
+          "path": ".title",
           "type": "string",
           "valid": false,
         },
         Object {
-          "message": "Invalid property 'id'",
+          "message": "Invalid property 'title'",
           "path": ".",
           "type": "object",
           "valid": false,

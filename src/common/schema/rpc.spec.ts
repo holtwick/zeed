@@ -88,7 +88,8 @@ describe('rpc.spec', () => {
         "_object": Object {
           "echo": TypeClass {
             "_args": Array [
-              TypeStringClass {
+              TypeClass {
+                "_check": [Function],
                 "extend": [Function],
                 "type": "string",
               },
@@ -102,7 +103,8 @@ describe('rpc.spec', () => {
             "_props": Object {
               "rpcDesc": "Just echo the string",
             },
-            "_ret": TypeStringClass {
+            "_ret": TypeClass {
+              "_check": [Function],
               "_optional": true,
               "extend": [Function],
               "type": "string",
@@ -110,7 +112,8 @@ describe('rpc.spec', () => {
             "extend": [Function],
             "type": "function",
           },
-          "noFunc": TypeStringClass {
+          "noFunc": TypeClass {
+            "_check": [Function],
             "extend": [Function],
             "type": "string",
           },
@@ -118,17 +121,20 @@ describe('rpc.spec', () => {
             "_check": [Function],
             "_info": TypeObjectClass {
               "_object": Object {
-                "id": TypeStringClass {
+                "id": TypeClass {
+                  "_check": [Function],
                   "extend": [Function],
                   "type": "string",
                 },
-                "method": TypeStringClass {
+                "method": TypeClass {
+                  "_check": [Function],
                   "extend": [Function],
                   "type": "string",
                 },
                 "params": TypeObjectClass {
                   "_object": Object {
-                    "a": TypeStringClass {
+                    "a": TypeClass {
+                      "_check": [Function],
                       "extend": [Function],
                       "type": "string",
                     },

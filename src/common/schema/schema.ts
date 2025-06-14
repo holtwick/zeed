@@ -2,7 +2,7 @@
 
 import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
 
-export interface TypeProps {
+export interface TypeMeta {
   desc?: string
 }
 
@@ -11,7 +11,7 @@ export class Type<T = unknown> { // implements Type<T>
 
   _default?: T
   _optional?: boolean
-  _props?: TypeProps
+  _meta?: TypeMeta
   _check?: (obj: any) => boolean
 
   [key: string]: any // Allow dynamic properties
@@ -36,16 +36,16 @@ export class Type<T = unknown> { // implements Type<T>
   }
 
   /// Props / Metadata for the type, like description or other properties
-  props(props: TypeProps) {
-    this._props = props
+  meta(meta: TypeMeta) {
+    this._meta = meta
     return this
   }
 
   /// Sets the `desc` property for the type, which is a human-readable description
   describe(msg: string): this {
-    if (!this._props)
-      this._props = {}
-    this._props.desc = msg
+    if (!this._meta)
+      this._meta = {}
+    this._meta.desc = msg
     return this
   }
 

@@ -7,7 +7,7 @@ import { schemaParseObject } from './parse-object'
 import { isSchemaObjectFlat } from './utils'
 
 declare module './schema' {
-  interface TypeProps {
+  interface TypeMeta {
     argShort?: string
     argDesc?: string
   }
@@ -21,8 +21,8 @@ export function parseSchemaArgs<T>(schema: Type<T>, args: any = process?.argv ??
   const booleanArgs: string[] = []
 
   objectMap(schema._object!, (key, schema: Type<any>) => {
-    if (schema._props?.argShort)
-      alias[toCamelCase(schema._props.argShort)] = toCamelCase(key)
+    if (schema._meta?.argShort)
+      alias[toCamelCase(schema._meta.argShort)] = toCamelCase(key)
     if (schema.type === 'boolean') {
       booleanArgs.push(toCamelCase(key))
     }
@@ -76,12 +76,12 @@ export function helpSchemaArgs<T>(schema: Type<T>): string {
 
   objectMap(schema._object!, (key, schema: Type<any>) => {
     let s = `--${fromCamelCase(key)}`
-    if (schema._props?.argShort)
-      s += `, -${fromCamelCase(schema._props.argShort)}`
+    if (schema._meta?.argShort)
+      s += `, -${fromCamelCase(schema._meta.argShort)}`
     if (schema.type !== 'boolean')
       s += `=${schema.type}`
     lines.push(s)
-    const desc = schema._props?.argDesc ?? schema._props?.desc
+    const desc = schema._meta?.argDesc ?? schema._meta?.desc
     if (desc)
       lines.push(`  ${desc}`)
   })

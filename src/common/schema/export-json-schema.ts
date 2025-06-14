@@ -28,8 +28,8 @@ export function schemaExportJsonSchema<T>(schema: Type<T>): Record<string, any> 
       if (schema._default !== undefined) {
         properties[key].default = schema._default
       }
-      if (schema._props?.desc) {
-        properties[key].description = schema._props.desc
+      if (schema._meta?.desc) {
+        properties[key].description = schema._meta.desc
       }
       if (schema._optional !== true) {
         required.push(key)

@@ -36,10 +36,10 @@ describe('env.spec', () => {
 
   it('parse prefix', async () => {
     const schema = object({
-      ServiceName: string().default('generic').props({ desc: 'The name of the service\n  Multi Line  \n\n ' }),
-      servicePort: number().default(80).props({ desc: 'The port of the service' }),
+      ServiceName: string().default('generic').meta({ desc: 'The name of the service\n  Multi Line  \n\n ' }),
+      servicePort: number().default(80).meta({ desc: 'The port of the service' }),
       ServiceFlag: boolean().default(true),
-      serviceDummy: string().default('dummy').props({ desc: 'Dummy value', envPrivate: true }),
+      serviceDummy: string().default('dummy').meta({ desc: 'Dummy value', envPrivate: true }),
     })
 
     const env = {

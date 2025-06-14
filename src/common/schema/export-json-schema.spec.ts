@@ -8,7 +8,7 @@ describe('json-schema.spec', () => {
       fixed: z.enum(['a', 'b', 'c']).describe('This is a fixed value'),
       anInt: z.int().optional().default(0),
       aBool: z.boolean().describe('This is a boolean'),
-      aNumber: z.number().props({
+      aNumber: z.number().meta({
         desc: 'This is a number',
       }),
       aString: z.string(),

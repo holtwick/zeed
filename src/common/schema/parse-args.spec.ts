@@ -5,10 +5,10 @@ import { boolean, number, object } from './schema'
 describe('args.spec', () => {
   it('parse args', async () => {
     const schema = object({
-      someStuff: number().optional().props({
+      someStuff: number().optional().meta({
         argDesc: 'Does some stuff',
       }),
-      help: boolean().default(false).props({
+      help: boolean().default(false).meta({
         argShort: 'h',
         argDesc: 'Shows help',
       }),
@@ -63,7 +63,7 @@ describe('args.spec', () => {
           "help": Type {
             "_check": [Function],
             "_default": false,
-            "_props": Object {
+            "_meta": Object {
               "argDesc": "Shows help",
               "argShort": "h",
             },
@@ -72,10 +72,10 @@ describe('args.spec', () => {
           },
           "someStuff": Type {
             "_check": [Function],
-            "_optional": true,
-            "_props": Object {
+            "_meta": Object {
               "argDesc": "Does some stuff",
             },
+            "_optional": true,
             "extend": [Function],
             "type": "number",
           },

@@ -7,7 +7,7 @@ import { schemaParseObject } from './parse-object'
 import { isSchemaObjectFlat } from './utils'
 
 declare module './schema' {
-  interface TypeProps {
+  interface TypeMeta {
     envDesc?: string
     envPrivate?: boolean // will not be documented
     envSkip?: boolean // will not be included in env parsing
@@ -38,7 +38,7 @@ export function parseSchemaEnv<T>(schema: Type<T>, opt?: SchemaEnvOptions<T>): T
 
   return objectMap(schema._object, (key, schema) => {
     const defaultValue = existing[key] ?? schema._default
-    if (schema._props?.envSkip)
+    if (schema._meta?.envSkip)
       return defaultValue
 
     const envKey = fromCamelCase(key, '_').toUpperCase()
@@ -76,9 +76,9 @@ export function stringFromSchemaEnv<T>(schema: Type<T>, prefix = '', commentOut 
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
   const lines: string[] = []
   objectMap(schema._object!, (key, schema) => {
-    if ((schema._props?.envPrivate || schema._props?.envSkip) && !showPrivate)
+    if ((schema._meta?.envPrivate || schema._meta?.envSkip) && !showPrivate)
       return
-    const desc = schema._props?.envDesc ?? schema._props?.desc
+    const desc = schema._meta?.envDesc ?? schema._meta?.desc
     if (desc) {
       desc.trim().split('\n').forEach((line: string) => {
         lines.push(`# ${line.trim()}`)

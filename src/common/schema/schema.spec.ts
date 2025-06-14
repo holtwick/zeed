@@ -1,6 +1,6 @@
 import type { Infer } from './schema'
 import type { Expect, IsEqual } from './type-test'
-import { cloneJsonObject } from '../data'
+import { cloneJsonObject, str } from '../data'
 import { uuid } from '../uuid'
 import { schemaParseObject } from './parse-object'
 import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union, z } from './schema'
@@ -262,6 +262,7 @@ describe('schema', () => {
       active: boolean(),
       tags: array(string()).optional(),
       info: any(),
+      description: string().optional(),
     })
     type BaseSchema = Infer<typeof baseSchema>
     type ExtendedSchema = Infer<typeof extendedSchema>
@@ -273,6 +274,7 @@ describe('schema', () => {
       info?: any
       name: string
       active: boolean
+      description?: string | undefined
     }>()
   })
 })

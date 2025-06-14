@@ -4,7 +4,7 @@ import { objectMap } from '../data/object'
 import { isSchemaObjectFlat } from './utils'
 
 declare module './schema' {
-  interface TypeProps {
+  interface TypeMeta {
     swiftName?: string
     swiftProtocol?: string
     swiftDesc?: string
@@ -22,12 +22,12 @@ export function schemaExportSwiftStruct<T>(schema: Type<T>, name: string = 'Exam
   assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
 
   let protocol = ''
-  if (schema._props?.swiftProtocol) {
-    protocol = `: ${schema._props.swiftProtocol}`
+  if (schema._meta?.swiftProtocol) {
+    protocol = `: ${schema._meta.swiftProtocol}`
   }
 
   const lines: string[] = [
-    `struct ${schema._props?.swiftName ?? name}${protocol} {`,
+    `struct ${schema._meta?.swiftName ?? name}${protocol} {`,
   ]
 
   objectMap(schema._object!, (key, schema: Type<any>) => {

@@ -5,7 +5,7 @@ import { boolean, func, number, object, rpc, string } from './schema'
 // see https://github.com/colinhacks/zod?tab=readme-ov-file#functions
 
 declare module './schema' {
-  interface TypeProps {
+  interface TypeMeta {
     rpcDesc?: string
   }
 }
@@ -50,7 +50,7 @@ describe('rpc.spec', () => {
       echo: func(
         [string(), boolean()],
         string().optional(),
-      ).props({
+      ).meta({
         rpcDesc: 'Just echo the string',
       }),
       rpc: rpc(payloadSchema),
@@ -101,7 +101,7 @@ describe('rpc.spec', () => {
               },
             ],
             "_check": [Function],
-            "_props": Object {
+            "_meta": Object {
               "rpcDesc": "Just echo the string",
             },
             "_ret": Type {
@@ -169,36 +169,4 @@ describe('rpc.spec', () => {
       }
     `)
   })
-
-  // it('should use a schema for useRPC', async () => {
-  //   const rpcSchema = object({
-  //     echo: func(
-  //       [string(), boolean()],
-  //       string().optional(),
-  //     ).props({
-  //       rpcDesc: 'Just echo the string',
-  //     }),
-  //     noFunc: string(),
-  //   })
-
-  //   type RpcRaw = Infer<typeof rpcSchema>
-
-  //   expectTypeOf<RpcRaw>().toMatchObjectType<{
-  //     echo: (args_0: string, args_1: boolean) => string | undefined
-  //     noFunc: string
-  //   }>()
-
-  //   const bob = useRPC<RpcRaw>({
-  //     echo: (a: string, b: boolean) => {
-  //       return a + b
-  //     },
-  //     noFunc: 'noFunc',
-  //   }, {
-  //     post: () => { },
-  //     on: () => { },
-  //   })
-
-  //   const r = await bob.echo('hello', true)
-  //   expect(r).toEqual('hellotrue')
-  // })
 })

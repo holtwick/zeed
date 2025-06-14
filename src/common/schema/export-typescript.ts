@@ -4,7 +4,7 @@ import { objectMap } from '../data/object'
 import { isSchemaObjectFlat } from './utils'
 
 // declare module './schema' {
-//   interface TypeProps {
+//   interface TypeMeta {
 //     argShort?: string
 //     argDesc?: string
 //   }

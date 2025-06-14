@@ -179,7 +179,7 @@ describe('schema', () => {
     ]
 
     const schema = object({
-      id: string().default(() => '123').props({
+      id: string().default(() => '123').meta({
         // someProp: 'someValue',
       }),
       literal: literal('demo'),
@@ -197,7 +197,7 @@ describe('schema', () => {
       Object {
         "_object": Object {
           "id": Object {
-            "_props": Object {},
+            "_meta": Object {},
             "type": "string",
           },
           "literal": Object {

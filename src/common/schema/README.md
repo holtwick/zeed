@@ -91,7 +91,7 @@ const rpcCall = z.rpc(z.object({ id: z.string() }), z.number())
 - `union([type1, type2, ...])`
 - `literal(value)`, `stringLiterals(['a', 'b', ...])`
 - `func(args, ret)`, `rpc(info, ret)`
-- `.optional()`, `.default(value)`, `.props({ desc })`, `.extend({...})`
+- `.optional()`, `.default(value)`, `.meta({ desc })`, `.extend({...})`
 - `parse(obj)`, `map(obj, fn)`
 
 ## Notes

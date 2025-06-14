@@ -9,7 +9,7 @@ describe('swift.spec', () => {
       aBool: z.boolean(),
       aNumber: z.number(),
       aString: z.string(),
-    }).props({
+    }).meta({
       swiftName: 'Test123',
       swiftProtocol: 'Codable',
     })

@@ -6,15 +6,15 @@ export interface TypeMeta {
   desc?: string
 }
 
-export class Type<T = unknown> { // implements Type<T>
+export class Type<T = unknown> {
   readonly type
 
-  _default?: T
+  _default?: any
   _optional?: boolean
   _meta?: TypeMeta
   _check?: (obj: any) => boolean
 
-  [key: string]: any // Allow dynamic properties
+  [key: `_${string}`]: any // Allow only optional dynamic properties starting with an underscore
 
   constructor(name: string, options: Partial<Type<T>>) {
     this.type = name
@@ -24,13 +24,14 @@ export class Type<T = unknown> { // implements Type<T>
   /// Marks the type as optional, meaning it can be undefined
   /// This is useful for properties that are not required.
   /// .optional() should be used as last in chain, since it looses the original class type
-  optional(): Type<T | undefined> { // todo keep the inherited class type
+  optional(): Type<T | undefined> {
     this._optional = true
     return this
   }
 
   /// Sets a default value for the type, which will be used if the value is not provided
-  default(value: any): this {
+  /// The default value can be a function that receives the schema as argument, or a static value.
+  default(value: T | ((schema?: this) => T)): this {
     this._default = value
     return this
   }

@@ -1,6 +1,6 @@
 import type { Infer } from './schema'
 import { schemaExportSwiftStruct } from './export-swift'
-import { z } from './schema'
+import { z } from './z'
 
 describe('swift.spec', () => {
   it('parse args', async () => {

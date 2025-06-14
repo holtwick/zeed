@@ -1,6 +1,6 @@
 import { setUuidDefaultEncoding, uuid } from '../uuid'
 import { schemaCreateObject, schemaValidateObject } from './parse-object'
-import { z } from './schema'
+import { z } from './z'
 
 describe('schema parse obj', () => {
   it('create schema', async () => {

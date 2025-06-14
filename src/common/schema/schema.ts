@@ -232,26 +232,3 @@ export function rpc<
     _ret: ret ?? none(),
   })
 }
-
-/// Reduce conflicts with real type names, use like z.string()
-export const z = {
-  string,
-  number,
-  int,
-  boolean,
-  none,
-  any,
-  enum: stringLiterals,
-  object,
-  array,
-  tuple,
-  union,
-  func,
-  rpc,
-  literal,
-  stringLiterals,
-  float,
-  double,
-  real,
-  record,
-}

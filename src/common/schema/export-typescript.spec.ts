@@ -1,6 +1,6 @@
 import type { Infer } from './schema'
 import { schemaExportTypescriptInterface } from './export-typescript'
-import { z } from './schema'
+import { z } from './z'
 
 describe('typescript.spec', () => {
   it('parse args', async () => {

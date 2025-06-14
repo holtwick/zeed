@@ -1,6 +1,6 @@
 import type { Infer } from './schema'
 import { schemaExportJsonSchema } from './export-json-schema'
-import { z } from './schema'
+import { z } from './z'
 
 describe('json-schema.spec', () => {
   it('parse args', async () => {

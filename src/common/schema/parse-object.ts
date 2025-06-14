@@ -3,7 +3,7 @@ import { arrayMinus, isFunction, valueToBoolean, valueToFloat, valueToInteger, v
 
 export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   if (schema._default !== undefined) {
-    return isFunction(schema._default) ? schema._default() : schema._default
+    return isFunction(schema._default) ? schema._default(schema) : schema._default
   }
 
   if (schema._optional) {
@@ -99,7 +99,7 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
     }
     if (schema._default !== undefined) {
       addMessage('Default', true)
-      return isFunction(schema._default) ? schema._default() : schema._default
+      return isFunction(schema._default) ? schema._default(schema) : schema._default
     }
   }
 

@@ -19,11 +19,11 @@ export interface Type<T = unknown> {
   readonly type: string
   readonly _check: (obj: any) => boolean
   optional: () => Type<T | undefined>
-  default: (value: any) => Type<T>
+  default: (value: any) => this // Type<T>
   // parse: (obj: any) => T
   // map: (obj: any, fn: (this: Type<T>, obj: any, schema: Type<T>) => any) => any
-  props: (props: TypeProps) => Type<T>
-  describe: (msg: string) => Type<T>
+  props: (props: TypeProps) => this // Type<T>
+  describe: (msg: string) => this // Type<T>
   extend: <O>(obj: O) => Type<T & InferObject<O>>
 }
 
@@ -40,14 +40,17 @@ export abstract class TypeClass<T = unknown> implements Type<T> {
 
   _optional?: boolean
 
-  optional(): TypeClass<T | undefined> { // todo keep the inherited class type
+  /// Marks the type as optional, meaning it can be undefined
+  /// This is useful for properties that are not required.
+  /// .optional() should be used as last in chain, since it looses the original class type
+  optional(): Type<T | undefined> { // todo keep the inherited class type
     this._optional = true
     return this
   }
 
   _default?: T
 
-  default(value: any): TypeClass<T> { // todo keep the inherited class type
+  default(value: any): this {
     this._default = value
     return this
   }

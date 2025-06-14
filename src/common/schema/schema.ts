@@ -67,40 +67,40 @@ export type Infer<T> = T extends Type<infer TT> ? TT : never
 
 // Primitives
 
-export function string() {
-  return new Type<string>('string', {
+export function string(): Type<string> {
+  return new Type('string', {
     _check: isString,
   })
 }
 
-export function number() {
-  return new Type<number>('number', {
+export function number(): Type<number> {
+  return new Type('number', {
     _check: isNumber,
   })
 }
 
-export function int() {
-  return new Type<number>('int', {
+export function int(): Type<number> {
+  return new Type('int', {
     _check: isInteger,
   })
 }
 
-export function boolean() {
-  return new Type<boolean>('boolean', {
+export function boolean(): Type<boolean> {
+  return new Type('boolean', {
     _check: isBoolean,
   })
 }
 
 // Like undefined | null in TS and nil in Swift
-export function none() {
-  return new Type<undefined>('none', {
+export function none(): Type<undefined> {
+  return new Type('none', {
     _check: v => v == null,
     _optional: true,
   })
 }
 
-export function any<T = any>() {
-  return new Type<T>('any', {
+export function any<T = any>(): Type<T> {
+  return new Type('any', {
     _check: v => v != null,
   })
 }
@@ -125,14 +125,14 @@ type TypeObject<T> = TypeObjectPretty<TypeObjectFixOptional<{
 
 /// Object that can have any properties
 export function object<T>(tobj: T): Type<TypeObject<T>> {
-  return new Type<TypeObject<T>>('object', {
+  return new Type('object', {
     _check: isObject,
     _object: tobj as T,
   })
 }
 
 export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> {
-  return new Type<TypeObject<T>>('object', {
+  return new Type('object', {
     _check: isObject,
     _object: tobj as T,
   })
@@ -144,7 +144,7 @@ type TypeUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : 
 
 /// Union of types, like `string | number | boolean`
 export function union<T extends (Type<any>)[]>(options: T): Type<TypeUnion<T>> {
-  return new Type<TypeUnion<T>>('union', {
+  return new Type('union', {
     _check: v => options.includes(v),
     _union: options,
   })
@@ -155,7 +155,7 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TypeUnion<T>> {
 type TypeLiterals = string | number | bigint | boolean
 
 export function literal<T extends TypeLiterals>(value: T): Type<T> {
-  return new Type<T>('literal', {
+  return new Type('literal', {
     _check: v => v === value,
     _default: value,
   })
@@ -163,7 +163,7 @@ export function literal<T extends TypeLiterals>(value: T): Type<T> {
 
 /// String that can only be one of the values, like: `"a" | "b" | "c"``
 export function stringLiterals<const T extends readonly string[], O = T[number]>(values: T): Type<O> {
-  return new Type<O>('string', {
+  return new Type('string', {
     _check: v => values.includes(v),
     _enumValues: values,
   })
@@ -193,7 +193,7 @@ export function tuple<T extends [] | [Type, ...Type[]]>(items: T): TypeArray<T, 
 }
 
 export function array<T>(itemType: Type<T>): Type<T[]> {
-  return new Type<T[]>('array', {
+  return new Type('array', {
     _check: isArray,
     _type: itemType,
   })
@@ -205,7 +205,7 @@ export function func<
   TypeFuncRet = Type,
   T = (...args: TypeTuple<TypeFuncArgs>) => Infer<TypeFuncRet>,
 >(args: TypeFuncArgs, ret: TypeFuncRet): Type<T> {
-  return new Type<T>('function', {
+  return new Type('function', {
     _check: isFunction,
     _args: args,
     _ret: ret,
@@ -217,8 +217,8 @@ export function rpc<
   TypeRpcInfo extends Type<unknown> | undefined = undefined,
   TypeRpcRet extends Type<unknown> = Type<void>, // ReturnType<typeof none>,
   T = TypeRpcInfo extends undefined ? () => Infer<TypeRpcRet> : (info: Infer<TypeRpcInfo>) => Infer<TypeRpcRet> | Promise<Infer<TypeRpcRet>>,
->(info?: TypeRpcInfo, ret?: TypeRpcRet) {
-  return new Type<T>('rpc', {
+>(info?: TypeRpcInfo, ret?: TypeRpcRet): Type<T> {
+  return new Type('rpc', {
     _check: isFunction,
     _info: info,
     _ret: ret ?? none(),

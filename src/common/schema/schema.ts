@@ -1,38 +1,21 @@
 // With many, many inspiration from https://github.com/badrap/valita MIT License as of 2024-09-10
 
-import { isArray, isBoolean, isFunction, isInteger, isNumber, isString } from '../data/is'
+import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
 
 export interface TypeProps {
   desc?: string
 }
 
-export interface Type<T = unknown> {
-  readonly type: string
-
-  _default?: T
-  _optional?: boolean
-  _props?: TypeProps
-  _object?: T
-  _check?: (obj: any) => boolean
-
-  optional: () => Type<T | undefined>
-  default: (value: any) => this // Type<T>
-  props: (props: TypeProps) => this // Type<T>
-  describe: (msg: string) => this // Type<T>
-  extend: <O>(obj: O) => Type<T & InferObject<O>>
-  // array: () => Type<T[]>
-
-  [key: string]: any // Allow dynamic properties
-}
-
-export class TypeClass<T = unknown> implements Type<T> {
+export class Type<T = unknown> { // implements Type<T>
   readonly type
 
   _default?: T
   _optional?: boolean
   _props?: TypeProps
-  _object?: T
+  // _object?: T
   _check?: (obj: any) => boolean
+
+  [key: string]: any // Allow dynamic properties
 
   constructor(name: string, options: Record<string, any>) {
     this.type = name
@@ -74,7 +57,10 @@ export class TypeClass<T = unknown> implements Type<T> {
   }
 
   // array(): Type<T[]> {
-  //   return new TypeArrayClass<T[], Type<T>>('array', this)
+  //   return new Type<T[]>('array', {
+  //     _check: isArray,
+  //     _type: this,
+  //   })
   // }
 }
 
@@ -83,37 +69,29 @@ export type Infer<T> = T extends Type<infer TT> ? TT : never
 // Helper
 
 function generic<T = unknown>(type: string, opt?: Partial<Type<T>>): Type<T> {
-  return new TypeClass<T>(type, opt as any)
+  return new Type<T>(type, opt as any)
 }
 
 // Primitives
 
-/// Just a simple string type
 export function string() {
   return generic<string>('string', {
     _check: isString,
   })
 }
 
-/// Number as in Javascript, could be float or int
 export function number() {
   return generic<number>('number', {
     _check: isNumber,
   })
 }
 
-export const float = number
-export const double = number
-export const real = number
-
-/// Integer
 export function int() {
   return generic<number>('int', {
     _check: isInteger,
   })
 }
 
-/// Boolean
 export function boolean() {
   return generic<boolean>('boolean', {
     _check: isBoolean,
@@ -128,12 +106,15 @@ export function none() {
   })
 }
 
-/// todo: appears to result in optional inside object
 export function any<T = any>() {
   return generic<T>('any', {
     _check: v => v != null,
   })
 }
+
+export const float = number
+export const double = number
+export const real = number
 
 // Object
 
@@ -149,20 +130,19 @@ export type InferObject<T> = ObjectPretty<ObjectFixOptional<{
   [K in keyof T]: Infer<T[K]>
 }>>
 
-export class TypeObjectClass<T, O = InferObject<T>> extends TypeClass<O> {
-  constructor(obj: T) {
-    super('object', () => true)
-    this._object = obj as any
-  }
-}
-
 /// Object that can have any properties
 export function object<T>(tobj: T): Type<InferObject<T>> {
-  return new TypeObjectClass(tobj)
+  return generic<InferObject<T>>('object', {
+    _check: isObject,
+    _object: tobj as T,
+  })
 }
 
 export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> {
-  return new TypeObjectClass(tobj)
+  return generic<InferObject<T>>('object', {
+    _check: isObject,
+    _object: tobj as T,
+  })
 }
 
 // Union
@@ -197,7 +177,7 @@ export function stringLiterals<const T extends readonly string[], O = T[number]>
   })
 }
 
-// Functions
+// Collections
 
 type TupleOutput<T extends Type[]> = {
   [K in keyof T]: T[K] extends Type<infer U> ? U : never

@@ -84,16 +84,17 @@ describe('rpc.spec', () => {
     }
 
     expect(rpcSchema).toMatchInlineSnapshot(`
-      TypeObjectClass {
+      Type {
+        "_check": [Function],
         "_object": Object {
-          "echo": TypeClass {
+          "echo": Type {
             "_args": Array [
-              TypeClass {
+              Type {
                 "_check": [Function],
                 "extend": [Function],
                 "type": "string",
               },
-              TypeClass {
+              Type {
                 "_check": [Function],
                 "extend": [Function],
                 "type": "boolean",
@@ -103,7 +104,7 @@ describe('rpc.spec', () => {
             "_props": Object {
               "rpcDesc": "Just echo the string",
             },
-            "_ret": TypeClass {
+            "_ret": Type {
               "_check": [Function],
               "_optional": true,
               "extend": [Function],
@@ -112,33 +113,35 @@ describe('rpc.spec', () => {
             "extend": [Function],
             "type": "function",
           },
-          "noFunc": TypeClass {
+          "noFunc": Type {
             "_check": [Function],
             "extend": [Function],
             "type": "string",
           },
-          "rpc": TypeClass {
+          "rpc": Type {
             "_check": [Function],
-            "_info": TypeObjectClass {
+            "_info": Type {
+              "_check": [Function],
               "_object": Object {
-                "id": TypeClass {
+                "id": Type {
                   "_check": [Function],
                   "extend": [Function],
                   "type": "string",
                 },
-                "method": TypeClass {
+                "method": Type {
                   "_check": [Function],
                   "extend": [Function],
                   "type": "string",
                 },
-                "params": TypeObjectClass {
+                "params": Type {
+                  "_check": [Function],
                   "_object": Object {
-                    "a": TypeClass {
+                    "a": Type {
                       "_check": [Function],
                       "extend": [Function],
                       "type": "string",
                     },
-                    "b": TypeClass {
+                    "b": Type {
                       "_check": [Function],
                       "extend": [Function],
                       "type": "boolean",
@@ -151,7 +154,7 @@ describe('rpc.spec', () => {
               "extend": [Function],
               "type": "object",
             },
-            "_ret": TypeClass {
+            "_ret": Type {
               "_check": [Function],
               "_optional": true,
               "extend": [Function],

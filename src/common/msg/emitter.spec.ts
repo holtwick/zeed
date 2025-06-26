@@ -164,7 +164,12 @@ describe('emitter', () => {
     void e1.emit('a') // twice!
     expect(counter).toBe(100)
 
+    expect(e1.hasListeners('a')).toBe(true)
+
     e1.removeAllListeners()
+
+    expect(e1.hasListeners('a')).toBe(false)
+
     void e1.emit('a') // no listeners!
     expect(counter).toBe(100)
   })

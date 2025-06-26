@@ -172,6 +172,10 @@ export class Emitter<
     return this
   }
 
+  public hasListeners(event: keyof LocalListener): boolean {
+    return !!this.subscribers[event] && this.subscribers[event].length > 0
+  }
+
   ///
 
   waitOn<U extends keyof LocalListener, R = Parameters<LocalListener[U]>[0]>(

@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "packageManager": "pnpm@10.12.1",
   "description": "🌱 Simple foundation library",
   "author": {
@@ -43,7 +43,10 @@
   "module": "dist/index.browser.js",
   "types": "dist/index.all.d.ts",
   "files": [
-    "dist"
+    "LICENSE",
+    "README.md",
+    "dist",
+    "src"
   ],
   "engines": {
     "node": ">=18"
@@ -68,7 +71,8 @@
     "test:webkit": "BROWSER=webkit vitest",
     "test:chromium": "BROWSER=chromium vitest",
     "test:publish": "vitest --run",
-    "watch": "nr build -- --watch src"
+    "watch": "nr build -- --watch src",
+    "prep": "nr lint:fix && nr check && nr test:release && nr upload:docs"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.14.1",

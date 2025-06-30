@@ -1,3 +1,5 @@
+/* eslint-disable style/no-tabs */
+
 import { getEnvVariableRelaxed, parseEnvString, parseEnvStringAlt, setupEnv } from './env'
 
 describe('eNV', () => {

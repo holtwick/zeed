@@ -48,16 +48,16 @@ const defaultOptions: fetchOptionType = {
 }
 
 // Source https://developer.mozilla.org/de/docs/Web/HTTP/Methods
-export type httpMethod =
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'DELETE'
-  | 'HEAD'
-  | 'CONNECT'
-  | 'OPTIONS'
-  | 'TRACE'
-  | 'PATCH'
+export type httpMethod
+  = | 'GET'
+    | 'POST'
+    | 'PUT'
+    | 'DELETE'
+    | 'HEAD'
+    | 'CONNECT'
+    | 'OPTIONS'
+    | 'TRACE'
+    | 'PATCH'
 
 export function parseBasicAuth(url: string) {
   const m = /:\/\/([^@]*)@/.exec(url)

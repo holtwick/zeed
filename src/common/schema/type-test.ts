@@ -2,8 +2,8 @@
 
 export type Expect<T extends true> = T
 
-export type IsEqual<X, Y> =
-  (<T>() => T extends X ? true : false) extends
+export type IsEqual<X, Y>
+  = (<T>() => T extends X ? true : false) extends
   (<T>() => T extends Y ? true : false) ? true : false
 
 // Example type to test

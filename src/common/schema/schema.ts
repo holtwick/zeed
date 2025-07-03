@@ -23,8 +23,8 @@ export class Type<T = unknown> {
 
   /// Marks the type as optional, meaning it can be undefined
   /// This is useful for properties that are not required.
-  /// .optional() should be used as last in chain, since it looses the original class type
   optional(): Type<T | undefined> {
+    // todo: still correct? ".optional() should be used as last in chain, since it looses the original class type"
     this._optional = true
     return this
   }

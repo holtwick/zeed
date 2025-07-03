@@ -1,5 +1,6 @@
 import type { Type } from './schema'
 import { assert } from '../assert'
+import { isPrimitive } from '../data'
 import { objectMap } from '../data/object'
 import { isSchemaObjectFlat } from './utils'
 
@@ -8,6 +9,7 @@ declare module './schema' {
     swiftName?: string
     swiftProtocol?: string
     swiftDesc?: string
+    swiftDefault?: string
   }
 }
 
@@ -34,8 +36,8 @@ export function schemaExportSwiftStruct<T>(schema: Type<T>, name: string = 'Exam
     let s = `  var ${key}: ${mapSwiftType[schema.type] ?? schema.type}`
     if (schema._optional === true)
       s += '?'
-    if (schema._default != null)
-      s += ` = ${schema._default}`
+    if (schema._meta?.swiftDefault || (schema._default != null && isPrimitive(schema._default)))
+      s += ` = ${schema._meta?.swiftDefault ?? JSON.stringify(schema._default)}`
     lines.push(s)
   })
 

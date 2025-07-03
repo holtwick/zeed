@@ -8,7 +8,7 @@ describe('swift.spec', () => {
       anInt: z.int().optional().default(0),
       aBool: z.boolean(),
       aNumber: z.number(),
-      aString: z.string(),
+      aString: z.string().meta({ swiftDefault: 'String(EXAMPLE)' }),
     }).meta({
       swiftName: 'Test123',
       swiftProtocol: 'Codable',
@@ -29,7 +29,7 @@ describe('swift.spec', () => {
         var anInt: Int? = 0
         var aBool: Bool
         var aNumber: Double
-        var aString: String
+        var aString: String = String(EXAMPLE)
       }"
     `)
   })

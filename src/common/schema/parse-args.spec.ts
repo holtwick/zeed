@@ -16,7 +16,7 @@ describe('args.spec', () => {
 
     type t = Infer<typeof schema>
     expectTypeOf<t>().toMatchObjectType<{
-      someStuff?: number | undefined
+      someStuff?: number
       help: boolean
     }>()
 

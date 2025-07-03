@@ -278,4 +278,18 @@ describe('schema', () => {
       description?: string | undefined
     }>()
   })
+
+  it('optional and default', async () => {
+    const s = z.object({
+      def1: z.string().default('hallo'), // not optional!
+      def2: z.string().default('hallo').optional(),
+      def3: z.string().optional(),
+    })
+    type Schema = Infer<typeof s>
+    type SchemaTest = Expect<IsEqual<Schema, {
+      def1: string
+      def2?: string | undefined
+      def3?: string | undefined
+    }>> // Should pass
+  })
 })

@@ -13,11 +13,17 @@ export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   if (schema._object) {
     const obj: any = {}
     for (const key in schema._object) {
-      obj[key] = schemaCreateObject(schema._object[key] as Type<any>)
+      const propSchema = schema._object[key] as Type<any>
+      const value = schemaCreateObject(propSchema)
+      if (value !== undefined) {
+        obj[key] = value
+      }
     }
     return obj
   }
 
+  // For non-optional, non-object types without defaults, return undefined
+  // This allows the object creation to handle missing required fields appropriately
   return undefined
 }
 
@@ -82,7 +88,9 @@ export function schemaValidateObject<T>(schema: Type<T>, obj?: any, opt?: {
 export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
   path?: string
   messages?: SchemaValidateMessage[]
-  // allowExtra?: boolean
+
+  /// Whether to allow extra properties not defined in the schema
+  allowExtra?: boolean
 }): T | undefined {
   const messages = opt?.messages || []
 
@@ -101,12 +109,17 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
       addMessage('Default', true)
       return isFunction(schema._default) ? schema._default(schema) : schema._default
     }
+    // For non-optional objects without explicit defaults, use empty object
+    if (schema._object) {
+      obj = {}
+    }
   }
 
   if (schema._object) {
     const newObj: any = {}
-    for (const key in schema._object) {
-      const propSchema = schema._object[key] as any
+    const shape = schema._object
+    for (const key in shape) {
+      const propSchema = shape[key] as any
       const result = schemaParseObject(propSchema, obj[key] as any, {
         ...opt,
         path: opt?.path ? `${opt.path}.${key}` : key,
@@ -115,7 +128,28 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
       if (result !== undefined) {
         newObj[key] = result
       }
+      else if (propSchema._default !== undefined) {
+        newObj[key] = isFunction(propSchema._default) ? propSchema._default(propSchema) : propSchema._default
+      }
+      else if (propSchema._optional) {
+        // Only set undefined for optional properties if they were explicitly provided as undefined
+        if (obj && typeof obj === 'object' && key in obj) {
+          newObj[key] = undefined
+        }
+        // Otherwise, don't set the property at all
+      }
+      // For required properties without defaults, don't set undefined - leave them missing
     }
+
+    // Add extra properties if allowExtra is enabled
+    if (opt?.allowExtra && obj && typeof obj === 'object') {
+      for (const [key, value] of Object.entries(obj)) {
+        if (!(key in shape)) {
+          newObj[key] = value
+        }
+      }
+    }
+
     return newObj
   }
 

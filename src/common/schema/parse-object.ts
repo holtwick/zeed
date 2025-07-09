@@ -27,7 +27,11 @@ export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   return undefined
 }
 
-interface SchemaValidateMessage {
+/**
+ * Message for schema validation results.
+ * @category Schema
+ */
+export interface SchemaValidateMessage {
   path: string
   message: string
   type: string

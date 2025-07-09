@@ -5,7 +5,11 @@ import type { LogLevel, LogLevelAliasType } from './log-base'
 import { isString } from '../data/is'
 import { LogLevelAlias, LogLevelAll, LogLevelOff } from './log-base'
 
-interface NamespaceFilter {
+/**
+ * Filter function for log namespaces.
+ * @category Logging
+ */
+export interface NamespaceFilter {
   (name: string): boolean
   accept: RegExp[]
   reject: RegExp[]

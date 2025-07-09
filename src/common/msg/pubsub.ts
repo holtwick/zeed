@@ -6,7 +6,7 @@ import { uname } from '../uuid'
 import { Emitter } from './emitter'
 import { JsonEncoder } from './encoder'
 
-interface PubSubConfig {
+export interface PubSubConfig {
   channel: Channel
   encoder?: Encoder
   name?: string

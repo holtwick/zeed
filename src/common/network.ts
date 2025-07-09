@@ -9,7 +9,11 @@ import { DefaultLogger } from './log/log'
 
 // TODO: Abort signal https://codedrivendevelopment.com/posts/everything-about-abort-signal-timeout
 
-interface fetchOptionType {
+/**
+ * Options for fetch requests.
+ * @category Network
+ */
+export interface fetchOptionType {
   /** Returns the cache mode associated with request, which is a string indicating how the request will interact with the browser's cache when fetching. */
   cache?: RequestCache
   /** Returns the credentials mode associated with request, which is a string indicating whether credentials will be sent with the request always, never, or only when sent to a same-origin URL. */
@@ -39,7 +43,11 @@ interface fetchOptionType {
   body?: any
 }
 
-type fetchOptionsType = fetchOptionType | fetchOptionsType[]
+/**
+ * Type for fetch options, can be a single option or an array of options.
+ * @category Network
+ */
+export type fetchOptionsType = fetchOptionType | fetchOptionsType[]
 
 const defaultOptions: fetchOptionType = {
   cache: 'no-cache',

@@ -112,7 +112,11 @@ export const real = number
 
 // Object
 
-type TypeObjectFixOptional<T> = {
+/**
+ * Utility type to make object properties optional if their value type includes undefined.
+ * @category Schema
+ */
+export type TypeObjectFixOptional<T> = {
   [K in keyof T as undefined extends T[K] ? K : never]?: T[K] & {}
 } & {
   [K in keyof T as undefined extends T[K] ? never : K]: T[K] & {}
@@ -141,7 +145,11 @@ export function record<T extends Type>(tobj: T): Type<Record<string, Infer<T>>> 
 
 // Union
 
-type TypeUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
+/**
+ * Utility type for union of types.
+ * @category Schema
+ */
+export type TypeUnion<T extends (Type<any>)[]> = T extends Array<infer U> ? Infer<U> : never
 
 /// Union of types, like `string | number | boolean`
 export function union<T extends (Type<any>)[]>(options: T): Type<TypeUnion<T>> {
@@ -153,7 +161,11 @@ export function union<T extends (Type<any>)[]>(options: T): Type<TypeUnion<T>> {
 
 // Literals
 
-type TypeLiterals = string | number | bigint | boolean
+/**
+ * Utility type for literal types.
+ * @category Schema
+ */
+export type TypeLiterals = string | number | bigint | boolean
 
 export function literal<T extends TypeLiterals>(value: T): Type<T> {
   return new Type('literal', {
@@ -181,10 +193,11 @@ type TypeArrayOutput<Head extends Type[], Rest extends Type | undefined> = [
   ...(Rest extends Type ? Infer<Rest>[] : []),
 ]
 
-type TypeArray<
-  Head extends Type[] = Type[],
-  Rest extends Type | undefined = Type | undefined,
-> = Type<TypeArrayOutput<Head, Rest>>
+/**
+ * Utility type for array types.
+ * @category Schema
+ */
+export type TypeArray<Head extends Type[] = Type[], Rest extends Type | undefined = Type | undefined> = Type<TypeArrayOutput<Head, Rest>>
 
 // Like an array but with fixed length and types
 export function tuple<T extends [] | [Type, ...Type[]]>(items: T): TypeArray<T, undefined> {

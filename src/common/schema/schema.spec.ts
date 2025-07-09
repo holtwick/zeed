@@ -133,8 +133,6 @@ describe('schema', () => {
         "lit": "past_due",
         "log": true,
         "name": "Hello",
-        "obj": undefined,
-        "tags": undefined,
       }
     `)
 

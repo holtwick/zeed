@@ -13,7 +13,11 @@ export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
   if (schema._object) {
     const obj: any = {}
     for (const key in schema._object) {
-      obj[key] = schemaCreateObject(schema._object[key] as Type<any>)
+      const propSchema = schema._object[key] as Type<any>
+      const value = schemaCreateObject(propSchema)
+      if (value !== undefined) {
+        obj[key] = value
+      }
     }
     return obj
   }
@@ -128,8 +132,13 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
         newObj[key] = isFunction(propSchema._default) ? propSchema._default(propSchema) : propSchema._default
       }
       else if (propSchema._optional) {
-        newObj[key] = undefined
+        // Only set undefined for optional properties if they were explicitly provided as undefined
+        if (obj && typeof obj === 'object' && key in obj) {
+          newObj[key] = undefined
+        }
+        // Otherwise, don't set the property at all
       }
+      // For required properties without defaults, don't set undefined - leave them missing
     }
 
     // Add extra properties if allowExtra is enabled

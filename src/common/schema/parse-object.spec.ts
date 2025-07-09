@@ -22,16 +22,12 @@ describe('schema parse obj', () => {
         "address": Object {
           "street": "Main St",
         },
-        "age": undefined,
         "id": "test-0",
-        "title": undefined,
       }
     `)
 
     expect(obj).toEqual({
       id: expect.any(String),
-      title: undefined,
-      age: undefined,
       address: {
         street: 'Main St',
       },
@@ -167,9 +163,9 @@ describe('schema parse obj', () => {
       id: '123',
       requiredObj: {
         field1: 'default1',
-        field2: undefined, // required field without default
+        // field2 is missing (not undefined) since it has no default
       },
-      optionalObj: undefined, // optional object
+      // optionalObj is missing (not undefined) since it's optional and not provided
     })
 
     // Test with null nested objects

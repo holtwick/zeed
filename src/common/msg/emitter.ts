@@ -211,7 +211,7 @@ declare global {
    * Global emitter interface for Zeed, used for cross-module event emission.
    * @category Global
    */
-  interface ZeedGlobalEmitter {}
+  export interface ZeedGlobalEmitter {}
 }
 
 /** Global emitter that will listen even across modules */

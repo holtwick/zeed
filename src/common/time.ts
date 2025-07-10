@@ -1,15 +1,21 @@
+let testModeTime: number | undefined
+
+export function setTimestampTest(ts = Date.UTC(2000, 0, 1, 0, 0, 0, 0)) {
+  testModeTime = ts
+}
+
 /**
  * @returns Timestamp in miliseconds
  */
 export function getTimestamp(): number {
-  return Date.now()
+  return testModeTime ?? Date.now()
 }
 
 /**
  * @returns Timestamp in seconds
  */
 export function getTimestampInSeconds(): number {
-  return Math.floor(Date.now() / 1000)
+  return Math.floor(getTimestamp() / 1000)
 }
 
 /**

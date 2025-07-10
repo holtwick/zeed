@@ -6,7 +6,7 @@ import { toCamelCase } from '../common/data/camelcase'
 /**
  * Represents the configuration options for parsing command line arguments.
  */
-interface ParseConfig {
+export interface ParseConfig {
   args?: string[]
   alias?: Record<string, string[]>
   normalize?: (value: string) => string

@@ -1,7 +1,9 @@
 /* eslint-disable no-restricted-globals */
 
-// Global context across build systems etc.
-
+/**
+ * Global context for Zeed, used for cross-module state.
+ * @category Global
+ */
 declare global {
   interface ZeedGlobalContext {}
 }

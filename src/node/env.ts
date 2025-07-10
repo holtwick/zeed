@@ -10,7 +10,7 @@ const RE_INI_KEY_VAL = /^\s*([\w.-]+)\s*=\s*(.*)\s*$/
 const RE_NEWLINES = /\\n/g
 const NEWLINES_MATCH = /\r\n|\n|\r/
 
-interface EnvOptions {
+export interface EnvOptions {
   /** @deprecated will probably be replaced by logLevel */
   debug?: boolean
   path?: string

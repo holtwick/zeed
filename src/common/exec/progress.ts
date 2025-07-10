@@ -5,7 +5,7 @@ import { useDispose } from '../dispose-defer'
 import { Emitter } from '../msg/emitter'
 import { uname } from '../uuid'
 
-interface ProgressOptions {
+export interface ProgressOptions {
   totalUnits?: number
   completeUnits?: number
   resetWhenFinished?: boolean

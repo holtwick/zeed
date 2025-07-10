@@ -22,12 +22,16 @@ export function schemaCreateObject<T>(schema: Type<T>): Partial<T> | undefined {
     return obj
   }
 
-  // For non-optional, non-object types without defaults, return undefined
-  // This allows the object creation to handle missing required fields appropriately
+  // For non-optional, non-object types without defaults, don't return anything
+  // This prevents setting undefined values in the parent object
   return undefined
 }
 
-interface SchemaValidateMessage {
+/**
+ * Message for schema validation results.
+ * @category Schema
+ */
+export interface SchemaValidateMessage {
   path: string
   message: string
   type: string

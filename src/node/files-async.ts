@@ -4,7 +4,11 @@ import process from 'node:process'
 import { isHiddenPath } from './fs'
 import { globToRegExp } from './glob'
 
-interface StatsBase {
+/**
+ * Base stats interface for file system objects.
+ * @category FileSystem
+ */
+export interface StatsBase {
   isFile: () => boolean
   isDirectory: () => boolean
   isBlockDevice: () => boolean

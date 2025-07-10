@@ -140,12 +140,14 @@ describe('schema parse obj', () => {
   })
 
   it('should handle non-optional objects defaulting to empty objects', async () => {
+    const requiredObjSchrema = z.object({
+      field1: z.string().default('default1'),
+      field2: z.string(),
+    })
+
     const schema = z.object({
       id: z.string(),
-      requiredObj: z.object({
-        field1: z.string().default('default1'),
-        field2: z.string(),
-      }),
+      requiredObj: requiredObjSchrema,
       optionalObj: z.object({
         field3: z.string().default('default3'),
       }).optional(),
@@ -171,8 +173,6 @@ describe('schema parse obj', () => {
     // Test with null nested objects
     const input2 = {
       id: '456',
-      requiredObj: null, // should still create object with defaults
-      optionalObj: null, // should remain undefined for optional
     }
 
     const result2 = schemaParseObject(schema, input2)

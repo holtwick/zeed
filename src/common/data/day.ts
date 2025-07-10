@@ -1,5 +1,11 @@
 // Functional Variant
 
+let testModeDay: number | undefined
+
+export function setDayTest(ts = 20000101) {
+  testModeDay = ts
+}
+
 export const DAY_MS = 86400000 // 1000 * 60 * 60 * 24
 
 export type DayValue = number
@@ -38,7 +44,7 @@ export function dayToDate(day: DayValue, utc = false): Date {
 }
 
 export function dayFromToday(): DayValue {
-  return dayFromDate(new Date())
+  return testModeDay ?? dayFromDate(new Date())
 }
 
 export function dayFromAny(

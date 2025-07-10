@@ -230,6 +230,7 @@ describe('schema', () => {
       Object {
         "id": "123",
         "literal": "demo",
+        "name": "two",
       }
     `)
     // expect(schema.parse({} as any)).toBe()

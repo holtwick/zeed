@@ -91,12 +91,10 @@ describe('rpc.spec', () => {
             "_args": Array [
               Type {
                 "_check": [Function],
-                "extend": [Function],
                 "type": "string",
               },
               Type {
                 "_check": [Function],
-                "extend": [Function],
                 "type": "boolean",
               },
             ],
@@ -107,15 +105,12 @@ describe('rpc.spec', () => {
             "_ret": Type {
               "_check": [Function],
               "_optional": true,
-              "extend": [Function],
               "type": "string",
             },
-            "extend": [Function],
             "type": "function",
           },
           "noFunc": Type {
             "_check": [Function],
-            "extend": [Function],
             "type": "string",
           },
           "rpc": Type {
@@ -125,12 +120,10 @@ describe('rpc.spec', () => {
               "_object": Object {
                 "id": Type {
                   "_check": [Function],
-                  "extend": [Function],
                   "type": "string",
                 },
                 "method": Type {
                   "_check": [Function],
-                  "extend": [Function],
                   "type": "string",
                 },
                 "params": Type {
@@ -138,33 +131,26 @@ describe('rpc.spec', () => {
                   "_object": Object {
                     "a": Type {
                       "_check": [Function],
-                      "extend": [Function],
                       "type": "string",
                     },
                     "b": Type {
                       "_check": [Function],
-                      "extend": [Function],
                       "type": "boolean",
                     },
                   },
-                  "extend": [Function],
                   "type": "object",
                 },
               },
-              "extend": [Function],
               "type": "object",
             },
             "_ret": Type {
               "_check": [Function],
               "_optional": true,
-              "extend": [Function],
               "type": "none",
             },
-            "extend": [Function],
             "type": "rpc",
           },
         },
-        "extend": [Function],
         "type": "object",
       }
     `)

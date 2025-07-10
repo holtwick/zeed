@@ -230,6 +230,7 @@ describe('schema', () => {
       Object {
         "id": "123",
         "literal": "demo",
+        "name": "two",
       }
     `)
     // expect(schema.parse({} as any)).toBe()
@@ -293,5 +294,178 @@ describe('schema', () => {
       def3?: string | undefined
       def4?: string | undefined
     }>> // Should pass
+  })
+
+  describe('object manipulation methods', () => {
+    // Test setup - similar to the Recipe example
+    const RecipeSchema = object({
+      title: string(),
+      description: string().optional(),
+      ingredients: array(string()),
+      published: boolean(),
+    })
+
+    expectTypeOf<Infer<typeof RecipeSchema>>().toMatchObjectType<{
+      description?: string | undefined
+      title: string
+      ingredients: string[]
+      published: boolean
+    }>()
+
+    describe('pick()', () => {
+      it('should pick specified keys from object schema', () => {
+        const JustTheTitle = RecipeSchema.pick({ title: true })
+
+        // Type should only include title
+        expect(JustTheTitle._object).toEqual({
+          title: expect.any(Object),
+        })
+        expect(JustTheTitle._object.title).toBe(RecipeSchema._object.title)
+
+        expectTypeOf<Infer<typeof JustTheTitle>>().toMatchObjectType<{
+          title: string
+        }>()
+      })
+
+      it('should pick multiple keys from object schema', () => {
+        const TitleAndIngredients = RecipeSchema.pick({ title: true, ingredients: true })
+
+        expect(TitleAndIngredients._object).toEqual({
+          title: expect.any(Object),
+          ingredients: expect.any(Object),
+        })
+
+        expectTypeOf<Infer<typeof TitleAndIngredients>>().toMatchObjectType<{
+          title: string
+          ingredients: string[]
+        }>()
+      })
+
+      it('should throw error when used on non-object schema', () => {
+        const stringSchema = string()
+        expect(() => stringSchema.pick({ anything: true } as any)).toThrow('pick() can only be used on object schemas')
+      })
+    })
+
+    describe('omit()', () => {
+      it('should omit specified keys from object schema', () => {
+        const RecipeNoDescription = RecipeSchema.omit({ description: true })
+
+        // Should have all keys except description
+        expect(Object.keys(RecipeNoDescription._object)).toEqual(['title', 'ingredients', 'published'])
+        expect(RecipeNoDescription._object.description).toBeUndefined()
+
+        expectTypeOf<Infer<typeof RecipeNoDescription>>().toMatchObjectType<{
+          title: string
+          ingredients: string[]
+          published: boolean
+        }>()
+
+        // const x: Infer<typeof RecipeNoDescription> = {
+        //   title: 'Test Recipe',
+        //   ingredients: ['Flour', 'Sugar'],
+        //   published: true,
+        //   description: 'This should not be here', // This should cause a type error
+        // }
+      })
+
+      it('should omit multiple keys from object schema', () => {
+        const JustTitleAndPublished = RecipeSchema.omit({ description: true, ingredients: true })
+
+        expect(Object.keys(JustTitleAndPublished._object)).toEqual(['title', 'published'])
+
+        expectTypeOf<Infer<typeof JustTitleAndPublished>>().toMatchObjectType<{
+          title: string
+          published: boolean
+        }>()
+      })
+
+      it('should throw error when used on non-object schema', () => {
+        const stringSchema = string()
+        expect(() => stringSchema.omit({ anything: true } as any)).toThrow('omit() can only be used on object schemas')
+      })
+    })
+
+    describe('partial()', () => {
+      it('should make all properties optional when no keys specified', () => {
+        const PartialRecipe = RecipeSchema.partial()
+
+        // All properties should be optional
+        expect(PartialRecipe._object.title._optional).toBe(true)
+        expect(PartialRecipe._object.description._optional).toBe(true) // was already optional
+        expect(PartialRecipe._object.ingredients._optional).toBe(true)
+        expect(PartialRecipe._object.published._optional).toBe(true)
+
+        expectTypeOf<Infer<typeof PartialRecipe>>().toMatchObjectType<{
+          title?: string
+          ingredients?: string[]
+          published?: boolean
+          description?: string
+        }>()
+      })
+
+      it('should make only specified properties optional', () => {
+        const RecipeOptionalIngredients = RecipeSchema.partial({ ingredients: true })
+
+        // Only ingredients should be made optional, others retain original state
+        expect(RecipeOptionalIngredients._object.title._optional).toBeUndefined() // was required, stays required
+        expect(RecipeOptionalIngredients._object.description._optional).toBe(true) // was optional, stays optional
+        expect(RecipeOptionalIngredients._object.ingredients._optional).toBe(true) // was required, now optional
+        expect(RecipeOptionalIngredients._object.published._optional).toBeUndefined() // was required, stays required
+
+        expectTypeOf<Infer<typeof RecipeOptionalIngredients>>().toMatchObjectType<{
+          title: string
+          description?: string | undefined
+          ingredients?: string[] | undefined
+          published: boolean
+        }>()
+      })
+
+      it('should throw error when used on non-object schema', () => {
+        const stringSchema = string()
+        expect(() => stringSchema.partial()).toThrow('partial() can only be used on object schemas')
+      })
+    })
+
+    describe('required()', () => {
+      it('should make all properties required when no keys specified', () => {
+        const RequiredRecipe = RecipeSchema.required()
+
+        // All properties should be required (not optional)
+        expect(RequiredRecipe._object.title._optional).toBe(false)
+        expect(RequiredRecipe._object.description._optional).toBe(false)
+        expect(RequiredRecipe._object.ingredients._optional).toBe(false)
+        expect(RequiredRecipe._object.published._optional).toBe(false)
+
+        expectTypeOf<Infer<typeof RequiredRecipe>>().toMatchObjectType<{
+          title: string
+          ingredients: string[]
+          published: boolean
+          description: string
+        }>()
+      })
+
+      it('should make only specified properties required', () => {
+        const RecipeRequiredDescription = RecipeSchema.required({ description: true })
+
+        // Only description should be made required, others retain original state
+        expect(RecipeRequiredDescription._object.title._optional).toBeUndefined() // was required, stays required
+        expect(RecipeRequiredDescription._object.description._optional).toBe(false) // was optional, now required
+        expect(RecipeRequiredDescription._object.ingredients._optional).toBeUndefined() // was required, stays required
+        expect(RecipeRequiredDescription._object.published._optional).toBeUndefined() // was required, stays required
+
+        expectTypeOf<Infer<typeof RecipeRequiredDescription>>().toMatchObjectType<{
+          title: string
+          description: string
+          ingredients: string[]
+          published: boolean
+        }>()
+      })
+
+      it('should throw error when used on non-object schema', () => {
+        const stringSchema = string()
+        expect(() => stringSchema.required()).toThrow('required() can only be used on object schemas')
+      })
+    })
   })
 })

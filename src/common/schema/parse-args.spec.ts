@@ -67,7 +67,6 @@ describe('args.spec', () => {
               "argDesc": "Shows help",
               "argShort": "h",
             },
-            "extend": [Function],
             "type": "boolean",
           },
           "someStuff": Type {
@@ -76,11 +75,9 @@ describe('args.spec', () => {
               "argDesc": "Does some stuff",
             },
             "_optional": true,
-            "extend": [Function],
             "type": "number",
           },
         },
-        "extend": [Function],
         "type": "object",
       }
     `)

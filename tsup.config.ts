@@ -19,4 +19,7 @@ export const tsup: Options = {
     'src/**/*.ts',
     '!src/**/*.spec.ts',
   ],
+  esbuildOptions(options) {
+    options.keepNames = true
+  },
 }

@@ -56,12 +56,163 @@ export class Type<T = unknown> {
     return object(newObj) as any
   }
 
-  // array(): Type<T[]> {
-  //   return new Type<T[]>('array', {
-  //     _check: isArray,
-  //     _type: this,
-  //   })
-  // }
+  /// Picks certain keys from an object schema
+  pick<K extends keyof T>(keys: Record<K, true>): Type<Pick<T, K>> {
+    if (!this._object) {
+      throw new Error('pick() can only be used on object schemas')
+    }
+    const pickedObj: any = {}
+    for (const key of Object.keys(keys)) {
+      if (key in this._object) {
+        pickedObj[key] = (this._object as any)[key]
+      }
+    }
+    return object(pickedObj) as any
+  }
+
+  /// Omits certain keys from an object schema
+  omit<K extends keyof T>(keys: Record<K, true>): Type<Omit<T, K>> {
+    if (!this._object) {
+      throw new Error('omit() can only be used on object schemas')
+    }
+    const omittedObj: any = { ...this._object }
+    for (const key of Object.keys(keys)) {
+      delete omittedObj[key]
+    }
+    return object(omittedObj) as any
+  }
+
+  /// Makes some or all properties of an object schema optional
+  partial(): Type<Partial<T>>
+  partial<K extends keyof T>(keys: Record<K, true>): Type<Partial<Pick<T, K>> & Omit<T, K>>
+  partial<K extends keyof T>(keys?: Record<K, true>): Type<Partial<T> | (Partial<Pick<T, K>> & Omit<T, K>)> {
+    if (!this._object) {
+      throw new Error('partial() can only be used on object schemas')
+    }
+    const partialObj: any = {}
+    const originalObj = this._object as any
+
+    if (!keys) {
+      // Make all properties optional
+      for (const [key, typeInstance] of Object.entries(originalObj)) {
+        const originalType = typeInstance as Type
+        const newOptions: any = { _optional: true }
+
+        // Copy existing properties that matter
+        if (originalType._check !== undefined)
+          newOptions._check = originalType._check
+        if (originalType._default !== undefined)
+          newOptions._default = originalType._default
+        if (originalType._meta !== undefined)
+          newOptions._meta = originalType._meta
+        if (originalType._object !== undefined)
+          newOptions._object = originalType._object
+        if (originalType._type !== undefined)
+          newOptions._type = originalType._type
+        if (originalType._enumValues !== undefined)
+          newOptions._enumValues = originalType._enumValues
+
+        const newTypeInstance = new Type(originalType.type, newOptions)
+        partialObj[key] = newTypeInstance
+      }
+    }
+    else {
+      // Make only specified properties optional
+      for (const [key, typeInstance] of Object.entries(originalObj)) {
+        if (key in keys) {
+          const originalType = typeInstance as Type
+          const newOptions: any = { _optional: true }
+
+          // Copy existing properties that matter
+          if (originalType._check !== undefined)
+            newOptions._check = originalType._check
+          if (originalType._default !== undefined)
+            newOptions._default = originalType._default
+          if (originalType._meta !== undefined)
+            newOptions._meta = originalType._meta
+          if (originalType._object !== undefined)
+            newOptions._object = originalType._object
+          if (originalType._type !== undefined)
+            newOptions._type = originalType._type
+          if (originalType._enumValues !== undefined)
+            newOptions._enumValues = originalType._enumValues
+
+          const newTypeInstance = new Type(originalType.type, newOptions)
+          partialObj[key] = newTypeInstance
+        }
+        else {
+          partialObj[key] = typeInstance
+        }
+      }
+    }
+    return object(partialObj) as any
+  }
+
+  /// Makes some or all properties of an object schema required
+  required(): Type<Required<T>>
+  required<K extends keyof T>(keys: Record<K, true>): Type<Required<Pick<T, K>> & Omit<T, K>>
+  required<K extends keyof T>(keys?: Record<K, true>): Type<Required<T> | (Required<Pick<T, K>> & Omit<T, K>)> {
+    if (!this._object) {
+      throw new Error('required() can only be used on object schemas')
+    }
+    const requiredObj: any = {}
+    const originalObj = this._object as any
+
+    if (!keys) {
+      // Make all properties required
+      for (const [key, typeInstance] of Object.entries(originalObj)) {
+        const originalType = typeInstance as Type
+        const newOptions: any = { _optional: false }
+
+        // Copy existing properties that matter
+        if (originalType._check !== undefined)
+          newOptions._check = originalType._check
+        if (originalType._default !== undefined)
+          newOptions._default = originalType._default
+        if (originalType._meta !== undefined)
+          newOptions._meta = originalType._meta
+        if (originalType._object !== undefined)
+          newOptions._object = originalType._object
+        if (originalType._type !== undefined)
+          newOptions._type = originalType._type
+        if (originalType._enumValues !== undefined)
+          newOptions._enumValues = originalType._enumValues
+
+        const newTypeInstance = new Type(originalType.type, newOptions)
+        requiredObj[key] = newTypeInstance
+      }
+    }
+    else {
+      // Make only specified properties required
+      for (const [key, typeInstance] of Object.entries(originalObj)) {
+        if (key in keys) {
+          const originalType = typeInstance as Type
+          const newOptions: any = { _optional: false }
+
+          // Copy existing properties that matter
+          if (originalType._check !== undefined)
+            newOptions._check = originalType._check
+          if (originalType._default !== undefined)
+            newOptions._default = originalType._default
+          if (originalType._meta !== undefined)
+            newOptions._meta = originalType._meta
+          if (originalType._object !== undefined)
+            newOptions._object = originalType._object
+          if (originalType._type !== undefined)
+            newOptions._type = originalType._type
+          if (originalType._enumValues !== undefined)
+            newOptions._enumValues = originalType._enumValues
+
+          const newTypeInstance = new Type(originalType.type, newOptions)
+          requiredObj[key] = newTypeInstance
+        }
+        else {
+          requiredObj[key] = typeInstance
+        }
+      }
+    }
+    return object(requiredObj) as any
+  }
 }
 
 export type Infer<T> = T extends Type<infer TT> ? TT : never

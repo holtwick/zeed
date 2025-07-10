@@ -13,8 +13,6 @@ export interface TypeMeta {
  * Core Type class for schema validation and type inference
  */
 export class Type<T = unknown> {
-  static displayName = 'Type'
-
   readonly type: string
 
   _default?: any

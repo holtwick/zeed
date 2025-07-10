@@ -184,11 +184,19 @@ export function stringLiterals<const T extends readonly string[], O = T[number]>
 
 // Collections
 
-type TypeTuple<T extends Type[]> = {
+/**
+ * Utility type for tuple types.
+ * @category Schema
+ */
+export type TypeTuple<T extends Type[]> = {
   [K in keyof T]: T[K] extends Type<infer U> ? U : never
 }
 
-type TypeArrayOutput<Head extends Type[], Rest extends Type | undefined> = [
+/**
+ * Output type for TypeArray.
+ * @category Schema
+ */
+export type TypeArrayOutput<Head extends Type[], Rest extends Type | undefined> = [
   ...TypeTuple<Head>,
   ...(Rest extends Type ? Infer<Rest>[] : []),
 ]

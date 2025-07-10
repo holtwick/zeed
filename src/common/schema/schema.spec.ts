@@ -372,6 +372,11 @@ describe('schema', () => {
         const JustTitleAndPublished = RecipeSchema.omit({ description: true, ingredients: true })
 
         expect(Object.keys(JustTitleAndPublished._object)).toEqual(['title', 'published'])
+
+        expectTypeOf<Infer<typeof JustTitleAndPublished>>().toMatchObjectType<{
+          title: string
+          published: boolean
+        }>()
       })
 
       it('should throw error when used on non-object schema', () => {
@@ -406,6 +411,13 @@ describe('schema', () => {
         expect(RecipeOptionalIngredients._object.description._optional).toBe(true) // was optional, stays optional
         expect(RecipeOptionalIngredients._object.ingredients._optional).toBe(true) // was required, now optional
         expect(RecipeOptionalIngredients._object.published._optional).toBeUndefined() // was required, stays required
+
+        expectTypeOf<Infer<typeof RecipeOptionalIngredients>>().toMatchObjectType<{
+          title: string
+          description?: string | undefined
+          ingredients?: string[] | undefined
+          published: boolean
+        }>()
       })
 
       it('should throw error when used on non-object schema', () => {
@@ -440,6 +452,13 @@ describe('schema', () => {
         expect(RecipeRequiredDescription._object.description._optional).toBe(false) // was optional, now required
         expect(RecipeRequiredDescription._object.ingredients._optional).toBeUndefined() // was required, stays required
         expect(RecipeRequiredDescription._object.published._optional).toBeUndefined() // was required, stays required
+
+        expectTypeOf<Infer<typeof RecipeRequiredDescription>>().toMatchObjectType<{
+          title: string
+          description: string
+          ingredients: string[]
+          published: boolean
+        }>()
       })
 
       it('should throw error when used on non-object schema', () => {

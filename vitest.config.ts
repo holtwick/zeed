@@ -14,8 +14,16 @@ const config: UserConfig = {
   alias: {
     '@/': `${resolve(process.cwd(), 'src')}/`,
   },
-  // include: ['**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  // root: './src',
+  include: ['./src/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  exclude: [
+    '**/demos/**',
+    '**/tests/**',
+    '**/docs/**',
+    '**/_archive/**',
+  ],
+  coverage: {
+    include: ['src/**/*.{js,ts,jsx,tsx}'],
+  },
 }
 
 const isPreview = process.env.PREVIEW && valueToBooleanNotFalse(process.env.PREVIEW)

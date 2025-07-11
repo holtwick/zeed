@@ -64,7 +64,7 @@ describe('crypto', () => {
 
   it('should use fallback random if crypto.getRandomValues is missing', () => {
     const origCrypto = globalThis.crypto
-    // @ts-expect-error
+    // @ts-expect-error xxx
     delete globalThis.crypto
     const arr = randomUint8Array(4)
     expect(arr.length).toBe(4)

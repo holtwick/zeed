@@ -1,4 +1,4 @@
-import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toBase64Url, toHex, toUint8Array } from './bin'
+import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toBase64Url, toHex, toUint8Array, _encodeUtf8Polyfill, _decodeUtf8Polyfill } from './bin'
 import { Uint8ArrayToJson, createArray, fromBase64, jsonToUint8Array } from '.'
 
 describe('bin', () => {
@@ -293,5 +293,95 @@ Uint8Array [
     expect(b64).toMatchInlineSnapshot('"ZXhhbXBsZTEyMytteUBleGFtcGxlLmNvbQ"')
     const dec = fromBase64String(b64)
     expect(dec).toEqual(email)
+  })
+
+  it('should test polyfill functions directly', () => {
+    const text = 'Hello wörld 👋'
+
+    // Test UTF8 polyfill encoding
+    const encoded = _encodeUtf8Polyfill(text)
+    expect(encoded).toBeInstanceOf(Uint8Array)
+    expect(encoded.length).toBeGreaterThan(text.length) // Unicode chars take more bytes
+
+    // Test UTF8 polyfill decoding
+    const decoded = _decodeUtf8Polyfill(encoded)
+    expect(decoded).toBe(text)
+  })
+
+  it('should test polyfill with long strings', () => {
+    // Test the chunking logic in _decodeUtf8Polyfill (>10000 chars)
+    const longText = 'x'.repeat(15000)
+    const encoded = _encodeUtf8Polyfill(longText)
+    const decoded = _decodeUtf8Polyfill(encoded)
+    expect(decoded).toBe(longText)
+  })
+
+  it('should test ArrayBuffer conversion', () => {
+    const buffer = new ArrayBuffer(4)
+    const view = new Uint8Array(buffer)
+    view[0] = 1
+    view[1] = 2
+    view[2] = 3
+    view[3] = 4
+
+    const result = toUint8Array(buffer)
+    expect(result).toEqual(new Uint8Array([1, 2, 3, 4]))
+  })
+
+  it('should test hex dump with different input types', () => {
+    // Test with string input
+    const stringResult = Uint8ArrayToHexDump('ABC')
+    expect(stringResult).toContain('0000')
+    expect(stringResult).toContain('ABC')
+
+    // Test with ArrayBuffer input
+    const buffer = new ArrayBuffer(3)
+    const view = new Uint8Array(buffer)
+    view[0] = 65 // 'A'
+    view[1] = 66 // 'B' 
+    view[2] = 67 // 'C'
+    const bufferResult = Uint8ArrayToHexDump(buffer)
+    expect(bufferResult).toContain('0000')
+    expect(bufferResult).toContain('ABC')
+
+    // Test with Array input
+    const arrayResult = Uint8ArrayToHexDump([65, 66, 67])
+    expect(arrayResult).toContain('0000')
+    expect(arrayResult).toContain('ABC')
+
+    // Test with Uint8Array input
+    const uint8Result = Uint8ArrayToHexDump(new Uint8Array([65, 66, 67]))
+    expect(uint8Result).toContain('0000')
+    expect(uint8Result).toContain('ABC')
+
+    // Test with unknown input type (should return false)
+    const unknownResult = Uint8ArrayToHexDump({ invalid: 'type' } as any)
+    expect(unknownResult).toBe(false)
+  })
+
+  it('should test hex dump with custom block size', () => {
+    const data = new Uint8Array(20).fill(65) // 20 'A's
+    const result = Uint8ArrayToHexDump(data, 8) // Custom block size of 8
+    expect(result).toContain('0000')
+    expect(result).toContain('0008') // Second line should start at offset 8
+    expect(result).toContain('0010') // Third line should start at offset 16
+  })
+
+  it('should test hex dump character replacement', () => {
+    // Test with control characters that should be replaced with '.'
+    const controlChars = new Uint8Array([0, 1, 31, 32, 127, 160, 173])
+    const result = Uint8ArrayToHexDump(controlChars)
+    expect(result).toContain('.')
+    expect(result).toContain(' ') // Space (32) should remain as space
+  })
+
+  it('should test hex dump padding for partial blocks', () => {
+    // Test with data that doesn't fill a complete block
+    const partialData = new Uint8Array([65, 66]) // Only 2 bytes
+    const result = Uint8ArrayToHexDump(partialData)
+    expect(result).toContain('0000')
+    expect(result).toContain('AB')
+    // Should contain padding spaces for the rest of the 16-byte block
+    expect(result).toMatch(/AB\s+/)
   })
 })

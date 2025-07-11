@@ -1,4 +1,4 @@
-import { Uint8ArrayToDataUri, dataUriToMimeType, dataUriToUint8Array } from './datauri'
+import { Uint8ArrayToDataUri, dataUriToMimeType, dataUriToUint8Array, dataUriToBlob, blobToDataUri } from './datauri'
 
 describe('datauri.spec', () => {
   it('should parse', async () => {
@@ -12,5 +12,23 @@ describe('datauri.spec', () => {
     expect(uri).toMatchInlineSnapshot('"data:application/octet-stream,AQID"')
     expect(dataUriToUint8Array(uri)).toEqual(bin)
     expect(dataUriToMimeType(uri)).toMatchInlineSnapshot('"application/octet-stream"')
+  })
+
+  it('should return undefined for invalid dataUri', () => {
+    expect(dataUriToUint8Array('notadata')).toBeUndefined()
+    expect(dataUriToMimeType('notadata')).toBeUndefined()
+    expect(dataUriToBlob('notadata')).toBeUndefined()
+  })
+
+  it('should parse dataUri to Blob and back', async () => {
+    const bin = new Uint8Array([1, 2, 3])
+    const uri = Uint8ArrayToDataUri(bin, 'foo/bar')
+    const blob = dataUriToBlob(uri)
+    expect(blob).toBeInstanceOf(Blob)
+    expect(blob?.type).toBe('foo/bar')
+    if (blob) {
+      const uri2 = await blobToDataUri(blob)
+      expect(uri2).toBe(uri)
+    }
   })
 })

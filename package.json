@@ -36,7 +36,8 @@
     ".": {
       "types": "./dist/index.all.d.ts",
       "node": "./dist/index.node.js",
-      "default": "./dist/index.browser.js"
+      "default": "./dist/index.browser.js",
+      "eslint": "./src/eslint-defaults.js"
     }
   },
   "main": "dist/index.node.cjs",

@@ -14,15 +14,16 @@ const config: UserConfig = {
   alias: {
     '@/': `${resolve(process.cwd(), 'src')}/`,
   },
-  // include: ['./src/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-  // exclude: [
-  //   '**/demos/**',
-  //   '**/tests/**',
-  //   '**/docs/**',
-  //   '**/_archive/**',
-  // ],
+  include: ['./src/**/*.{client,test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  exclude: [
+    '**/demos/**',
+    '**/tests/**',
+    '**/docs/**',
+    '**/dist/**',
+    '**/_archive/**',
+  ],
   coverage: {
-    include: ['src/**/*.{js,ts,jsx,tsx}'],
+    include: ['src/{common,node}/**/*.{js,ts,jsx,tsx}'],
   },
 }
 

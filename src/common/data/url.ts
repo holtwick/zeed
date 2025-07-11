@@ -12,8 +12,8 @@ export function linkifyPlainText(text: string): string {
       const escapedPart = escapeHTML(part)
       return i % 2
         ? `<a target="_blank" href="${escapedPart}">${toHumanReadableUrl(
-            escapedPart,
-          )}</a>`
+          escapedPart,
+        )}</a>`
         : escapedPart
     })
     .join('')
@@ -45,17 +45,19 @@ export function encodeQuery(data: Record<string, any>, filterValue?: (value: any
 
 export function parseQuery(queryString: string) {
   const query: any = {}
-  const pairs = (
-    queryString[0] === '?' ? queryString.substr(1) : queryString
-  ).split('&')
+  while (queryString.startsWith('?')) {
+    queryString = queryString.substring(1)
+  }
+  const pairs = queryString.split('&')
   for (let i = 0; i < pairs.length; i++) {
-    const pair = pairs[i].split('=')
-    const key = decodeURIComponent(pair[0])
-    const value = decodeURIComponent(pair[1] || '')
+    const part = pairs[i]
+    const idx = part.indexOf('=')
+    if (part.length === 0) continue
+    const key = idx < 0 ? part : decodeURIComponent(part.substring(0, idx))
+    const value = idx < 0 ? '' : decodeURIComponent(part.substring(idx + 1))
     if (query[key] != null) {
       if (!Array.isArray(query[key]))
         query[key] = [query[key]]
-
       query[key].push(value)
     }
     else {

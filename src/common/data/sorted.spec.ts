@@ -63,4 +63,43 @@ describe('sorted', () => {
         .join(''),
     ).toEqual('0123456789')
   })
+
+  it('should calculate between values', () => {
+    const sorted = useSorted()
+    const mid = sorted.between(1, 3)
+    expect(mid).toBeGreaterThan(1)
+    expect(mid).toBeLessThan(3)
+    // lower undefined
+    const mid2 = sorted.between(undefined, 5)
+    expect(mid2).toBeLessThan(5)
+    // upper undefined
+    const mid3 = sorted.between(5, undefined)
+    expect(mid3).toBeGreaterThan(5)
+    // both undefined
+    const mid4 = sorted.between(undefined, undefined)
+    expect(typeof mid4).toBe('number')
+  })
+
+  it('should handle empty and single-item arrays', () => {
+    const sorted = useSorted()
+    expect(sorted.start([])).toBeLessThan(0)
+    expect(sorted.end([])).toBeGreaterThan(0)
+    expect(sorted.items([])).toEqual([])
+    expect(sorted.start([{ sort: 5 }])).toBeLessThan(5)
+    expect(sorted.end([{ sort: 5 }])).toBeGreaterThan(5)
+  })
+
+  it('should handle move edge cases', () => {
+    const sorted = useSorted()
+    // count <= 0
+    expect(sorted.move(0, 0, [])).toBeGreaterThan(0)
+    // newIndex >= count - 1
+    const arr = [{ sort: 1 }, { sort: 2 }]
+    expect(sorted.move(2, 0, arr)).toBeGreaterThan(2)
+    // newIndex <= 0
+    expect(sorted.move(0, 1, arr)).toBeLessThan(1)
+    // distance === 0
+    const arr2 = [{ sort: 1 }, { sort: 1 }]
+    expect(typeof sorted.move(1, 0, arr2)).toBe('number')
+  })
 })

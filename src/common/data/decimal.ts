@@ -33,5 +33,5 @@ export function decimalCentsPart(
   value: DecimalInput,
   decimalPlaces = 2,
 ): DecimalValue {
-  return decimalPlaces * (decimal(value, decimalPlaces) % 1)
+  return 10 ** decimalPlaces * (decimal(value, decimalPlaces) % 1)
 }

@@ -62,6 +62,35 @@ describe('crypto', () => {
     expect(binFix).toEqual(sample)
   })
 
+  it('should use fallback random if crypto.getRandomValues is missing', () => {
+    const origCrypto = globalThis.crypto
+    // @ts-expect-error xxx
+    delete globalThis.crypto
+    const arr = randomUint8Array(4)
+    expect(arr.length).toBe(4)
+    // Should be in 0..255
+    for (const v of arr) expect(v).toBeGreaterThanOrEqual(0)
+    // Restore
+    globalThis.crypto = origCrypto
+  })
+
+  it('should throw on decrypt with wrong magic', async () => {
+    const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]), { salt: new Uint8Array([1, 2, 3]) })
+    const bad = new Uint8Array([2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    await expect(decrypt(bad, key)).rejects.toThrow(/Unknown magic/)
+  })
+
+  it('should deriveKeyPbkdf2CBC and produce a key', async () => {
+    const key = await (await import('./crypto')).deriveKeyPbkdf2CBC(new Uint8Array([1, 2, 3]), { salt: new Uint8Array([1, 2, 3]) })
+    expect(key).toBeDefined()
+    expect(typeof key).toBe('object')
+  })
+
+  it('should handle zero-length random and digest', async () => {
+    expect(randomUint8Array(0)).toEqual(new Uint8Array(0))
+    expect((await digest(new Uint8Array(0))).length).toBeGreaterThan(0)
+  })
+
   // it("should identify fake decrypt", async () => {
   //   const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]), {
   //     salt: new Uint8Array([1, 2, 3]),

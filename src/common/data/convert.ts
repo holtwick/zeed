@@ -1,10 +1,29 @@
-import { Uint8ArrayToHexDump } from './bin'
-import { objectPlain } from './object'
 
 // import { jsonStringify } from './json'
 
 const TRUE_VALUES_LIST = ['1', 'true', 'yes', 'y', 'on']
 const FALSE_VALUES_LIST = ['0', 'false', 'no', 'n', 'off']
+
+/** Like Number.parseFloat, but returning `undefined` instead of `NaN` */
+export function parseFloat(value: any): number | undefined {
+  try {
+    const parsed = Number.parseFloat(value)
+    return Number.isNaN(parsed) ? undefined : parsed
+  } catch (e) {
+    return undefined
+  }
+}
+
+/** Like Number.parseInt, but returning `undefined` instead of `NaN` */
+export function parseInt(value: any, radix = 10): number | undefined {
+  try {
+    const parsed = Number.parseInt(value, radix)
+    return Number.isNaN(parsed) ? undefined : parsed
+  } catch (e) {
+    return undefined
+  }
+}
+
 
 export function stringToBoolean(value?: string, defaultValue = false): boolean {
   if (value == null || typeof value !== 'string')
@@ -15,13 +34,13 @@ export function stringToBoolean(value?: string, defaultValue = false): boolean {
 export function stringToInteger(value?: string, defaultValue = 0): number {
   if (value == null || typeof value !== 'string')
     return defaultValue
-  return Number.parseInt(value.trim(), 10) ?? defaultValue
+  return parseInt(value.trim(), 10) ?? defaultValue
 }
 
 export function stringToFloat(value?: string, defaultValue = 0.0): number {
   if (value == null || typeof value !== 'string')
     return defaultValue
-  return Number.parseFloat(value.trim()) ?? defaultValue
+  return parseFloat(value.trim()) ?? defaultValue
 }
 
 /** `true` is a number != 0, a string stating `true`. Otherwise false. */
@@ -53,7 +72,7 @@ export function valueToInteger(value?: any, defaultValue = 0): number {
     return value ? 1 : 0
   if (typeof value === 'number')
     return Math.floor(value)
-  return Number.parseInt(String(value).trim(), 10) ?? defaultValue
+  return parseInt(String(value).trim(), 10) ?? defaultValue
 }
 
 export function valueToFloat(value?: any, defaultValue = 0.0): number {
@@ -63,7 +82,7 @@ export function valueToFloat(value?: any, defaultValue = 0.0): number {
     return value ? 1 : 0
   if (typeof value === 'number')
     return Math.floor(value)
-  return Number.parseFloat(String(value).trim()) ?? defaultValue
+  return parseFloat(String(value).trim()) ?? defaultValue
 }
 
 export function valueToString(value?: any, defaultValue = ''): string {

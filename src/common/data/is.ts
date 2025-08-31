@@ -101,7 +101,7 @@ export function isNotNull<T>(value: T | null | undefined): value is T {
   return value != null
 }
 
-/** Empty means `null` or `undefined` or object or array without items, use like `.filter(isEmpty)` */
+/** Empty means `null` or `undefined` or object, array or string without items, use like `.filter(isEmpty)` */
 export function isEmpty<T>(value: T | null | undefined): value is T {
   return value == null || value === '' || (isObject(value) && size(value) <= 0)
 }

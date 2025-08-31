@@ -3,13 +3,13 @@
 /* eslint-disable prefer-spread */
 
 import { base64, base64nopad, base64urlnopad } from './basex-secure'
+import { BinArray, BinInput } from './bin-types'
 import { jsonStringifySafe } from './json'
 
-export type BinInput = Uint8Array | ArrayBuffer | string | number[]
 
 // From https://github.com/dmonad/lib0/blob/main/string.js#L44
 
-export function _encodeUtf8Polyfill(str: string): Uint8Array {
+export function _encodeUtf8Polyfill(str: string): BinArray {
   const encodedString = unescape(encodeURIComponent(str))
   const len = encodedString.length
   const buf = new Uint8Array(len)
@@ -18,7 +18,7 @@ export function _encodeUtf8Polyfill(str: string): Uint8Array {
   return buf
 }
 
-export function _decodeUtf8Polyfill(buf: Uint8Array) {
+export function _decodeUtf8Polyfill(buf: BinArray) {
   let remainingLen = buf.length
   let encodedString = ''
   let bufPos = 0
@@ -34,9 +34,9 @@ export function _decodeUtf8Polyfill(buf: Uint8Array) {
   return decodeURIComponent(escape(encodedString))
 }
 
-let _textEncoder: (data: string) => Uint8Array
+let _textEncoder: (data: string) => BinArray
 
-export function stringToUInt8Array(text: string): Uint8Array {
+export function stringToUInt8Array(text: string): BinArray {
   if (_textEncoder == null) {
     _textEncoder = _encodeUtf8Polyfill
     if (typeof TextEncoder !== 'undefined') {
@@ -49,7 +49,7 @@ export function stringToUInt8Array(text: string): Uint8Array {
 
 let _textDecoder: (data: Uint8Array) => string
 
-export function Uint8ArrayToString(bin: Uint8Array): string {
+export function Uint8ArrayToString(bin: BinArray): string {
   if (_textDecoder == null) {
     _textDecoder = _decodeUtf8Polyfill
     if (typeof TextDecoder !== 'undefined') {
@@ -60,14 +60,14 @@ export function Uint8ArrayToString(bin: Uint8Array): string {
   return _textDecoder(bin).normalize('NFC')
 }
 
-export function toUint8Array(data: BinInput): Uint8Array {
+export function toUint8Array(data: BinInput): BinArray {
   if (data instanceof ArrayBuffer)
     return new Uint8Array(data)
   if (typeof data === 'string')
     return stringToUInt8Array(data)
   if (data.length)
     return new Uint8Array(data)
-  return data as Uint8Array
+  return data as BinArray
 }
 
 export function joinToUint8Array(...args: BinInput[] | BinInput[][]) {
@@ -96,7 +96,7 @@ export function toHex(bin: BinInput): string {
   return s
 }
 
-export function fromHex(hexString: string): Uint8Array {
+export function fromHex(hexString: string): BinArray {
   return Uint8Array.from(
     hexString.match(/.{1,2}/g)!.map(byte => Number.parseInt(byte, 16)),
   )
@@ -129,7 +129,7 @@ export function toBase64Url(bin: BinInput): string {
 }
 
 /** Also parses toBase64Url encoded strings. */
-export function fromBase64(s: string): Uint8Array {
+export function fromBase64(s: string): BinArray {
   s = s.replace(/\-/g, '+').replace(/\_/g, '/')
   if (typeof Buffer !== 'undefined') {
     const buf = Buffer.from(s, 'base64')
@@ -142,7 +142,7 @@ export function fromBase64(s: string): Uint8Array {
       bytes[i] = a.charCodeAt(i)
     return bytes
   }
-  return base64.decode(s)
+  return base64.decode(s) as BinArray
 }
 
 /** Also parses toBase64Url encoded strings. */
@@ -152,8 +152,8 @@ export function fromBase64String(s: string): string {
 
 /** Compare contents of binary arrays */
 export function equalBinary(
-  a: ArrayBuffer | Uint8Array,
-  b: ArrayBuffer | Uint8Array,
+  a: ArrayBuffer | BinArray,
+  b: ArrayBuffer | BinArray,
 ): boolean {
   if (a.byteLength !== b.byteLength)
     return false
@@ -166,17 +166,17 @@ export function equalBinary(
   return true
 }
 
-export function jsonToUint8Array(json: any): Uint8Array | never {
+export function jsonToUint8Array(json: any): BinArray | never {
   return stringToUInt8Array(jsonStringifySafe(json))
 }
 
-export function Uint8ArrayToJson<T = any>(data: Uint8Array): T | never {
+export function Uint8ArrayToJson<T = any>(data: BinArray): T | never {
   return JSON.parse(Uint8ArrayToString(data))
 }
 
 // https://gist.github.com/igorgatis/d294fe714a4f523ac3a3
 export function Uint8ArrayToHexDump(
-  buffer: Uint8Array | ArrayBuffer | string | Array<number>,
+  buffer: BinArray | ArrayBuffer | string | Array<number>,
   blockSize?: number,
 ) {
   if (typeof buffer === 'string') {

@@ -1,4 +1,4 @@
-import type { BinInput } from '../data/bin'
+import type { BinInput } from '../data/bin-types'
 import { equalBinary, toUint8Array } from '../data/bin'
 
 /** Get random bytes using window.crypto if available. Else use a poor fallback solution. */
@@ -29,8 +29,9 @@ export async function digest(
   message: BinInput,
   algorithm: AlgorithmIdentifier = CRYPTO_DEFAULT_HASH_ALG,
 ): Promise<Uint8Array> {
+  const m = Uint8Array.from(toUint8Array(message))
   return toUint8Array(
-    await crypto.subtle.digest(algorithm, toUint8Array(message)),
+    await crypto.subtle.digest(algorithm, m),
   )
 }
 
@@ -41,7 +42,7 @@ export async function deriveKeyPbkdf2(
     salt?: BinInput
   } = {},
 ): Promise<CryptoKey> {
-  const secretBuffer = toUint8Array(secret)
+  const secretBuffer = Uint8Array.from(toUint8Array(secret))
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     secretBuffer,
@@ -52,7 +53,7 @@ export async function deriveKeyPbkdf2(
   return await crypto.subtle.deriveKey(
     {
       name: CRYPTO_DEFAULT_DERIVE_ALG,
-      salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
+      salt: opt.salt ? Uint8Array.from(toUint8Array(opt.salt)) : new Uint8Array(0),
       iterations: opt.iterations ?? CRYPTO_DEFAULT_DERIVE_ITERATIONS,
       hash: CRYPTO_DEFAULT_HASH_ALG,
     },
@@ -73,7 +74,7 @@ export async function deriveKeyPbkdf2CBC(
     salt?: BinInput
   } = {},
 ): Promise<CryptoKey> {
-  const secretBuffer = toUint8Array(secret)
+  const secretBuffer = Uint8Array.from(toUint8Array(secret))
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     secretBuffer,
@@ -84,13 +85,13 @@ export async function deriveKeyPbkdf2CBC(
   return await crypto.subtle.deriveKey(
     {
       name: CRYPTO_DEFAULT_DERIVE_ALG,
-      salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
+      salt: opt.salt ? Uint8Array.from(toUint8Array(opt.salt)) : new Uint8Array(0),
       iterations: opt.iterations ?? CRYPTO_DEFAULT_DERIVE_ITERATIONS,
       hash: CRYPTO_DEFAULT_HASH_ALG,
     },
     keyMaterial,
     {
-      name: CRYPTO_DEFAULT_ALG,
+      name: 'AES-CBC',
       length: 256,
     },
     true,
@@ -109,9 +110,9 @@ export async function encrypt(
   const MAGIC_ID = getMagicId()
   const iv = randomUint8Array(CRYPTO_DEFAULT_IV_LENGTH)
   const cipher = await crypto.subtle.encrypt(
-    { name: CRYPTO_DEFAULT_ALG, iv },
+    { name: CRYPTO_DEFAULT_ALG, iv: Uint8Array.from(iv) },
     key,
-    data,
+    Uint8Array.from(data),
   )
   const binCypher = new Uint8Array(cipher)
   const bufferLength = MAGIC_ID.length + iv.length + binCypher.length
@@ -136,9 +137,9 @@ export async function decrypt(
   const iv = data.subarray(2, 2 + CRYPTO_DEFAULT_IV_LENGTH)
   const cipher = data.subarray(2 + CRYPTO_DEFAULT_IV_LENGTH, data.length)
   const plain = await crypto.subtle.decrypt(
-    { name: CRYPTO_DEFAULT_ALG, iv },
+    { name: CRYPTO_DEFAULT_ALG, iv: Uint8Array.from(iv) },
     key,
-    cipher,
+    Uint8Array.from(cipher),
   )
   return new Uint8Array(plain)
 }

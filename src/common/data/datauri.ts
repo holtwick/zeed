@@ -14,7 +14,10 @@ export function dataUriToMimeType(dataUri: string): string | undefined {
 export function dataUriToBlob(dataUri: string): Blob | undefined {
   if (dataUri.startsWith('data:')) {
     const [mimeString, base64String] = dataUri.slice(5).split(',', 2)
-    return new Blob([fromBase64(base64String)], { type: mimeString })
+  const u = fromBase64(base64String)
+  // create a plain ArrayBuffer copy (ensures .buffer is an ArrayBuffer, not SharedArrayBuffer)
+  const buffer = u.slice().buffer
+  return new Blob([buffer], { type: mimeString })
   }
 }
 

@@ -21,7 +21,7 @@
  */
 async function aesBlock(key: CryptoKey, data: BufferSource, xor: BufferSource): Promise<Uint8Array> {
   const block = await crypto.subtle.encrypt(
-    { name: 'AES-CBC', iv: xor },
+    { name: 'AES-CBC', iv: Uint8Array.from(xor as any) },
     key,
     data,
   )
@@ -36,7 +36,7 @@ async function halfKey(index: number, key: CryptoKey, iv: Uint8Array, k1: Uint8A
   m[1] = index
   m[2] = 0x58 // 'X'
   m.set(iv.subarray(0, 12), 4)
-  return await aesBlock(key, m, k1)
+  return await aesBlock(key, m, Uint8Array.from(k1))
 }
 
 /**
@@ -95,7 +95,7 @@ export async function encryptXAES(params: {
   return await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
-      iv: derived.iv,
+      iv: Uint8Array.from(derived.iv),
       tagLength: 128,
       additionalData: params.additionalData ?? new Uint8Array(),
     },
@@ -116,7 +116,7 @@ export async function decryptXAES(params: {
   return await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: derived.iv,
+      iv: Uint8Array.from(derived.iv),
       tagLength: 128,
       additionalData: params.additionalData ?? new Uint8Array(),
     },

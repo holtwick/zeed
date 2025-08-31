@@ -3,7 +3,7 @@ import type { Expect, IsEqual } from './type-test'
 import { cloneJsonObject } from '../data'
 import { uuid } from '../uuid'
 import { schemaParseObject } from './parse-object'
-import { any, array, boolean, float, int, literal, number, object, string, stringLiterals, tuple, union } from './schema'
+import { any, array, boolean, float, int, literal, number, object, record, string, stringLiterals, tuple, union } from './schema'
 import { z } from './z'
 
 describe('schema', () => {
@@ -241,8 +241,7 @@ describe('schema', () => {
       object({ subscription: literal(true), subscriptionId: string() }),
       object({ subscription: literal(false), licenseId: string() }),
     ])
-    // type Schema = Infer<typeof obj>
-    type Schema = z.infer<typeof obj>
+    type Schema = Infer<typeof obj>
     type SchemaExpected = {
       subscription: true
       subscriptionId: string
@@ -467,5 +466,53 @@ describe('schema', () => {
         expect(() => stringSchema.required()).toThrow('required() can only be used on object schemas')
       })
     })
+  })
+
+  it('complex union with CSP example', async () => {
+    const csp = union([
+      boolean(),
+      stringLiterals(['strict', 'moderate', 'permissive', 'disabled']),
+      string(),
+      record(union([string(), array(string()), boolean()])),
+    ]).default(false).meta({ desc: 'Content Security Policy: boolean, preset (strict/moderate/permissive/disabled), string directive, or object' })
+
+    type CSP = Infer<typeof csp>
+    type CSPExpected
+      = | boolean
+        | 'strict' | 'moderate' | 'permissive' | 'disabled'
+        | string
+        | Record<string, string | string[] | boolean>
+
+    type CSPTest = Expect<IsEqual<CSP, CSPExpected>>
+    expectTypeOf<CSP>().toMatchTypeOf<CSPExpected>()
+
+    const x: CSP = 'xxx'
+
+    // Test boolean value
+    expect(schemaParseObject(object({ csp }), { csp: true })).toEqual({ csp: true })
+    expect(schemaParseObject(object({ csp }), { csp: false })).toEqual({ csp: false })
+
+    // Test enum values
+    expect(schemaParseObject(object({ csp }), { csp: 'strict' })).toEqual({ csp: 'strict' })
+    expect(schemaParseObject(object({ csp }), { csp: 'moderate' })).toEqual({ csp: 'moderate' })
+    expect(schemaParseObject(object({ csp }), { csp: 'permissive' })).toEqual({ csp: 'permissive' })
+    expect(schemaParseObject(object({ csp }), { csp: 'disabled' })).toEqual({ csp: 'disabled' })
+
+    // Test string directive
+    expect(schemaParseObject(object({ csp }), { csp: 'default-src \'self\'' })).toEqual({ csp: 'default-src \'self\'' })
+
+    // Test object with various value types
+    const cspObject = {
+      'default-src': '\'self\'',
+      'script-src': ['https://cdn.example.com', '\'unsafe-inline\''],
+      'upgrade-insecure-requests': true,
+    }
+    expect(schemaParseObject(object({ csp }), { csp: cspObject })).toEqual({ csp: cspObject })
+
+    // Test default value
+    expect(schemaParseObject(object({ csp }), {})).toEqual({ csp: false })
+
+    // Test metadata
+    expect(csp._meta).toEqual({ desc: 'Content Security Policy: boolean, preset (strict/moderate/permissive/disabled), string directive, or object' })
   })
 })

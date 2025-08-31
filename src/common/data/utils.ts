@@ -43,6 +43,9 @@ export async function ensureKeyAsync<T>(
   return value
 }
 
+/**
+ * Returns the size of an object, array, string or similar. For example:
+ */
 export function size(obj: any) {
   if (obj != null) {
     if (obj.size != null)

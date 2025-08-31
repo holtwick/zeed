@@ -1,3 +1,4 @@
+import type { BinArray } from './data/bin-types'
 import { randomUint8Array } from './crypto'
 import { decodeBase32, decodeBase62, encodeBase32, encodeBase62 } from './data/basex'
 import { fromHex, toHex, toUint8Array, Uint8ArrayToString } from './data/bin'
@@ -142,7 +143,7 @@ const mapModes = {
   test: {
     uuid: (): string => uname('test'),
     uuidDecode: (id: string): Uint8Array => toUint8Array(id),
-    uuidEncode: (bin: Uint8Array): string => Uint8ArrayToString(bin),
+    uuidEncode: (bin: BinArray): string => Uint8ArrayToString(bin),
   },
 }
 

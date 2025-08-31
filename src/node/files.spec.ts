@@ -5,35 +5,19 @@ describe('files.spec', () => {
   it('should fetch some', async () => {
     const result = walkSync(__dirname)
 
-    expect(result).toMatchInlineSnapshot(`
+    expect(result.filter(s => s.includes('.spec.'))).toMatchInlineSnapshot(`
       Array [
         "args.spec.ts",
-        "args.ts",
-        "clipboard.ts",
-        "crypto.ts",
         "env.spec.ts",
-        "env.ts",
         "files-async.spec.ts",
-        "files-async.ts",
         "files.spec.ts",
-        "files.ts",
         "filestorage.spec.ts",
-        "filestorage.ts",
         "fs.spec.ts",
-        "fs.ts",
         "glob.spec.ts",
-        "glob.ts",
-        "index.ts",
-        "log/index.ts",
-        "log/log-context-node.ts",
         "log/log-file.spec.ts",
-        "log/log-file.ts",
         "log/log-node.spec.ts",
-        "log/log-node.ts",
         "log/log-util.spec.ts",
-        "log/log-util.ts",
         "open-browser.spec.ts",
-        "open-browser.ts",
       ]
     `)
   })

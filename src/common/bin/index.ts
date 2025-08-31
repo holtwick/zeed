@@ -1,4 +1,4 @@
-import type { BinInput } from '../data/bin'
+import type { BinInput } from '../data/bin-types'
 import type { Encoder } from '../msg/encoder'
 import { assertCondition } from '../assert'
 import { toUint8Array } from '../data/bin'

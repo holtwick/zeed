@@ -99,7 +99,7 @@ export class PubSub<L extends ListenerSignature<L> = DefaultListener> extends Em
     fn: L[U],
     opt: EmitterSubscriberOptions = {},
   ): DisposerFunction {
-  return this.on(event as any as string | number, fn as any, opt)
+    return this.on(event as any as string | number, fn as any, opt)
   }
 }
 

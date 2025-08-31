@@ -4,6 +4,12 @@
  * Global context for Zeed, used for cross-module state.
  * @category Global
  */
+
+// Export the global context type so TypeDoc includes it in the docs.
+export interface ZeedGlobalContext {
+  [key: string]: any
+}
+
 declare global {
   interface ZeedGlobalContext {}
 }

@@ -33,12 +33,12 @@ const alphabets = {
   '85': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~', // https://datatracker.ietf.org/doc/html/rfc1924#section-4.2
 }
 
-type encodeFunction = (source: BinInput, padToLength?: number) => string
-type decodeFunction = (source: string, padToLength?: number) => Uint8Array
+export type BaseXEncodeFunction = (source: BinInput, padToLength?: number) => string
+export type BaseXDecodeFunction = (source: string, padToLength?: number) => Uint8Array
 
 export function _useBase(alphaOrBase: string | number): {
-  encode: encodeFunction
-  decode: decodeFunction
+  encode: BaseXEncodeFunction
+  decode: BaseXDecodeFunction
 } {
   let ALPHABET: string | undefined = (alphabets as any)[String(alphaOrBase)]
 

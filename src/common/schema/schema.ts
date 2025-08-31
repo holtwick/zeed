@@ -75,28 +75,24 @@ export class Type<T = unknown> {
    * Sets a default value for the type, which will be used if the value is not provided
    * The default value can be a function that receives the schema as argument, or a static value.
    */
-  default(value: T | ((schema?: this) => T)): this {
-    this._default = value
-    return this
+  default(value: T | ((schema?: this) => T)): Type<T> {
+    return this._cloneWithProps<T>({ _default: value })
   }
 
   /**
    * Props / Metadata for the type, like description or other properties
    */
-  meta(meta: TypeMeta): this {
-    this._meta = meta
-    return this
+  meta(meta: TypeMeta): Type<T> {
+    return this._cloneWithProps<T>({ _meta: meta })
   }
 
   /**
    * Sets the `desc` property for the type, which is a human-readable description
    */
-  describe(msg: string): this {
-    if (!this._meta) {
-      this._meta = {}
-    }
-    this._meta.desc = msg
-    return this
+  describe(msg: string): Type<T> {
+    const meta = this._meta || {}
+    meta.desc = msg
+    return this._cloneWithProps<T>({ _meta: meta })
   }
 
   /**
@@ -329,7 +325,9 @@ export function record<T extends Type>(valueType: T): Type<Record<string, Infer<
  * Utility type for union of types.
  * @category Schema
  */
-export type TypeUnion<T extends Type<any>[]> = T extends Array<infer U> ? Infer<U> : never
+export type TypeUnion<T extends Type<any>[]> = {
+  [K in keyof T]: T[K] extends Type<infer U> ? U : never
+}[number]
 
 /**
  * Creates a union type validator (like `string | number | boolean`)
@@ -364,9 +362,9 @@ export function literal<T extends TypeLiterals>(value: T): Type<T> {
 /**
  * Creates a string literal union validator (like `"a" | "b" | "c"`)
  */
-export function stringLiterals<const T extends readonly string[], O = T[number]>(values: T): Type<O> {
+export function stringLiterals<const T extends readonly string[]>(values: T): Type<T[number]> {
   return new Type('string', {
-    _check: (v: any) => typeof v === 'string' && values.includes(v),
+    _check: (v: any) => typeof v === 'string' && (values as readonly string[]).includes(v),
     _enumValues: values,
   })
 }
@@ -379,8 +377,8 @@ export function stringLiterals<const T extends readonly string[], O = T[number]>
  * Utility type for tuple types.
  * @category Schema
  */
-export type TypeTuple<T extends Type[]> = {
-  [K in keyof T]: T[K] extends Type<infer U> ? U : never
+export type TypeTuple<T extends readonly Type[]> = {
+  -readonly [K in keyof T]: T[K] extends Type<infer U> ? U : never
 }
 
 /**
@@ -399,11 +397,11 @@ export type TypeArrayOutput<Head extends Type[], Rest extends Type | undefined> 
 export type TypeArray<Head extends Type[] = Type[], Rest extends Type | undefined = Type | undefined> = Type<TypeArrayOutput<Head, Rest>>
 
 /**
- * Creates a tuple type validator with fixed length and types
+ * Creates a tuple type validator with fixed length and types e.g. [string, number, boolean]
  */
-export function tuple<T extends [] | [Type, ...Type[]]>(items: T): TypeArray<T, undefined> {
+export function tuple<const T extends readonly Type[]>(items: T): Type<TypeTuple<T>> {
   return new Type('tuple', {
-    _check: (v: any) => Array.isArray(v) && v.length === items.length && items.every((item, i) => item._check?.(v[i]) ?? false),
+    _check: (v: any) => Array.isArray(v) && v.length === items.length && items.every((item, i) => (item as Type)._check?.(v[i]) ?? false),
     _type: items,
   })
 }

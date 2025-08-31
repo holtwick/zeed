@@ -28,24 +28,27 @@ function isBytes(a: unknown): a is Uint8Array {
 
 // TODO: some recusive type inference so it would check correct order of input/output inside rest?
 // like <string, number>, <number, bytes>, <bytes, float>
-type Chain = [Coder<any, any>, ...Coder<any, any>[]];
+export type BaseXChain = [Coder<any, any>, ...Coder<any, any>[]];
 // Extract info from Coder type
-type Input<F> = F extends Coder<infer T, any> ? T : never;
-type Output<F> = F extends Coder<any, infer T> ? T : never;
+export type BaseXInput<F> = F extends Coder<infer T, any> ? T : never;
+export type BaseXOutput<F> = F extends Coder<any, infer T> ? T : never;
 // Generic function for arrays
-type First<T> = T extends [infer U, ...any[]] ? U : never;
-type Last<T> = T extends [...any[], infer U] ? U : never;
-type Tail<T> = T extends [any, ...infer U] ? U : never;
+export type BaseXFirst<T> = T extends [infer U, ...any[]] ? U : never;
+export type BaseXLast<T> = T extends [...any[], infer U] ? U : never;
+export type BaseXTail<T> = T extends [any, ...infer U] ? U : never;
 
-type AsChain<C extends Chain, Rest = Tail<C>> = {
+export type BaseXAsChain<C extends BaseXChain, Rest = BaseXTail<C>> = {
   // C[K] = Coder<Input<C[K]>, Input<Rest[k]>>
-  [K in keyof C]: Coder<Input<C[K]>, Input<K extends keyof Rest ? Rest[K] : any>>;
+  [K in keyof C]: Coder<BaseXInput<C[K]>, BaseXInput<K extends keyof Rest ? Rest[K] : any>>;
 };
+
+// Publicly visible aliases prefixed with BaseX for clearer documentation
+// Remove old alias leftovers (we renamed core types to BaseX-prefixed names).
 
 /**
  * @__NO_SIDE_EFFECTS__
  */
-function chain<T extends Chain & AsChain<T>>(...args: T): Coder<Input<First<T>>, Output<Last<T>>> {
+function chain<T extends BaseXChain & BaseXAsChain<T>>(...args: T): Coder<BaseXInput<BaseXFirst<T>>, BaseXOutput<BaseXLast<T>>> {
   const id = (a: any) => a;
   // Wrap call in closure so JIT can inline calls
   const wrap = (a: any, b: any) => (c: any) => a(b(c));
@@ -56,20 +59,19 @@ function chain<T extends Chain & AsChain<T>>(...args: T): Coder<Input<First<T>>,
   return { encode, decode };
 }
 
-type Alphabet = string[] | string;
-
+export type BaseXAlphabet = string[] | string;
 /**
  * Encodes integer radix representation to array of strings using alphabet and back
  * @__NO_SIDE_EFFECTS__
  */
-function alphabet(alphabet: Alphabet): Coder<number[], string[]> {
+function alphabet(alphabet: BaseXAlphabet): Coder<number[], string[]> {
   return {
     encode: (digits: number[]) => {
       if (!Array.isArray(digits) || (digits.length && typeof digits[0] !== 'number'))
         throw new Error('alphabet.encode input should be an array of numbers');
       return digits.map((i) => {
         assertNumber(i);
-        if (i < 0 || i >= alphabet.length)
+  if (i < 0 || i >= alphabet.length)
           throw new Error(`Digit index outside alphabet: ${i} (alphabet: ${alphabet.length})`);
         return alphabet[i]!;
       });
@@ -78,15 +80,16 @@ function alphabet(alphabet: Alphabet): Coder<number[], string[]> {
       if (!Array.isArray(input) || (input.length && typeof input[0] !== 'string'))
         throw new Error('alphabet.decode input should be array of strings');
       return input.map((letter) => {
-        if (typeof letter !== 'string')
-          throw new Error(`alphabet.decode: not string element=${letter}`);
-        const index = alphabet.indexOf(letter);
-        if (index === -1) throw new Error(`Unknown letter: "${letter}". Allowed: ${alphabet}`);
+              if (typeof letter !== 'string')
+                throw new Error(`alphabet.decode: not string element=${letter}`);
+              const index = alphabet.indexOf(letter);
+              if (index === -1) throw new Error(`Unknown letter: "${letter}". Allowed: ${alphabet}`);
         return index;
       });
     },
   };
 }
+      // Alias exported after Alphabet is declared (kept only for backwards compat if needed)
 
 /**
  * @__NO_SIDE_EFFECTS__

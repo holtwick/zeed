@@ -9,7 +9,7 @@ export interface Difference {
   value?: any
 }
 
-interface Options {
+export interface DiffOptions {
   cyclesFix: boolean
 }
 
@@ -32,7 +32,7 @@ interface Options {
 export function diffObjects(
   obj: Record<string, any> | any[],
   newObj: Record<string, any> | any[],
-  options: Partial<Options> = { cyclesFix: true },
+  options: Partial<DiffOptions> = { cyclesFix: true },
   _stack: Record<string, any>[] = [],
 ): Difference[] {
   let diffs: Difference[] = []

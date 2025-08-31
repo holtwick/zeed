@@ -1,6 +1,6 @@
 // From https://github.com/moll/json-stringify-safe License ISC
 
-const _sortedReplacer: EntryProcessor = (key: string, value: any) =>
+const _sortedReplacer: JsonEntryProcessor = (key: string, value: any) =>
   (value instanceof Object && !(Array.isArray(value)))
     ? Object.keys(value)
       .sort()
@@ -22,9 +22,9 @@ export function jsonStringifySorted(
 
 //
 
-type EntryProcessor = (key: string, value: any) => any
+export type JsonEntryProcessor = (key: string, value: any) => any
 
-function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
+function serializer(replacer?: JsonEntryProcessor, cycleReplacer?: JsonEntryProcessor) {
   const stack: any[] = []
   const keys: string[] = []
 
@@ -38,7 +38,7 @@ function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
     }
   }
 
-  return function (this: EntryProcessor, key: string, value: any): any {
+  return function (this: JsonEntryProcessor, key: string, value: any): any {
     if (stack.length > 0) {
       const thisPos = stack.indexOf(this)
       // eslint-disable-next-line ts/no-unused-expressions
@@ -68,9 +68,9 @@ function serializer(replacer?: EntryProcessor, cycleReplacer?: EntryProcessor) {
  */
 export function jsonStringifySafe(
   obj: any,
-  replacer?: EntryProcessor | null | undefined,
+  replacer?: JsonEntryProcessor | null | undefined,
   spaces?: string | number | null,
-  cycleReplacer?: EntryProcessor,
+  cycleReplacer?: JsonEntryProcessor,
 ): string {
   return JSON.stringify(
     obj,

@@ -4,8 +4,9 @@
  * Global context for Zeed, used for cross-module state.
  * @category Global
  */
+
 declare global {
-  interface ZeedGlobalContext {}
+  export interface ZeedGlobalContext {}
 }
 
 interface ZeedGlobalIntegration {

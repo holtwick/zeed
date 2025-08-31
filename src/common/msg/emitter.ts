@@ -32,7 +32,7 @@ export interface EmitterSubscriberOptions {
 
 export class Emitter<
   RemoteListener extends ListenerSignature<RemoteListener> = DefaultListener,
-  LocalListener extends ListenerSignature<LocalListener> = RemoteListener,
+  LocalListener extends ListenerSignature<LocalListener> = DefaultListener,
 > {
   private subscribers: Record<any, EmitterSubscriber[]> = {}
   private subscribersOnAny: any[] = []
@@ -224,7 +224,7 @@ declare global {
    * Global emitter interface for Zeed, used for cross-module event emission.
    * @category Global
    */
-  export interface ZeedGlobalEmitter {}
+  interface ZeedGlobalEmitter {}
 }
 
 /** Global emitter that will listen even across modules */
@@ -236,3 +236,6 @@ export function getGlobalEmitter<T extends ListenerSignature<T> = ZeedGlobalEmit
   }
   return emitter as any
 }
+
+// Public alias so typedoc lists the global emitter under an Emitter-prefixed name
+export interface ZeedGlobalEmitter extends DefaultListener {}

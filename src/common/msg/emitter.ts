@@ -197,9 +197,22 @@ export class Emitter<
     })
   }
 
-  // For compatibility reasons
-  addEventListener = this.on.bind(this)
-  removeEventListener = this.off.bind(this)
+  // For compatibility reasons: provide explicitly typed wrapper methods so
+  // documentation generator (TypeDoc) can resolve signatures/URLs correctly.
+  public addEventListener<U extends keyof LocalListener>(
+    event: U,
+    fn: LocalListener[U],
+    opt: EmitterSubscriberOptions = {},
+  ): DisposerFunction {
+    return this.on(event, fn, opt)
+  }
+
+  public removeEventListener<U extends keyof LocalListener>(
+    event: U,
+    listener: LocalListener[U],
+  ): this {
+    return this.off(event, listener)
+  }
 }
 
 declare global {

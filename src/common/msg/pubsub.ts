@@ -1,5 +1,6 @@
+import type { DisposerFunction } from '../dispose-types'
 import type { Channel } from './channel'
-import type { DefaultListener, ListenerSignature } from './emitter'
+import type { DefaultListener, EmitterSubscriberOptions, ListenerSignature } from './emitter'
 import type { Encoder } from './encoder'
 import { DefaultLogger } from '../log/log'
 import { uname } from '../uuid'
@@ -86,8 +87,20 @@ export class PubSub<L extends ListenerSignature<L> = DefaultListener> extends Em
     return false
   }
 
-  publish = this.emit.bind(this)
-  subscribe = this.on.bind(this)
+  public async publish<U extends keyof L>(
+    event: U,
+    ...args: Parameters<L[U]>
+  ): Promise<boolean> {
+    return await this.emit(event, ...args)
+  }
+
+  public subscribe<U extends keyof L>(
+    event: U,
+    fn: L[U],
+    opt: EmitterSubscriberOptions = {},
+  ): DisposerFunction {
+    return this.on(event, fn as any, opt)
+  }
 }
 
 export function usePubSub<L extends ListenerSignature<L> = DefaultListener>(

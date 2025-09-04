@@ -109,3 +109,45 @@ describe('eNV', () => {
     `)
   })
 })
+
+it('should parse literal multiline quoted values with parseEnvStringAlt', () => {
+  const envSample = `MULTI="first
+second"`
+
+  expect(parseEnvStringAlt(envSample)).toEqual({ MULTI: 'first\nsecond' })
+})
+
+it('should expand escaped newlines in double-quoted values', () => {
+  const envSample = 'ESCAPED="line1\\nline2"'
+  expect(parseEnvStringAlt(envSample)).toEqual({ ESCAPED: 'line1\nline2' })
+})
+
+it('should expand escaped CR and LF sequences in double-quoted values', () => {
+  const envSample = 'CRLF="one\\r\\nsecond"\r\n'
+  expect(parseEnvStringAlt(envSample)).toEqual({ CRLF: 'one\r\nsecond' })
+})
+
+it('should support backtick-quoted values containing quotes', () => {
+  const envSample = 'BACKTICK_KEY=`This has \'single\' and "double" quotes inside of it.`'
+  expect(parseEnvStringAlt(envSample)).toEqual({ BACKTICK_KEY: 'This has \'single\' and "double" quotes inside of it.' })
+})
+
+it('should preserve escaped backticks inside backtick-quoted values', () => {
+  const BS = String.fromCharCode(92) // backslash
+  const BT = String.fromCharCode(96) // backtick
+  // Build: ESC_BACK=`contains \`backtick\`` (with literal backslashes before backticks)
+  const envSample = `ESC_BACK=${BT}contains ${BS}${BT}backtick${BS}${BT}${BT}`
+  const expectedInner = `contains ${BS}${BT}backtick${BS}${BT}`
+  expect(parseEnvStringAlt(envSample)).toEqual({ ESC_BACK: expectedInner })
+})
+
+it('should handle nested quotes in single-quoted values', () => {
+  const envSample = 'NESTED=\'He said "hello"\''
+  expect(parseEnvStringAlt(envSample)).toEqual({ NESTED: 'He said "hello"' })
+})
+
+it('should not expand unicode escapes in double-quoted values (keeps \\uXXXX)', () => {
+  const envSample = String.raw`UNICODE="\u2764"`
+  // parseEnvStringAlt will remove surrounding quotes and will not convert \u2764 to the heart char
+  expect(parseEnvStringAlt(envSample)).toEqual({ UNICODE: '\\u2764'.replace('\\\\', '\\') })
+})

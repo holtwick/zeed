@@ -38,3 +38,6 @@ export function getGlobalContext<T = ZeedGlobalContext>(defaultValue = {}): T {
     gcontext._zeedGlobal = defaultValue
   return gcontext._zeedGlobal as T
 }
+
+/// Last resort hack to extend the globalThis object.
+export const globalAny = globalThis as any

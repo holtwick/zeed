@@ -71,13 +71,13 @@ function handleUrlString(part: string): string {
   const escapedRest = escapeHTML(rests.join(''))
   const escapedHumanReadableUrl = escapeHTML(toHumanReadableUrl(url))
   const escapedUrl = escapeHTML(url)
-
-  return `<a target="_blank" rel="noopener noreferrer" href="${escapedUrl}">${escapedHumanReadableUrl}</a>${escapedRest}`
+  const classInsecureHttp = url.startsWith('http://') ? ' class="_warn"' : ''
+  return `<a target="_blank" rel="noopener noreferrer"${classInsecureHttp} href="${escapedUrl}">${escapedHumanReadableUrl}</a>${escapedRest}`
 }
 
 var rxJoined: RegExp | undefined = undefined
 
-interface LinkifyOptions {
+export interface LinkifyOptions {
 }
 
 export function linkifyPlainText(text: string, options: LinkifyOptions = {}): string {

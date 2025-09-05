@@ -4,7 +4,7 @@ describe('url', () => {
   it('split string to URLs', () => {
     const sample = 'https://example.com has <strange & fancy> some example.com at end http://example.com some'
     expect(linkifyPlainText(sample)).toMatchInlineSnapshot(
-      `"<a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> has &lt;strange &amp; fancy&gt; some <a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> at end <a target="_blank" rel="noopener noreferrer" href="http://example.com">example.com</a> some"`,
+      `"<a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> has &lt;strange &amp; fancy&gt; some <a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> at end <a target="_blank" rel="noopener noreferrer" class="_warn" href="http://example.com">example.com</a> some"`,
     )
     const input = 'W9ju7_qXXFY2h221-k0Xp1u-Odg2TS3d_kxv9u_U-SYXsJA'
     expect(linkifyPlainText(input)).toBe(input)
@@ -12,7 +12,7 @@ describe('url', () => {
 
   it('converts a simple http URL', () => {
     const input = 'visit http://example.com'
-    const expected = 'visit <a target="_blank" rel="noopener noreferrer" href="http://example.com">example.com</a>'
+    const expected = 'visit <a target="_blank" rel="noopener noreferrer" class="_warn" href="http://example.com">example.com</a>'
     expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
   })
 

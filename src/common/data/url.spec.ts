@@ -1,11 +1,72 @@
-import { encodeQuery, linkifyPlainText, toHumanReadableUrl, parseQuery } from './url'
+import { encodeQuery, linkifyPlainText, toHumanReadableUrl, parseQuery, linkifyPlainTextWithLineBreaks } from './url'
 
 describe('url', () => {
   it('split string to URLs', () => {
     const sample = 'https://example.com has <strange & fancy> some example.com at end http://example.com some'
-    expect(linkifyPlainText(sample)).toBe(
-      '<a target="_blank" href="https://example.com">example.com</a> has &lt;strange &amp; fancy&gt; some example.com at end <a target="_blank" href="http://example.com">example.com</a> some',
+    expect(linkifyPlainText(sample)).toMatchInlineSnapshot(
+      `"<a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> has &lt;strange &amp; fancy&gt; some <a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> at end <a target="_blank" rel="noopener noreferrer" class="_warn" href="http://example.com">example.com</a> some"`,
     )
+    const input = 'W9ju7_qXXFY2h221-k0Xp1u-Odg2TS3d_kxv9u_U-SYXsJA'
+    expect(linkifyPlainText(input)).toBe(input)
+  })
+
+  it('converts a simple http URL', () => {
+    const input = 'visit http://example.com'
+    const expected = 'visit <a target="_blank" rel="noopener noreferrer" class="_warn" href="http://example.com">example.com</a>'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('converts a simple https URL and cleans the display text', () => {
+    const input = 'visit https://www.example.com'
+    const expected = 'visit <a target="_blank" rel="noopener noreferrer" href="https://www.example.com">example.com</a>'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('handles trailing punctuation correctly', () => {
+    const input = 'Go to example.com.'
+    const expected = 'Go to <a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a>.'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('handles trailing parentheses when balanced', () => {
+    const input = 'A link (https://en.wikipedia.org/wiki/URL_(Uniform_Resource_Locator))'
+    const expected = 'A link (<a target="_blank" rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/URL_(Uniform_Resource_Locator)">en.wikipedia.org/wiki/URL_(Uniform_Resource_Locator)</a>)'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('trims trailing parenthesis when unbalanced', () => {
+    const input = 'A link (https://example.com).'
+    const expected = 'A link (<a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a>).'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('converts email addresses', () => {
+    const input = 'contact me at user@example.com'
+    const expected = 'contact me at <a target="_blank" rel="noopener noreferrer" href="mailto:user@example.com">user@example.com</a>'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('handles multiple links and text correctly', () => {
+    const input = 'Check example.com and mailto:test@test.com for info.'
+    const expected = 'Check <a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a> and <a target="_blank" rel="noopener noreferrer" href="mailto:test@test.com">test@test.com</a> for info.'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('escapes HTML in surrounding text', () => {
+    const input = '<p>visit example.com</p>'
+    const expected = '&lt;p&gt;visit <a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a>&lt;/p&gt;'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('handles newlines correctly', () => {
+    const input = 'line one\nexample.com\nline three'
+    const expected = 'line one<br><a target="_blank" rel="noopener noreferrer" href="https://example.com">example.com</a><br>line three'
+    expect(linkifyPlainTextWithLineBreaks(input)).toBe(expected)
+  })
+
+  it('handles custom scheme correctly', () => {
+    const input = 'Note obsidian://something?a=1 three'
+    expect(linkifyPlainTextWithLineBreaks(input)).toMatchInlineSnapshot(`"Note obsidian://something?a=1 three"`)
   })
 
   it('should make human readable url', () => {

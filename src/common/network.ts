@@ -79,7 +79,14 @@ export function parseBasicAuth(url: string) {
   }
 }
 
-/** Simplified `fetch` that returns `undefined` on non 200 status */
+/**
+ * Simplified `fetch` wrapper.
+ * - Accepts a single fetch options object or an array of options which will be deep-merged.
+ * - Supports basic auth embedded in the URL (e.g. https://user:pass@host/path).
+ * - Normalizes headers to a `Headers` instance.
+ * - Returns the `Response` when status < 400, otherwise returns `undefined`.
+ * @category Network
+ */
 export async function fetchBasic(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
@@ -131,8 +138,11 @@ export async function fetchBasic(
     log.error('fetchBasic', err)
   }
 }
-
-/** Fetch for JSON  */
+/**
+ * Fetch and parse JSON.
+ * Returns the parsed JSON object or `undefined` on error.
+ * @category Network
+ */
 export async function fetchJson<T = Json>(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
@@ -160,8 +170,11 @@ export async function fetchJson<T = Json>(
     log.error('fetchJSON error:', err)
   }
 }
-
-/** Fetch for text */
+/**
+ * Fetch text content.
+ * Returns the response text or `undefined` on error.
+ * @category Network
+ */
 export async function fetchText(
   url: string | URL,
   fetchOptions: fetchOptionsType = {},
@@ -184,7 +197,10 @@ export async function fetchText(
 
 ///
 
-/** Options for fetchBasic to send data as application/x-www-form-urlencoded */
+/**
+ * Options for `fetchBasic` to send data as application/x-www-form-urlencoded.
+ * @category Network
+ */
 export function fetchOptionsFormURLEncoded(
   data: object,
   method: httpMethod = 'POST',
@@ -199,7 +215,10 @@ export function fetchOptionsFormURLEncoded(
   }
 }
 
-/** Options to send data as JSON  */
+/**
+ * Options for `fetchBasic` to send JSON data.
+ * @category Network
+ */
 export function fetchOptionsJson(
   data: object,
   method: httpMethod = 'POST',
@@ -215,7 +234,10 @@ export function fetchOptionsJson(
   }
 }
 
-/** Options to pass basic auth */
+/**
+ * Create options to add Basic Authorization header using given username/password.
+ * @category Network
+ */
 export function fetchOptionsBasicAuth(
   username: string,
   password: string,

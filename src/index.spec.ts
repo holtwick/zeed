@@ -27,11 +27,11 @@ describe('treeshake', () => {
     expect(result1?.outputFiles?.[0]?.text).toMatchInlineSnapshot(`
       "(() => {
         // src/common/data/array.ts
-        function arrayUnique(x) {
-          return x.filter((n, index) => x.indexOf(n) === index);
+        function arrayUnique(arr) {
+          return arr.filter((n, index) => arr.indexOf(n) === index);
         }
-        function arrayUnion(...a2) {
-          return arrayUnique(a2.reduce((acc = [], value) => acc.concat(value), []));
+        function arrayUnion(...arrays) {
+          return arrayUnique(arrays.reduce((acc = [], value) => acc.concat(value), []));
         }
 
         // <stdin>

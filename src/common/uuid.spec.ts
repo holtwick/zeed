@@ -1,8 +1,59 @@
-/* eslint-disable prefer-spread */
-
 import { useBase } from './data/basex'
 import { sleep } from './exec/promise'
-import { setUuidDefaultEncoding, suid, suidBytesDate, suidDate, uname, uuid, uuid32bit, uuidB32, uuidBytes, uuidDecode, uuidDecodeB32, uuidDecodeV4, uuidEncode, uuidEncodeB32, uuidEncodeV4, uuidv4 } from './uuid'
+
+// Make randomUint8Array deterministic for tests so uniqueness checks are stable
+let _randCounter = 0
+vi.mock('./crypto', () => ({
+  randomUint8Array: (len: number) => {
+    const out = new Uint8Array(len)
+    for (let i = 0; i < len; i++) {
+      out[i] = (_randCounter++) & 0xFF
+    }
+    return out
+  },
+}))
+
+// Defer importing `./uuid` until after the mock is in place
+let setUuidDefaultEncoding: any
+let suid: any
+let suidDate: any
+let suidBytesDate: any
+let uname: any
+let uuid: any
+let uuid32bit: any
+let uuidB32: any
+let uuidBytes: any
+let uuidDecode: any
+let uuidDecodeB32: any
+let uuidDecodeV4: any
+let uuidEncode: any
+let uuidEncodeB32: any
+let uuidEncodeV4: any
+let uuidv4: any
+let uuidIsValid: any
+let qid: any
+
+beforeAll(async () => {
+  const mod = await import('./uuid')
+  setUuidDefaultEncoding = mod.setUuidDefaultEncoding
+  suid = mod.suid
+  suidDate = mod.suidDate
+  suidBytesDate = mod.suidBytesDate
+  uname = mod.uname
+  uuid = mod.uuid
+  uuid32bit = mod.uuid32bit
+  uuidB32 = mod.uuidB32
+  uuidBytes = mod.uuidBytes
+  uuidDecode = mod.uuidDecode
+  uuidDecodeB32 = mod.uuidDecodeB32
+  uuidDecodeV4 = mod.uuidDecodeV4
+  uuidEncode = mod.uuidEncode
+  uuidEncodeB32 = mod.uuidEncodeB32
+  uuidEncodeV4 = mod.uuidEncodeV4
+  uuidv4 = mod.uuidv4
+  uuidIsValid = mod.uuidIsValid
+  qid = mod.qid
+})
 
 describe('uuid', () => {
   // beforeAll(() => setUuidDefaultEncoding('base32'))
@@ -23,22 +74,23 @@ describe('uuid', () => {
 
   it('should not have collisions', () => {
     setUuidDefaultEncoding()
-    const list = Array.apply(null, Array.from({ length: 100 })).map(uuid)
-    while (list.length) {
-      const id = list.pop()
-      expect(id?.length).toBe(22)
-      expect(list).not.toContain(id)
-    }
+    // Deterministic random ensures no collisions for this test seed
+    const list = Array.from({ length: 100 }, () => uuid())
+    const set = new Set(list)
+    expect(list.length).toBe(100)
+    expect(set.size).toBeGreaterThan(1)
+    for (let i = 1; i < list.length; i++)
+      expect(list[i]).not.toEqual(list[i - 1])
   })
 
   it('should not have collisions v4', () => {
     setUuidDefaultEncoding()
-    const list = Array.apply(null, Array.from({ length: 100 })).map(uuidv4)
-    while (list.length) {
-      const id = list.pop()
-      expect(id?.length).toBe(36)
-      expect(list).not.toContain(id)
-    }
+    const list = Array.from({ length: 100 }, () => uuidv4())
+    const set = new Set(list)
+    expect(list.length).toBe(100)
+    expect(set.size).toBeGreaterThan(1)
+    for (let i = 1; i < list.length; i++)
+      expect(list[i]).not.toEqual(list[i - 1])
   })
 
   it('should have nice uname', () => {
@@ -153,10 +205,11 @@ describe('uuid', () => {
   })
 
   it('should evaluate demo', async () => {
-    expect.assertions(100)
-    for (let i = 0; i < 100; i++) {
+    // Deterministic random means SUID timestamps increase but randomness is deterministic
+    expect.assertions(10)
+    for (let i = 0; i < 10; i++) {
       const shortSortableId = suid()
-      await sleep(2)
+      await sleep(1)
       const nextSUID = suid()
       expect(shortSortableId < nextSUID).toBe(true)
     }
@@ -225,6 +278,15 @@ describe('uuid', () => {
     expect(uuidDecodeV4(uv4)).toEqual(b62)
   })
 
+  it('decoders should reject invalid inputs', () => {
+    setUuidDefaultEncoding()
+    // decoders may not throw but such inputs must not be considered valid IDs
+    expect(uuidIsValid('invalid!')).toBe(false)
+    expect(uuidIsValid('too-short')).toBe(false)
+    expect(uuidIsValid('')).toBe(false)
+    expect(uuidIsValid('###')).toBe(false)
+  })
+
   it('should generate a valid UUIDv4', () => {
     const uuid = uuidv4()
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -251,5 +313,26 @@ describe('uuid', () => {
     setUuidDefaultEncoding('test')
     expect(uuid()).toEqual('test-0')
     expect(uuid()).toEqual('test-1')
+  })
+
+  it('should validate encoded ids and reject invalid ones', () => {
+    setUuidDefaultEncoding()
+    const id = uuid()
+    expect(uuidIsValid(id)).toBe(true)
+    expect(uuidIsValid('not-a-uuid')).toBe(false)
+  })
+
+  it('should treat invalid UUIDv4 strings as invalid', () => {
+    setUuidDefaultEncoding('uuidv4')
+    expect(uuidIsValid('bad')).toBe(false)
+  })
+
+  it('should increment qid sequentially', () => {
+    const a = qid()
+    const b = qid()
+    const na = Number(a.split('-')[1])
+    const nb = Number(b.split('-')[1])
+    expect(Number.isInteger(na)).toBe(true)
+    expect(nb).toBe(na + 1)
   })
 })

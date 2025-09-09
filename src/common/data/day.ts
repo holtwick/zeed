@@ -231,7 +231,6 @@ export function dayToString(day: DayValue, sep = '-') {
   )
 }
 
-/// Day value from parts, returns undefined if invalid
 /**
  * Build a DayValue from numeric parts. Returns undefined for invalid parts.
  *
@@ -248,11 +247,13 @@ export function dayFromParts(
     return
   return year * 10000 + month * 100 + day
 }
-
-/// Day value from string, returns undefined if invalid
+ 
 /**
  * Parse a string into a DayValue by extracting up to 8 digits (YYYYMMDD).
  * Returns undefined for invalid results.
+ * 
+ * Example:
+ * dayValue === dayFromString(String(dayValue))
  */
 export function dayFromString(value: string): DayValue | undefined {
   const string = String(value)

@@ -21,8 +21,9 @@ export function Logger(name?: string, level?: LogLevelAliasType): LoggerInterfac
     const logFilePath = process.env.ZEED_LOG ?? process.env.LOG
     const time = valueToBoolean(process.env.ZEED_TIME, true)
     const pretty = valueToBoolean(process.env.ZEED_PRETTY, false)
+    const rotation = valueToBoolean(process.env.ZEED_ROTATE, false)
     if (logFilePath)
-      handlers.unshift(LoggerFileHandler(toPath(logFilePath), { time, pretty }))
+      handlers.unshift(LoggerFileHandler(toPath(logFilePath), { time, pretty, rotation }))
 
     context.setHandlers(handlers)
   })(name, level)

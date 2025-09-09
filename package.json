@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "packageManager": "pnpm@10.15.1",
   "description": "🌱 Simple foundation library",
   "author": {
@@ -77,7 +77,7 @@
     "prep": "nr lint:fix && nr check && nr test:release && nr upload:docs"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.2.2",
+    "@antfu/eslint-config": "^5.3.0",
     "@antfu/ni": "^25.0.0",
     "@types/node": "^24.3.1",
     "@vitejs/plugin-vue": "^6.0.1",
@@ -89,7 +89,7 @@
     "pnpm": "^10.12.1",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.4",
+    "vite": "^7.1.5",
     "vitest": "^3.2.4"
   }
 }

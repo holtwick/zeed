@@ -74,6 +74,48 @@ It is also possible to set (`Logger.setHandlers([handlers])`) or add (`Logger.re
 - `LoggerNodeHandler(opt)`: Colorful logging for node.js - _(muted by default)_
 - `LoggerFileHandler(path, opt)`: Write to file
 
+  The file handler supports optional log rotation. You can enable rotation by providing a `rotation` option with rotation settings:
+
+  ```ts
+  import { LoggerFileHandler } from 'zeed'
+
+  // Enable rotation with default settings (10MB size, 5 files, gzip compression)
+  LoggerFileHandler('/var/log/app.log', {
+    rotation: true
+  })
+
+  // Rotate logs daily
+  LoggerFileHandler('/var/log/app.log', {
+    rotation: { interval: '1d' }
+  })
+
+  // Rotate when file reaches 10MB, keep max 5 files
+  LoggerFileHandler('/var/log/app.log', {
+    rotation: {
+      size: '10M',
+      maxFiles: 5,
+      compress: 'gzip'
+    }
+  })
+
+  // Rotate hourly with custom settings
+  LoggerFileHandler('/var/log/app.log', {
+    rotation: {
+      interval: '1h',
+      maxSize: '100M',
+      compress: true
+    }
+  })
+  ```
+
+  Available rotation options:
+  - `size`: Rotate when file reaches this size (e.g., `'10M'`, `'1G'`)
+  - `interval`: Rotate at time intervals (e.g., `'1d'`, `'1h'`, `'30m'`)
+  - `maxFiles`: Maximum number of rotated files to keep
+  - `maxSize`: Maximum total size of all log files
+  - `compress`: Compress rotated files (`true`, `'gzip'`, or custom compressor function)
+  - `rotate`: Number of files to keep in classical rotation mode
+
 `opt` are general options like `level` for the log level or `filter` for custom filtering (see below). But it can also hold individual settings specific for a log handler.
 
 Examples for custom loggers are [breadcrumb tracking in Sentry.io](https://gist.github.com/holtwick/949d04151586cec529a671859ebbb650) or showing notifications to users on errors in a UI.

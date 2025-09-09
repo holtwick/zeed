@@ -69,6 +69,7 @@ describe('files.spec', () => {
         "node/log/log-file.ts",
         "node/log/log-node.spec.ts",
         "node/log/log-node.ts",
+        "node/log/log-rotation.ts",
         "node/log/log-util.spec.ts",
         "node/log/log-util.ts",
       ]

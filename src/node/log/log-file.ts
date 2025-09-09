@@ -1,7 +1,7 @@
 import type { LogHandlerOptions, LogMessage } from '../../common/log/log-base'
 import type { Options as RotationOptions } from './log-rotation'
 import { createWriteStream, mkdirSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { basename, dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { renderMessages } from '../../common/data/message'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
@@ -48,14 +48,22 @@ export function LoggerFileHandler(path: string, opt: LogFileHandlerOptions = {})
     pretty = false,
     rotation,
   } = opt
+
   path = resolve(process.cwd(), path)
-  mkdirSync(dirname(path), { recursive: true })
+  const pathFolder = dirname(path)
+  mkdirSync(pathFolder, { recursive: true })
 
   // Use rotating stream if rotation options are provided
   const rotationOpts = getRotationOptions(rotation)
-  const stream = rotationOpts
-    ? createStream(path, rotationOpts)
-    : createWriteStream(path, { flags: 'a' })
+
+  let stream: ReturnType<typeof createWriteStream> | ReturnType<typeof createStream>
+  if (rotationOpts) {
+    rotationOpts.path = pathFolder
+    stream = createStream(basename(path), rotationOpts)
+  }
+  else {
+    stream = createWriteStream(path, { flags: 'a' })
+  }
 
   const matchesNamespace = useNamespaceFilter(filter)
   const matchesLevel = useLevelFilter(level)

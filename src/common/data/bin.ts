@@ -112,8 +112,8 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
     sb = Buffer.from(bytes).toString('base64')
     if (stripPadding)
       return sb.replace(/\=/g, '')
-    return sb  
-  }   
+    return sb
+  }
   if (stripPadding) {
     return base64nopad.encode(bytes)
   }
@@ -124,7 +124,7 @@ export function toBase64(bin: BinInput, stripPadding = false): string {
 export function toBase64Url(bin: BinInput): string {
   const bytes = toUint8Array(bin)
   if (typeof Buffer !== 'undefined')
-    return Buffer.from(bytes).toString('base64url').replace(/\=/g, '')  
+    return Buffer.from(bytes).toString('base64url').replace(/\=/g, '')
   return base64urlnopad.encode(bytes)
 }
 

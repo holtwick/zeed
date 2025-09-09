@@ -1,5 +1,5 @@
 import { sleep } from './exec'
-import { dateFromSeconds, datetimeToLocal, datetimeToUTC, duration, formatMilliseconds, getPerformanceTimestamp, getTimestamp, getTimestampInSeconds, parseDate, timestampMillisecondsToSeconds, timestampSecondsToMilliseconds } from './time'
+import { dateFromSeconds, datetimeToLocal, datetimeToUTC, duration, formatMilliseconds, getBuildNumber, getPerformanceTimestamp, getSecondsFromBuildNumber, getTimestamp, getTimestampInSeconds, parseDate, timestampMillisecondsToSeconds, timestampSecondsToMilliseconds } from './time'
 
 describe('time.spec', () => {
   it('should measure', async () => {
@@ -108,5 +108,22 @@ describe('time.spec', () => {
     const ts = 1609459200000
     const result = timestampMillisecondsToSeconds(ts)
     expect(result).toBe(1609459200)
+  })
+
+  it('should build number', async () => {
+    const b = getBuildNumber()
+    // console.log('build number:', b)
+    expect(b > '0').toBeTruthy()
+    expect(b < '10000').toBeTruthy()
+
+    // await sleep(6000)
+    // const b2 = getBuildNumber()
+    // console.log('build number2:', b2)
+    // expect(b2 > b).toBeTruthy()
+
+    const mx = 'zzzzzz'
+    expect(new Date(getSecondsFromBuildNumber(mx) * 1000).toISOString()).toMatchInlineSnapshot(`"2195-02-16T19:05:15.000Z"`)
+  }, {
+    timeout: 30_000,
   })
 })

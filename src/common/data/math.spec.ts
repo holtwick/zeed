@@ -1,4 +1,4 @@
-import { getSecureRandom, isPrime, isPrimeRX, randomBoolean, seededRandom } from './math'
+import { base32ToNumber, getSecureRandom, isPrime, isPrimeRX, numberToBase32, randomBoolean, seededRandom } from './math'
 
 /* eslint-disable no-cond-assign */
 /* eslint-disable prefer-spread */
@@ -73,4 +73,28 @@ describe('math', () => {
       ]
     `)
   })
+
+  it('should be b32', () => {
+    expect(numberToBase32(0)).toBe('0')
+    expect(numberToBase32(1)).toBe('1')
+    expect(numberToBase32(31,4)).toBe('000z')
+    expect(numberToBase32(32)).toBe('10')
+    expect(numberToBase32(33)).toBe('11')    
+    expect(numberToBase32(1024)).toBe('100')
+    expect(numberToBase32(1234567890)).toBe('14tc0pj')
+    expect(numberToBase32(33,4) < numberToBase32(1024,4)).toBe(true)
+
+    expect(base32ToNumber('0')).toBe(0)
+    expect(base32ToNumber('1')).toBe(1)
+    expect(base32ToNumber('000z')).toBe(31)
+    expect(base32ToNumber('10')).toBe(32)
+    expect(base32ToNumber('11')).toBe(33)    
+    expect(base32ToNumber('100')).toBe(1024)
+    expect(base32ToNumber('14tc0pj')).toBe(1234567890)
+
+    expect(base32ToNumber('zzzzz')).toBe(33554431)
+    expect(base32ToNumber('zzzzzz')).toBe(1073741823)
+    expect(base32ToNumber('zzzzzzz')).toBe(34359738367)
+  })
 })
+

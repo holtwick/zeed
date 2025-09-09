@@ -61,3 +61,30 @@ export function seededRandom(max = 0, min = 1, seed?: number) {
   const rnd = _seed / 233280
   return min + rnd * (max - min)
 }
+
+const base32Chars = '0123456789abcdefghjkmnpqrtuvwxyz'
+
+export function numberToBase32(num: number, padding = 0): string {
+  if (num === 0)
+    return '0'
+  let str = ''
+  while (num > 0) {
+    const rem = num % 32
+    str = base32Chars[rem] + str
+    num = Math.floor(num / 32)
+  }
+  while (str.length < padding)
+    str = '0' + str
+  return str
+}
+
+export function base32ToNumber(str: string): number {
+  let num = 0
+  for (let i = 0; i < str.length; i++) {
+    const index = base32Chars.indexOf(str[i].toLowerCase())
+    if (index === -1)
+      throw new Error(`Invalid base32 character: ${str[i]}`)
+    num = num * 32 + index
+  }
+  return num
+}

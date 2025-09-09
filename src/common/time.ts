@@ -1,3 +1,5 @@
+import { base32ToNumber, numberToBase32 } from './data/math'
+
 let testModeTime: number | undefined
 
 /**
@@ -242,3 +244,19 @@ export const TIME_HOUR_S = 3600 // 60 * 60
 export const TIME_MINUTE_MS = 60000 // 60 * 1000
 /** Number of seconds in one minute (60 seconds). */
 export const TIME_MINUTE_S = 60 // 60
+
+// BUILD NUMBER
+
+const buildNumberSeconds = 5
+const buildNumberPadding = 6
+const buildStartSeconds = 1735686000 // 2025-01-01
+
+/** Build number is minutes since 2025-01-01 in base32 "agnoster" encoded format */
+export function getBuildNumber(): string {
+  const buildNumber = Math.floor((getTimestampInSeconds() - buildStartSeconds) / buildNumberSeconds)
+  return numberToBase32(buildNumber, buildNumberPadding)
+}
+
+export function getSecondsFromBuildNumber(buildNumber: string): number {
+  return buildStartSeconds + (base32ToNumber(buildNumber) * buildNumberSeconds)
+}

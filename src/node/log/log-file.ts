@@ -8,12 +8,15 @@ import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-
 import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 import { createStream } from './log-rotation'
 
-interface LogFileHandlerOptions extends LogHandlerOptions {
+export type LogFileRotationOptions = boolean | RotationOptions | 'daily' | 'weekly' | 'monthly' | 'size'
+
+export interface LogFileHandlerOptions extends LogHandlerOptions {
   /**
    * Optional rotation options for log files. When provided, enables automatic log rotation.
    * Can be:
    * - `true`: Use default rotation settings (10MB size, 5 files, gzip compression)
    * - Rotation options object: Customize rotation behavior
+   * - Shortcut strings: 'daily' | 'weekly' | 'monthly' | 'size'
    *
    * Examples:
    * - Enable with defaults: { rotation: true }
@@ -22,22 +25,30 @@ interface LogFileHandlerOptions extends LogHandlerOptions {
    * - Keep max 5 files: { rotation: { maxFiles: 5 } }
    * - Compress rotated files: { rotation: { compress: 'gzip' } }
    */
-  rotation?: boolean | RotationOptions
+  rotation?: LogFileRotationOptions
 }
 
 const namespaces: Record<string, any> = {}
 
-function getRotationOptions(rotation: boolean | RotationOptions | undefined): RotationOptions | undefined {
+function getRotationConfig(rotation: LogFileRotationOptions | undefined): RotationOptions | undefined {
   if (!rotation)
     return undefined
-  if (rotation === true) {
-    return {
-      size: '10M',
-      maxFiles: 5,
-      compress: 'gzip',
-    }
+
+  // default for true and explicit 'size' is size-based rotation
+  if (rotation === true || rotation === 'size') {
+    return { size: '10M', maxFiles: 5, compress: 'gzip' }
   }
-  return rotation
+
+  // time-based shortcuts -> map to interval + maxFiles
+  if (rotation === 'daily')
+    return { interval: '1d', maxFiles: 30, compress: 'gzip' }
+  if (rotation === 'weekly')
+    return { interval: '7d', maxFiles: 30, compress: 'gzip' }
+  if (rotation === 'monthly')
+    return { interval: '1M', maxFiles: 90, compress: 'gzip' }
+
+  // assume it's a full RotationOptions object
+  return rotation as RotationOptions
 }
 
 export function LoggerFileHandler(path: string, opt: LogFileHandlerOptions = {}) {
@@ -54,10 +65,11 @@ export function LoggerFileHandler(path: string, opt: LogFileHandlerOptions = {})
   mkdirSync(pathFolder, { recursive: true })
 
   // Use rotating stream if rotation options are provided
-  const rotationOpts = getRotationOptions(rotation)
+  const rotationOpts = getRotationConfig(rotation)
 
   let stream: ReturnType<typeof createWriteStream> | ReturnType<typeof createStream>
   if (rotationOpts) {
+    // ensure rotation writes into the same folder
     rotationOpts.path = pathFolder
     stream = createStream(basename(path), rotationOpts)
   }

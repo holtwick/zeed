@@ -1,14 +1,15 @@
 import type { LogHandlerOptions, LogMessage } from '../../common/log/log-base'
-import type { Options as RotationOptions } from './log-rotation'
+import type { LogRotationOptions } from './log-file-rotation'
 import { createWriteStream, mkdirSync } from 'node:fs'
 import { basename, dirname, resolve } from 'node:path'
 import process from 'node:process'
 import { renderMessages } from '../../common/data/message'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
+import { getLogRotationConfig } from './log-file-rotation'
 import { createStream } from './log-rotation'
 
-export type LogRotationOptions = boolean | RotationOptions | 'daily' | 'weekly' | 'monthly' | 'size'
+const namespaces: Record<string, any> = {}
 
 export interface LogFileHandlerOptions extends LogHandlerOptions {
   /**
@@ -26,29 +27,6 @@ export interface LogFileHandlerOptions extends LogHandlerOptions {
    * - Compress rotated files: { rotation: { compress: 'gzip' } }
    */
   rotation?: LogRotationOptions
-}
-
-const namespaces: Record<string, any> = {}
-
-export function getLogRotationConfig(rotation: LogRotationOptions | undefined): RotationOptions | undefined {
-  if (!rotation)
-    return undefined
-
-  // default for true and explicit 'size' is size-based rotation
-  if (rotation === true || rotation === 'size') {
-    return { size: '10M', maxFiles: 5, compress: 'gzip' }
-  }
-
-  // time-based shortcuts -> map to interval + maxFiles
-  if (rotation === 'daily')
-    return { interval: '1d', maxFiles: 30, compress: 'gzip' }
-  if (rotation === 'weekly')
-    return { interval: '7d', maxFiles: 30, compress: 'gzip' }
-  if (rotation === 'monthly')
-    return { interval: '1M', maxFiles: 90, compress: 'gzip' }
-
-  // assume it's a full RotationOptions object
-  return rotation as RotationOptions
 }
 
 export function LoggerFileHandler(path: string, opt: LogFileHandlerOptions = {}) {

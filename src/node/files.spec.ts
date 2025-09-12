@@ -65,6 +65,7 @@ describe('files.spec', () => {
         "common/log/log-memory.ts",
         "common/log/log-noop.ts",
         "node/log/log-context-node.ts",
+        "node/log/log-file-rotation.ts",
         "node/log/log-file.spec.ts",
         "node/log/log-file.ts",
         "node/log/log-node.spec.ts",

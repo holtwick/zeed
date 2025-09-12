@@ -30,25 +30,6 @@ export class RotatingFileStreamError extends Error {
 export type Compressor = (source: string, dest: string) => string
 export type Generator = (time: number | Date | null, index?: number) => string
 
-interface RotatingFileStreamEvents {
-  // Inherited from Writable
-  close: () => void
-  drain: () => void
-  error: (err: Error) => void
-  finish: () => void
-  pipe: (src: Readable) => void
-  unpipe: (src: Readable) => void
-
-  // RotatingFileStream defined
-  external: (stdout: string, stderr: string) => void
-  history: () => void
-  open: (filename: string) => void
-  removed: (filename: string, number: boolean) => void
-  rotation: () => void
-  rotated: (filename: string) => void
-  warning: (error: Error) => void
-}
-
 // Flattened event signatures are available via 'RotatingFileStreamEvents' above.
 
 export type IntervalUnit = 'M' | 'd' | 'h' | 'm' | 's'

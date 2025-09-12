@@ -26,43 +26,43 @@ export class RotatingFileStreamError extends Error {
   }
 }
 
-export type Compressor = (source: string, dest: string) => string
-export type Generator = (time: number | Date | null, index?: number) => string
+export type RotationCompressor = (source: string, dest: string) => string
+export type RotationGenerator = (time: number | Date | null, index?: number) => string
 
 // Flattened event signatures are available via 'RotatingFileStreamEvents' above.
 
-export type IntervalUnit = 'M' | 'd' | 'h' | 'm' | 's'
-export type Interval = `${number}${IntervalUnit}`
+export type RotationIntervalUnit = 'M' | 'd' | 'h' | 'm' | 's'
+export type RotationInterval = `${number}${RotationIntervalUnit}`
 
-export type FileSizeUnit = 'B' | 'K' | 'M' | 'G'
-export type FileSize = `${number}${FileSizeUnit}`
+export type RotationFileSizeUnit = 'B' | 'K' | 'M' | 'G'
+export type RotationFileSize = `${number}${RotationFileSizeUnit}`
 
-export interface Options {
-  compress?: boolean | 'gzip' | Compressor
+export interface RotationOptions {
+  compress?: boolean | 'gzip' | RotationCompressor
   encoding?: BufferEncoding
   history?: string
   immutable?: boolean
   initialRotation?: boolean
-  interval?: Interval
+  interval?: RotationInterval
   intervalBoundary?: boolean
   intervalUTC?: boolean
   maxFiles?: number
-  maxSize?: FileSize
+  maxSize?: RotationFileSize
   mode?: number
   omitExtension?: boolean
   path?: string
   rotate?: number
-  size?: FileSize
+  size?: RotationFileSize
   teeToStdout?: boolean
 }
 
 interface Opts {
-  compress?: boolean | 'gzip' | Compressor
+  compress?: boolean | 'gzip' | RotationCompressor
   encoding?: BufferEncoding
   history?: string
   immutable?: boolean
   initialRotation?: boolean
-  interval?: { num: number, unit: IntervalUnit }
+  interval?: { num: number, unit: RotationIntervalUnit }
   intervalBoundary?: boolean
   intervalUTC?: boolean
   maxFiles?: number
@@ -75,14 +75,14 @@ interface Opts {
   teeToStdout?: boolean
 }
 
-type Callback = (error?: Error) => void
+type RotationCallback = (error?: Error) => void
 
-interface Chunk {
+interface RotationChunk {
   chunk: Buffer
   encoding: BufferEncoding
 }
 
-interface History {
+interface RotationHistory {
   name: string
   size: number
   time: number
@@ -100,7 +100,7 @@ export class RotatingFileStream extends Writable {
   private fsReadFile: typeof readFile
   private fsStat: typeof stat
   private fsUnlink: typeof unlink
-  private generator: Generator
+  private generator: RotationGenerator
   private last: string
   private maxTimeout: number
   private next: number | null
@@ -113,7 +113,7 @@ export class RotatingFileStream extends Writable {
   private timeout: NodeJS.Timeout | null
   private timeoutPromise: Promise<void> | null
 
-  constructor(generator: Generator, options: Opts) {
+  constructor(generator: RotationGenerator, options: Opts) {
     const { encoding, history, maxFiles, maxSize, path } = options
 
     super({ decodeStrings: true, defaultEncoding: encoding })
@@ -163,23 +163,23 @@ export class RotatingFileStream extends Writable {
     })()
   }
 
-  _destroy(error: Error, callback: Callback): void {
+  _destroy(error: Error, callback: RotationCallback): void {
     this.refinal(error, callback)
   }
 
-  _final(callback: Callback): void {
+  _final(callback: RotationCallback): void {
     this.refinal(undefined, callback)
   }
 
-  _write(chunk: Buffer, encoding: BufferEncoding, callback: Callback): void {
+  _write(chunk: Buffer, encoding: BufferEncoding, callback: RotationCallback): void {
     this.rewrite([{ chunk, encoding }], 0, callback)
   }
 
-  _writev(chunks: Chunk[], callback: Callback): void {
+  _writev(chunks: RotationChunk[], callback: RotationCallback): void {
     this.rewrite(chunks, 0, callback)
   }
 
-  private async refinal(error: Error | undefined, callback: Callback): Promise<void> {
+  private async refinal(error: Error | undefined, callback: RotationCallback): Promise<void> {
     try {
       this.clear()
 
@@ -197,7 +197,7 @@ export class RotatingFileStream extends Writable {
     callback(error)
   }
 
-  private async rewrite(chunks: Chunk[], index: number, callback: Callback): Promise<void> {
+  private async rewrite(chunks: RotationChunk[], index: number, callback: RotationCallback): Promise<void> {
     const { size, teeToStdout } = this.options
 
     try {
@@ -535,7 +535,7 @@ export class RotatingFileStream extends Writable {
 
   private async history(filename: string): Promise<void> {
     const { history, maxFiles, maxSize } = this.options
-    const res: History[] = []
+    const res: RotationHistory[] = []
     let files = [filename]
 
     try {
@@ -753,7 +753,7 @@ const checks: any = {
   size: buildStringCheck('size', checkSize),
   teeToStdout: (): void => {},
   ...{
-    compress: (type: string, options: Opts, value: boolean | string | Compressor): any => {
+    compress: (type: string, options: Opts, value: boolean | string | RotationCompressor): any => {
       if (value === false)
         return
       if (!value)
@@ -780,10 +780,10 @@ const checks: any = {
   },
 }
 
-function checkOpts(options: Options): Opts {
+function checkOpts(options: RotationOptions): Opts {
   const ret: Opts = {}
   for (const k of Object.keys(options)) {
-    const opt = k as keyof Options
+    const opt = k as keyof RotationOptions
     const value = options[opt]
     const type = typeof value
 
@@ -823,14 +823,14 @@ function checkOpts(options: Options): Opts {
   return ret
 }
 
-function createClassical(filename: string, compress: boolean, omitExtension: boolean): Generator {
+function createClassical(filename: string, compress: boolean, omitExtension: boolean): RotationGenerator {
   return (time: number | Date | null, index?: number): string => {
     const idx = index || 0
     return (idx ? `${filename}.${idx}${compress && !omitExtension ? '.gz' : ''}` : filename)
   }
 }
 
-function createGenerator(filename: string, compress: boolean, omitExtension: boolean): Generator {
+function createGenerator(filename: string, compress: boolean, omitExtension: boolean): RotationGenerator {
   const pad = (num: number): string => (num > 9 ? '' : '0') + num
 
   return (time: number | Date | null, index?: number): string => {
@@ -848,7 +848,7 @@ function createGenerator(filename: string, compress: boolean, omitExtension: boo
   }
 }
 
-export function createStream(filename: string | Generator, options?: Options): RotatingFileStream {
+export function createRotationStream(filename: string | RotationGenerator, options?: RotationOptions): RotatingFileStream {
   if (typeof options === 'undefined')
     options = {}
   else if (typeof options !== 'object')
@@ -856,7 +856,7 @@ export function createStream(filename: string | Generator, options?: Options): R
 
   const opts = checkOpts(options)
   const { compress, omitExtension } = opts
-  let generator: Generator
+  let generator: RotationGenerator
 
   if (typeof filename === 'string')
     generator = (opts.rotate ? createClassical(filename, !!compress, !!omitExtension) : createGenerator(filename, !!compress, !!omitExtension))

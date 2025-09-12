@@ -1,5 +1,5 @@
 import type { Type } from '../../common/schema'
-import type { Options as RotationOptions } from './log-rotation'
+import type { RotationOptions } from './log-rotation'
 import { valueToBoolean } from '../../common/data/convert'
 import { z } from '../../common/schema'
 

@@ -24,7 +24,7 @@ Links:
 
 Powerful logging for browser and terminal.
 
-```js
+```ts
 import { Logger } from 'zeed'
 
 const log = Logger('demo')
@@ -49,7 +49,7 @@ By default, the most appropriate log handlers are activated. By default, a color
 
 **By default logs are muted!** Show the logs by applying filters. On the browser enter this an the web inspector console:
 
-```js
+```ts
 localStorage.zeed = '*'
 ```
 
@@ -140,25 +140,25 @@ node --enable-source-maps myapp.js
 
 Wait for an event via `on` or `addEventListener`, useful in unit tests.
 
-```js
+```ts
 await waitOn(emitter, 'action', 1000) // 1000 is optional timeout in ms
 ```
 
 Wait for milliseconds.
 
-```js
+```ts
 await sleep(1000) // wait 1s
 ```
 
 Throw an error after timeout of 1 second.
 
-```js
+```ts
 await timeout(asynFn, 1000)
 ```
 
 If a value is not yet a Promise, wrap it to become one.
 
-```js
+```ts
 await promisify(returnValue)
 ```
 
@@ -166,14 +166,14 @@ await promisify(returnValue)
 
 Get a random unique ID of fixed length of 22 chars (these are 16 bytes = 128 bit, encoded in Base62). According to [Nano ID Collision Calculator](https://zelark.github.io/nano-id-cc/): "~597 billion years needed, in order to have a 1% probability of at least one collision."
 
-```js
+```ts
 const id1 = uuid() // base62 encoded => 22 chars
 const id2 = uuidB32() // base32 encoded => 26 chars
 ```
 
 Get an incremental unique ID for current process with named groups, great for debugging.
 
-```js
+```ts
 uname('something') // => 'something-0'
 uname('other') // => 'other-0'
 uname('something') // => 'something-1'
@@ -181,7 +181,7 @@ uname('something') // => 'something-1'
 
 Sortable unique ID inspired by [go-uuid](https://github.com/rsms/go-uuid). 6 bytes encode time and 10 bytes are random. String is Base62 encoded. Date can be extracted from the ID.
 
-```js
+```ts
 const shortSortableId = suid() // = '000iMi10bt6YK8buKlYPsd'
 suidDate(shortSortableId) // = 2021-07-03T22:42:40.727Z
 shortSortableId < suid() // = true
@@ -199,7 +199,7 @@ Overview of available IDs:
 
 Typed and async emitter:
 
-```
+```ts
 interface MyEvents {
   inc: (count: number) => number
 }
@@ -212,13 +212,13 @@ await e.emit('inc', 1) // counter === 1
 
 It is also possible to alternatively use a Proxy called `.call` that makes nice dynamic function calls of the events:
 
-```
+```ts
 await e.call.inc(1)
 ```
 
 We can also alternatively declare the listeners this way:
 
-```
+```ts
 e.onCall({
   async inc(count: number): number {
     return counter + 1
@@ -228,7 +228,7 @@ e.onCall({
 
 You can also use a global emitter that will be available even over module boundaries:
 
-```
+```ts
 declare global {
   interface ZeedGlobalEmitter {
     test: (x: string) => void
@@ -243,7 +243,7 @@ getGlobalEmitter().call.test('Hello World')
 
 Communicating to servers or other remote parts through messages as if they were methods on a local object in a type safe way:
 
-```
+```ts
 const m = useMessageHub({ cannel }).send<MyMessages>()
 m.echo({ hello: 'world' })
 ```
@@ -254,7 +254,7 @@ m.echo({ hello: 'world' })
 
 A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.
 
-```
+```ts
 interface Row extends SortedItem {
   id: string
   title: string
@@ -284,7 +284,7 @@ Use `startSortWeight`, `endSortWeight` and `moveSortWeight` to get initial value
 Integration of the [base-x](https://github.com/cryptocoinjs/base-x) code to support encoding and decoding to any alphabet, but especially base2, base16 (hex), base32, base62, base64.
 Human-readable yet efficient encoding of binary data.
 
-```js
+```ts
 const sample = new UInt8Array([1, 2, 3])
 const { encode, decode } = useBase(62)
 decode(encode(sample)) === sample // = true
@@ -294,7 +294,7 @@ decode(encode(sample)) === sample // = true
 
 Handle complex objects.
 
-```js
+```ts
 deepEqual({ a: { b: 1 } }, { a: { b: 2 } }) // false
 deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 ```
@@ -303,7 +303,7 @@ deepMerge({ a: { b: 1 } }, { c: 3, a: { d: 4 } }) // {a:{b:1, d:4}, c:4}
 
 `useDispose` will simplify cleaning up objects. You just need to `add` a function or and object with `dispose` method to be called for cleanup. This can also be nested. A simple example is a timer:
 
-```
+```ts
 function disposableTimer() {
   const timeout = setTimeout(() => console.log('hello world'), 1000)
   return () => clearTimeout(timeout)
@@ -328,7 +328,7 @@ You can also `untrack` single entries. Entries are untracked LIFO. Disposers can
 
 The disposer itself is also a call to dispose i.e. for convenience you can add it to objects and provide `dispose` easily like this:
 
-```
+```ts
 class DisposeExample {
   // the trick is to assign to member `dispose`, will be both
   // the destructor and the registration point for disposables

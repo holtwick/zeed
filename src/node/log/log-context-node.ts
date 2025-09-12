@@ -1,6 +1,6 @@
 import type { LoggerInterface, LogLevelAliasType } from '../../common/log/log-base'
 import type { LogConfig } from '../../common/log/log-config'
-import type { LogFileRotationOptions } from './log-file'
+import type { LogRotationOptions } from './log-file'
 import process from 'node:process'
 import { valueToBoolean } from '../../common/data/convert'
 import { getGlobalLogger } from '../../common/log/log'
@@ -9,7 +9,7 @@ import { toPath } from '../env'
 import { LoggerFileHandler } from './log-file'
 import { LoggerNodeHandler } from './log-node'
 
-function parseRotateEnv(v?: string | null): LogFileRotationOptions {
+function parseRotateEnv(v?: string | null): LogRotationOptions {
   if (['daily', 'weekly', 'monthly', 'size'].includes(String(v).trim().toLowerCase())) {
     return v as 'daily' | 'weekly' | 'monthly' | 'size'
   }

@@ -8,7 +8,7 @@ import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-
 import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 import { createStream } from './log-rotation'
 
-export type LogFileRotationOptions = boolean | RotationOptions | 'daily' | 'weekly' | 'monthly' | 'size'
+export type LogRotationOptions = boolean | RotationOptions | 'daily' | 'weekly' | 'monthly' | 'size'
 
 export interface LogFileHandlerOptions extends LogHandlerOptions {
   /**
@@ -25,12 +25,12 @@ export interface LogFileHandlerOptions extends LogHandlerOptions {
    * - Keep max 5 files: { rotation: { maxFiles: 5 } }
    * - Compress rotated files: { rotation: { compress: 'gzip' } }
    */
-  rotation?: LogFileRotationOptions
+  rotation?: LogRotationOptions
 }
 
 const namespaces: Record<string, any> = {}
 
-function getRotationConfig(rotation: LogFileRotationOptions | undefined): RotationOptions | undefined {
+export function getLogRotationConfig(rotation: LogRotationOptions | undefined): RotationOptions | undefined {
   if (!rotation)
     return undefined
 
@@ -65,7 +65,7 @@ export function LoggerFileHandler(path: string, opt: LogFileHandlerOptions = {})
   mkdirSync(pathFolder, { recursive: true })
 
   // Use rotating stream if rotation options are provided
-  const rotationOpts = getRotationConfig(rotation)
+  const rotationOpts = getLogRotationConfig(rotation)
 
   let stream: ReturnType<typeof createWriteStream> | ReturnType<typeof createStream>
   if (rotationOpts) {

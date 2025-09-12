@@ -3,7 +3,6 @@
 import type { Buffer } from 'node:buffer'
 import type { Stats } from 'node:fs'
 import type { FileHandle } from 'node:fs/promises'
-import type { Readable } from 'node:stream'
 import type { Gzip } from 'node:zlib'
 import { exec } from 'node:child_process'
 import { access, constants, createReadStream, createWriteStream } from 'node:fs'

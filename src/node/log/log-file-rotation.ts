@@ -1,8 +1,17 @@
 import type { Type } from '../../common/schema'
 import type { Options as RotationOptions } from './log-rotation'
+import { valueToBoolean } from '../../common/data/convert'
 import { z } from '../../common/schema'
 
 export type LogRotationOptions = boolean | RotationOptions | 'daily' | 'weekly' | 'monthly' | 'size'
+
+export function parseLogRotationConfigEnv(v?: string | null): LogRotationOptions {
+  if (['daily', 'weekly', 'monthly', 'size'].includes(String(v).trim().toLowerCase())) {
+    return v as 'daily' | 'weekly' | 'monthly' | 'size'
+  }
+
+  return valueToBoolean(v, false)
+}
 
 export function getLogRotationConfig(rotation: LogRotationOptions | undefined): RotationOptions | undefined {
   if (!rotation)

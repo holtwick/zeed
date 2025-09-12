@@ -7,7 +7,7 @@ import { renderMessages } from '../../common/data/message'
 import { LogLevelError, LogLevelInfo, LogLevelWarn } from '../../common/log/log-base'
 import { useLevelFilter, useNamespaceFilter } from '../../common/log/log-filter'
 import { getLogRotationConfig } from './log-file-rotation'
-import { createStream } from './log-rotation'
+import { createRotationStream } from './log-rotation'
 
 const namespaces: Record<string, any> = {}
 
@@ -45,11 +45,11 @@ export function LoggerFileHandler(path: string, opt: LogFileHandlerOptions = {})
   // Use rotating stream if rotation options are provided
   const rotationOpts = getLogRotationConfig(rotation)
 
-  let stream: ReturnType<typeof createWriteStream> | ReturnType<typeof createStream>
+  let stream: ReturnType<typeof createWriteStream> | ReturnType<typeof createRotationStream>
   if (rotationOpts) {
     // ensure rotation writes into the same folder
     rotationOpts.path = pathFolder
-    stream = createStream(basename(path), rotationOpts)
+    stream = createRotationStream(basename(path), rotationOpts)
   }
   else {
     stream = createWriteStream(path, { flags: 'a' })

@@ -20,13 +20,21 @@ describe('json-schema.spec', () => {
       aString: z.string(),
     })
 
-    type t = Infer<typeof schema>
-    expectTypeOf<t>().toMatchObjectType<{
+    type tInfer = Infer<typeof schema>
+
+    expectTypeOf<tInfer>().toMatchObjectType<{
       anInt?: number | undefined
-      aRecord: Record<string, number>
+      moreRecords?: Record<string, {
+        x: string
+      }> | undefined
       fixed: 'a' | 'b' | 'c'
       aBool: boolean
       aNumber: number
+      aRecord: Record<string, number>
+      anObject: {
+        a: string
+        b: number
+      }
       aString: string
     }>()
 

@@ -1,8 +1,6 @@
 import type { Type } from './schema'
-import { ad } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js'
 import { isEmpty } from '../data'
 import { objectMap } from '../data/object'
-import { size } from '../data/utils'
 
 const _mapJsonSchemaType: Record<string, string> = {
   string: 'string',

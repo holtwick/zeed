@@ -1,7 +1,6 @@
 import type { Type } from './schema'
-import { assert } from '../assert'
+import { isEmpty } from '../data'
 import { objectMap } from '../data/object'
-import { isSchemaObjectFlat } from './utils'
 
 const _mapJsonSchemaType: Record<string, string> = {
   string: 'string',
@@ -11,7 +10,7 @@ const _mapJsonSchemaType: Record<string, string> = {
 }
 
 export function schemaExportJsonSchema<T>(schema: Type<T>): Record<string, any> {
-  assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
+  // assert(isSchemaObjectFlat(schema), 'schema should be a flat object')
 
   function transformSchema(schema: Type<any>): any {
     const type = _mapJsonSchemaType[schema.type] ?? schema.type ?? 'object'
@@ -37,25 +36,37 @@ export function schemaExportJsonSchema<T>(schema: Type<T>): Record<string, any> 
       if (schema.type === 'array' && schema._type) {
         properties[key].items = transformSchema(schema._type)
       }
-      if (schema.type === 'object' && schema._object) {
-        Object.assign(properties[key], transformSchema(schema._object))
+      else if (schema.type === 'object' && schema._object) {
+        Object.assign(properties[key], transformSchema(schema))
+        properties[key].additionalProperties = false
+      }
+      else if (schema.type === 'record' && schema._type) {
+        properties[key].type = 'object'
+        properties[key].additionalProperties = transformSchema(schema._type)
       }
       // Handle union types (e.g., z.union)
-      if (schema.type === 'union' && Array.isArray(schema._union)) {
+      else if (schema.type === 'union' && Array.isArray(schema._union)) {
         properties[key].type = schema._union.map((s: any) => _mapJsonSchemaType[s.type] ?? s.type) // todo complex types
       }
     })
 
+    if (!isEmpty(properties)) {
+      return {
+        type,
+        properties,
+        additionalProperties: false,
+        ...(required.length > 0 ? { required } : {}),
+      }
+    }
+
     return {
       type,
-      additionalProperties: false,
-      properties,
-      ...(required.length > 0 ? { required } : {}),
     }
   }
 
   return {
     $schema: 'http://json-schema.org/draft-07/schema#',
+    additionalProperties: false,
     ...transformSchema(schema),
   }
 }

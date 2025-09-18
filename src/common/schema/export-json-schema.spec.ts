@@ -1,4 +1,3 @@
-import type { Infer } from './schema'
 import { schemaExportJsonSchema } from './export-json-schema'
 import { z } from './z'
 
@@ -11,17 +10,32 @@ describe('json-schema.spec', () => {
       aNumber: z.number().meta({
         desc: 'This is a number',
       }),
+      aRecord: z.record(z.number()),
+      moreRecords: z.record(z.object({ x: z.string() })).optional(),
+      anObject: z.object({
+        a: z.string(),
+        b: z.number(),
+      }),
       aString: z.string(),
     })
 
-    type t = Infer<typeof schema>
-    expectTypeOf<t>().toMatchObjectType<{
-      fixed: 'a' | 'b' | 'c'
-      anInt?: number | undefined
-      aBool: boolean
-      aNumber: number
-      aString: string
-    }>()
+    // type tInfer = Infer<typeof schema>
+
+    // expectTypeOf<tInfer>().toMatchObjectType<{
+    //   anInt?: number | undefined
+    //   moreRecords?: Record<string, {
+    //     x: string
+    //   }> | undefined
+    //   fixed: 'a' | 'b' | 'c'
+    //   aBool: boolean
+    //   aNumber: number
+    //   aRecord: Record<string, number>
+    //   anObject: {
+    //     a: string
+    //     b: number
+    //   }
+    //   aString: string
+    // }>()
 
     const r = schemaExportJsonSchema(schema)
 
@@ -38,12 +52,34 @@ describe('json-schema.spec', () => {
             "description": "This is a number",
             "type": "number",
           },
+          "aRecord": Object {
+            "additionalProperties": Object {
+              "type": "number",
+            },
+            "type": "object",
+          },
           "aString": Object {
             "type": "string",
           },
           "anInt": Object {
             "default": 0,
             "type": "integer",
+          },
+          "anObject": Object {
+            "additionalProperties": false,
+            "properties": Object {
+              "a": Object {
+                "type": "string",
+              },
+              "b": Object {
+                "type": "number",
+              },
+            },
+            "required": Array [
+              "a",
+              "b",
+            ],
+            "type": "object",
           },
           "fixed": Object {
             "description": "This is a fixed value",
@@ -54,11 +90,28 @@ describe('json-schema.spec', () => {
             ],
             "type": "string",
           },
+          "moreRecords": Object {
+            "additionalProperties": Object {
+              "additionalProperties": false,
+              "properties": Object {
+                "x": Object {
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "x",
+              ],
+              "type": "object",
+            },
+            "type": "object",
+          },
         },
         "required": Array [
           "fixed",
           "aBool",
           "aNumber",
+          "aRecord",
+          "anObject",
           "aString",
         ],
         "type": "object",

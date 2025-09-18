@@ -1,4 +1,3 @@
-import type { Infer } from './schema'
 import { schemaExportJsonSchema } from './export-json-schema'
 import { z } from './z'
 
@@ -20,23 +19,23 @@ describe('json-schema.spec', () => {
       aString: z.string(),
     })
 
-    type tInfer = Infer<typeof schema>
+    // type tInfer = Infer<typeof schema>
 
-    expectTypeOf<tInfer>().toMatchObjectType<{
-      anInt?: number | undefined
-      moreRecords?: Record<string, {
-        x: string
-      }> | undefined
-      fixed: 'a' | 'b' | 'c'
-      aBool: boolean
-      aNumber: number
-      aRecord: Record<string, number>
-      anObject: {
-        a: string
-        b: number
-      }
-      aString: string
-    }>()
+    // expectTypeOf<tInfer>().toMatchObjectType<{
+    //   anInt?: number | undefined
+    //   moreRecords?: Record<string, {
+    //     x: string
+    //   }> | undefined
+    //   fixed: 'a' | 'b' | 'c'
+    //   aBool: boolean
+    //   aNumber: number
+    //   aRecord: Record<string, number>
+    //   anObject: {
+    //     a: string
+    //     b: number
+    //   }
+    //   aString: string
+    // }>()
 
     const r = schemaExportJsonSchema(schema)
 

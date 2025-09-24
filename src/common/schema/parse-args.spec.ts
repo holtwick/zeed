@@ -58,26 +58,51 @@ describe('args.spec', () => {
 
     expect(schema).toMatchInlineSnapshot(`
       Type {
+        "_args": undefined,
         "_check": [Function],
+        "_default": undefined,
+        "_enumValues": undefined,
+        "_info": undefined,
+        "_meta": undefined,
         "_object": Object {
           "help": Type {
+            "_args": undefined,
             "_check": [Function],
             "_default": false,
+            "_enumValues": undefined,
+            "_info": undefined,
             "_meta": Object {
               "argDesc": "Shows help",
               "argShort": "h",
             },
+            "_object": undefined,
+            "_optional": undefined,
+            "_ret": undefined,
+            "_type": undefined,
+            "_union": undefined,
             "type": "boolean",
           },
           "someStuff": Type {
+            "_args": undefined,
             "_check": [Function],
+            "_default": undefined,
+            "_enumValues": undefined,
+            "_info": undefined,
             "_meta": Object {
               "argDesc": "Does some stuff",
             },
+            "_object": undefined,
             "_optional": true,
+            "_ret": undefined,
+            "_type": undefined,
+            "_union": undefined,
             "type": "number",
           },
         },
+        "_optional": undefined,
+        "_ret": undefined,
+        "_type": undefined,
+        "_union": undefined,
         "type": "object",
       }
     `)

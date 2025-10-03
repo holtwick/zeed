@@ -60,6 +60,13 @@ export function Uint8ArrayToString(bin: BinArray): string {
   return _textDecoder(bin).normalize('NFC')
 }
 
+export function toArrayBuffer(bin: BinInput): ArrayBuffer {
+  const b = toUint8Array(bin)
+  if (b.buffer.byteLength === b.byteLength)
+    return b.buffer as ArrayBuffer
+  return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength) as ArrayBuffer
+}
+
 export function toUint8Array(data: BinInput): BinArray {
   if (data instanceof ArrayBuffer)
     return new Uint8Array(data)
@@ -185,10 +192,7 @@ export function Uint8ArrayToHexDump(
   }
   else if (buffer instanceof ArrayBuffer && buffer.byteLength !== undefined) {
     // log("buffer is ArrayBuffer")
-    buffer = String.fromCharCode.apply(
-      String,
-      [].slice.call(new Uint8Array(buffer)),
-    )
+    buffer = String.fromCharCode.apply(String, [].slice.call(new Uint8Array(buffer)))
   }
   else if (Array.isArray(buffer)) {
     // log("buffer is Array")

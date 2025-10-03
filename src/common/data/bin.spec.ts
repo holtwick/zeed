@@ -1,4 +1,4 @@
-import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toBase64, toBase64Url, toHex, toUint8Array, _encodeUtf8Polyfill, _decodeUtf8Polyfill } from './bin'
+import { Uint8ArrayToHexDump, Uint8ArrayToString, equalBinary, fromBase64String, fromHex, joinToUint8Array, stringToUInt8Array, toArrayBuffer, toBase64, toBase64Url, toHex, toUint8Array, _encodeUtf8Polyfill, _decodeUtf8Polyfill } from './bin'
 import { Uint8ArrayToJson, createArray, fromBase64, jsonToUint8Array } from '.'
 
 describe('bin', () => {
@@ -237,6 +237,28 @@ Uint8Array [
 `)
   })
 
+  it('should toArrayBuffer', () => {
+    expect(toArrayBuffer('abc')).toBeInstanceOf(ArrayBuffer)
+    expect(new Uint8Array(toArrayBuffer('abc'))).toMatchInlineSnapshot(`
+Uint8Array [
+  97,
+  98,
+  99,
+]
+`)
+    expect(new Uint8Array(toArrayBuffer([1, 2, 3]))).toMatchInlineSnapshot(`
+Uint8Array [
+  1,
+  2,
+  3,
+]
+`)
+    const uint8 = new Uint8Array([4, 5, 6])
+    const buffer = toArrayBuffer(uint8)
+    expect(buffer).toBeInstanceOf(ArrayBuffer)
+    expect(new Uint8Array(buffer)).toEqual(uint8)
+  })
+
   it('should join bins', () => {
     const result = joinToUint8Array([new Uint8Array([1, 2, 3]), 'abc'])
     expect(result).toMatchInlineSnapshot(`
@@ -384,4 +406,5 @@ Uint8Array [
     // Should contain padding spaces for the rest of the 16-byte block
     expect(result).toMatch(/AB\s+/)
   })
+
 })

@@ -218,5 +218,24 @@ describe('schema parse obj', () => {
       },
       // optionalObj is missing (not undefined) since it's optional and not provided
     })
+
+    const configSchema = z.object({
+      cspAllowedDomains: z.string().default('*.holtwick.de *.brie.fi *.apperdeck.com *.replies.io *.sentry.io').describe('Allowed domains for Content-Security-Policy, space separated. Use * as wildcard.'),
+      hstsMaxAge: z.number().default(31536000).describe('Max age for HTTP Strict Transport Security (HSTS) in seconds. Set to 0 to disable.'),
+      securityHeaders: z.boolean().default(true).describe('Enable security headers like Content-Security-Policy, X-Frame-Options, etc.'),
+      trustProxy: z.boolean().default(true).describe('Trust the X-Forwarded-* headers, useful if you run behind a reverse proxy.'),
+    })
+
+    const result5 = schemaParseObject(configSchema, {
+      securityHeaders: 'false',
+      hstsMaxAge: '0',
+      notAllowed: 'should be kept',
+    }, {
+      skipDefault: true,
+    })
+    expect(result5).toEqual({
+      securityHeaders: false,
+      hstsMaxAge: 0,
+    })
   })
 })

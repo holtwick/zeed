@@ -95,6 +95,7 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
 
   /// Whether to allow extra properties not defined in the schema
   allowExtra?: boolean
+  skipDefault?: boolean
 }): T | undefined {
   const messages = opt?.messages || []
 
@@ -109,7 +110,7 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
       addMessage('Optional', true)
       return undefined
     }
-    if (schema._default !== undefined) {
+    if (schema._default !== undefined && opt?.skipDefault !== true) {
       addMessage('Default', true)
       return isFunction(schema._default) ? schema._default(schema) : schema._default
     }
@@ -132,7 +133,7 @@ export function schemaParseObject<T>(schema: Type<T>, obj?: any, opt?: {
       if (result !== undefined) {
         newObj[key] = result
       }
-      else if (propSchema._default !== undefined) {
+      else if (propSchema._default !== undefined && opt?.skipDefault !== true) {
         newObj[key] = isFunction(propSchema._default) ? propSchema._default(propSchema) : propSchema._default
       }
       else if (propSchema._optional) {

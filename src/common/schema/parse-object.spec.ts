@@ -207,5 +207,16 @@ describe('schema parse obj', () => {
         field3: 'default3', // from default
       },
     })
+
+    // Test with skipDefault option
+    const result4 = schemaParseObject(schema, input1, { skipDefault: true })
+    expect(result4).toEqual({
+      id: '123',
+      requiredObj: {
+        // field1 should not get default 'default1' when skipDefault is true
+        // field2 is missing (not undefined) since it has no default
+      },
+      // optionalObj is missing (not undefined) since it's optional and not provided
+    })
   })
 })

@@ -84,6 +84,37 @@ const rpcCall = z.rpc(z.object({ id: z.string() }), z.number())
 // Type: (info: { id: string }) => number | Promise<number>
 ```
 
+### Serialization and Deserialization
+
+You can serialize schema definitions to plain JSON objects and deserialize them back. This is useful for sending schema definitions over the network or storing them in databases.
+
+```ts
+import { deserializeSchema, serializeSchema } from './schema'
+
+// Define a schema
+const userSchema = z.object({
+  name: z.string(),
+  age: z.number().optional(),
+  role: z.stringLiterals(['admin', 'user']).default('user'),
+})
+
+// Serialize to plain JSON
+const serialized = serializeSchema(userSchema)
+// Result: { type: 'object', object: { name: { type: 'string' }, ... } }
+
+// Send over network, store in DB, etc.
+const jsonString = JSON.stringify(serialized)
+
+// Deserialize back to a schema
+const deserialized = deserializeSchema(JSON.parse(jsonString))
+// deserialized is now a Type instance identical to userSchema
+
+// Use the deserialized schema for validation
+const user = deserialized.parse({ name: 'Alice', role: 'admin' })
+```
+
+**Note**: Function defaults (e.g., `.default(() => 'value')`) cannot be serialized and will be omitted. Only static default values are preserved during serialization.
+
 ## API Reference
 
 - `string()`, `number()`, `int()`, `boolean()`, `none()`, `any()`
@@ -93,6 +124,8 @@ const rpcCall = z.rpc(z.object({ id: z.string() }), z.number())
 - `func(args, ret)`, `rpc(info, ret)`
 - `.optional()`, `.default(value)`, `.meta({ desc })`, `.extend({...})`
 - `parse(obj)`, `map(obj, fn)`
+- `serializeSchema(schema)` - Converts a schema to a plain JSON object
+- `deserializeSchema(json)` - Reconstructs a schema from a JSON object
 
 ## Notes
 

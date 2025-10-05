@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /**
  * Schema Serialization Demo
  *

@@ -300,7 +300,7 @@ export function uuidDecode(uuid: string): Uint8Array {
  * @returns encoded identifier string
  */
 export function uuidEncode(bytes: Uint8Array): string {
-  return mapModes[_mode].uuidEncode(bytes)
+  return mapModes[_mode].uuidEncode(bytes as BinArray)
 }
 
 /**

@@ -1,6 +1,7 @@
 /* scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
 
-import { stringToUInt8Array, Uint8ArrayToString } from "./bin"
+import type { BinArray } from './bin-types'
+import { stringToUInt8Array, Uint8ArrayToString } from './bin'
 
 // Utilities
 /**
@@ -585,7 +586,7 @@ export const bech32: Bech32 = /* @__PURE__ */ genBech32('bech32')
 export const bech32m: Bech32 = /* @__PURE__ */ genBech32('bech32m')
 
 export const utf8: BytesCoder = {
-  encode: (data) => Uint8ArrayToString(data),
+  encode: (data) => Uint8ArrayToString(data as BinArray),
   decode: (str) => stringToUInt8Array(str),
 }
 

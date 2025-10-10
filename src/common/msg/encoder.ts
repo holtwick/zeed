@@ -1,5 +1,5 @@
 import { decrypt, encrypt } from '../crypto'
-import { jsonToUint8Array, Uint8ArrayToJson } from '../data/bin'
+import { ensureUint8Array, jsonToUint8Array, Uint8ArrayToJson } from '../data/bin'
 
 export interface Encoder<T = any> {
   encode: (data: T) => Promise<Uint8Array>
@@ -22,7 +22,7 @@ export class JsonEncoder<T> implements Encoder<T> {
   }
 
   async decode(data: Uint8Array): Promise<any> {
-    return Uint8ArrayToJson(data)
+    return Uint8ArrayToJson(ensureUint8Array(data))
   }
 }
 
@@ -39,7 +39,7 @@ export class CryptoEncoder<T> implements Encoder<T> {
   }
 
   async decode(data: Uint8Array): Promise<any> {
-    const plain = await decrypt(data, this.key)
-    return Uint8ArrayToJson(plain)
+    const plain = await decrypt(ensureUint8Array(data), this.key)
+    return Uint8ArrayToJson(ensureUint8Array(plain))
   }
 }

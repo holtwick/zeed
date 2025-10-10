@@ -18,7 +18,7 @@ export function _encodeUtf8Polyfill(str: string): BinArray {
   return buf
 }
 
-export function _decodeUtf8Polyfill(buf: BinArray) {
+export function _decodeUtf8Polyfill(buf: Uint8Array<ArrayBufferLike>) {
   let remainingLen = buf.length
   let encodedString = ''
   let bufPos = 0
@@ -47,7 +47,7 @@ export function stringToUInt8Array(text: string): BinArray {
   return _textEncoder(text.normalize('NFC'))
 }
 
-let _textDecoder: (data: Uint8Array) => string
+let _textDecoder: (data: Uint8Array<ArrayBufferLike>) => string
 
 export function Uint8ArrayToString(bin: BinArray): string {
   if (_textDecoder == null) {
@@ -69,12 +69,25 @@ export function toArrayBuffer(bin: BinInput): ArrayBuffer {
 
 export function toUint8Array(data: BinInput): BinArray {
   if (data instanceof ArrayBuffer)
-    return new Uint8Array(data)
+    return new Uint8Array(data) as BinArray
   if (typeof data === 'string')
     return stringToUInt8Array(data)
   if (data.length)
-    return new Uint8Array(data)
+    return new Uint8Array(data) as BinArray
   return data as BinArray
+}
+
+/**
+ * Ensures a Uint8Array is backed by a real ArrayBuffer (not SharedArrayBuffer).
+ * This is needed for Web Crypto API compatibility which requires BufferSource with ArrayBuffer.
+ */
+export function ensureUint8Array(data: Uint8Array): BinArray {
+  // If it's already a regular Uint8Array backed by ArrayBuffer, return as-is
+  if (data.buffer instanceof ArrayBuffer && !(data.buffer instanceof SharedArrayBuffer)) {
+    return data as BinArray
+  }
+  // Otherwise, create a new copy backed by ArrayBuffer
+  return new Uint8Array(data) as BinArray
 }
 
 export function joinToUint8Array(...args: BinInput[] | BinInput[][]) {

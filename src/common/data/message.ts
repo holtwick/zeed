@@ -1,6 +1,6 @@
-import { Uint8ArrayToHexDump } from "./bin"
-import { isArray } from "./is"
-import { objectPlain } from "./object"
+import { ensureUint8Array, Uint8ArrayToHexDump } from './bin'
+import { isArray } from './is'
+import { objectPlain } from './object'
 
 export interface RenderMessagesOptions {
   trace?: boolean // = true
@@ -15,7 +15,7 @@ export function formatMessages(
   return messages.map((obj) => {
     if (obj && typeof obj === 'object') {
       if (pretty && (obj instanceof Uint8Array || obj instanceof ArrayBuffer))
-        return `\n${Uint8ArrayToHexDump(obj)}\n`
+        return `\n${Uint8ArrayToHexDump(ensureUint8Array(obj instanceof ArrayBuffer ? new Uint8Array(obj) : obj))}\n`
       
       if (obj instanceof Error) {
         return `${obj.name}: ${obj.message}` + (trace ? `\n${obj.stack}` : '')

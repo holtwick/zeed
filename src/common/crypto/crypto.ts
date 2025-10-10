@@ -29,7 +29,7 @@ export async function digest(
   message: BinInput,
   algorithm: AlgorithmIdentifier = CRYPTO_DEFAULT_HASH_ALG,
 ): Promise<Uint8Array> {
-  const m = toUint8Array(message)
+  const m = ensureUint8Array(toUint8Array(message))
   return toUint8Array(
     await crypto.subtle.digest(algorithm, m),
   )
@@ -42,7 +42,7 @@ export async function deriveKeyPbkdf2(
     salt?: BinInput
   } = {},
 ): Promise<CryptoKey> {
-  const secretBuffer = toUint8Array(secret)
+  const secretBuffer = ensureUint8Array(toUint8Array(secret))
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     secretBuffer,
@@ -53,7 +53,7 @@ export async function deriveKeyPbkdf2(
   return await crypto.subtle.deriveKey(
     {
       name: CRYPTO_DEFAULT_DERIVE_ALG,
-      salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
+      salt: opt.salt ? ensureUint8Array(toUint8Array(opt.salt)) : new Uint8Array(0),
       iterations: opt.iterations ?? CRYPTO_DEFAULT_DERIVE_ITERATIONS,
       hash: CRYPTO_DEFAULT_HASH_ALG,
     },
@@ -74,7 +74,7 @@ export async function deriveKeyPbkdf2CBC(
     salt?: BinInput
   } = {},
 ): Promise<CryptoKey> {
-  const secretBuffer = toUint8Array(secret)
+  const secretBuffer = ensureUint8Array(toUint8Array(secret))
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     secretBuffer,
@@ -85,7 +85,7 @@ export async function deriveKeyPbkdf2CBC(
   return await crypto.subtle.deriveKey(
     {
       name: CRYPTO_DEFAULT_DERIVE_ALG,
-      salt: opt.salt ? toUint8Array(opt.salt) : new Uint8Array(0),
+      salt: opt.salt ? ensureUint8Array(toUint8Array(opt.salt)) : new Uint8Array(0),
       iterations: opt.iterations ?? CRYPTO_DEFAULT_DERIVE_ITERATIONS,
       hash: CRYPTO_DEFAULT_HASH_ALG,
     },

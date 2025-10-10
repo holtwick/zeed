@@ -44,7 +44,7 @@ async function halfKey(index: number, key: CryptoKey, iv: Uint8Array, k1: Uint8A
 /**
  * Derives a 256-bit key and 96-bit nonce from the given 256-bit key and a 192-bit nonce.
  */
-async function deriveKeyNonce(key: CryptoKey, iv: BufferSource): Promise<{ key: CryptoKey, iv: import('../data/bin-types').BinArray }> {
+async function deriveKeyNonce(key: CryptoKey, iv: BufferSource): Promise<{ key: CryptoKey, iv: Uint8Array }> {
   if (key.algorithm.name !== 'AES-CBC') {
     throw new Error('key must be for AES-CBC')
   }
@@ -97,7 +97,7 @@ export async function encryptXAES(params: {
   return await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
-      iv: derived.iv,
+      iv: derived.iv as BufferSource,
       tagLength: 128,
       additionalData: params.additionalData ?? new Uint8Array(),
     },
@@ -118,7 +118,7 @@ export async function decryptXAES(params: {
   return await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: derived.iv,
+      iv: derived.iv as BufferSource,
       tagLength: 128,
       additionalData: params.additionalData ?? new Uint8Array(),
     },

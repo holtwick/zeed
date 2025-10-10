@@ -83,7 +83,8 @@ export function toUint8Array(data: BinInput): Uint8Array {
  */
 export function ensureUint8Array(data: Uint8Array): Uint8Array<ArrayBuffer> {
   // If it's already a regular Uint8Array backed by ArrayBuffer, return as-is
-  if (data.buffer instanceof ArrayBuffer && !(data.buffer instanceof SharedArrayBuffer)) {
+  // otherwise trick: const buffer = u.slice().buffer
+  if (data.buffer instanceof ArrayBuffer) {
     return data as Uint8Array<ArrayBuffer>
   }
   // Otherwise, create a new copy backed by ArrayBuffer

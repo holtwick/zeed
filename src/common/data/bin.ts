@@ -172,8 +172,8 @@ export function fromBase64String(s: string): string {
 
 /** Compare contents of binary arrays */
 export function equalBinary(
-  a: ArrayBuffer | BinArray,
-  b: ArrayBuffer | BinArray,
+  a: ArrayBuffer | Uint8Array,
+  b: ArrayBuffer | Uint8Array,
 ): boolean {
   if (a.byteLength !== b.byteLength)
     return false

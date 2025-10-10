@@ -15,6 +15,10 @@ export function toHumanReadableFilePath(path: string) {
   return p
 }
 
+/**
+ *  Tests whether a value is a valid file path. Attention! Also folders are valid file paths.
+ *  @deprecated
+ */
 export async function exists(path: string): Promise<boolean> {
   try {
     await stat(path)
@@ -25,6 +29,26 @@ export async function exists(path: string): Promise<boolean> {
   return true
 }
 
+export async function isFile(path: string) {
+  try {
+    const s = await stat(path)
+    return s.isFile()
+  }
+  catch (err) {
+    return false
+  }
+}
+
+export async function isFolder(path: string) {
+  try {
+    const s = await stat(path)
+    return s.isDirectory()
+  }
+  catch (err) {
+    return false
+  }
+}
+
 export function isHiddenPath(path: string): boolean {
   return path.startsWith('.') || path.includes('/.')
 }
@@ -32,7 +56,7 @@ export function isHiddenPath(path: string): boolean {
 /** Create missing folders e.g. `/a/b/c` will create folders `/a/b/c` */
 export async function ensureFolder(...parts: string[]): Promise<string> {
   const path = joinPath(...parts)
-  if (!(await exists(path)))
+  if (!(await isFolder(path)))
     await mkdir(path, { recursive: true })
   return path
 }
@@ -40,21 +64,21 @@ export async function ensureFolder(...parts: string[]): Promise<string> {
 /** Create missing folder to file location e.g. `/a/b/c/s.txt` will create folders `/a/b/c` */
 export async function ensureFolderForFile(...parts: string[]): Promise<string> {
   const path = dirname(joinPath(...parts))
-  if (!(await exists(path)))
+  if (!(await isFolder(path)))
     await mkdir(path, { recursive: true })
   return path
 }
 
 export async function removeFolder(...parts: string[]): Promise<string> {
   const path = joinPath(...parts)
-  if (await exists(path))
+  if (await isFolder(path))
     await rm(path, { recursive: true })
   return path
 }
 
 export async function readText(...parts: string[]): Promise<string | undefined> {
   const path = joinPath(...parts)
-  if (await exists(path))
+  if (await isFile(path))
     return await readFile(path, 'utf-8')
 }
 
@@ -64,20 +88,20 @@ export async function readJson<T = object>(...parts: string[]): Promise<T | unde
     try {
       return JSON.parse(content)
     }
-    catch (err) {}
+    catch (err) { }
   }
 }
 
 export async function readBin(...parts: string[]): Promise<Uint8Array | undefined> {
   const path = joinPath(...parts)
-  if (await exists(path))
+  if (await isFile(path))
     return toUint8Array(await readFile(path))
 }
 
 /** @deprecated use readJson or readBin */
 export async function readData(...parts: string[]): Promise<Uint8Array | undefined> {
   const path = joinPath(...parts)
-  if (await exists(path))
+  if (await isFile(path))
     return await readFile(path)
 }
 

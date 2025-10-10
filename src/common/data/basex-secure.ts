@@ -1,6 +1,6 @@
 /* scure-base - MIT License (c) 2022 Paul Miller (paulmillr.com) */
 
-import { stringToUInt8Array, Uint8ArrayToString } from "./bin"
+import { stringToUInt8Array, Uint8ArrayToString } from './bin'
 
 // Utilities
 /**

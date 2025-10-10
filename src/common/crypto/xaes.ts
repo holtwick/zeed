@@ -1,6 +1,8 @@
 // Original at https://github.com/dchest/xaes MIT License as of 2024-07-02
 // More at https://words.filippo.io/dispatches/xaes-256-gcm/
 
+import { ensureUint8Array } from '../data/bin'
+
 /**
  * Implementation of XAES-256-GCM as defined in https://c2sp.org/XAES-256-GCM
  * based on the Web Cryptography API (https://www.w3.org/TR/WebCryptoAPI/).
@@ -21,7 +23,7 @@
  */
 async function aesBlock(key: CryptoKey, data: BufferSource, xor: BufferSource): Promise<Uint8Array> {
   const block = await crypto.subtle.encrypt(
-    { name: 'AES-CBC', iv: Uint8Array.from(xor as any) },
+    { name: 'AES-CBC', iv: xor },
     key,
     data,
   )
@@ -35,8 +37,8 @@ async function halfKey(index: number, key: CryptoKey, iv: Uint8Array, k1: Uint8A
   const m = new Uint8Array(16)
   m[1] = index
   m[2] = 0x58 // 'X'
-  m.set(iv.subarray(0, 12), 4)
-  return await aesBlock(key, m, Uint8Array.from(k1))
+  m.set(ensureUint8Array(iv.subarray(0, 12)), 4)
+  return await aesBlock(key, m, ensureUint8Array(k1))
 }
 
 /**
@@ -80,7 +82,7 @@ async function deriveKeyNonce(key: CryptoKey, iv: BufferSource): Promise<{ key: 
   )
   return {
     key: kx,
-    iv: ivBytes.subarray(12),
+    iv: ensureUint8Array(ivBytes.subarray(12)),
   }
 }
 /**
@@ -95,7 +97,7 @@ export async function encryptXAES(params: {
   return await crypto.subtle.encrypt(
     {
       name: 'AES-GCM',
-      iv: Uint8Array.from(derived.iv),
+      iv: derived.iv as BufferSource,
       tagLength: 128,
       additionalData: params.additionalData ?? new Uint8Array(),
     },
@@ -116,7 +118,7 @@ export async function decryptXAES(params: {
   return await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: Uint8Array.from(derived.iv),
+      iv: derived.iv as BufferSource,
       tagLength: 128,
       additionalData: params.additionalData ?? new Uint8Array(),
     },

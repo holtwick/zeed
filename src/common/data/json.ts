@@ -97,8 +97,8 @@ function jsonParseTransform(key: string, value: any): any {
 
   return value
 }
-
-/** @deprecated a safe parser? */
+ 
+/// Sage JSON parsing protecting against __proto__ and the like
 export function jsonParse(val: string): any {
   if (typeof val !== 'string')
     return val

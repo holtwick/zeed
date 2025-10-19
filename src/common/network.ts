@@ -3,7 +3,7 @@ import { arrayFlatten } from './data/array'
 import { toBase64 } from './data/bin'
 import { deepMerge } from './data/deep'
 import { isArray } from './data/is'
-import { jsonStringifySafe } from './data/json'
+import { jsonParse, jsonStringifySafe } from './data/json'
 import { encodeQuery } from './data/url'
 import { DefaultLogger } from './log/log'
 
@@ -163,7 +163,7 @@ export async function fetchJson<T = Json>(
       fetchFn,
     )
     if (res)
-      return await res.json()
+      return jsonParse(await res.text())
   }
   catch (err) {
     const log = DefaultLogger('zeed:network')

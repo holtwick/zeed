@@ -78,7 +78,7 @@ describe('fetchBasic', () => {
 
 describe('fetchJson', () => {
   it('should return parsed JSON', async () => {
-    const mockResponse = { status: 200, json: async () => ({ a: 1 }) }
+    const mockResponse = { status: 200, text: async () => ('{ "a": 1 }') }
     const fetchFn = vi.fn().mockResolvedValue(mockResponse)
     const res = await fetchJson('http://x', {}, fetchFn as any)
     expect(res).toEqual({ a: 1 })

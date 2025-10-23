@@ -68,7 +68,7 @@
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "nr build && nr circles && nr test:publish",
     "start": "nr watch",
-    "test": "vitest",
+    "test": "nr check && vitest --run",
     "test:release": "nr lint:fix && nr check && vitest --run",
     "post:release": "nr upload:docs",
     "test:browser": "PREVIEW=1 vitest",

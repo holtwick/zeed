@@ -1,5 +1,6 @@
 // With many, many inspiration from https://github.com/badrap/valita MIT License as of 2024-09-10
 
+import type { StandardSchemaV1 } from './schema-standard'
 import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
 
 /**
@@ -11,6 +12,7 @@ export interface TypeMeta {
 
 /**
  * Core Type class for schema validation and type inference
+ * Implements StandardSchemaV1 for cross-library compatibility
  */
 export class Type<T = unknown> {
   readonly type: string
@@ -32,6 +34,229 @@ export class Type<T = unknown> {
   constructor(name: string, options: Partial<Type<T>> = {}) {
     this.type = name
     Object.assign(this, options)
+  }
+
+  /**
+   * Standard Schema V1 compliance property
+   * Provides a standard interface for validation and type inference
+   */
+  get '~standard'(): any {
+    return {
+      version: 1,
+      vendor: 'zeed',
+      validate: (value: unknown): StandardSchemaV1.Result<T> => {
+        return this.validate(value)
+      },
+      types: {
+        input: undefined as any as T,
+        output: undefined as any as T,
+      },
+    }
+  }
+
+  /**
+   * Validation method for standard-schema compliance
+   */
+  validate(value: any): any {
+    // const messages: Array<{ path: string, message: string, type: string, valid: boolean }> = []
+
+    // Handle null/undefined cases
+    if (value == null) {
+      if (this._optional) {
+        return { value: undefined as any as T }
+      }
+      if (this._default !== undefined) {
+        const defaultValue = isFunction(this._default) ? this._default(this) : this._default
+        return { value: defaultValue }
+      }
+      return {
+        issues: [{
+          message: `Required value is missing`,
+          path: [],
+        }],
+      }
+    }
+
+    // Handle literal types
+    if (this.type === 'literal' && this._default !== value) {
+      return {
+        issues: [{
+          message: `Expected literal value ${this._default}, got ${value}`,
+          path: [],
+        }],
+      }
+    }
+
+    // Handle string literals (enums)
+    if (this._enumValues && Array.isArray(this._enumValues)) {
+      if (!this._enumValues.includes(value)) {
+        return {
+          issues: [{
+            message: `Expected one of [${this._enumValues.join(', ')}], got ${value}`,
+            path: [],
+          }],
+        }
+      }
+    }
+
+    // Handle union types
+    if (this._union && Array.isArray(this._union)) {
+      for (const option of this._union) {
+        const result = (option as Type<any>).validate(value)
+        if (!result.issues) {
+          return result
+        }
+      }
+      return {
+        issues: [{
+          message: `Value does not match any union variant`,
+          path: [],
+        }],
+      }
+    }
+
+    // Handle array types
+    if (this.type === 'array' || this.type === 'tuple') {
+      if (!Array.isArray(value)) {
+        return {
+          issues: [{
+            message: `Expected array, got ${typeof value}`,
+            path: [],
+          }],
+        }
+      }
+
+      if (this.type === 'tuple' && this._type) {
+        const items = this._type as Type<any>[]
+        if (value.length !== items.length) {
+          return {
+            issues: [{
+              message: `Expected tuple of length ${items.length}, got ${value.length}`,
+              path: [],
+            }],
+          }
+        }
+
+        const issues: StandardSchemaV1.Issue[] = []
+        for (let i = 0; i < items.length; i++) {
+          const itemResult = items[i].validate(value[i])
+          if (itemResult.issues) {
+            for (const issue of itemResult.issues) {
+              issues.push({
+                message: issue.message,
+                path: [i, ...(issue.path || [])],
+              })
+            }
+          }
+        }
+
+        if (issues.length > 0) {
+          return { issues }
+        }
+      }
+      else if (this._type) {
+        // Regular array with item type
+        const itemType = this._type as Type<any>
+        const issues: StandardSchemaV1.Issue[] = []
+
+        for (let i = 0; i < value.length; i++) {
+          const itemResult = itemType.validate(value[i])
+          if (itemResult.issues) {
+            for (const issue of itemResult.issues) {
+              issues.push({
+                message: issue.message,
+                path: [i, ...(issue.path || [])],
+              })
+            }
+          }
+        }
+
+        if (issues.length > 0) {
+          return { issues }
+        }
+      }
+    }
+
+    // Handle object types
+    if (this._object) {
+      if (!isObject(value)) {
+        return {
+          issues: [{
+            message: `Expected object, got ${typeof value}`,
+            path: [],
+          }],
+        }
+      }
+
+      const issues: StandardSchemaV1.Issue[] = []
+      const obj = value as Record<string, any>
+
+      for (const key in this._object) {
+        const propSchema = this._object[key] as Type<any>
+        const propValue = obj[key]
+        const propResult = propSchema.validate(propValue)
+
+        if (propResult.issues) {
+          for (const issue of propResult.issues) {
+            issues.push({
+              message: issue.message,
+              path: [key, ...(issue.path || [])],
+            })
+          }
+        }
+      }
+
+      if (issues.length > 0) {
+        return { issues }
+      }
+
+      return { value: value as T, issues: undefined }
+    }
+
+    // Handle record types
+    if (this.type === 'record' && this._type) {
+      if (!isObject(value)) {
+        return {
+          issues: [{
+            message: `Expected object, got ${typeof value}`,
+            path: [],
+          }],
+        }
+      }
+
+      const valueType = this._type as Type<any>
+      const issues: StandardSchemaV1.Issue[] = []
+      const obj = value as Record<string, any>
+
+      for (const key in obj) {
+        const propResult = valueType.validate(obj[key])
+        if (propResult.issues) {
+          for (const issue of propResult.issues) {
+            issues.push({
+              message: issue.message,
+              path: [key, ...(issue.path || [])],
+            })
+          }
+        }
+      }
+
+      if (issues.length > 0) {
+        return { issues }
+      }
+    }
+
+    // Check primitive types
+    if (this._check && !this._check(value)) {
+      return {
+        issues: [{
+          message: `Expected ${this.type}, got ${typeof value}`,
+          path: [],
+        }],
+      }
+    }
+
+    // Success - return the value
+    return { value: value as T }
   }
 
   /**

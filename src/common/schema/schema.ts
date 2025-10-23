@@ -1,8 +1,6 @@
 // With many, many inspiration from https://github.com/badrap/valita MIT License as of 2024-09-10
 
-import type { StandardSchemaV1 } from './standard-schema'
 import { isArray, isBoolean, isFunction, isInteger, isNumber, isObject, isString } from '../data/is'
-import { validateValue } from './validate'
 
 /**
  * Metadata interface for type descriptions and additional properties
@@ -13,9 +11,8 @@ export interface TypeMeta {
 
 /**
  * Core Type class for schema validation and type inference
- * Implements the Standard Schema v1 interface
  */
-export class Type<T = unknown> implements StandardSchemaV1<T, T> {
+export class Type<T = unknown> {
   readonly type: string
 
   _default?: any
@@ -31,18 +28,6 @@ export class Type<T = unknown> implements StandardSchemaV1<T, T> {
   _info?: any
 
   // [key: `_${string}`]: any // Allow only optional dynamic properties starting with an underscore
-
-  /**
-   * Standard Schema v1 compliance property
-   */
-  get '~standard'(): StandardSchemaV1.Props<T, T> {
-    return {
-      version: 1,
-      vendor: 'zeed',
-      validate: (value: unknown) => validateValue(this, value),
-      types: undefined as any, // TypeScript will infer this correctly
-    }
-  }
 
   constructor(name: string, options: Partial<Type<T>> = {}) {
     this.type = name

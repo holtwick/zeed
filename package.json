@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "1.0.21",
+  "version": "1.1.0",
   "packageManager": "pnpm@10.18.0",
   "description": "🌱 Simple foundation library",
   "author": {
@@ -68,7 +68,7 @@
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "nr build && nr circles && nr test:publish",
     "start": "nr watch",
-    "test": "vitest",
+    "test": "nr check && vitest --run",
     "test:release": "nr lint:fix && nr check && vitest --run",
     "post:release": "nr upload:docs",
     "test:browser": "PREVIEW=1 vitest",

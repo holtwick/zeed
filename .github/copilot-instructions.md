@@ -1,5 +1,7 @@
 # Zeed AI Coding Instructions
 
+Ignore files in the folders: `_archive`, `dist` and `docs`.
+
 ## Project Structure & Architecture
 
 - **Universal TypeScript library**: Code is written in strict TypeScript and targets browser, Node.js, Deno, and Bun. See `src/` for main modules.

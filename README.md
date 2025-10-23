@@ -250,6 +250,97 @@ m.echo({ hello: 'world' })
 
 > But there is much more basic infrastructure for communication available in `zeed`. More details at [src/common/msg/README.md](./src/common/msg/README.md)
 
+## Schema Validation
+
+Zeed provides a lightweight, type-safe schema validation system with full [Standard Schema](https://standardschema.dev/) v1 compliance. This allows zeed schemas to work seamlessly with any tool or framework that supports the Standard Schema specification.
+
+### Basic Usage
+
+```ts
+import { z } from 'zeed'
+
+// Define a schema
+const userSchema = z.object({
+  name: z.string(),
+  age: z.number(),
+  email: z.string().optional(),
+})
+
+// Validate data using Standard Schema interface
+const result = userSchema['~standard'].validate({
+  name: 'Alice',
+  age: 30,
+  email: 'alice@example.com',
+})
+
+if (result.issues) {
+  console.error('Validation failed:', result.issues)
+}
+else {
+  console.log('Valid user:', result.value)
+}
+```
+
+### Type Inference
+
+```ts
+import type { StandardSchemaV1 } from 'zeed'
+import { z } from 'zeed'
+
+const schema = z.object({
+  id: z.string(),
+  count: z.number(),
+})
+
+// Infer TypeScript types from schema
+type Input = StandardSchemaV1.InferInput<typeof schema>
+type Output = StandardSchemaV1.InferOutput<typeof schema>
+
+// Or use zeed's native type inference
+type User = z.infer<typeof schema>
+```
+
+### Standard Schema Compatibility
+
+Zeed schemas implement the `StandardSchemaV1` interface, which means they can be used with any library or framework that supports Standard Schema, including:
+
+- **tRPC** - End-to-end typesafe APIs
+- **TanStack Form** - Type-safe form state management
+- **Hono** - Fast, lightweight web framework
+- **React Hook Form** - Form validation
+- And many more! See the [full list](https://standardschema.dev/#what-tools--frameworks-accept-spec-compliant-schemas)
+
+### Available Schema Types
+
+```ts
+import { z } from 'zeed'
+
+// Primitives
+z.string()
+z.number()
+z.int()
+z.boolean()
+z.any()
+
+// Structures
+z.object({ name: z.string() })
+z.array(z.string())
+z.record(z.number())
+z.tuple([z.string(), z.number()])
+
+// Advanced
+z.union([z.string(), z.number()])
+z.literal('exact-value')
+z.enum(['option1', 'option2', 'option3']) // string literals
+
+// Modifiers
+z.string().optional()
+z.string().default('default-value')
+z.string().describe('A description')
+```
+
+For more details on schema usage, see the API documentation at https://zeed.holtwick.de/
+
 ## CRDT compatible sorting
 
 A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.

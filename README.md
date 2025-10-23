@@ -250,6 +250,72 @@ m.echo({ hello: 'world' })
 
 > But there is much more basic infrastructure for communication available in `zeed`. More details at [src/common/msg/README.md](./src/common/msg/README.md)
 
+## Schema Validation
+
+Zeed provides a powerful, type-safe schema validation system for runtime data validation and type inference. It supports the [Standard Schema](https://github.com/standard-schema/standard-schema) specification, making it compatible with a growing ecosystem of libraries and frameworks.
+
+```ts
+import { z } from 'zeed'
+
+// Define a schema
+const userSchema = z.object({
+  name: z.string(),
+  email: z.string(),
+  age: z.number().optional(),
+  role: z.stringLiterals(['admin', 'user', 'guest']),
+})
+
+// Type inference
+type User = z.infer<typeof userSchema>
+
+// Parse and validate data
+const parsed = schemaParseObject(userSchema, {
+  name: 'Alice',
+  email: 'alice@example.com',
+  role: 'admin',
+})
+```
+
+### Standard Schema Compatibility
+
+All zeed schemas implement the [StandardSchemaV1](https://github.com/standard-schema/standard-schema) interface, providing:
+
+- **Universal compatibility**: Works seamlessly with tRPC, TanStack Form/Router, Hono, and many other libraries
+- **Type safety**: Full TypeScript type inference for inputs and outputs
+- **Runtime validation**: Validate data with detailed error reporting
+- **Zero overhead**: The standard-schema interface adds no runtime dependencies
+
+```ts
+import { z } from 'zeed'
+
+// Use zeed schemas with any standard-schema-compatible library
+const schema = z.object({
+  name: z.string(),
+  count: z.number(),
+})
+
+// Access the standard schema interface
+const result = schema['~standard'].validate({ name: 'test', count: 42 })
+if (result.issues) {
+  console.error('Validation failed:', result.issues)
+}
+else {
+  console.log('Valid data:', result.value)
+}
+```
+
+### Features
+
+- **Primitives**: `string()`, `number()`, `int()`, `boolean()`, `any()`
+- **Objects**: `object()`, `record()`, with support for `pick()`, `omit()`, `extend()`, `partial()`, `required()`
+- **Arrays & Tuples**: `array()`, `tuple()`
+- **Unions & Literals**: `union()`, `literal()`, `stringLiterals()`
+- **Functions & RPC**: `func()`, `rpc()`
+- **Modifiers**: `.optional()`, `.default()`, `.describe()`
+- **Utilities**: Type inference, parsing, validation, serialization
+
+> More details at [src/common/schema/README.md](./src/common/schema/README.md)
+
 ## CRDT compatible sorting
 
 A conflict free sorting algorithm with minimal data changes. Just extend an object from `SortableItem`, which will provide an additional property of type number called `sort_weight`.

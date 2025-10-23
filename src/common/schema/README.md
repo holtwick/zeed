@@ -1,12 +1,107 @@
 # Schema Type System
 
-This module provides a flexible, TypeScript-friendly schema/type system for runtime validation, parsing, and type inference. It is inspired by libraries like [valita](https://github.com/badrap/valita).
+This module provides a flexible, TypeScript-friendly schema/type system for runtime validation, parsing, and type inference. It is inspired by libraries like [valita](https://github.com/badrap/valita) and implements the [Standard Schema](https://github.com/standard-schema/standard-schema) specification.
 
 ## Features
 - Define schemas for primitives, objects, arrays, tuples, unions, literals, and functions
 - Parse and validate data at runtime
 - Type inference for static TypeScript types
 - Extensible and composable
+- **Standard Schema V1 compatible** - works with tRPC, TanStack Form/Router, Hono, and other compatible libraries
+
+## Standard Schema Compatibility
+
+All zeed schemas implement the [StandardSchemaV1](https://github.com/standard-schema/standard-schema) interface, making them compatible with a growing ecosystem of tools and frameworks. This means you can use zeed schemas anywhere that accepts standard-schema-compliant validators.
+
+### Using with Standard Schema
+
+Every schema has a `~standard` property that provides the standard interface:
+
+```ts
+import { z } from './schema'
+
+const schema = z.object({
+  name: z.string(),
+  age: z.number(),
+})
+
+// Access standard schema interface
+const result = schema['~standard'].validate({ name: 'Alice', age: 30 })
+
+if (result.issues) {
+  // Validation failed
+  console.error('Validation errors:', result.issues)
+}
+else {
+  // Validation succeeded
+  console.log('Valid data:', result.value)
+}
+```
+
+### Standard Schema Properties
+
+The `~standard` property provides:
+
+- `version`: Always `1` (the specification version)
+- `vendor`: `'zeed'` (identifies the schema library)
+- `validate(value)`: Synchronous validation function that returns either success or failure
+- `types`: Type metadata for TypeScript type inference
+
+### Type Inference
+
+Use the standard schema type helpers for cross-library type inference:
+
+```ts
+import type { StandardSchemaV1 } from './schema-standard'
+import { z } from './schema'
+
+const schema = z.object({
+  email: z.string(),
+  age: z.number().optional(),
+})
+
+// Extract input/output types using standard schema helpers
+type Input = StandardSchemaV1.InferInput<typeof schema>
+type Output = StandardSchemaV1.InferOutput<typeof schema>
+
+// Or use zeed's own type inference
+type User = z.infer<typeof schema>
+```
+
+### Compatible Libraries
+
+Zeed schemas work seamlessly with any library that supports Standard Schema, including:
+
+- **tRPC** - Type-safe APIs
+- **TanStack Form** - Form state management
+- **TanStack Router** - Type-safe routing
+- **Hono** - Fast web framework
+- **And many more** - See the [full list](https://github.com/standard-schema/standard-schema#what-tools--frameworks-accept-spec-compliant-schemas)
+
+### Generic Validation Function Example
+
+Here's how a third-party library might use zeed schemas:
+
+```ts
+import type { StandardSchemaV1 } from './schema-standard'
+
+function standardValidate<T extends StandardSchemaV1>(
+  schema: T,
+  data: unknown
+): StandardSchemaV1.InferOutput<T> {
+  const result = schema['~standard'].validate(data)
+
+  if (result.issues) {
+    throw new Error(`Validation failed: ${JSON.stringify(result.issues)}`)
+  }
+
+  return result.value
+}
+
+// Use with zeed schemas
+const userSchema = z.object({ name: z.string() })
+const user = standardValidate(userSchema, { name: 'Alice' })
+```
 
 ## Installation
 

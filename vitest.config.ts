@@ -1,12 +1,11 @@
 /// <reference types="vitest" />
 
-import type { UserConfig } from 'vitest/node'
 import { resolve } from 'node:path'
 import process from 'node:process'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import { valueToBooleanNotFalse } from './src/common/data/convert'
 
-const config: UserConfig = {
+const config: any = {
   snapshotFormat: {
     printBasicPrototype: true,
   },

@@ -110,7 +110,7 @@ describe('time.spec', () => {
     expect(result).toBe(1609459200)
   })
 
-  it('should build number', async () => {
+  it('should build number', () => {
     const b = getBuildNumber()
     // console.log('build number:', b)
     expect(b > '0').toBeTruthy()
@@ -122,8 +122,7 @@ describe('time.spec', () => {
     // expect(b2 > b).toBeTruthy()
 
     const mx = 'zzzzzz'
-    expect(new Date(getSecondsFromBuildNumber(mx) * 1000).toISOString()).toMatchInlineSnapshot(`"2195-02-16T19:05:15.000Z"`)
-  }, {
-    timeout: 30_000,
+    const x = new Date(getSecondsFromBuildNumber(mx) * 1000).toISOString()
+    expect(x).toEqual('2195-02-16T19:05:15.000Z')
   })
 })

@@ -74,9 +74,7 @@ export function schemaValidateObject<T>(schema: Type<T>, obj?: any, opt?: {
           path: opt?.path ? `${opt.path}.${key}` : key,
           messages,
         },
-      )) {
-        return addMessage(`Invalid property '${key}'`, false)
-      }
+      )) { return addMessage(`Invalid property '${key}'`, false) }
     }
     return addMessage('Object valid', true)
   }

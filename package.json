@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "packageManager": "pnpm@10.29.1",
   "description": "🌱 Simple foundation library",
   "author": {
@@ -87,7 +87,7 @@
     "@vitest/browser": "^4.0.18",
     "@vitest/coverage-v8": "^4.0.18",
     "esbuild": "^0.27.3",
-    "eslint": "^10.0.0",
+    "eslint": "<10.0.0",
     "playwright": "^1.58.2",
     "pnpm": "^10.17.1",
     "tsup": "^8.5.1",

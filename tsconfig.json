@@ -14,9 +14,7 @@
     "resolveJsonModule": true,
     "types": [
       "node",
-      "vitest/globals",
-      "@vitest/browser/providers/webdriverio",
-      "@vitest/browser/providers/playwright"
+      "vitest/globals"
     ],
     "allowJs": true,
     "strict": true,

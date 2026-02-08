@@ -65,7 +65,7 @@ export interface PoolTaskEvents {
     max: number,
     resolved: number,
     presentMax: number,
-    presentResolved: number
+    presentResolved: number,
   ) => void
   didStart: (id: string) => void
   didCancel: (id: string) => void

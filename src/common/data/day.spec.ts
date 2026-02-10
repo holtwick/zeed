@@ -1,4 +1,4 @@
-import { dayDiff, dayFromAny, dayFromDate, dayFromString, dayFromTimestamp, dayFromTimestampSeconds, dayFromToday, dayIterator, dayMonthStart, dayOffset, dayRange, dayToDate, dayToParts, dayToString, dayToTimestamp, dayToTimestampSeconds, dayYearStart } from './day'
+import { dayDiff, dayFromAny, dayFromDate, dayFromString, dayFromTimestamp, dayFromTimestampSeconds, dayFromToday, dayIterator, dayMonthOffset, dayMonthStart, dayOffset, dayRange, dayToDate, dayToParts, dayToString, dayToTimestamp, dayToTimestampSeconds, dayYearOffset, dayYearStart } from './day'
 import { Day, dateStringToDays, forEachDay } from './day-legacy'
 
 describe('days', () => {
@@ -154,6 +154,25 @@ describe('days', () => {
       expect(dayYearStart(d)).toMatchInlineSnapshot('19990101')
       expect(dayYearStart(d, -10)).toMatchInlineSnapshot('19890101')
       expect(dayYearStart(d, +10)).toMatchInlineSnapshot('20090101')
+    }
+    {
+      const d = dayFromString('2021-01-31')!
+      expect(dayMonthOffset(d, +1)).toBe(20210228)
+      expect(dayMonthOffset(d, +2)).toBe(20210331)
+      expect(dayMonthOffset(d, -1)).toBe(20201231)
+    }
+    {
+      const d = dayFromString('2020-01-31')!
+      expect(dayMonthOffset(d, +1)).toBe(20200229)
+    }
+    {
+      const d = dayFromString('2020-02-29')!
+      expect(dayYearOffset(d, +1)).toBe(20210228)
+      expect(dayYearOffset(d, -1)).toBe(20190228)
+    }
+    {
+      const d = dayFromString('2021-03-31')!
+      expect(dayYearOffset(d, +1)).toBe(20220331)
     }
   })
 

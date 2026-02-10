@@ -284,12 +284,56 @@ export function dayMonthStart(day: DayValue, offset = 0): DayValue {
 }
 
 /**
+ * Return the day offset by whole months, keeping the day-of-month when possible.
+ * If the target month has fewer days, the result is clamped to the last day.
+ *
+ * @param day - source DayValue
+ * @param offset - months to offset (positive or negative)
+ */
+export function dayMonthOffset(day: DayValue, offset: number): DayValue {
+  let year = dayYear(day)
+  let month = dayMonth(day)
+  const dayOfMonth = dayDay(day)
+
+  if (offset !== 0) {
+    month += offset
+    year += Math.floor((month - 1) / 12)
+    month = Math.floor((month - 1) % 12) + 1
+    if (month === 0)
+      month = 12
+  }
+
+  const maxDay = dayDaysInMonth(year, month)
+  return dayFromParts(year, month, Math.min(dayOfMonth, maxDay))!
+}
+
+/**
  * Return the first day of the year for the given DayValue. `offset` moves
  * the year by the given amount.
  */
 export function dayYearStart(day: DayValue, offset = 0): DayValue {
   const year = dayYear(day)
   return dayFromParts(year + offset, 1, 1)!
+}
+
+/**
+ * Return the day offset by whole years, keeping month and day when possible.
+ * If the target month has fewer days, the result is clamped to the last day.
+ *
+ * @param day - source DayValue
+ * @param offset - years to offset (positive or negative)
+ */
+export function dayYearOffset(day: DayValue, offset: number): DayValue {
+  const year = dayYear(day) + offset
+  const month = dayMonth(day)
+  const dayOfMonth = dayDay(day)
+  const maxDay = dayDaysInMonth(year, month)
+  return dayFromParts(year, month, Math.min(dayOfMonth, maxDay))!
+}
+
+/** Return number of days in a given month. Month is 1-12. */
+export function dayDaysInMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate()
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { Disposer, DisposerFunction } from './dispose-types'
+import type { DisposerFunction } from './dispose-types'
 import type { LoggerInterface } from './log/log-base'
 import { arrayFilterInPlace } from './data/array'
 import { isString } from './data/is'
@@ -12,24 +12,23 @@ export function polyfillUsing() {
     // @ts-expect-error just a polyfill
     Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose')
   }
-  catch (err) { }
+  catch (_) { }
 }
 
 // Symbol.dispose ??= Symbol('Symbol.dispose')
 // Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose')
 
+/** A disposable entry: either a function or an object with a dispose() method. */
+type DisposableEntry = DisposerFunction | { dispose: DisposerFunction }
+
 /** Different kinds of implementations have grown, this should unify them  */
-function callDisposer(disposable: Disposer): Promise<void> | void {
+function callDisposable(disposable: DisposableEntry): Promise<void> | void {
   let result
 
   if (typeof disposable === 'function')
     result = disposable()
-  else if (isPromise(disposable))
-    result = disposable
   else if (typeof disposable.dispose === 'function')
     result = disposable.dispose()
-  else if (isPromise(disposable.dispose))
-    result = disposable.dispose
 
   if (isPromise(result))
     return result
@@ -53,20 +52,20 @@ export function useDispose(opt?: string | UseDisposeConfig | LoggerInterface) {
   const name = opt?.name
   const log = opt?.log ?? DefaultLogger('zeed:dispose')
 
-  let disposed = 0
+  let _disposed = 0
 
-  const tracked: Disposer[] = []
+  const tracked: DisposableEntry[] = []
 
-  function untrack(disposable: Disposer): Promise<void> | void {
+  function untrack(disposable: DisposableEntry): Promise<void> | void {
     if (disposable != null && tracked.includes(disposable)) {
       arrayFilterInPlace(tracked, el => el !== disposable)
-      const result = callDisposer(disposable)
+      const result = callDisposable(disposable)
       if (isPromise(result))
         return result
     }
   }
 
-  function track(obj?: Disposer): DisposerFunction | undefined {
+  function track(obj?: DisposableEntry): DisposerFunction | undefined {
     if (obj == null)
       return
     tracked.unshift(obj) // LIFO
@@ -78,7 +77,7 @@ export function useDispose(opt?: string | UseDisposeConfig | LoggerInterface) {
     if (name)
       log.debug(`dispose "${name}": ${tracked.length} entries`)
 
-    disposed += 1
+    _disposed += 1
 
     const promises: any[] = []
     while (tracked.length > 0) {
@@ -98,12 +97,14 @@ export function useDispose(opt?: string | UseDisposeConfig | LoggerInterface) {
 
   /** Dispose all tracked entries in synchronous way. */
   function disposeSync(): void {
-    void dispose(true)
+    dispose(true)
   }
 
   return Object.assign(dispose, {
-    /** Counter that incremends, each time dispose has been called */
-    disposed,
+    /** Counter that increments each time dispose has been called */
+    get disposed() {
+      return _disposed
+    },
 
     add: track,
     remove: untrack,
@@ -124,7 +125,7 @@ export function useDispose(opt?: string | UseDisposeConfig | LoggerInterface) {
       return tracked.length
     },
     isDisposed() {
-      return tracked.length <= 0
+      return _disposed > 0 && tracked.length === 0
     },
 
     [Symbol.dispose]() {
@@ -146,13 +147,14 @@ export function useDefer(
   } = {},
 ) {
   const { mode = 'fifo' } = config
-  const steps: Disposer[] = []
+  const steps: DisposableEntry[] = []
 
   polyfillUsing()
 
   /**
-   * Excutes all steps. If all steps are not Promises, they are executed immediately,
-   * otherwise a Promise is returned
+   * Executes all steps. If all steps are not Promises, they are executed immediately,
+   * otherwise a Promise is returned.
+   * Note: useDefer defaults to FIFO order; use mode: 'lifo' for LIFO (stack) order.
    */
   const exec = async (expectSync = false) => {
     while (steps.length > 0) {
@@ -169,13 +171,17 @@ export function useDefer(
           await result
         }
       }
-      else if (isPromise(step)) {
-        if (expectSync) {
-          throw new Error(
-            `Expected sync only function, but found async: ${step}`,
-          )
+      else if (typeof step.dispose === 'function') {
+        // Handle objects with a dispose() method (consistent with useDispose)
+        const result = step.dispose()
+        if (isPromise(result)) {
+          if (expectSync) {
+            throw new Error(
+              `Expected sync only function, but found async: ${step}`,
+            )
+          }
+          await result
         }
-        await step
       }
       else {
         throw new Error(`Unhandled disposable: ${step}`)
@@ -183,7 +189,7 @@ export function useDefer(
     }
   }
 
-  const add = (obj: Disposer) => {
+  const add = (obj: DisposableEntry) => {
     if (mode === 'lifo')
       steps.unshift(obj)
     else

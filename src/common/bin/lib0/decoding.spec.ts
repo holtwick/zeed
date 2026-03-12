@@ -34,7 +34,7 @@ describe('lib0/decoding', () => {
     const arr = new Uint8Array(e.cbuf.buffer, 0, e.cpos)
     const d = createDecoder(arr)
     expect(readVarString(d)).toBe('hello')
-    expect(Array.from(readVarUint8Array(d))).toEqual([1, 2, 3])
+    expect([...readVarUint8Array(d)]).toEqual([1, 2, 3])
   })
 
   it('should decode floats and bigints', () => {
@@ -75,7 +75,7 @@ describe('lib0/decoding', () => {
     expect(readAny(d)).toBe(false)
     expect(readAny(d)).toBe('str')
     expect(readAny(d)).toEqual([1, 2, 3])
-    expect(Array.from(readAny(d))).toEqual([1, 2, 3])
+    expect([...readAny(d)]).toEqual([1, 2, 3])
     expect(readAny(d)).toEqual({ a: 1, b: 2 })
   })
 

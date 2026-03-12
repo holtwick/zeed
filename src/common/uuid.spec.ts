@@ -75,7 +75,7 @@ describe('uuid', () => {
   it('should not have collisions', () => {
     setUuidDefaultEncoding()
     // Deterministic random ensures no collisions for this test seed
-    const list = Array.from({ length: 100 }, () => uuid())
+    const list = Array.from({ length: 100 }).map(uuid)
     const set = new Set(list)
     expect(list.length).toBe(100)
     expect(set.size).toBeGreaterThan(1)
@@ -85,7 +85,7 @@ describe('uuid', () => {
 
   it('should not have collisions v4', () => {
     setUuidDefaultEncoding()
-    const list = Array.from({ length: 100 }, () => uuidv4())
+    const list = Array.from({ length: 100 }).map(uuidv4)
     const set = new Set(list)
     expect(list.length).toBe(100)
     expect(set.size).toBeGreaterThan(1)

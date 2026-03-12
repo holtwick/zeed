@@ -89,9 +89,10 @@ The `package.json` exports field automatically selects the right build:
 {
   "exports": {
     ".": {
-      "types": "./dist/index.all.d.ts",
-      "node": "./dist/index.node.js",
-      "default": "./dist/index.browser.js"
+      "types": "./dist/index.all.d.mts",
+      "require": "./dist/index.node.cjs",
+      "node": "./dist/index.node.mjs",
+      "default": "./dist/index.browser.mjs"
     }
   }
 }
@@ -218,12 +219,12 @@ e.on('inc', async count => count + 1)
 
 ## Build System
 
-- **Bundler**: tsup (esbuild-based)
-- **Output**: ESM + CJS in `dist/` with TypeScript declarations
+- **Bundler**: tsdown (rolldown-based)
+- **Output**: ESM + CJS in `dist/` with `.mjs` / `.cjs` entry files and TypeScript declarations
 - **Target**: ES2022
 - **Features**: Tree-shaking, minification, source maps, code splitting
 
-The build creates multiple entry points but maintains a single type definition file (`dist/index.all.d.ts`) for simplicity.
+The build creates multiple entry points and emits matching declaration files such as `dist/index.all.d.mts`, `dist/index.node.d.mts`, and `dist/index.node.d.cts`.
 
 ## Package Management
 

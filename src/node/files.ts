@@ -27,7 +27,7 @@ export function walkSync(rootFolder: string, subFolder = '', ignoreHidden = true
       const realFile = join(rootFolder, file)
       const stat = getStat(realFile)
       if (stat && stat.isDirectory())
-        resultPaths = resultPaths.concat(walkSync(rootFolder, file) || [])
+        resultPaths = [...resultPaths, ...walkSync(rootFolder, file) || []]
       else
         resultPaths.push(file)
     }

@@ -110,14 +110,11 @@ let defaultUseStack: boolean | undefined
 export const loggerStackTraceDebug = 'loggerStackTraceDebug-7d38e5a9214b58d29734374cdb9521fd964d7485'
 
 export function LoggerNodeHandler(opt: LogHandlerOptions = {}): LogHandler {
-  if (defaultUseColor == null)
-    defaultUseColor = shouldUseColor()
+  defaultUseColor ??= shouldUseColor()
 
-  if (defaultUseStack == null)
-    defaultUseStack = shouldUseStack()
+  defaultUseStack ??= shouldUseStack()
 
-  if (startTime == null)
-    startTime = getTimestamp()
+  startTime ??= getTimestamp()
 
   const {
     level = undefined,

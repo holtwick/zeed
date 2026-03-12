@@ -6,11 +6,16 @@ import { promisify } from './exec/promise'
 
 export type TimerExecFunction = () => void | Promise<void>
 
-export const noopDisposer: () => DisposerFunction = () => {
-  const dispose = () => {}
-  dispose[Symbol.dispose] = dispose
-  return dispose
+function _createNoopDispose() {
+  const fn = () => {}
+  fn[Symbol.dispose] = fn
+  return fn as unknown as DisposerFunction
 }
+
+const _noopDispose = _createNoopDispose()
+
+/** Returns a no-op disposer (shared instance, no allocation per call). */
+export const noopDisposer: () => DisposerFunction = () => _noopDispose
 
 /**
  * Executes a function after a specified timeout and returns a disposer function
@@ -61,7 +66,7 @@ export function useIntervalPause(fn: TimerExecFunction, interval: number, immedi
     if (exec)
       await promisify(fn())
     if (!stop)
-      intervalHandle = setTimeout(() => loop(true), interval)
+      intervalHandle = setTimeout(loop, interval, true)
   }
 
   void loop(immediately)
@@ -69,7 +74,7 @@ export function useIntervalPause(fn: TimerExecFunction, interval: number, immedi
   const dispose = () => {
     if (intervalHandle) {
       stop = true
-      clearInterval(intervalHandle)
+      clearTimeout(intervalHandle) // uses setTimeout internally, so clearTimeout is correct
       intervalHandle = undefined
     }
   }
@@ -107,8 +112,10 @@ export function useEventListenerOnce(
 ): DisposerFunction {
   if (emitter == null)
     return noopDisposer()
-  if (emitter.on)
+  if (emitter.once)
     emitter.once(eventName, fn, ...args)
+  else if (emitter.on)
+    emitter.on(eventName, fn, ...args)
   else if (emitter.addEventListener)
     emitter.addEventListener(eventName, fn, ...args)
   const dispose = () => {

@@ -121,8 +121,7 @@ export function stringToPath(
 }
 
 export function valueToPath(value?: any, defaultValue = ''): string {
-  if (value == null)
-    value = defaultValue
+  value ??= defaultValue
   return stringToPath(String(value).trim(), defaultValue)
 }
 
@@ -176,7 +175,7 @@ export function setupEnv(options: EnvOptions = {}) {
       if (typeof options?.prefix === 'string')
         key = options?.prefix + key
 
-      if (!Object.prototype.hasOwnProperty.call(env, key)) {
+      if (!Object.hasOwn(env, key)) {
         if (value != null)
           env[key] = value
       }

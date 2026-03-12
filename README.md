@@ -79,11 +79,11 @@ log.error('Error')
 
 **Terminal output:**
 
-<img src=".assets/node-console@2x.png" width="566" style="max-width:100%">
+<img src=".assets/node-console@2x.png" alt="" width="566" style="max-width:100%">
 
 **Browser output:**
 
-<img src=".assets/safari-console.png" style="max-width:100%">
+<img src=".assets/safari-console.png" alt="" style="max-width:100%">
 
 <details>
 <summary>📖 Learn more about logging features</summary>

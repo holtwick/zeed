@@ -63,7 +63,7 @@ function _decodeUtf8Polyfill(buf: Uint8Array): string {
     const bytes = buf.subarray(bufPos, bufPos + nextLen)
     bufPos += nextLen
     // Starting with ES5.1 we can supply a generic array-like object as arguments
-    encodedString += String.fromCodePoint.apply(null, (bytes as any))
+    encodedString += String.fromCodePoint(...bytes as any)
     remainingLen -= nextLen
   }
   return decodeURIComponent(escape(encodedString))

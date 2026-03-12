@@ -34,8 +34,7 @@ function _global(): ZeedGlobalIntegration {
 /** Global object to work across module boundaries as well. Internally already used for logger and emitter. */
 export function getGlobalContext<T = ZeedGlobalContext>(defaultValue = {}): T {
   const gcontext = _global()
-  if (gcontext._zeedGlobal == null)
-    gcontext._zeedGlobal = defaultValue
+  gcontext._zeedGlobal ??= defaultValue
   return gcontext._zeedGlobal as T
 }
 

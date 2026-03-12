@@ -334,8 +334,7 @@ const _unameCounters: Record<string, number> = {}
  * @returns generated unique name
  */
 export function uname(name = 'id'): string {
-  if (_unameCounters[name] == null)
-    _unameCounters[name] = 0
+  _unameCounters[name] ??= 0
 
   return `${name}-${_unameCounters[name]++}`
 }

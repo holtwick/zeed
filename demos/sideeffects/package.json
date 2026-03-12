@@ -8,16 +8,15 @@
   "main": "index.js",
   "scripts": {
     "start": "pnpm run build && ZEED=* node dist/node/index.js",
-    "build:zeed": "(cd ../.. && pnpm build)",
-    "build:browser": "esbuild index.ts --bundle --outdir=dist/browser --format=esm --platform=browser && prettier -w dist/browser/index.js",
-    "build:node": "esbuild index.ts --bundle --outdir=dist/node --format=esm --platform=node && prettier -w dist/node/index.js",
-    "build": "pnpm run build:zeed && pnpm run build:browser && pnpm run build:node"
+    "build:browser": "rolldown index.ts -d dist/browser -f esm -p browser && prettier -w dist/browser/index.js",
+    "build:node": "rolldown index.ts -d dist/node -f esm -p node && prettier -w dist/node/index.js",
+    "build": "pnpm run build:browser && pnpm run build:node"
   },
   "dependencies": {
-    "zeed": "file:../.."
+    "zeed": "workspace:*"
   },
   "devDependencies": {
-    "esbuild": "^0.20.2",
-    "prettier": "^3.2.5"
+    "prettier": "^3.8.1",
+    "rolldown": "^1.0.0-rc.9"
   }
 }

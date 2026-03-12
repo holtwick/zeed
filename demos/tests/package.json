@@ -4,20 +4,20 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vuedx-typecheck . && vite build",
+    "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
     "buffer": "^6.0.3",
-    "expect": "^29.7.0",
-    "jest-mock": "^29.7.0",
-    "pretty-format": "^29.7.0",
-    "vue": "^3.4.21"
+    "expect": "^30.3.0",
+    "jest-mock": "^30.3.0",
+    "pretty-format": "^30.3.0",
+    "vue": "^3.5.30"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "@vue/compiler-sfc": "^3.4.21",
-    "typescript": "^5.4.4",
-    "vite": "^5.2.8"
+    "@vitejs/plugin-vue": "^6.0.5",
+    "@vue/compiler-sfc": "^3.5.30",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0"
   }
 }

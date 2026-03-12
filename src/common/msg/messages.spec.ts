@@ -52,7 +52,7 @@ describe('messages', () => {
     })
     serverHub.listen<TestMessages2>({
       async aping(value) {
-        return new Promise(resolve => setTimeout(() => resolve(value), 500))
+        return new Promise(resolve => setTimeout(resolve, 500, value))
       },
     })
 

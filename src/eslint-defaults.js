@@ -50,6 +50,8 @@ export function eslintRulesDefaults() {
     }],
 
     'unicorn/consistent-function-scoping': 'off',
+
+    'e18e/prefer-static-regex': 'off',
   }
 }
 

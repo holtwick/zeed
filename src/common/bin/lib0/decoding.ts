@@ -275,7 +275,7 @@ function _readVarStringPolyfill(decoder: BinDecoder): string {
         const bytes = decoder.arr.subarray(decoder.pos, decoder.pos + nextLen)
         decoder.pos += nextLen
         // Starting with ES5.1 we can supply a generic array-like object as arguments
-        encodedString += String.fromCodePoint.apply(null, (bytes as any))
+        encodedString += String.fromCodePoint(...bytes as any)
         remainingLen -= nextLen
       }
     }

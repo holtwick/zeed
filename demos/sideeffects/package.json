@@ -7,7 +7,7 @@
   "sideEffects": false,
   "main": "index.js",
   "scripts": {
-    "start": "pnpm run build && ZEED=* node dist/node/index.js",    
+    "start": "pnpm run build && ZEED=* node dist/node/index.js",
     "build:browser": "rolldown index.ts -d dist/browser -f esm -p browser && prettier -w dist/browser/index.js",
     "build:node": "rolldown index.ts -d dist/node -f esm -p node && prettier -w dist/node/index.js",
     "build": "pnpm run build:browser && pnpm run build:node"
@@ -16,7 +16,7 @@
     "zeed": "workspace:*"
   },
   "devDependencies": {
-    "rolldown": "^1.0.0-rc.9",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "rolldown": "^1.0.0-rc.9"
   }
 }

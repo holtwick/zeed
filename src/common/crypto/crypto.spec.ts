@@ -1,5 +1,6 @@
 /* eslint-disable no-cond-assign */
 
+import { createArray } from '../data'
 import { equalBinary, fromBase64, toBase64 } from '../data/bin'
 import { DefaultLogger } from '../log/log'
 import { decrypt, deriveKeyPbkdf2, digest, encrypt, randomUint8Array } from './crypto'
@@ -9,9 +10,7 @@ const log = DefaultLogger('crypto.spec')
 describe('crypto', () => {
   it('should not have collisions', () => {
     expect(equalBinary(new Uint8Array(2), new Uint8Array([0, 0]))).toBe(true)
-    const list: Uint8Array[] = new Array(...Array.from({ length: 100 })).map(() =>
-      randomUint8Array(8),
-    )
+    const list: Uint8Array[] = createArray(100, () => randomUint8Array(8))
     let id: Uint8Array | undefined
     while ((id = list.pop())) {
       // console.log(id)

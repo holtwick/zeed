@@ -11,7 +11,7 @@ describe('lib0/buffer', () => {
     const arr = new Uint8Array([1, 2, 3])
     const copy = copyUint8Array(arr)
     expect(copy).not.toBe(arr)
-    expect(Array.from(copy)).toEqual([1, 2, 3])
+    expect([...copy]).toEqual([1, 2, 3])
   })
 
   it('should encode and decode any value', () => {

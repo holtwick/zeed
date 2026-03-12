@@ -344,8 +344,7 @@ let floatTestBed: DataView
  * Check if a number can be encoded as a 32 bit float.
  */
 function isFloat32(num: number): boolean {
-  if (floatTestBed == null)
-    floatTestBed = new DataView(new ArrayBuffer(4))
+  floatTestBed ??= new DataView(new ArrayBuffer(4))
   floatTestBed.setFloat32(0, num)
   return floatTestBed.getFloat32(0) === num
 }

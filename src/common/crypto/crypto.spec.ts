@@ -1,4 +1,3 @@
-/* eslint-disable prefer-spread */
 /* eslint-disable no-cond-assign */
 
 import { equalBinary, fromBase64, toBase64 } from '../data/bin'
@@ -10,7 +9,7 @@ const log = DefaultLogger('crypto.spec')
 describe('crypto', () => {
   it('should not have collisions', () => {
     expect(equalBinary(new Uint8Array(2), new Uint8Array([0, 0]))).toBe(true)
-    const list: Uint8Array[] = Array.apply(null, Array.from({ length: 100 })).map(() =>
+    const list: Uint8Array[] = new Array(...Array.from({ length: 100 })).map(() =>
       randomUint8Array(8),
     )
     let id: Uint8Array | undefined

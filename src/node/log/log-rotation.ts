@@ -774,7 +774,7 @@ const checks: any = {
     path: (type: string, options: Opts, value: string): void => {
       if (type !== 'string')
         throw new Error(`Don't know how to handle 'options.path' type: ${type}`)
-      if (value[value.length - 1] !== sep)
+      if (value.at(-1) !== sep)
         options.path = value + sep
     },
   },

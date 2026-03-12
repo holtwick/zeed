@@ -66,7 +66,7 @@ export function useIntervalPause(fn: TimerExecFunction, interval: number, immedi
     if (exec)
       await promisify(fn())
     if (!stop)
-      intervalHandle = setTimeout(() => loop(true), interval)
+      intervalHandle = setTimeout(loop, interval, true)
   }
 
   void loop(immediately)

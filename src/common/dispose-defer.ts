@@ -184,7 +184,7 @@ export function useDefer(
         }
       }
       else {
-        throw new Error(`Unhandled disposable: ${step}`)
+        throw new TypeError(`Unhandled disposable: ${step}`)
       }
     }
   }

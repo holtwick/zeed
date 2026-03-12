@@ -139,7 +139,7 @@ export function globToRegExp(glob: string, opts?: any) {
 
   // When regexp 'g' flag is specified don't
   // constrain the regular expression with ^ & $
-  if (!flags || !~flags.indexOf('g'))
+  if (!flags || !flags.includes('g'))
     reStr = `^${reStr}$`
 
   return new RegExp(reStr, flags)

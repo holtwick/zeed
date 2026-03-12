@@ -74,7 +74,7 @@ export async function walkSyncAsync(rootFolder: string, subFolder = '', ignoreHi
       const realFile = join(rootFolder, file)
       const stat = await getStatAsync(realFile)
       if (stat && stat.isDirectory())
-        resultPaths = resultPaths.concat(await walkSyncAsync(rootFolder, file) || [])
+        resultPaths = [...resultPaths, ...await walkSyncAsync(rootFolder, file) || []]
       else
         resultPaths.push(file)
     }

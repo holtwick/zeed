@@ -17,7 +17,7 @@
     "zeed": "file:../.."
   },
   "devDependencies": {
-    "esbuild": "^0.20.2",
-    "prettier": "^3.2.5"
+    "esbuild": "^0.27.4",
+    "prettier": "^3.8.1"
   }
 }

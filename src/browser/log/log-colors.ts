@@ -19,7 +19,7 @@ export function browserSupportsColors(): boolean {
   if (
     typeof navigator !== 'undefined'
     && navigator.userAgent
-    && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)
+    && /(edge|trident)\/(\d+)/.test(navigator.userAgent.toLowerCase())
   ) {
     return false
   }

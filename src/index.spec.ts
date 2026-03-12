@@ -21,6 +21,7 @@ describe('treeshake', () => {
       bundle: true,
       treeShaking: true,
       minify: false,
+      logLevel: 'silent' as const,
     }
 
     const result1 = await esbuild.build(opt)
@@ -43,7 +44,7 @@ describe('treeshake', () => {
     `)
   })
 
-  it.skip('should shake it in dist as well', async () => {
+  it('should shake it in dist as well', async () => {
     const code = `          
       import { arrayUnion } from '..'
  
@@ -62,22 +63,23 @@ describe('treeshake', () => {
       bundle: true,
       treeShaking: true,
       minify: false,
+      logLevel: 'silent' as const,
     }
 
     const result1 = await esbuild.build(opt)
     expect(result1?.outputFiles?.[0]?.text).toMatchInlineSnapshot(`
       "(() => {
-        // dist/chunk-E6K4QJKR.js
-        function u(e5) {
-          return e5.filter((r9, n9) => e5.indexOf(r9) === n9);
+        // dist/common/data/array.mjs
+        function n(e) {
+          return e.filter((t, n2) => e.indexOf(t) === n2);
         }
-        function a8(...e5) {
-          return u(e5.reduce((r9 = [], n9) => r9.concat(n9), []));
+        function i(...e) {
+          return n(e.reduce((e2 = [], t) => e2.concat(t), []));
         }
 
         // <stdin>
-        var a19 = [1, 2, 3, 3, 4];
-        var aa = a8(a19);
+        var a2 = [1, 2, 3, 3, 4];
+        var aa = i(a2);
         console.log("result arrayUnion", aa);
       })();
       "
@@ -86,7 +88,7 @@ describe('treeshake', () => {
 
   // it('should shake it in lib as well', async () => {
   //   const code = `
-  //     import { arrayUnion } from '../lib/index.browser.js'
+  //     import { arrayUnion } from '../dist/index.browser.mjs'
 
   //     let a = [1,2,3,3,4]
   //     let aa = arrayUnion(a)

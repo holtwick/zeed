@@ -51,7 +51,11 @@ export function eslintRulesDefaults() {
 
     'unicorn/consistent-function-scoping': 'off',
 
+    // Involves a lot of regexes, and the rule is not that useful, so we disable it
     'e18e/prefer-static-regex': 'off',
+
+    // Added setting to workspace config, that caused troubles
+    'pnpm/yaml-enforce-settings': 'off',
   }
 }
 

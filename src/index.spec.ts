@@ -70,16 +70,16 @@ describe('treeshake', () => {
     expect(result1?.outputFiles?.[0]?.text).toMatchInlineSnapshot(`
       "(() => {
         // dist/common/data/array.mjs
-        function n(e) {
-          return e.filter((t, n2) => e.indexOf(t) === n2);
+        function arrayUnique(arr) {
+          return arr.filter((n, index) => arr.indexOf(n) === index);
         }
-        function i(...e) {
-          return n(e.reduce((e2 = [], t) => e2.concat(t), []));
+        function arrayUnion(...arrays) {
+          return arrayUnique(arrays.reduce((acc = [], value) => acc.concat(value), []));
         }
 
         // <stdin>
-        var a2 = [1, 2, 3, 3, 4];
-        var aa = i(a2);
+        var a = [1, 2, 3, 3, 4];
+        var aa = arrayUnion(a);
         console.log("result arrayUnion", aa);
       })();
       "

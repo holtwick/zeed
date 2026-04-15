@@ -1,4 +1,4 @@
-import type { Infer } from '../schema'
+import type { Infer, Type } from '../schema'
 import type { Expr } from './expr'
 import type { Column, TableColumns, TableShape } from './table'
 
@@ -39,7 +39,9 @@ interface SelectState {
   offset?: number
 }
 
-export class SelectBuilder<Row> {
+type ShapeRow<S> = { [K in keyof S]: S[K] extends Type<infer T> ? T : never }
+
+export class SelectBuilder<Row, Shape = unknown> {
   private _state: SelectState
 
   constructor(state: SelectState) {
@@ -48,8 +50,19 @@ export class SelectBuilder<Row> {
 
   from<N extends string, S extends TableShape>(
     t: TableColumns<N, S>,
-  ): SelectBuilder<Row extends void ? { [K in keyof S]: Infer<S[K]> } : Row> {
+  ): SelectBuilder<Row extends void ? ShapeRow<S> : Row, S> {
     this._state.from = t
+    return this as any
+  }
+
+  pick<K extends Extract<keyof Shape, string>>(
+    ...keys: K[]
+  ): SelectBuilder<{ [P in K]: Shape[P] extends Type<infer T> ? T : never }, Shape> {
+    if (!this._state.from)
+      throw new Error('pick: from() must be called first')
+    const sel: Record<string, Column> = {}
+    for (const k of keys) sel[k] = (this._state.from as any)[k]
+    this._state.selection = sel
     return this as any
   }
 
@@ -181,6 +194,12 @@ export function select<S extends Record<string, Column<any>>>(
 ): SelectBuilder<RowFromSelection<S>>
 export function select(selection?: Record<string, Column>): SelectBuilder<any> {
   return new SelectBuilder({ selection, orderBy: [] })
+}
+
+export function from<N extends string, S extends TableShape>(
+  t: TableColumns<N, S>,
+): SelectBuilder<ShapeRow<S>, S> {
+  return new SelectBuilder<ShapeRow<S>, S>({ from: t, orderBy: [] })
 }
 
 export type InferRow<Q> = Q extends SelectBuilder<infer R>

@@ -2,7 +2,7 @@ import type { InferRow } from './select'
 import type { Expect, IsEqual } from '../type-test'
 import { boolean, int, string } from '../schema'
 import { and, eq, gt, inArray, like, or } from './expr'
-import { select } from './select'
+import { from, select } from './select'
 import { table } from './table'
 
 const users = table('users', {
@@ -47,6 +47,35 @@ describe('sql select', () => {
         all: ['id', 'name'],
       },
     ])
+  })
+
+  it('from() + pick() is a compact form with typed keys', () => {
+    const q = from(users).pick('id', 'name').where(eq(users.email, 'x'))
+    type Row = InferRow<typeof q>
+    type _T = Expect<IsEqual<Row, { id: number, name: string }>>
+
+    const c = q.toSQL()
+    expect(c.sql).toBe(
+      'SELECT "users"."id", "users"."name" FROM "users" WHERE "users"."email" = ?',
+    )
+    expect(c.params).toEqual(['x'])
+    expect(c.dependencies[0].select).toEqual(['id', 'name'])
+    expect(c.dependencies[0].where).toEqual(['email'])
+  })
+
+  it('from() without pick returns the full row', () => {
+    const q = from(users)
+    type Row = InferRow<typeof q>
+    type _T = Expect<IsEqual<Row, {
+      id: number
+      name: string
+      email: string
+      age: number
+      active: boolean
+    }>>
+    expect(q.toSQL().sql).toBe(
+      'SELECT "users"."id", "users"."name", "users"."email", "users"."age", "users"."active" FROM "users"',
+    )
   })
 
   it('supports aliases in selection', () => {

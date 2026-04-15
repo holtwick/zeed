@@ -1,245 +1,72 @@
 # AGENTS.md
 
-## Project Overview
+Guidance for coding agents working on the zeed repository. For end-user documentation see [README.md](README.md).
 
-Zeed is a zero-dependency TypeScript utility library designed for universal JavaScript (browsers, Node.js, Deno, and Bun). It provides core utilities for logging, messaging, schema validation, event handling, async operations, and more.
+## Project
 
-**Key characteristics:**
+Zero-dependency TypeScript utility library for universal JavaScript (browser, Node, Deno, Bun).
 
-- Zero runtime dependencies (all integrations are vendored or optional)
-- Strict TypeScript with full type inference
-- Tree-shakable ESM with CommonJS fallback
-- Platform-specific code split between `src/browser/`, `src/node/`, and `src/common/`
+- Zero runtime dependencies
+- Strict TypeScript, full type inference
+- Tree-shakable ESM with CJS fallback
+- Platform split: `src/browser/`, `src/node/`, `src/common/`
 
 ## Commands
 
-### Building and Development
+Package manager: `pnpm` (>= 10). Node >= 20. `nr` is a binary from `@antfu/ni` that runs `package.json` scripts.
 
 ```bash
-# Build the library (ESM + CJS with minification and types)
-pnpm build
-
-# Type checking without compilation
-pnpm check
-
-# Watch mode for development
-pnpm watch
-```
-
-### Testing
-
-```bash
-# Run all tests (Node.js + common)
-pnpm test
-
-# Run tests with coverage report
-pnpm coverage
-
-# Run specific test file
-pnpm test <filename>.spec.ts
-
-# Run browser tests in different browsers
-pnpm test:browser      # Chromium with preview
-pnpm test:chromium     # Chromium via playwright
-pnpm test:firefox      # Firefox via playwright
-pnpm test:webkit       # WebKit via playwright
-```
-
-### Linting
-
-```bash
-# Check for linting issues
-pnpm lint
-
-# Auto-fix linting issues
+pnpm build            # tsdown build (ESM + CJS + types)
+pnpm check            # tsc --noEmit
+pnpm watch            # incremental build
+pnpm test             # type check + vitest run (node + common)
+pnpm coverage         # vitest with coverage
+pnpm vitest run path/to/file.spec.ts   # single test file
+pnpm test:chromium    # browser tests via playwright (also :firefox, :webkit)
+pnpm test:browser     # browser tests with preview UI
+pnpm lint             # eslint
 pnpm lint:fix
+pnpm build:docs       # typedoc -> docs/
 ```
 
-### Documentation
+## Layout
 
-```bash
-# Generate API documentation (published to https://zeed.holtwick.de/)
-pnpm build:docs
+```text
+src/
+  common/   platform-agnostic (schema, msg, data, log core, ...)
+  browser/  DOM, LocalStorage, browser log handler
+  node/     fs, env, node log handler
+  index.all.ts      universal entry
+  index.browser.ts  browser build
+  index.node.ts     node build
+  index.jsr.ts      JSR registry entry
 ```
 
-## Architecture
+Conditional exports in `package.json` route consumers to the right build. Ignore `_archive/`, `dist/`, `docs/`, `demos/`.
 
-### Module Structure
+## Subsystems
 
-The codebase is organized into three main areas:
+- **`common/schema/`** - Standard Schema compatible runtime validation, exposed as `z`. `z.object`, `z.string`, `z.stringLiterals`, `.parse`, `.optional`, `.default`, `z.infer`. `schema['~standard']` exposes the Standard Schema interface.
+- **`common/msg/`** - Layered messaging: `Emitter` (typed events), `Channel` (postMessage abstraction), `PubSub`, `Messages` (RPC with Promise/timeout/retry), `Encoder`. See `src/common/msg/README.md`.
+- **`common/log/`** + platform handlers - `Logger('name')`, levels `info`/`warn`/`error`. Env: `ZEED=*` or `DEBUG=*` (ZEED wins), `ZEED_LEVEL=info`, `ZEED_LOG=/path/file.log`. Handlers: `LoggerConsoleHandler`, `LoggerBrowserHandler`, `LoggerNodeHandler`, `LoggerFileHandler`.
+- **`common/data/`** - `arrayUnique`, `arrayShuffle`, `arrayGroupBy`, `camelCase`, `snakeCase`, `slugify`, `useBase(62)`, `deepEqual`, `deepMerge`, `objectFilter`, `objectPluck`, `sortedItems` (CRDT).
 
-1. **`src/common/`** - Platform-agnostic utilities
-   - Core functionality that works everywhere (browser, Node.js, Deno, Bun)
-   - Includes: schema validation, messaging, data utilities, logging foundation, etc.
+## Conventions
 
-2. **`src/browser/`** - Browser-specific utilities
-   - DOM interactions, LocalStorage, browser-specific logging handlers
-   - Example: `log-browser-factory.ts` provides colorful console output for browsers
+- 2-space indent, no tabs.
+- Strict TS. Explicit types only where inference is unclear.
+- Relative imports within a module, barrel imports across modules.
+- Tests live next to code: `array.ts` + `array.spec.ts`. Vitest globals enabled.
+- New utilities: aim for 100% coverage.
+- Browser-only code in `src/browser/`, node-only in `src/node/`, everything else in `src/common/`.
+- Each module has an `index.ts` barrel.
 
-3. **`src/node/`** - Node.js/Deno/Bun-specific utilities
-   - File system operations, process env handling, Node-specific features
-   - Example: `env.ts` for environment variable management
+## Build
 
-### Entry Points
+- Bundler: `tsdown` (rolldown-based). Config in `tsdown.config.ts`.
+- Output: `dist/` with `.mjs`, `.cjs`, and `.d.mts`/`.d.cts` declarations per entry (e.g. `dist/index.all.d.mts`, `dist/index.node.d.cts`).
+- Features: tree-shaking, minification, source maps, code splitting.
 
-The library uses conditional exports for platform-specific builds:
+## Release
 
-- **`src/index.all.ts`** - Full universal export (browser + node + common)
-- **`src/index.browser.ts`** - Browser-only build (re-exports browser + common)
-- **`src/index.node.ts`** - Node-only build (re-exports node + common)
-- **`src/index.jsr.ts`** - JSR registry specific export
-
-The `package.json` exports field automatically selects the right build:
-
-```json
-{
-  "exports": {
-    ".": {
-      "types": "./dist/index.all.d.mts",
-      "require": "./dist/index.node.cjs",
-      "node": "./dist/index.node.mjs",
-      "default": "./dist/index.browser.mjs"
-    }
-  }
-}
-```
-
-### Key Subsystems
-
-#### Messaging (`src/common/msg/`)
-
-A layered messaging architecture for cross-context communication. See `src/common/msg/README.md` for full details.
-
-- **Emitter** - Type-safe, async event emitter for in-app communication
-- **Channel** - Uniform `postMessage` abstraction for data transport (WebSocket, WebRTC, WebWorker, etc.)
-- **PubSub** - Event-like messages over a Channel with type safety
-- **Messages** - RPC-like interface with Promise-based responses, timeouts, and retries
-- **Encoder** - Transform data for transport (JSON, encryption, etc.)
-
-Example:
-
-```typescript
-interface MyMessages {
-  echo: (data: any) => Promise<any>
-}
-
-const hub = useMessageHub({ channel }).send<MyMessages>()
-await hub.echo({ hello: 'world' })
-```
-
-#### Schema Validation (`src/common/schema/`)
-
-Type-safe runtime validation with [Standard Schema](https://github.com/standard-schema/standard-schema) compatibility. Works with tRPC, TanStack Form/Router, Hono, and 40+ other libraries.
-
-- Import via `z` namespace: `import { z } from 'zeed'`
-- All schemas support `.parse()`, `.optional()`, `.default()`, type inference
-- Standard Schema interface available via `schema['~standard']`
-- Supports serialization/deserialization for network transport
-
-Example:
-
-```typescript
-const userSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-  role: z.stringLiterals(['admin', 'user']),
-})
-
-type User = z.infer<typeof userSchema>
-const user = userSchema.parse(data)
-```
-
-#### Logging (`src/common/log/`, `src/browser/log/`, `src/node/log/`)
-
-Universal logging system with platform-specific handlers:
-
-- **Configuration**: `ZEED=*` or `DEBUG=*` to enable logs (ZEED supersedes DEBUG)
-- **Level filtering**: `ZEED_LEVEL=info` to hide debug logs
-- **Log to file**: `ZEED_LOG=/path/to/file.log`
-- **Handlers**: `LoggerConsoleHandler`, `LoggerBrowserHandler`, `LoggerNodeHandler`, `LoggerFileHandler`
-
-Usage:
-
-```typescript
-import { Logger } from 'zeed'
-
-const log = Logger('my-module')
-log('message')
-log.info('info')
-log.warn('warning')
-log.error('error')
-```
-
-#### Data Utilities (`src/common/data/`)
-
-Extensive collection of data manipulation utilities:
-
-- **Array operations**: `arrayUnique`, `arrayShuffle`, `arrayGroupBy`
-- **String utilities**: `camelCase`, `snakeCase`, `slugify`
-- **Binary encoding**: `useBase(62)` for Base62 encoding/decoding
-- **Object operations**: `deepEqual`, `deepMerge`, `objectFilter`, `objectPluck`
-- **CRDT sorting**: `sortedItems` for conflict-free replicated data
-
-## Development Conventions
-
-### Code Style
-
-- **Indentation**: Always use 2 spaces (not tabs)
-- **TypeScript**: Strict mode enabled, use explicit types where inference isn't clear
-- **Imports**: Use relative imports within the same major module, exported symbols for cross-module
-
-### Testing
-
-- All test files must end with `.spec.ts`
-- Tests live side-by-side with the code they test (e.g., `array.ts` → `array.spec.ts`)
-- Use Vitest with globals enabled (`describe`, `it`, `expect` available globally)
-- Aim for 100% test coverage for new utilities
-- Browser tests require explicit environment: `pnpm test:browser`
-
-### File Organization
-
-- Platform-specific code goes in `src/browser/` or `src/node/`
-- Shared code goes in `src/common/`
-- Each module exports through an `index.ts` barrel file
-- Ignore `_archive/`, `dist/`, `docs/`, and `demos/` folders
-
-### Type System Patterns
-
-**Use the `Type` class for runtime validation:**
-
-```typescript
-// Define schema
-const schema = z.object({ name: z.string() })
-
-// Infer TypeScript type
-type Schema = z.infer<typeof schema>
-
-// Parse/validate at runtime
-const data = schema.parse(input)
-```
-
-**Event emitters should use typed interfaces:**
-
-```typescript
-interface MyEvents {
-  inc: (count: number) => number
-}
-
-const e = new Emitter<MyEvents>()
-e.on('inc', async count => count + 1)
-```
-
-## Build System
-
-- **Bundler**: tsdown (rolldown-based)
-- **Output**: ESM + CJS in `dist/` with `.mjs` / `.cjs` entry files and TypeScript declarations
-- **Target**: ES2022
-- **Features**: Tree-shaking, minification, source maps, code splitting
-
-The build creates multiple entry points and emits matching declaration files such as `dist/index.all.d.mts`, `dist/index.node.d.mts`, and `dist/index.node.d.cts`.
-
-## Package Management
-
-- Uses `pnpm` (v10.18.0+)
-- Node.js >= 20 required
-- The `nr` alias in scripts refers to `ni run` from `@antfu/ni` package
+`pnpm prep` runs lint-fix, type check, full test suite, and doc upload. `pnpm npm:release` publishes to npm. `pnpm build:docs` generates typedoc into `docs/` (published to <https://zeed.holtwick.de/>).

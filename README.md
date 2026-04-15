@@ -24,24 +24,30 @@
 <td width="50%">
 
 ### 🎯 **Type-Safe**
+
 Strict TypeScript with full type inference
 
 ### 📦 **Zero Dependencies**
+
 Lightweight and completely tree-shakable
 
 ### 🌍 **Universal**
+
 Works in browsers, Node.js, Deno, and Bun
 
 </td>
 <td width="50%">
 
 ### ⚡ **Modern ESM**
+
 ES Modules with CommonJS fallback
 
 ### ✅ **Well Tested**
+
 Comprehensive test coverage
 
 ### 🔌 **Standard Schema**
+
 Compatible with tRPC, TanStack, Hono & more
 
 </td>
@@ -93,11 +99,13 @@ log.error('Error')
 By default, logs are muted. Enable them with filters:
 
 **Browser:**
+
 ```ts
 localStorage.zeed = '*'
 ```
 
 **Node.js:**
+
 ```sh
 ZEED=* node myapp.js
 ```
@@ -116,6 +124,7 @@ Write to file: `ZEED_LOG=/path/to/file.log`
 - `LoggerFileHandler(path, opt)` - File output with optional rotation
 
 **Log Rotation Example:**
+
 ```ts
 import { LoggerFileHandler } from 'zeed'
 
@@ -270,6 +279,7 @@ else {
 ```
 
 **Features:**
+
 - Primitives: `string()`, `number()`, `int()`, `boolean()`, `any()`
 - Objects: `object()`, `record()`, `pick()`, `omit()`, `extend()`, `partial()`, `required()`
 - Arrays & Tuples: `array()`, `tuple()`
@@ -289,6 +299,7 @@ else {
 <td width="50%">
 
 **🔄 CRDT Sorting**
+
 ```ts
 interface Row extends SortedItem {
   id: string
@@ -298,6 +309,7 @@ sortedItems(rows)
 ```
 
 **🔐 Binary Encoding**
+
 ```ts
 const { encode, decode } = useBase(62)
 decode(encode(data)) === data
@@ -307,12 +319,14 @@ decode(encode(data)) === data
 <td width="50%">
 
 **🔍 Deep Object Utils**
+
 ```ts
 deepEqual(obj1, obj2)
 deepMerge(obj1, obj2)
 ```
 
 **🧹 Resource Disposal**
+
 ```ts
 const dispose = useDispose()
 dispose.add(cleanup)
@@ -332,10 +346,12 @@ Zeed includes many more utilities - explore the [full API documentation](https:/
 ## 🤝 Related Projects
 
 **By the same author:**
+
 - [zeed-dom](https://github.com/holtwick/zeed-dom) - DOM manipulation utilities
 - [zerva](https://github.com/holtwick/zerva) - Modular server framework
 
 **Similar utility libraries:**
+
 - [lib0](https://github.com/dmonad/lib0) - Fundamental utility functions
 - [antfu/utils](https://github.com/antfu/utils) - Collection of common utilities
 - [vueuse](https://vueuse.org/) - Vue composition utilities

@@ -5,6 +5,7 @@
 Zeed is a zero-dependency TypeScript utility library designed for universal JavaScript (browsers, Node.js, Deno, and Bun). It provides core utilities for logging, messaging, schema validation, event handling, async operations, and more.
 
 **Key characteristics:**
+
 - Zero runtime dependencies (all integrations are vendored or optional)
 - Strict TypeScript with full type inference
 - Tree-shakable ESM with CommonJS fallback
@@ -13,6 +14,7 @@ Zeed is a zero-dependency TypeScript utility library designed for universal Java
 ## Commands
 
 ### Building and Development
+
 ```bash
 # Build the library (ESM + CJS with minification and types)
 pnpm build
@@ -25,6 +27,7 @@ pnpm watch
 ```
 
 ### Testing
+
 ```bash
 # Run all tests (Node.js + common)
 pnpm test
@@ -43,6 +46,7 @@ pnpm test:webkit       # WebKit via playwright
 ```
 
 ### Linting
+
 ```bash
 # Check for linting issues
 pnpm lint
@@ -52,6 +56,7 @@ pnpm lint:fix
 ```
 
 ### Documentation
+
 ```bash
 # Generate API documentation (published to https://zeed.holtwick.de/)
 pnpm build:docs
@@ -85,6 +90,7 @@ The library uses conditional exports for platform-specific builds:
 - **`src/index.jsr.ts`** - JSR registry specific export
 
 The `package.json` exports field automatically selects the right build:
+
 ```json
 {
   "exports": {
@@ -111,6 +117,7 @@ A layered messaging architecture for cross-context communication. See `src/commo
 - **Encoder** - Transform data for transport (JSON, encryption, etc.)
 
 Example:
+
 ```typescript
 interface MyMessages {
   echo: (data: any) => Promise<any>
@@ -130,6 +137,7 @@ Type-safe runtime validation with [Standard Schema](https://github.com/standard-
 - Supports serialization/deserialization for network transport
 
 Example:
+
 ```typescript
 const userSchema = z.object({
   name: z.string(),
@@ -151,6 +159,7 @@ Universal logging system with platform-specific handlers:
 - **Handlers**: `LoggerConsoleHandler`, `LoggerBrowserHandler`, `LoggerNodeHandler`, `LoggerFileHandler`
 
 Usage:
+
 ```typescript
 import { Logger } from 'zeed'
 
@@ -164,6 +173,7 @@ log.error('error')
 #### Data Utilities (`src/common/data/`)
 
 Extensive collection of data manipulation utilities:
+
 - **Array operations**: `arrayUnique`, `arrayShuffle`, `arrayGroupBy`
 - **String utilities**: `camelCase`, `snakeCase`, `slugify`
 - **Binary encoding**: `useBase(62)` for Base62 encoding/decoding
@@ -196,6 +206,7 @@ Extensive collection of data manipulation utilities:
 ### Type System Patterns
 
 **Use the `Type` class for runtime validation:**
+
 ```typescript
 // Define schema
 const schema = z.object({ name: z.string() })
@@ -208,6 +219,7 @@ const data = schema.parse(input)
 ```
 
 **Event emitters should use typed interfaces:**
+
 ```typescript
 interface MyEvents {
   inc: (count: number) => number

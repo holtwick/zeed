@@ -74,8 +74,6 @@
     "test:webkit": "BROWSER=webkit vitest",
     "test:chromium": "BROWSER=chromium vitest",
     "test:release": "nr lint && nr check && vitest --run",
-    "post:release": "nr upload:docs && nr npm:release",
-    "npm:release": "npm login && npm publish --access public",
     "watch": "nr build -- --watch src",
     "prep": "nr lint && nr check && nr test:release && nr upload:docs"
   },

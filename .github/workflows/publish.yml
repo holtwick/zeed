@@ -16,11 +16,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10.33.0
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:
@@ -29,4 +25,4 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm publish --access public --provenance --no-git-checks
+      - run: npm publish --access public --provenance --no-git-checks

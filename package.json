@@ -1,7 +1,7 @@
 {
   "name": "zeed",
   "type": "module",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "packageManager": "pnpm@10.33.0",
   "description": "🌱 Simple foundation library",
   "author": {

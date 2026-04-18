@@ -1,5 +1,5 @@
-import type { InferRow } from './select'
 import type { Expect, IsEqual } from '../type-test'
+import type { InferRow } from './select'
 import { boolean, int, string } from '../schema'
 import { and, eq, gt, inArray, like, or } from './expr'
 import { from, select } from './select'

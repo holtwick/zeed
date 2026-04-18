@@ -16,8 +16,7 @@ The goal is to get full TypeScript inference, editor autocompletion, and - uniqu
 ## Quick Start
 
 ```ts
-import { boolean, int, string } from 'zeed'
-import { and, eq, from, gt, inArray, like, or, table } from 'zeed'
+import { and, boolean, eq, from, gt, inArray, int, like, or, string, table } from 'zeed'
 
 const users = table('users', {
   id: int(),
@@ -53,7 +52,7 @@ const posts = table('posts', {
   published: boolean(),
 })
 
-posts.id    // Column<number>
+posts.id // Column<number>
 posts.title // Column<string>
 ```
 
@@ -135,7 +134,7 @@ Note: `sqlIsNull` and `sqlIsNotNull` are prefixed to avoid collision with zeed's
 ```ts
 from(users)
   .orderBy(users.age, 'DESC')
-  .orderBy(users.name)        // ASC by default
+  .orderBy(users.name) // ASC by default
   .limit(10)
   .offset(20)
 ```

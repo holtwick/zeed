@@ -65,8 +65,7 @@
     "upload:docs": "nr build:docs && rsync -avz docs/* cy:public_html/zeed.holtwick.de",
     "clean": "rm -rf dist",
     "coverage": "vitest --run --coverage",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --fix",
     "prepublishOnly": "nr build && nr circles",
     "start": "nr watch",
     "test": "nr check && vitest --run",
@@ -74,11 +73,11 @@
     "test:firefox": "BROWSER=firefox vitest",
     "test:webkit": "BROWSER=webkit vitest",
     "test:chromium": "BROWSER=chromium vitest",
-    "test:release": "nr lint:fix && nr check && vitest --run",
+    "test:release": "nr lint && nr check && vitest --run",
     "post:release": "nr upload:docs && nr npm:release",
     "npm:release": "npm login && npm publish --access public",
     "watch": "nr build -- --watch src",
-    "prep": "nr lint:fix && nr check && nr test:release && nr upload:docs"
+    "prep": "nr lint && nr check && nr test:release && nr upload:docs"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
@@ -88,11 +87,11 @@
     "@vitest/browser": "^4.1.4",
     "@vitest/coverage-v8": "^4.1.4",
     "esbuild": "^0.28.0",
-    "eslint": "^10.2.0",
+    "eslint": "^10.2.1",
     "playwright": "^1.59.1",
     "pnpm": "^10.32.1",
-    "tsdown": "^0.21.8",
-    "typescript": "^6.0.2",
+    "tsdown": "^0.21.9",
+    "typescript": "^6.0.3",
     "vite": "^8.0.8",
     "vitest": "^4.1.4"
   }

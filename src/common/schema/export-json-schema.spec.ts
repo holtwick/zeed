@@ -171,11 +171,15 @@ describe('json-schema.spec', () => {
                   "type": "string",
                 },
                 "value": Object {
-                  "description": "The value to compare against",
-                  "type": Array [
-                    "string",
-                    "number",
+                  "anyOf": Array [
+                    Object {
+                      "type": "string",
+                    },
+                    Object {
+                      "type": "number",
+                    },
                   ],
+                  "description": "The value to compare against",
                 },
               },
               "required": Array [
@@ -233,9 +237,9 @@ describe('json-schema.spec', () => {
                 description: 'A comparison operator',
               },
               value: {
-                type: [
-                  'string',
-                  'number',
+                anyOf: [
+                  { type: 'string' },
+                  { type: 'number' },
                 ],
                 description: 'The value to compare against',
               },

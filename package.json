@@ -74,7 +74,7 @@
     "test:chromium": "BROWSER=chromium vitest",
     "pre:release": "nr lint && nr check",
     "test:release": "vitest --run",
-    "post:release": "nr upload:docs",
+    "post:release": "nr upload:docs && pnpm publish",
     "watch": "nr build -- --watch src"
   },
   "devDependencies": {

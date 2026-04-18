@@ -84,6 +84,13 @@ describe('crypto', () => {
     expect(typeof key).toBe('object')
   })
 
+  it('should derive keys without salt (default branch)', async () => {
+    const key = await deriveKeyPbkdf2(new Uint8Array([1, 2, 3]))
+    expect(key).toBeDefined()
+    const keyCbc = await (await import('./crypto')).deriveKeyPbkdf2CBC(new Uint8Array([1, 2, 3]))
+    expect(keyCbc).toBeDefined()
+  })
+
   it('should handle zero-length random and digest', async () => {
     expect(randomUint8Array(0)).toEqual(new Uint8Array(0))
     expect((await digest(new Uint8Array(0))).length).toBeGreaterThan(0)

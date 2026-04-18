@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm check *)"
+      "Read(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Bash(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch"
+    ],
+    "ask": [
+      "Fetch(*)"
     ]
   }
 }

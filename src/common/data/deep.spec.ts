@@ -174,6 +174,51 @@ describe('deep', () => {
   //   // expect(a.one.sample.a === b.one.sample.a).toBe(true)
   // })
 
+  it('deepEqual handles branch cases', () => {
+    expect(deepEqual(1, 2)).toBe(false)
+    expect(deepEqual(null, {})).toBe(false)
+    expect(deepEqual({}, null)).toBe(false)
+    class A { x = 1 }
+    class B { x = 1 }
+    expect(deepEqual(new A(), new B())).toBe(false)
+    expect(deepEqual({ a: 1 }, { b: 1 })).toBe(false)
+    expect(deepEqual({ a: 1 }, { a: 1, b: 2 })).toBe(false)
+    expect(deepEqual({ a: 1, b: 2 }, { a: 1, c: 2 })).toBe(false)
+    expect(deepEqual({ a: 1 }, { a: 1 })).toBe(true)
+
+    const proto = { inherited: 1 }
+    const x: any = Object.create(proto)
+    x.own = 1
+    const y: any = Object.create(proto)
+    y.own = 1
+    expect(deepEqual(x, y)).toBe(true)
+  })
+
+  it('deepStripUndefinedInPlace handles cycles and primitives', () => {
+    expect(deepStripUndefinedInPlace(5)).toBe(5)
+    const cyc: any = { a: 1 }
+    cyc.self = cyc
+    const result = deepStripUndefinedInPlace(cyc)
+    expect(result).toBe(cyc)
+    expect(cyc.a).toBe(1)
+    const obj: any = Object.create({ inherited: 1 })
+    obj.own = undefined
+    obj.keep = 2
+    deepStripUndefinedInPlace(obj)
+    expect('own' in obj).toBe(false)
+    expect(obj.keep).toBe(2)
+  })
+
+  it('deepMerge handles non-object target and source', () => {
+    expect(deepMerge(null as any, { a: 1 })).toEqual({ a: 1 })
+    expect(deepMerge({ a: 1 }, null)).toEqual({ a: 1 })
+    expect(deepMerge({ a: 1 }, 'str' as any)).toEqual({ a: 1 })
+  })
+
+  it('deepMerge concatenates arrays', () => {
+    expect(deepMerge({ list: [1, 2] }, { list: [3, 4] })).toEqual({ list: [1, 2, 3, 4] })
+  })
+
   it('should strip undefined', () => {
     const sample = {
       hello: {

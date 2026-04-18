@@ -80,6 +80,54 @@ describe('xaes.spec', () => {
     expect(new Uint8Array(decrypted)).toEqual(plaintext)
   })
 
+  it('xaes rejects wrong algorithm key', async () => {
+    const key = await crypto.subtle.generateKey(
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt'],
+    )
+    const iv = new Uint8Array(24)
+    await expect(encryptXAES({ iv }, key, new Uint8Array(1))).rejects.toThrow(/AES-CBC/)
+  })
+
+  it('xaes rejects key without encrypt usage', async () => {
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new Uint8Array(32).fill(0x05),
+      { name: 'AES-CBC', length: 256 },
+      false,
+      ['decrypt'],
+    )
+    const iv = new Uint8Array(24)
+    await expect(encryptXAES({ iv }, key, new Uint8Array(1))).rejects.toThrow(/encrypt/)
+  })
+
+  it('xaes rejects key of wrong length', async () => {
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new Uint8Array(16).fill(0x06),
+      { name: 'AES-CBC', length: 128 },
+      false,
+      ['encrypt', 'decrypt'],
+    )
+    const iv = new Uint8Array(24)
+    await expect(encryptXAES({ iv }, key, new Uint8Array(1))).rejects.toThrow(/256 bits/)
+  })
+
+  it('xaes rejects iv of wrong length', async () => {
+    const key = await generateKeyXAES()
+    await expect(encryptXAES({ iv: new Uint8Array(12) }, key, new Uint8Array(1))).rejects.toThrow(/24 bytes/)
+  })
+
+  it('xaes accepts iv as ArrayBuffer', async () => {
+    const key = await generateKeyXAES()
+    const ivBuffer = new Uint8Array(24).fill(7).buffer
+    const data = new Uint8Array(10).fill(2)
+    const encrypted = await encryptXAES({ iv: ivBuffer }, key, data)
+    const decrypted = await decryptXAES({ iv: ivBuffer }, key, encrypted)
+    expect(new Uint8Array(decrypted)).toEqual(data)
+  })
+
   // it('xaes test vector, accumulated', async () => {
   //   const hash = new SHAKE128()
   //   const rng = new SHAKE128()

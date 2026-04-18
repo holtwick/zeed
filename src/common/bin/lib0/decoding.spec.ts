@@ -1,4 +1,5 @@
-import { createDecoder, peekUint8, peekUint16, peekUint32, peekVarInt, peekVarString, peekVarUint, readAny, readBigInt64, readBigUint64, readFloat32, readFloat64, readUint8, readUint16, readUint32, readUint32BigEndian, readVarInt, readVarString, readVarUint, readVarUint8Array } from './decoding'
+import { afterEach, vi } from 'vitest'
+import { clone, createDecoder, hasContent, peekUint8, peekUint16, peekUint32, peekVarInt, peekVarString, peekVarUint, readAny, readBigInt64, readBigUint64, readFloat32, readFloat64, readTailAsUint8Array, readUint8, readUint16, readUint32, readUint32BigEndian, readVarInt, readVarString, readVarUint, readVarUint8Array, skip8 } from './decoding'
 import { createBinEncoder, writeAny, writeBigInt64, writeBigUint64, writeFloat32, writeFloat64, writeUint8, writeUint16, writeUint32, writeVarInt, writeVarString, writeVarUint, writeVarUint8Array } from './encoding'
 
 describe('lib0/decoding', () => {
@@ -77,6 +78,88 @@ describe('lib0/decoding', () => {
     expect(readAny(d)).toEqual([1, 2, 3])
     expect([...readAny(d)]).toEqual([1, 2, 3])
     expect(readAny(d)).toEqual({ a: 1, b: 2 })
+  })
+
+  it('hasContent reflects position', () => {
+    const d = createDecoder(new Uint8Array([1, 2]))
+    expect(hasContent(d)).toBe(true)
+    readUint8(d)
+    readUint8(d)
+    expect(hasContent(d)).toBe(false)
+  })
+
+  it('clone preserves and overrides position', () => {
+    const d = createDecoder(new Uint8Array([1, 2, 3]))
+    readUint8(d)
+    const c1 = clone(d)
+    expect(c1.pos).toBe(1)
+    expect(c1.arr).toBe(d.arr)
+    const c2 = clone(d, 0)
+    expect(c2.pos).toBe(0)
+  })
+
+  it('skip8 advances one byte', () => {
+    const d = createDecoder(new Uint8Array([7, 8]))
+    skip8(d)
+    expect(d.pos).toBe(1)
+    expect(readUint8(d)).toBe(8)
+  })
+
+  it('readTailAsUint8Array returns remaining bytes', () => {
+    const d = createDecoder(new Uint8Array([1, 2, 3, 4]))
+    readUint8(d)
+    const tail = readTailAsUint8Array(d)
+    expect([...tail]).toEqual([2, 3, 4])
+  })
+
+  it('readVarUint throws on unexpected end of array', () => {
+    const d = createDecoder(new Uint8Array([0x80, 0x80]))
+    expect(() => readVarUint(d)).toThrow(/Unexpected end of array/)
+  })
+
+  it('readVarInt throws on unexpected end of array', () => {
+    const d = createDecoder(new Uint8Array([0x80]))
+    expect(() => readVarInt(d)).toThrow(/Unexpected end of array/)
+  })
+
+  it('readVarUint throws on integer out of range', () => {
+    const bytes = new Uint8Array(12).fill(0xFF)
+    bytes[11] = 0x7F
+    const d = createDecoder(bytes)
+    expect(() => readVarUint(d)).toThrow(/Integer out of Range/)
+  })
+
+  it('readVarInt throws on integer out of range', () => {
+    const bytes = new Uint8Array(12).fill(0xFF)
+    bytes[11] = 0x7F
+    const d = createDecoder(bytes)
+    expect(() => readVarInt(d)).toThrow(/Integer out of Range/)
+  })
+
+  describe('polyfill path', () => {
+    afterEach(() => {
+      vi.unstubAllGlobals()
+      vi.resetModules()
+    })
+
+    it('readVarString via polyfill (empty, small, large)', async () => {
+      vi.stubGlobal('TextDecoder', undefined)
+      vi.resetModules()
+      const dec = await import('./decoding')
+      const enc = await import('./encoding')
+
+      const e = enc.createBinEncoder()
+      enc.writeVarString(e, '')
+      enc.writeVarString(e, 'abc')
+      const big = 'y'.repeat(15000)
+      enc.writeVarString(e, big)
+      const arr = enc.encodeToUint8Array(e)
+
+      const d = dec.createDecoder(arr)
+      expect(dec.readVarString(d)).toBe('')
+      expect(dec.readVarString(d)).toBe('abc')
+      expect(dec.readVarString(d)).toBe(big)
+    })
   })
 
   it('should peek values', () => {

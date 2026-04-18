@@ -66,16 +66,16 @@
     "clean": "rm -rf dist",
     "coverage": "vitest --run --coverage",
     "lint": "eslint . --fix",
-    "prepublishOnly": "nr build && nr circles",
     "start": "nr watch",
     "test": "nr check && vitest --run",
     "test:browser": "PREVIEW=1 vitest",
     "test:firefox": "BROWSER=firefox vitest",
     "test:webkit": "BROWSER=webkit vitest",
     "test:chromium": "BROWSER=chromium vitest",
-    "test:release": "nr lint && nr check && vitest --run",
-    "watch": "nr build -- --watch src",
-    "prep": "nr lint && nr check && nr test:release && nr upload:docs"
+    "pre:release": "nr lint && nr check",
+    "test:release": "vitest --run",
+    "post:release": "nr upload:docs",
+    "watch": "nr build -- --watch src"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^8.2.0",
